@@ -1222,14 +1222,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$service_employees = $this->sql_fetch_array_r($res_employees);
 
 		//Check if service is an external service
-		if (!array_key_exists($service_common['pid'],array_flip(explode(',',$this->community[pidlist])))) {  
+		if (!array_key_exists($service_common['pid'],array_flip(explode(',',$this->community[pidlist])))) {
 			$mandant = t3lib_div::makeInstanceClassName('tx_civserv_mandant');
-			$mandantInst = new $mandant();			
-			$service_community = $mandantInst->get_mandant($service_common['pid']); 
+			$mandantInst = new $mandant();
+			$service_community = $mandantInst->get_mandant($service_common['pid']);
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 											'cm_community_name',
 											'tx_civserv_conf_mandant',
-											'cm_community_id = ' . $service_community); 
+											'cm_community_id = ' . $service_community);
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 			$smartyService->assign('external_service_label',$this->pi_getLL('tx_civserv_pi1_service.external_service','This service is provided and advised by') . ': ' . $row['cm_community_name']);
 		} else {
@@ -1867,7 +1867,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 			$community_data[$row_counter]['name'] = $row['cm_community_name'];
-			$community_data[$row_counter]['link'] = htmlspecialchars(parent::pi_linkTP_keepPIvars_url(array(community_id => $row['cm_community_id']),1,0));
+			$community_data[$row_counter]['link'] = htmlspecialchars(parent::pi_linkTP_keepPIvars_url(array(community_id => $row['cm_community_id']),0,1,$row[cm_page_uid]));
 			$row_counter++;
 		}
 		if ($row_counter == 0) {
