@@ -782,7 +782,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 							 AND tx_civserv_external_service.pid IN (' . $this->community[pidlist] . ')';
 				$query .= 'UNION ALL ';
 			}
-			$query .=	'SELECT ' . $select . '
+			//change proposed by Kreis Warendorf 24.01.05: we don't want double entries, so we go for DISTINCT
+			$query .=	'SELECT DISTINCT ' . $select . '
 						 FROM ' . $from . '
 						 WHERE ' . $where . ' ' .
 							(($i==1)?'AND tx_civserv_form.pid IN (' . $this->community[pidlist] . ') ':' ') .
@@ -1218,7 +1219,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 						 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid',
 						'',
-						'name');	//ORDER BY
+						'tx_civserv_service_sv_position_mm.sorting');	//ORDER BY
 
 		//Query for similar services
 		$res_similar = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
