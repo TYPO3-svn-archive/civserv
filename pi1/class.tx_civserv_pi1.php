@@ -646,7 +646,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$query = $this->makeFormListQuery($this->piVars[char],$organisation_id,false,true);
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$row_count += $row['count(*)'];
+			//$row_count += $row['count(*)'];
+			//change proposed by kreis warendorf to eliminate duplicates
+			$row_count += $row['count(DISTINCT tx_civserv_form.uid)'];
 		}
 
 		$this->internal['res_count'] = $row_count;
@@ -739,7 +741,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function makeFormListQuery($char=all,$organisation_id=0,$limit=true,$count=false) {
 		if ($count) {
-			$select = 'count(*)';
+			//$select = 'count(*)';
+			//change proposed by kreis warendorf to eliminate duplicates
+			$select = 'count(DISTINCT tx_civserv_form.uid)';
 		} else {
 			$select = 'tx_civserv_form.uid, tx_civserv_form.fo_name AS name, tx_civserv_form.fo_descr AS descr, tx_civserv_form.fo_external_checkbox AS checkbox, tx_civserv_form.fo_url AS url, tx_civserv_form.fo_formular_file AS file';
 		}
