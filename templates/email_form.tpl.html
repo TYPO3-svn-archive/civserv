@@ -1,0 +1,75 @@
+<!--TYPO3SEARCH_begin-->
+<!--TYPO3SEARCH_end-->
+
+<div id="right">
+</div><!-- right end -->
+
+<div id="centrecontent">
+
+	<!--{if $complete != ""}-->
+		<br />
+		<p>{$complete}</p>
+	<!--{else}-->
+		<h1>{$email_form_label}</h1>
+		<form name="email" method="post" action="{$action_url}">
+		<p>{$notice_label}</p>
+		<div class="content">
+		<table>
+			<tr>
+				<td>{$surname_label}&nbsp;:*</td>
+				<td><input type="text" name="surname" size="30" value="{$surname}" />&nbsp;<span class="error">{$error_surname}</span></td>
+			</tr>
+			<tr>
+		  		<td>{$firstname_label}:*</td>
+		  		<td><input name="firstname" type="text" size="30" value="{$firstname}" />&nbsp;<span class="error">{$error_firstname}</span></td>
+		  	</tr>
+		  	<tr>
+		  		<td>{$street_label}:</td>
+		  		<td><input name="street" type="text" size="30" value="{$street}" /></td>  		
+		  	</tr>
+			<tr>
+				<td>{$postcode_label}&nbsp;/&nbsp;{$city_label}:</td>
+				<td><input name="postcode" type="text" size="5" value="{$postcode}" />&nbsp;<input name="city" type="text" size="20" value="{$city}" />&nbsp;<span class="error">{$error_postcode}</span></td>
+		  	</tr>
+			<tr>
+				<td>{$email_label}&nbsp;:</td>
+				<td><input name="email" type="text" size="30" value="{$email}" />&nbsp;<span class="error">{$error_email}</span></td>
+			</tr>
+			<tr>
+		  		<td>{$phone_label}:</td>
+		  		<td><input name="phone" type="text" size="30" value="{$phone}" /></td>
+		  	</tr>
+			<tr> 		
+		  		<td>{$fax_label}:</td>
+		  		<td><input name="fax" type="text" size="30" value="{$fax}" /></td>
+		  	</tr>
+		</table>  
+		<br />
+		<br />
+		<table>
+			<tr>
+				<td colspan="2">
+					{$subject_label}:*<br />
+					<input type="text" name="subject" size="40" value="{$subject}" />&nbsp;<span class="error">{$error_subject}</span>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					{$bodytext_label}:*&nbsp;<span class="error" style="vertical-align:top;">{$error_bodytext}</span><br />
+					<textarea name="bodytext" rows="10" cols="60">{$bodytext}</textarea>
+					<br />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="submit" name="submit" value="{$submit_label}" />
+					<input type="{$button_type}" name="reset" value="{$reset_label}" />
+				</td>
+			</tr>
+		</table>
+		</div>
+		<br />
+		<p>*&nbsp;{$required_label}</p>
+		</form>
+<!--{/if}-->			
+</div><!-- centrecontent end -->

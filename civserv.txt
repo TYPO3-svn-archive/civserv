@@ -1,0 +1,164 @@
+Index: pi1/class.tx_civserv_pi1.php
+===================================================================
+RCS file: /usr/local/cvs/civserv/pi1/class.tx_civserv_pi1.php,v
+retrieving revision 1.229
+diff -u -r1.229 class.tx_civserv_pi1.php
+--- pi1/class.tx_civserv_pi1.php	14 Oct 2004 17:31:41 -0000	1.229
++++ pi1/class.tx_civserv_pi1.php	2 Nov 2004 20:27:08 -0000
+@@ -98,6 +98,8 @@
+ require_once(PATH_tslib . 'class.tslib_pibase.php');
+ require_once(t3lib_extMgm::extPath('smarty') . 'class.tx_smarty.php');
+ require_once(t3lib_extMgm::extPath('civserv') . 'pi1/class.tx_civserv_accesslog.php');
++require_once(t3lib_extMgm::extPath('civserv') . 'res/class.tx_civserv_mandant.php');
++
+ 
+ /**
+  * Class for plugin 'Civil Services'
+@@ -115,7 +117,7 @@
+ 	 * @return	$content		Content that is to be displayed within the plugin
+ 	 */
+ 	function main($content,$conf)	{
+-		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging
++		//$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging
+ 
+ 		// Load configuration array
+ 		$this->conf = $conf;
+@@ -1149,15 +1151,6 @@
+ 		$folder_forms = $this->conf['folder_services'];
+ 		$folder_forms .= $this->community['id'] . '/forms/';
+ 
+-		//Query to check if service is an external service
+-		$res_external = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+-						'tx_civserv_external_service.uid as uid',
+-						'tx_civserv_service, tx_civserv_external_service',
+-						'!tx_civserv_external_service.deleted AND !tx_civserv_external_service.hidden
+-						 AND !tx_civserv_service.deleted AND !tx_civserv_service.hidden
+-		 				 AND tx_civserv_service.uid = tx_civserv_external_service.es_external_service
+-		 				 AND tx_civserv_service.uid = ' . $uid);
+-
+ 		//Query for standard service details
+ 		$res_common = $this->queryService(intval($uid));
+ 
+@@ -1225,14 +1218,24 @@
+ 			return false;
+ 		}
+ 
+-		//Check if service is an external service
+-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($res_external) > 0) {
+-			$smartyService->assign('external_service_label',$this->pi_getLL('tx_civserv_pi1_service.external_service','This is an external service'));
+-		}
+-
+ 		$service_common = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_common);
+ 		$service_employees = $this->sql_fetch_array_r($res_employees);
+ 
++		//Check if service is an external service
++		if (!array_key_exists($service_common['pid'],array_flip(explode(',',$this->community[pidlist])))) {  
++			$mandant = t3lib_div::makeInstanceClassName('tx_civserv_mandant');
++			$mandantInst = new $mandant();			
++			$service_community = $mandantInst->get_mandant($service_common['pid']); 
++			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
++											'cm_community_name',
++											'tx_civserv_conf_mandant',
++											'cm_community_id = ' . $service_community); 
++			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
++			$smartyService->assign('external_service_label',$this->pi_getLL('tx_civserv_pi1_service.external_service','This service is provided and advised by') . ': ' . $row['cm_community_name']);
++		} else {
++			$service_community = $this->community[id];
++		}
++
+ 		$row_counter = 0;
+ 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_similar))	{
+ 			$similar[$row_counter]['link'] =  htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $row['uid']),$this->conf['cache_services'],1));
+@@ -1337,7 +1340,7 @@
+ 		//Image
+ 		if ($service_common[sv_image] != "") {
+ 			$image = $service_common[sv_image];
+-			$imagepath = $this->conf['folder_organisations'] . $this->community[id] . '/images/';
++			$imagepath = $this->conf['folder_organisations'] . $service_community . '/images/';
+ 		} else {
+ 			$image = $model_service[ms_image];
+ 			$imagepath = $this->conf['folder_organisations'] . 'model_services/images/';
+@@ -1449,7 +1452,7 @@
+ 	 */
+ 	function queryService($uid) {
+ 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+-						'uid, sv_name, sv_descr_short, sv_descr_long, sv_image, sv_image_text, sv_fees, sv_documents, sv_legal_local, sv_legal_global, sv_region_checkbox, sv_region_link, sv_model_service',
++						'uid, pid, sv_name, sv_descr_short, sv_descr_long, sv_image, sv_image_text, sv_fees, sv_documents, sv_legal_local, sv_legal_global, sv_region_checkbox, sv_region_link, sv_model_service',
+ 						'tx_civserv_service',
+ 						'!deleted AND !hidden AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN starttime AND endtime) OR
+ 												  ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > starttime) AND (endtime=0)) OR
+@@ -1917,7 +1920,7 @@
+ 						'cm_community_name',
+ 						'tx_civserv_conf_mandant',
+ 						'NOT deleted AND NOT hidden
+-						 AND cm_community_id = ' . $this->piVars[community_id]);
++						 AND cm_community_id = ' . $community_id);
+ 			if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+ 				$content = $row['cm_community_name'];
+ 			}
+Index: pi1/locallang.php
+===================================================================
+RCS file: /usr/local/cvs/civserv/pi1/locallang.php,v
+retrieving revision 1.61
+diff -u -r1.61 locallang.php
+--- pi1/locallang.php	2 Nov 2004 16:28:37 -0000	1.61
++++ pi1/locallang.php	2 Nov 2004 20:27:12 -0000
+@@ -68,7 +68,7 @@
+ 		'tx_civserv_pi1_debit_form.button_reset' => 'Cancel',
+ 		'tx_civserv_pi1_debit_form.no_results' => 'Debit form uid not set in transaction configuration table!',
+ 		'tx_civserv_pi1_debit_form.error_cashNumber' => 'Please enter a valid cash number!',
+-		'tx_civserv_pi1_debit_form.error_bankName','Please enter the name of your bank!',
++		'tx_civserv_pi1_debit_form.error_bankName' => 'Please enter the name of your bank!',
+ 		'tx_civserv_pi1_debit_form.error_bankCode' => 'Please enter a valid bank code!',
+ 		'tx_civserv_pi1_debit_form.error_accountNumber' => 'Please enter a valid account number!',
+ 		'tx_civserv_pi1_debit_form.error_firstname' => 'Please enter the first name of the account holder!',
+@@ -161,7 +161,7 @@
+ 		'tx_civserv_pi1_search_result.employee' => 'Matching employees',
+ 		'tx_civserv_pi1_search_result.service' => 'Matching services',
+ 		'tx_civserv_pi1_service.service' => 'Service',
+-		'tx_civserv_pi1_service.external_service' => 'This is an external service',
++		'tx_civserv_pi1_service.external_service' => 'This service is provided and advised by',
+ 		'tx_civserv_pi1_service.name' => 'Service name',		
+ 		'tx_civserv_pi1_service.ext_service' => 'This is an external service. For further details about this service follow this link',
+ 		'tx_civserv_pi1_service.description' => 'Description',
+@@ -330,7 +330,7 @@
+ 		'tx_civserv_pi1_search_result.employee' => 'Gefundene Mitarbeiter',
+ 		'tx_civserv_pi1_search_result.service' => 'Gefundene Dienstleistungen',	
+ 		'tx_civserv_pi1_service.service' => 'Anliegen',
+-		'tx_civserv_pi1_service.external_service' => 'Bei dieser Dienstleistung handelt es sich um eine externe Dienstleistung',
++		'tx_civserv_pi1_service.external_service' => 'Dieses Anliegen wird angeboten und betreut von',
+ 		'tx_civserv_pi1_service.name' => 'Name des Anliegens',		
+ 		'tx_civserv_pi1_service.ext_service' => 'Bei dieser Dienstleistung handelt es sich um eine externe Dienstleistung. Details zu dieser Dienstleistung finden sie unter folgendem Link',
+ 		'tx_civserv_pi1_service.description' => 'Beschreibung',
+Index: pi1/static/setup.txt
+===================================================================
+RCS file: /usr/local/cvs/civserv/pi1/static/setup.txt,v
+retrieving revision 1.15
+diff -u -r1.15 setup.txt
+--- pi1/static/setup.txt	14 Oct 2004 15:47:13 -0000	1.15
++++ pi1/static/setup.txt	2 Nov 2004 20:27:14 -0000
+@@ -81,7 +81,7 @@
+ # Delete default styles for indexed search
+ plugin.tx_indexedsearch._CSS_DEFAULT_STYLE > 
+ 
+-page.includeLibs.getCommunityName = typo3conf/ext/vivserv/pi1/class.tx_civserv_pi1.php
++page.includeLibs.getCommunityName = typo3conf/ext/civserv/pi1/class.tx_civserv_pi1.php
+ 
+ page.10 = TEMPLATE
+ page.10 {
+Index: templates/service.tpl.html
+===================================================================
+RCS file: /usr/local/cvs/civserv/templates/service.tpl.html,v
+retrieving revision 1.54
+diff -u -r1.54 service.tpl.html
+--- templates/service.tpl.html	14 Oct 2004 14:29:21 -0000	1.54
++++ templates/service.tpl.html	2 Nov 2004 20:27:15 -0000
+@@ -46,7 +46,7 @@
+ 	<h1>{$service_label}:&nbsp;{$name}</h1>
+ 
+ 	<!--{if $external_service_label != ""}-->
+-		<p>({$external_service_label})</p>
++		<p>{$external_service_label}</p>
+ 	<!--{/if}-->
+ 	
+ 	<!--{if $ext_link != ""}-->

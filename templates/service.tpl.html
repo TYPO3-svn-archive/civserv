@@ -1,0 +1,186 @@
+<div id="right">
+	{include file="right_searchbox.tpl.html"}
+	
+	{* If a service with at least one of the following sections is shown,
+		the subnavigation is shown here. *}
+	<!--{if $fees != "" OR $documents != "" OR $forms != "" OR $legal_local != "" OR $legal_global != "" OR $employees != ""}-->
+		<h3 class="invisible">{$subnavigation_label}:</h3>
+		<div id="rightmenu">
+			<ul class="level1">
+				<!--{if $fees != ""}-->
+					<li><a href="#fees" class="fees" title="{$link_to_section} {$fees_label}">{$fees_label}</a></li>
+				<!--{/if}-->
+				<!--{if $documents != ""}-->
+				<li><a href="#necessarydocuments" class="necessarydocuments" title="{$link_to_section} {$documents_label}">{$documents_label}</a></li>
+				<!--{/if}-->
+				<!--{if $forms != ""}-->
+				<li><a href="#forms" class="forms" title="{$link_to_section} {$forms_label}">{$forms_label}</a></li>
+				<!--{/if}-->
+				<!--{if $legal_local != "" OR $legal_global != ""}-->
+				<li><a href="#legal" class="legals" title="{$link_to_section} {$legal_label}">{$legal_label}</a></li>
+				<!--{/if}-->
+				<!--{if $employees != ""}-->
+				<li><a href="#contactperson" class="contactperson" title="{$link_to_section} {$contact_label}">{$contact_label}</a></li>
+				<!--{/if}-->
+			</ul><!-- level1 end -->
+		</div><!-- rightmenu end -->
+	<!--{/if}-->
+
+	{* If defined, here are shown related topics (similar services) to the current service. *}
+	<!--{if $related_topics != ""}-->
+		<h3 class="invisible">{$serviceinformation_label}:</h3>
+		<div id="serviceinformation">
+		<strong>{$pages_related_topics_label}:</strong><br /><br />
+			<!--{foreach from=$related_topics item=service }-->
+				<a href="{$service.link}" class="link">{$service.name}</a><br />
+			<!--{/foreach}-->
+		</div><!-- serviceinformation end -->
+	<!--{/if}-->
+	
+	{include file="right_top.tpl.html"}
+</div><!-- right end -->
+
+<div id="centrecontent">
+
+	<!--TYPO3SEARCH_begin-->
+	<h1>{$service_label}:&nbsp;{$name}</h1>
+
+	<!--{if $external_service_label != ""}-->
+		<p>{$external_service_label}</p>
+	<!--{/if}-->
+	
+	<!--{if $ext_link != ""}-->
+		<h2>{$ext_service_label}:</h2>
+		<p><a href="{$ext_link}" class="link">{$name}</a></p>
+	<!--{/if}-->
+
+	<!--{if ($descr_short  != "" OR $descr_long != "")}-->
+		<h2>{$description_label}</h2>
+
+		<!--{if $image != ""}-->
+			<table align="right" width="50px" class="right">
+				<tr>
+					<td>
+						{$image}
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<!--{if $image_text != ""}-->
+							<strong>{$image_text}</strong><br />
+						<!--{/if}-->
+						<small></small>
+					</td>
+				</tr>
+			</table>
+		<!--{/if}-->
+
+		<div class="content">
+			{$descr_short}
+			{$descr_long}
+		</div>	
+		<p><a href="#centrecontent" class="topofpage" title="{$link_to_top}">{$top}</a></p><br />
+	<!--{/if}-->
+	
+	<!--{if $fees != ""}-->
+		<a name="fees" id="fees"></a>
+		<h2>{$fees_label}</h2>
+		<div class="content">
+			{$fees}
+		</div>		
+		<p><a href="#centrecontent" class="topofpage" title="{$link_to_top}">{$top}</a></p><br />
+	<!--{/if}-->
+	
+	<!--{if $documents != ""}-->
+		<a name="necessarydocuments" id="necessarydocuments"></a>
+		<h2>{$documents_label}</h2>
+		<div class="content">
+			{$documents}
+		</div>
+		<p><a href="#centrecontent" class="topofpage" title="{$link_to_top}">{$top}</a></p><br />
+	<!--{/if}-->
+	
+	<!--{if $forms != ""}-->
+		<a name="forms" id="forms"></a>
+		<h2>{$forms_label}</h2>
+		<ul>
+			<!--{foreach from=$forms item=form}-->
+				<li><a href="{$form.url}">{$form.name}</a></li>
+			<!--{/foreach}-->
+		</ul>
+		<p><a href="#centrecontent" class="topofpage" title="{$link_to_top}">{$top}</a></p><br />
+	<!--{/if}-->
+
+	<!--{if $legal_local != "" OR $legal_global != ""}-->
+		<a name="legal" id="legal"></a>
+	<!--{/if}-->
+	<!--{if $legal_local != ""}-->
+		<h2>{$legal_local_label}</h2>
+		<div class="content">
+			{$legal_local}
+		</div>
+		<p><a href="#centrecontent" class="topofpage" title="{$link_to_top}">{$top}</a></p><br />
+	<!--{/if}-->
+	<!--{if $legal_global != ""}-->
+		<h2>{$legal_global_label}</h2>
+		<div class="content">
+			{$legal_global}
+		</div>
+		<p><a href="#centrecontent" class="topofpage" title="{$link_to_top}">{$top}</a></p><br />
+	<!--{/if}-->
+
+	<!--{if $similar_services != ""}-->
+		<h2>{$similar_services_label}</h2>
+		<ul id="forms">
+			<!--{foreach from=$similar_services item=service}-->
+				<li><a href="{$service.url}">{$service.name}</a></li>
+			<!--{/foreach}-->
+		</ul>
+		<p><a href="#centrecontent" class="topofpage" title="{$link_to_top}">{$top}</a></p><br />
+	<!--{/if}-->
+
+<!--TYPO3SEARCH_end-->
+
+	<!--{if $organisations != ""}-->
+		<h2>{$organisation_label}</h2>
+		<ul id="organisations">
+			<!--{foreach from=$organisations item=organisation}-->
+				<li><a href="{$organisation.url}">{$organisation.name}</a></li>
+			<!--{/foreach}-->
+		</ul>
+		<p><a href="#centrecontent" class="topofpage" title="{$link_to_top}">{$top}</a></p><br />
+	<!--{/if}-->
+
+	<!--{if $employees != ""}-->
+		<a name="contactperson" id="contactperson"></a><h2>{$contact_label}</h2>
+		<!--{foreach from=$employees item=employee}-->
+			<p>
+			<!--{if $employee.datasec == "1"}-->
+				<a href="{$employee.employee_url}" title="{$employee_details}><strong>{$employee.firstname}&nbsp;{$employee.name}</strong></a><br />
+			<!--{else}-->
+				<strong>{$employee.firstname}&nbsp;{$employee.name}</strong><br />
+			<!--{/if}-->
+	
+			<!--{if $employee.email_code != ""}-->
+				{$email_label}: {$employee.email_code}<br />	
+			<!--{/if}-->		
+			<!--{if $employee.ep_telephone != ""}-->
+				{$phone_label}: {$employee.ep_telephone}<br />
+			<!--{elseif $employee.em_telephone != ""}-->
+				{$phone_label}: {$employee.em_telephone}<br />
+			<!--{/if}-->		
+			
+			<!--{if $employee.description != ""}-->
+				{$employee.description}<br />
+			<!--{/if}-->
+			
+			<!--{if $employee.ep_email != ""}-->
+				<a href="{$employee.email_form_url}" class="link">{$web_email_label}</a><br /><br />
+			<!--{elseif $employee.em_email != ""}-->
+				<a href="{$employee.email_form_url}" class="link">{$web_email_label}</a><br /><br />
+			<!--{/if}-->
+			</p>
+		<!--{/foreach}-->
+		<p><a href="#centrecontent" class="topofpage" title="{$link_to_top}">{$top}</a></p>
+	<!--{/if}-->
+</div><!-- centrecontent end -->

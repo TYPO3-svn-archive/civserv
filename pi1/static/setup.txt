@@ -1,0 +1,100 @@
+# Set language for frontend ('default' = English, 'de' = German)
+config.language = de
+
+# ************************************* #
+# ********** Define left menu ********* #
+# ************************************* #
+
+leftmenu = HMENU
+leftmenu {
+	special = userfunction
+	special {
+		pageid = {$pageid}
+		fulltext_search_id = {$fulltext_search_id}
+		menuServiceList = {$menuServiceList}
+		menuCircumstanceTree = {$menuCircumstanceTree}
+		menuUsergroupTree = {$menuUsergroupTree}
+		menuOrganisationTree = {$menuOrganisationTree}
+		menuFormList = {$menuFormList}
+		menuTop15 = {$menuTop15}
+		userFunc = tx_civserv_pi1->makeMenuArray
+	}
+	stdWrap.wrap = <div id="leftmenu"> | </div>
+	1 = TMENU
+	1.wrap = <ul class="level1"> | </ul>
+	1.NO {
+		allWrap = <li> | </li>
+		stdWrap.htmlSpecialChars = 1
+	}
+	1.ACT = 1
+	1.ACT {
+		allWrap =<li> | </li>
+		stdWrap.htmlSpecialChars = 1
+		ATagParams = class="active"
+	}
+}
+		
+
+# ************************************* #
+# ********* Define PAGE object ******** #
+# ************************************* #
+
+page = PAGE
+page.typeNum = 0
+page.bodyTag = <body>
+page.config {
+	doctype = xhtml_trans
+	htmlTag_langKey = de
+	removeDefaultJS = external
+	xhtml_cleaning = all
+	# Insert the following statements to your .htaccess for static docu-ments:
+	#	RewriteEngine On
+	#	RewriteRule   ^[^/]*\.html$  index.php
+	simulateStaticDocuments = true
+	simulateStaticDocuments_pEnc = md5
+	simulateStaticDocuments_pEnc_onlyP = tx_civserv_pi1[mode],tx_civserv_pi1[community_id],tx_civserv_pi1[id],tx_civserv_pi1[pointer],tx_civserv_pi1[char],tx_civserv_pi1[sort],tx_civserv_pi1[pos_id],tx_civserv_pi1[sv_id],tx_civserv_pi1[sword],cHash
+}
+	
+# Stylesheet configuration
+page.includeCSS {
+	file1 = typo3conf/ext/civserv/templates/css/screen.css
+	file1.title = Screen Style
+	file1.media = screen
+
+	file2 = typo3conf/ext/civserv/templates/css/print.css
+	file2.title = Print Style
+	file2.media = print
+
+	file3 = typo3conf/ext/civserv/templates/css/vision.css
+	file3.title = XXL Style
+	file3.media = projection
+
+	file4 = typo3conf/ext/civserv/templates/css/mobile.css
+	file4.title = Mobile Style
+	file4.media = handheld
+
+	file5 = typo3conf/ext/civserv/templates/css/speaker.css
+	file5.title = Speaker Style
+	file5.media = aureal
+}
+
+# Delete default styles for indexed search
+plugin.tx_indexedsearch._CSS_DEFAULT_STYLE > 
+
+page.includeLibs.getCommunityName = typo3conf/ext/civserv/pi1/class.tx_civserv_pi1.php
+
+page.10 = TEMPLATE
+page.10 {
+	template = FILE
+	template.file = typo3conf/ext/civserv/templates/index.html
+	workOnSubpart = DOCUMENT
+	marks.CONTENT = CONTENT
+	marks.CONTENT.table= tt_content
+	marks.MENU < leftmenu
+	marks.COMMUNITY = USER
+	marks.COMMUNITY.community_id = {$community_id}
+	marks.COMMUNITY.userFunc = tx_civserv_pi1->getCommunityName
+	marks.CHOICE_LINK = USER
+	marks.CHOICE_LINK.community_id = {$pageid}
+	marks.CHOICE_LINK.userFunc = tx_civserv_pi1->getChoiceLink
+}

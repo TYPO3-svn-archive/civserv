@@ -1,0 +1,56 @@
+a:2:{s:4:"meta";a:3:{s:5:"title";s:7:"civserv";s:5:"descr";s:0:"";s:7:"options";a:2:{s:10:"usageCount";N;s:19:"includeCodeAbstract";N;}}s:5:"files";a:3:{s:14:"MD5_dc9f93f79b";a:4:{s:8:"filename";s:35:"res/class.tx_civserv_floorbuild.php";s:8:"filesize";i:4023;s:6:"header";a:5:{s:4:"text";s:405:"
+
+This class holds some functions used by the TYPO3 backend....
+
+Some scripts that use this class: tca.php (Invocation), ext_tables.php (Definition), ext_localconf.php (Definition)
+Depends on: ?
+
+$Id: ext_php_api.dat,v 1.1.1.1 2004/08/16 18:37:35 smeesters Exp $
+
+
+Changes:	06.08.04, CR - Anpassung an Konventionen
+			13.08.04, GN - PID wird jetzt ganz sauber und _verständlich_ extrahiert ;-)";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:49:"@author Georg Niemeyer (niemeyer@uni-muenster.de)";i:1;s:14:"@package TYPO3";i:2;s:22:"@subpackage tx_civserv";i:3;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:1:{i:0;s:41:"Georg Niemeyer (niemeyer@uni-muenster.de)";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:2:{i:1;a:5:{s:6:"header";s:29:"class tx_civserv_floorbuild {";s:5:"class";i:1;s:11:"parentClass";s:21:"tx_civserv_floorbuild";s:4:"cDat";a:3:{s:4:"text";s:212:"
+
+[CLASS/FUNCTION INDEX of SCRIPT]
+
+
+
+  55: class tx_civserv_floorbuild
+  57:     function main(& $params, & $pObj)
+
+TOTAL FUNCTIONS: 1
+(This index is automatically created/updated by the extension "extdeveval")
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:6:"atLine";i:53;}i:3;a:6:{s:6:"header";s:35:"function main(& $params, & $pObj) {";s:11:"parentClass";s:21:"tx_civserv_floorbuild";s:7:"content";s:0:"";s:12:"content_size";i:2093;s:13:"content_lines";i:38;s:6:"atLine";i:55;}}}s:14:"MD5_55c3a61e69";a:4:{s:8:"filename";s:34:"res/class.tx_civserv_oepupdate.php";s:8:"filesize";i:3108;s:6:"header";a:5:{s:4:"text";s:313:"
+
+This class holds some functions used by the TYPO3 backend....
+
+Some scripts that use this class: tca.php (Invocation), ext_tables.php (Definition), ext_localconf.php (Definition)
+Depends on: ?
+
+$Id: ext_php_api.dat,v 1.1.1.1 2004/08/16 18:37:35 smeesters Exp $
+
+
+Changes: 10.08.04, CR - Initial Build";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:55:"@author Christoph Rosenkranz (rosenkra@uni-muenster.de)";i:1;s:14:"@package TYPO3";i:2;s:22:"@subpackage tx_civserv";i:3;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:1:{i:0;s:47:"Christoph Rosenkranz (rosenkra@uni-muenster.de)";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:2:{i:1;a:5:{s:6:"header";s:28:"class tx_civserv_oepupdate {";s:5:"class";i:1;s:11:"parentClass";s:20:"tx_civserv_oepupdate";s:4:"cDat";a:3:{s:4:"text";s:106:"
+
+Updates the PID so that the officehours_oep_employee_em_position_mm_mm
+is placed in the right SysFolder
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:6:"atLine";i:59;}i:3;a:6:{s:6:"header";s:35:"function main(& $params, & $pObj) {";s:11:"parentClass";s:20:"tx_civserv_oepupdate";s:7:"content";s:0:"";s:12:"content_size";i:1145;s:13:"content_lines";i:24;s:6:"atLine";i:61;}}}s:14:"MD5_f131108519";a:4:{s:8:"filename";s:39:"res/class.tx_civserv_wizard_auswahl.php";s:8:"filesize";i:6388;s:6:"header";a:5:{s:4:"text";s:409:"
+
+This class holds a user defined wizard to select and show content from extension tables
+
+Some scripts that use this class: tca.php (Invocation), ext_tables.php (Definition), ext_localconf.php (Definition)
+Depends on: tca.php, there it must be defined as wizard / userfunc
+
+$Id: ext_php_api.dat,v 1.1.1.1 2004/08/16 18:37:35 smeesters Exp $
+
+
+Changes: 09.08.04, CR - Anpassung an Konventionen";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:48:"@author Tobias Müller (mullerto@uni-muenster.de)";i:1;s:14:"@package TYPO3";i:2;s:22:"@subpackage tx_civserv";i:3;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:1:{i:0;s:40:"Tobias Müller (mullerto@uni-muenster.de)";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:4:{i:1;a:7:{s:6:"header";s:33:"class tx_civserv_wizard_auswahl {";s:5:"class";i:1;s:11:"parentClass";s:25:"tx_civserv_wizard_auswahl";s:7:"content";s:0:"";s:12:"content_size";i:1019;s:13:"content_lines";i:18;s:6:"atLine";i:52;}i:3;a:7:{s:6:"header";s:17:"function init()	{";s:11:"parentClass";s:25:"tx_civserv_wizard_auswahl";s:4:"cDat";a:3:{s:4:"text";s:34:"
+
+Some initial initializations ;)
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:4:"none";i:1;s:0:"";}}s:6:"return";a:2:{i:0;s:4:"none";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:162;s:13:"content_lines";i:5;s:6:"atLine";i:77;}i:5;a:4:{s:6:"header";s:30:"function getPID($table,$uid)	{";s:11:"parentClass";s:25:"tx_civserv_wizard_auswahl";s:4:"cDat";a:3:{s:4:"text";s:52:"
+
+Returns the pid of a record from $table with $uid
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:10:"Table name";}i:1;a:2:{i:0;s:7:"integer";i:1;s:10:"Record uid";}}s:6:"return";a:2:{i:0;s:7:"integer";i:1;s:63:"PID value (unless the record did not exist in which case FALSE)";}}s:6:"atLine";i:90;}i:7;a:7:{s:6:"header";s:17:"function main()	{";s:11:"parentClass";s:25:"tx_civserv_wizard_auswahl";s:4:"cDat";a:3:{s:4:"text";s:34:"
+
+Main Method, executes the logic
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:4:"none";i:1;s:0:"";}}s:6:"return";a:2:{i:0;s:4:"none";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:2641;s:13:"content_lines";i:78;s:6:"atLine";i:103;}}}}}

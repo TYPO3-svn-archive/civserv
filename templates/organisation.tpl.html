@@ -1,0 +1,107 @@
+<!--TYPO3SEARCH_begin-->
+
+<div class="orgadetail">
+
+	<!--{if $image != ""}-->
+		<span style="float:right;padding:10px"
+			{$image}
+		</span>
+	<!--{/if}-->
+
+	<!--{if $mail_street != "" OR $mail_pob != "" OR $mail_postcode != "" OR $mail_city != ""}-->
+		<strong>{$postal_address_label}:</strong><br />
+		{$mail_street}<br />
+		{$postbox_label}&nbsp;{$mail_pob}<br />
+		{$mail_postcode}&nbsp;{$mail_city}<br /><br />
+	<!--{/if}-->
+
+	<!--{if $building_street != "" OR $building_postcode != "" OR $building_city != ""}-->
+		<strong>{$building_address_label}:</strong><br/>
+		{$building_street}<br/>
+		{$building_postcode}&nbsp;{$building_city}<br /><br />
+	<!--{/if}-->
+
+	<!--{if $phone != ""}-->
+		<strong>{$phone_label}:</strong> {$phone}<br />
+	<!--{/if}-->
+
+	<!--{if $fax != ""}-->
+		<strong>{$fax_label}:</strong> {$fax}<br />
+	<!--{/if}-->
+	<br />
+	
+	<!--{if $email_code != ""}-->
+		<strong>{$email_label}:</strong> {$email_code}<br/>
+		<a href="{$email_form_url}" class="link">{$web_email_label}</a><br /><br />
+	<!--{/if}-->
+
+	
+	<!--{if $pubtrans_stop != ""}-->
+		<strong>{$pub_trans_info_label}:</strong>
+		<!--{if $pubtrans_link != ""}-->
+			{$pub_trans_stop_label}:&nbsp;<a href="{$pubtrans_link}">{$pubtrans_stop}</a><br /><br />
+		<!--{else}-->
+			{$pub_trans_stop_label}:&nbsp;{$pubtrans_stop}<br /><br />
+		<!--{/if}-->
+	<!--{/if}-->
+
+	<!--{if $infopage != ""}-->
+		<strong>{$infopage_label}:</strong>
+		<a href="{$infopage}" class="link">Link&nbsp;</a><br /><br />
+	<!--{/if}-->
+
+	<!--{if $su_name != ""}-->
+		<strong>{$supervisor_label}:</strong>
+		<!--{if $su_link != ""}-->
+			<a href="{$su_link}" title="{$employee_details}">
+			<!--{if $su_address_label != ""}-->
+				{$su_address_label}
+			<!--{/if}-->
+			<!--{if $su_title != ""}-->
+				{$su_title}
+			<!--{/if}-->
+			{$su_firstname}&nbsp;{$su_name}</a><br/>
+		<!--{else}-->
+			<!--{if $su_address_label != ""}-->
+				{$su_address_label}
+			<!--{/if}-->
+			<!--{if $su_title != ""}-->
+				{$su_title}
+			<!--{/if}-->
+			{$su_firstname}&nbsp;{$su_name}</a><br/>
+		<!--{/if}-->
+		<br />
+	<!--{/if}-->
+
+	<!--{if $office_hours != ""}-->
+		<table summary="{$office_hours_summary}">
+			<caption>{$office_hours_label}:</caption>
+			<thead>
+				<tr>
+					<th>{$weekday}</th>
+					<th>{$morning}</th>
+					<th>{$afternoon}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!--{foreach from=$office_hours item=hours }-->
+					<tr>
+						<td>{$hours.weekday}</td>
+						<!--{if $hours.end_morning == "0" AND $hours.start_afternoon == "0"}-->
+							<td colspan="2">{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+						<!--{else}-->
+							<!--{if $hours.start_morning != "0" AND $hours.end_morning != "0"}-->
+								<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_morning}</td>
+							<!--{/if}-->
+							<!--{if $hours.start_afternoon != "0" AND $hours.end_afternoon != "0"}-->
+								<td>{$hours.start_afternoon}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+							<!--{/if}-->
+						<!--{/if}-->
+					</tr>
+				<!--{/foreach}-->
+			</tbody>
+		</table>
+	<!--{/if}-->
+
+</div>
+<!--TYPO3SEARCH_end-->
