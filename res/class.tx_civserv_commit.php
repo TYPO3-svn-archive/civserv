@@ -248,6 +248,18 @@ class tx_civserv_commit {
 		if($params['table']=='tx_civserv_conf_mandant'){
 			$this->makeDirs($params);
 		}
+		if($params['table']=='tx_civserv_navigation'){
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local','tx_civserv_navigation_nv_structure_mm','uid_local = uid_foreign');
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
+				$del_result = $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_civserv_navigation_nv_structure_mm','uid_local = '.$row['uid_local'].' AND uid_foreign = '.$row['uid_local']);				
+			}
+		}
+		if($params['table']=='tx_civserv_organisation'){
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local','tx_civserv_organisation_or_structure_mm','uid_local = uid_foreign');
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
+				$del_result = $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_civserv_organisation_or_structure_mm','uid_local = '.$row['uid_local'].' AND uid_foreign = '.$row['uid_local']);				
+			}
+		}
 	}
 
 	/**

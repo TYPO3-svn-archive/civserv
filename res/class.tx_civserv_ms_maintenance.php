@@ -68,6 +68,7 @@ class tx_civserv_ms_maintenance {
 	 * @return	void
 	 */
 	function check_changes($params) {
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		if ($params['table']=='tx_civserv_model_service_temp')	{
 
 				// Gets all data from the currently saved record...
@@ -100,6 +101,7 @@ class tx_civserv_ms_maintenance {
 	 * @return	void
 	 */
 	function check_ms_name_changed($params) {
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		if ($params['table']=='tx_civserv_model_service')	{
 
 
@@ -147,6 +149,7 @@ class tx_civserv_ms_maintenance {
 	 * @return	string	md5-checksum, which is computed over all given fields excepted the once listed with unset
 	 */
 	function compute_checksum($model_service_temp)	{
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 			// Gets all field names except uid,pid,tstamp,crdate,cruser_id,deleted,hidden,fe_group,ms_mandant,
 			// ms_approver_one and ms_approver_two out of the model service table.
 		$field_names = $GLOBALS['TYPO3_DB']->admin_get_fields('tx_civserv_model_service');
@@ -184,21 +187,26 @@ class tx_civserv_ms_maintenance {
 	 * @return	void
 	 */
 	function write_checksum_and_flags($model_service_temp, $new_hash)	{
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		global $LANG;
 		$LANG->includeLLFile(t3lib_extMgm::extPath('civserv')."modmsworkflow/locallang.php");
+		// put these under if-control to suppress mysql-error-messages in backend when temp-model-services are deleted
+		// which shouldn't happen, but if you can't control the user - control your code....		
+		if($model_service_temp['uid']>''){
 			// Sets the ms_has_changed field to 1 so that it indicates, that data has been changed,
 			// stores the new checksum in the dataset and finally sets both commit checkboxes to null.
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_model_service_temp', 'uid = '.$model_service_temp['uid'], array ("ms_additional_label" => $LANG->getLL('modmsworkflow.label_monitoring'), "ms_checksum" => $new_hash, "ms_has_changed" => 1, "ms_commit_approver_one" => 0, "ms_commit_approver_two" => 0));
-
-		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc(
-			$GLOBALS['TYPO3_DB']->exec_SELECTquery('ms_approver_one, ms_approver_two','tx_civserv_model_service','uid = '.$model_service_temp['uid'])
-		);
-		$ms_approver_one = $row[ms_approver_one];
-		$ms_approver_two = ($row[ms_approver_two]==$ms_approver_one? false:$row[ms_approver_two]);
-
-		$eMailOne = $GLOBALS['TYPO3_DB']->sql_fetch_assoc(
-			$GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_target_email','tx_civserv_conf_mandant','cm_community_id = '.$ms_approver_one)
-		);
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_model_service_temp', 'uid = '.$model_service_temp['uid'], array ("ms_additional_label" => $LANG->getLL('modmsworkflow.label_monitoring'), "ms_checksum" => $new_hash, "ms_has_changed" => 1, "ms_commit_approver_one" => 0, "ms_commit_approver_two" => 0));
+	
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc(
+				$GLOBALS['TYPO3_DB']->exec_SELECTquery('ms_approver_one, ms_approver_two','tx_civserv_model_service','uid = '.$model_service_temp['uid'])
+			);
+			$ms_approver_one = $row[ms_approver_one];
+			$ms_approver_two = ($row[ms_approver_two]==$ms_approver_one? false:$row[ms_approver_two]);
+	
+			$eMailOne = $GLOBALS['TYPO3_DB']->sql_fetch_assoc(
+				$GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_target_email','tx_civserv_conf_mandant','cm_community_id = '.$ms_approver_one)
+			);
+		}
 
 		if ($ms_approver_two) $eMailTwo = $GLOBALS['TYPO3_DB']->sql_fetch_assoc(
 				$GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_target_email','tx_civserv_conf_mandant','cm_community_id = '.$ms_approver_two)
@@ -230,6 +238,7 @@ class tx_civserv_ms_maintenance {
 	 * @return	void
 	 */
 	function transfer_ms($params){
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		global $LANG;
 		$LANG->includeLLFile(t3lib_extMgm::extPath('civserv')."modmsworkflow/locallang.php");
 		//get all data from the original table, including datasets which carry the deleted flag, because we want to eleminate them from the copies also!
@@ -336,6 +345,7 @@ class tx_civserv_ms_maintenance {
 	 * @return	void
 	 */
 	function show_mandants(&$params, &$pObj) {
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'cm_community_id, cm_community_name',				// Field list for SELECT
 			'tx_civserv_conf_mandant ',							// Tablename, local table
