@@ -110,7 +110,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 	var $scriptRelPath = 'pi1/class.tx_civserv_pi1.php';	// Path to this script relative to the extension dir
 	var $extKey = 'civserv';								// The extension key
 
-
 	/**
 	 * @param	string		Content that is to be displayed within the plugin
 	 * @param	array		Configuration array
@@ -192,31 +191,37 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 			switch($this->piVars[mode])	{
 				case 'service_list':
+					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_service_list.service_list','Service list');
 					$template = $this->conf['tpl_service_list'];
 					$accurate = $this->serviceList($smartyObject,$this->conf['abcBarAtServiceList'],$this->conf['searchAtServiceList'],$this->conf['topAtServiceList']);
 					break;
 
 				case 'circumstance_tree':
+					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_circumstance.circumstance_tree','Circumstances');
 					$template = $this->conf['tpl_circumstance_tree'];
 					$accurate = $this->navigationTree($smartyObject,$this->community[circumstance_uid],$this->conf['searchAtCircumstanceTree'],$this->conf['topAtCircumstanceTree']);
 					break;
 
 				case 'usergroup_tree':
+					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_usergroup.usergroup_tree','Usergroups');
 					$template = $this->conf['tpl_usergroup_tree'];
 					$accurate = $this->navigationTree($smartyObject,$this->community[usergroup_uid],$this->conf['searchAtUsergroupTree'],$this->conf['topAtUsergroupTree']);
 					break;
 
 				case 'organisation_tree':
+					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_organisation.organisation_tree','Organisation');
 					$template = $this->conf['tpl_organisation_tree'];
 					$accurate = $this->navigationTree($smartyObject,$this->community[organisation_uid],$this->conf['searchAtOrganisationTree'],$this->conf['topAtOrganisationTree']);
 					break;
 
 				case 'form_list':
+					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_form_list.form_list','Forms');
 					$template = $this->conf['tpl_form_list'];
 					$accurate = $this->formList($smartyObject,$this->piVars[id],$this->piVars[id]?$this->conf['abcBarAtFormList_orga']:$this->conf['abcBarAtFormList_all'],$this->conf['searchAtFormList'],$this->conf['topAtFormList'],$this->conf['orgaList']);
 					break;
 
 				case 'top15':
+					$GLOBALS['TSFE']->page['title'] = "TOP 15";
 					$template = $this->conf['tpl_top15'];
 					$accurate = $this->calculate_top15($smartyObject,$this->conf['show_counts'],$this->conf['service_count'],$this->conf['searchAtTop15']);
 					break;
@@ -227,16 +232,19 @@ class tx_civserv_pi1 extends tslib_pibase {
 					break;
 
 				case 'circumstance':
+					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_service_list.circumstance','Circumstance');
 					$template = $this->conf['tpl_circumstance'];
 					$accurate = $this->serviceList($smartyObject,$this->conf['abcBarAtCircumstance'],$this->conf['searchAtCircumstance'],$this->conf['topAtCircumstance']);
 					break;
 
 				case 'usergroup':
+					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_service_list.usergroup','Usergroup');
 					$template = $this->conf['tpl_usergroup'];
 					$accurate = $this->serviceList($smartyObject,$this->conf['abcBarAtUsergroup'],$this->conf['searchAtUsergroup'],$this->conf['topAtUsergroup']);
 					break;
 
 				case 'organisation':
+					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_service_list.organisation','Organisation');
 					$template = $this->conf['tpl_service_list'];
 					$accurate = $this->organisationDetail($smartyObject) && $this->serviceList($smartyObject,$this->conf['abcBarAtOrganisation'],$this->conf['searchAtOrganisation'],$this->conf['topAtOrganisation']);
 					break;
@@ -357,9 +365,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		
-		//this won't work for reasons unknown
-		$GLOBAlS['TSFE']->page['title']=$this->getServiceListHeading($this->piVars[mode],$this->piVars[id]);
-		
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 			$services[$row_counter]['link'] =  htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $row['uid']),$this->conf['cache_services'],1));
@@ -389,6 +394,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$smartyServiceList->assign('abcbar',$this->makeAbcBar($query));
 		}
 		$smartyServiceList->assign('heading',$this->getServiceListHeading($this->piVars[mode],$this->piVars[id]));
+		$GLOBALS['TSFE']->page['title'] = $this->getServiceListHeading($this->piVars[mode],$this->piVars[id]);
+		if($this->piVars[char]>''){
+			//ToDo Language support!!!! pi_getll(....)
+			$GLOBALS['TSFE']->page['title'] .= " Buchstabe ".$this->piVars[char];
+		}
 		
 		if ($searchBox) {
 			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
@@ -403,6 +413,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		$smartyServiceList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_service_list.available_services','Here you find the following services'));
 		$smartyServiceList->assign('pagebar',$this->pi_list_browseresults(true,'',' | '));
+
 		return true;
 	}
 
@@ -665,7 +676,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		// get heading
 		$heading = $this->pi_getLL('tx_civserv_pi1_form_list.form_list','Forms') . ': ';
-
+		
 		if ($organisation_id != 0) {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'tx_civserv_organisation.or_name AS name',
@@ -680,6 +691,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		} else {
 			$heading .= $this->pi_getLL('tx_civserv_pi1_form_list.overview','Overview');
 		}
+		$GLOBALS['TSFE']->page['title'] = $heading;
 		$smartyFormList->assign('heading',$heading);
 		$smartyFormList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_form_list.available_forms','Here you find the following forms'));
 		$smartyFormList->assign('assigned_services',$this->pi_getLL('tx_civserv_pi1_form_list.assigned_services','The following services are assigned with this form'));
@@ -1088,9 +1100,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			default :
 				$regexp = '^' . $char;
 		}
-		if($char!=''){
-			$GLOBALS['TSFE']->page['title']='Anliegen: Buchstabe '.$char;
-		}
+		
 		return $regexp;
 	}
 
@@ -1343,8 +1353,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$name = trim($model_service[ms_name]);
 		}
 		$smartyService->assign('name',$name);
-		$GLOBALS['TSFE']->page['title'] = $name;
-		
+
 		//Short description
 		if ($service_common[sv_descr_short] != "") {
 			$descr_short = trim($service_common[sv_descr_short]);
@@ -1353,7 +1362,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$descr_short = trim($model_service[ms_descr_short]);
 		}
 		$smartyService->assign('descr_short',$this->formatStr($this->local_cObj->stdWrap($descr_short,$this->conf['sv_descr_short_stdWrap.'])));
-		$GLOBALS['TSFE']->additionalHeaderData[].='<meta name="description" content="'.$descr_short.'">';
 
 		//Long description
 		$descr_long_ms = '';
@@ -1476,7 +1484,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Title for the Indexed Search Engine
 		$GLOBALS['TSFE']->indexedDocTitle = $service_common[sv_name];
-
+		$GLOBALS['TSFE']->page['title']=$this->pi_getLL('tx_civserv_pi1_service.service','Service').": ".$name;
 		return true;
 	}
 
@@ -1698,7 +1706,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
 			$smartyTop15->assign('searchbox', $this->pi_list_searchBox('',true));
 		}
-
+		$GLOBALS['TSFE']->page['title']=$this->pi_getLL('tx_civserv_pi1_employee.employee','Employee');
 		return true;
 	}
 
