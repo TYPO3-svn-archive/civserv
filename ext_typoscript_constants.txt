@@ -15,11 +15,14 @@ tpl_search_result = typo3conf/ext/civserv/templates/search_result.tpl.html
 tpl_top15 = typo3conf/ext/civserv/templates/top15.tpl.html
 tpl_email_form = typo3conf/ext/civserv/templates/email_form.tpl.html
 tpl_debit_authorisation = typo3conf/ext/civserv/templates/debit_authorisation.tpl.html
+tpl_legal_notice = typo3conf/ext/civserv/templates/legal_notice.tpl.html
+tpl_contact_form = typo3conf/ext/civserv/templates/contact_form.tpl.html
 
 # Path definitions (common part)
 folder_services = fileadmin/civserv/
 folder_organisations = fileadmin/civserv/
 folder_employees = fileadmin/civserv/
+folder_global_images = typo3conf/ext/civserv/templates/images/
 
 # Empty community_id
 community_id = 

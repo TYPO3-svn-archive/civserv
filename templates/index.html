@@ -25,7 +25,7 @@
 			</a><br />
 			<a href="#centrecontent" accesskey="2" class="invisible" title="Zum Inhalt / Navigationen und Kurzmitteilungen &uuml;berspringen">
 				Zum Inhalt / Navigationen &uuml;berspringen
-			</a> 
+			</a>
 		</p>
 		<div id="header">
 			<div id="globalenavigation">
@@ -33,9 +33,9 @@
 				<ul>
 					<li class="kommune"><strong>###COMMUNITY###</strong></li>
 					<li><a href="###CHOICE_LINK###">Andere Kommune</a></li>
-					<li><a href="#">Impressum</a></li>
-					<li><a href="#">Kontakt</a></li>
-					<li><a href="#">Sitemap</a></li>
+					<li><a href="###LEGAL_NOTICE_LINK###">Impressum</a></li>
+					<li><a href="###CONTACT_LINK###">Kontakt</a></li>
+					<!--<li><a href="#">Sitemap</a></li>-->
 				</ul>
 				</div><!-- globalenavigation end -->
 		</div><!-- header end -->
@@ -52,11 +52,11 @@
 							document.writeln('<ul>');
 							document.writeln('<li><a href="javascript:window.print()" rel="alternate" title="Seite drucken" class="printversion">Seite drucken</a></li>');
 							document.writeln('<li><a href="javascript:history.back()" rel="prev" title="Hier gelangen Sie auf die vorherige Seite" class="back">Zur&uuml;ck</a></li>');
-							if ((navigator.appName == "Microsoft Internet Explorer") && (parseInt(navigator.appVersion) >= 4)) { 
+							if ((navigator.appName == "Microsoft Internet Explorer") && (parseInt(navigator.appVersion) >= 4)) {
 								document.write('<li><a href="javascript:window.external.AddFavorite(window.location.href);" ');
 								document.write('onMouseOver="window.status=\'Lesezeichen setzen\'; return true;" ');
 								document.write('onMouseOut="window.status=\' \'; return true;"');
-								document.write(' class="bookmark">Lesezeichen setzen</a></li>');      
+								document.write(' class="bookmark">Lesezeichen setzen</a></li>');
 							}
 							favsetz = '<li><a href="" onClick="this.style.behavior=\'url(#default#homepage)\';this.setHomePage(\'http://www.regio-komm.de\');" rel="prev" title="Hier können Sie www.regio-komm.de als Startseite in Ihrem Browser festsetzen" class="home">Startseite festlegen</a></li>';
 							document.writeln( favsetz );

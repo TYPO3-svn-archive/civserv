@@ -51,7 +51,7 @@
  *  788:     function do_search(&$smartySearchResult,$searchBox)
  *  943:     function calculate_top15(&$smartyTop15,$showCounts=1,$topN=15,$searchBox=false)
  *
- *              SECTION: Heplper functions for the navigation functions:
+ *              SECTION: Helper functions for the navigation functions:
  *  996:     function makeAbcBar($query)
  * 1041:     function buildRegexp($char)
  * 1070:     function makeTree($uid,$add_content,$mode)
@@ -279,6 +279,27 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$accurate = $this->setDebitForm($smartyObject);
 					break;
 
+				case 'check_contact_form':
+					$reset = t3lib_div::_POST('reset');
+					//Check if reset button was clicked (necessary for resetting the contact form)
+					if (!isset($reset)) {
+						$template = $this->conf['tpl_contact_form'];
+						$accurate = $this->checkEmailForm($smartyObject);
+						break;
+					}
+
+				case 'set_contact_form':
+					$template = $this->conf['tpl_contact_form'];
+					$accurate = $this->setEmailForm($smartyObject);
+					#$accurate = true;
+					#Baustelle
+					break;
+
+				case 'legal_notice':
+					$template = $this->conf['tpl_legal_notice'];
+					$accurate = $this->showLegalNotice($smartyObject);
+					break;
+
 				default:
 					$accurate = false;
 					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi1_error.invalid_mode','Invalid mode');
@@ -296,6 +317,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$content = $smartyObject->fetch($template);
 		} else {
 			$content = str_replace('###TEMPLATE###',$template,$this->pi_getLL('tx_civserv_pi1_error.smarty','The Smarty template <i>###TEMPLATE###</i> does not exist.'));
+			$content.="<br />was steht im templatepfad??: ".$template." got me???";
 		}
 
 		return $this->pi_wrapInBaseClass($content);
@@ -1934,7 +1956,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * Returns link to choice the community.
 	 * Normaly used from a template userfunction.
 	 *
-	 * @param	sting		content
+	 * @param	string		content
 	 * @param	array		configuration array
 	 * @return	string		The link
 	 */
@@ -1946,8 +1968,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		return parent::pi_linkTP_keepPIvars_url(array(community_id => 'choose',mode => 'service_list'),1,1,$pageid);
 	}
-
-
 
 
 
@@ -2776,7 +2796,79 @@ class tx_civserv_pi1 extends tslib_pibase {
 		return $menuArray;
 	}
 
+
+
+	/******************************
+	 *
+	 * Functions for the legal_notice_link in den main navigation
+	 *
+	 *******************************/
+
+	/**
+	 * Returns link to legal notice of the hoster (imprint, web credits)
+	 * Normaly used from a template userfunction.
+	 *
+	 * @param	string		content
+	 * @param	array		configuration array
+	 * @return	string		The link
+	 */
+	function getLegalNoticeLink() {
+		if ($conf['pageid'] > '') {
+			$pageid = $conf['pageid'];
+		} else {
+			$pageid = $GLOBALS['TSFE']->id;
+		}
+		return parent::pi_linkTP_keepPIvars_url(array(mode => 'legal_notice'),1,1,$pageid);
+	}
+
+
+
+	/**
+	 * Shows information about the hoster's legal notice.
+	 *
+	 * @param	object		Smarty object, the template key/value-pairs should be assigned to
+	 * @return	boolean		True, if the function was executed without any error, otherwise false
+	 */
+	function showLegalNotice(&$smartyLegalNotice) {
+
+		$smartyLegalNotice->assign('contactLink', $this->getContactLink());
+		$smartyLegalNotice->assign('imgPath', $this->conf['folder_global_images']);
+		return true;
+	}
+
+
+
+
+
+
+
+	/******************************
+	 *
+	 * Functions for the contact_link in den main navigation
+	 *
+	 *******************************/
+
+
+	/**
+	 * Returns link to contact the hoster
+	 * Normaly used from a template userfunction.
+	 *
+	 * @param	string		content
+	 * @param	array		configuration array
+	 * @return	string		The link
+	 */
+	function getContactLink() {
+		if ($conf['pageid'] > '') {
+			$pageid = $conf['pageid'];
+		} else {
+			$pageid = $GLOBALS['TSFE']->id;
+		}
+		return parent::pi_linkTP_keepPIvars_url(array(mode => 'set_contact_form'),1,1,$pageid);
+	}
+
 }
+
+
 
 if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/civserv/pi1/class.tx_civserv_pi1.php"])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/civserv/pi1/class.tx_civserv_pi1.php"]);

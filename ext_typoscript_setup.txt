@@ -16,10 +16,15 @@ plugin.tx_civserv_pi1 {
 	tpl_top15 = {$tpl_top15}
 	tpl_email_form = {$tpl_email_form}
 	tpl_debit_authorisation = {$tpl_debit_authorisation}
+	tpl_contact_form = {$tpl_contact_form}
+	tpl_legal_notice = {$tpl_legal_notice}
+	
 
 	folder_services = {$folder_services}
 	folder_organisations = {$folder_organisations}
 	folder_employees = {$folder_employees}
+	folder_global_images = {$folder_global_images}
+	
 	recursive = {$recursive}
 
 	items_per_page = {$services_per_page}

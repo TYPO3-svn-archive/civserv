@@ -97,4 +97,10 @@ page.10 {
 	marks.CHOICE_LINK = USER
 	marks.CHOICE_LINK.community_id = {$pageid}
 	marks.CHOICE_LINK.userFunc = tx_civserv_pi1->getChoiceLink
+	marks.LEGAL_NOTICE_LINK = USER
+	marks.LEGAL_NOTICE_LINK.community_id = {$community_id}
+	marks.LEGAL_NOTICE_LINK.userFunc = tx_civserv_pi1->getLegalNoticeLink
+	marks.CONTACT_LINK = USER
+	marks.CONTACT_LINK.community_id = {$community_id}
+	marks.CONTACT_LINK.userFunc = tx_civserv_pi1->getContactLink
 }
