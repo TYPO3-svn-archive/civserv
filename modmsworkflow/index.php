@@ -351,8 +351,8 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 				$creator_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($creator_res);
 				$beUser = t3lib_BEfunc::getRecord('be_users',$creator_row['ms_uid_editor'],'*','');
 				if ($responsible=="both") {
-					$fields_values = array("ms_additional_label"=>$LANG->getLL("modmsworkflow.label_revised"), "ms_comment_approver_one" => $comment, "ms_revised_approver_one" => 1, "ms_revised_approver_two" => 1);
-				} else 	$fields_values = array("ms_additional_label"=>$LANG->getLL("modmsworkflow.label_revised"), "ms_comment_approver_".$responsible => $comment, "ms_revised_approver_".$responsible => 1);
+					$fields_values = array("ms_additional_label"=>$LANG->getLL("modmsworkflow.label_revised"), "hidden"=>1, "ms_comment_approver_one" => $comment, "ms_revised_approver_one" => 1, "ms_revised_approver_two" => 1);
+				} else 	$fields_values = array("ms_additional_label"=>$LANG->getLL("modmsworkflow.label_revised"), "hidden"=>1, "ms_comment_approver_".$responsible => $comment, "ms_revised_approver_".$responsible => 1);
 				$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_model_service_temp','uid = '.$uid,$fields_values);
 
 					//Create email for revise. all content is get from the locallang file. the locallang file contains markers, which have to be replaced here!
@@ -727,7 +727,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 		);
 		$searchwords = '';
-		while ($single_searchword = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) $searchwords .= $single_searchword["sw_search_word"].'<br/>';
+		while ($single_searchword = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res) and $resp_services_row["ms_searchword"] > 0) $searchwords .= $single_searchword["sw_search_word"].'<br/>';
 		$tableStart .='
 			<!--
 			 	Searchwords:
