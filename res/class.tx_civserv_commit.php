@@ -58,10 +58,10 @@
  * @subpackage civserv
  */
 class tx_civserv_commit {
-	
+
 	var $tables = array('tx_civserv_service'=>'tx_civserv_service_sv_position_mm', 'tx_civserv_employee'=>'tx_civserv_employee_em_position_mm', 'tx_civserv_building'=>'tx_civserv_building_bl_floor_mm');
 	var $attributes = array('tx_civserv_service_sv_position_mm'=>'sv_position', 'tx_civserv_employee_em_position_mm'=>'em_position', 'tx_civserv_building_bl_floor_mm'=>'bl_floor');
-	
+
 	/**
 	 * This function is central to guarantee the consistency within the DB.
 	 * It is called through a hook within the class t3lib/class.t3lib_tcemain.php
@@ -75,17 +75,17 @@ class tx_civserv_commit {
 	function update_postAction(&$params, &$pObj){
 		$this->updateDB($params);
 			//call the function renewMMentries($params), which writes back MM-entries that have been backuped through saveMMentries
-		if (isset($params['table'])){			
+		if (isset($params['table'])){
 			if (array_key_exists($params['table'],$this->tables))
 				$this->renewMMentries($params);
 		}
 	}
-	
+
 	/**
 	 * This function writes back all MM-entries from the end of the table, which have been backuped through saveMMentries.
 	 * Actuall entries in the front of the table get deleted and replace by the once from the end. See
 	 * Concerned tables: tx_civserv_service_sv_position_mm', tx_civserv_employee_em_position_mm, tx_civserv_building_bl_floor_mm
-	 * 
+	 *
 	 * @see rocessDatamap_preProcessFieldArray
 	 * @param	array		$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API
 	 * @return	void
@@ -96,13 +96,13 @@ class tx_civserv_commit {
 		$mmTables = explode(',',$this->tables[$params['table']]);
 			//fetch all backuped entries from the end of the table
 		foreach($mmTables as $mmTable){
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$mmTable,'uid_local = '.($params['uid']+1000000000)); 
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$mmTable,'uid_local = '.($params['uid']+1000000000));
 			$oldEntries = array();
 				//for each entrie, delete the one from the beginning of the table
-			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){		
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
 				$row['uid_local']=$row['uid_local']-1000000000;
 				$oldEntries[]=$row;
-				$del_result = $GLOBALS['TYPO3_DB']->exec_DELETEquery($mmTable,'uid_local = '.$row['uid_local'].' AND uid_foreign = '.$row['uid_foreign']);				
+				$del_result = $GLOBALS['TYPO3_DB']->exec_DELETEquery($mmTable,'uid_local = '.$row['uid_local'].' AND uid_foreign = '.$row['uid_foreign']);
 			}
 				//get the entries from the back and set there uid to the one deleted above, so the backup is completet and all extra attributes from our MM-tables are saved!
 			foreach($oldEntries as $row){
@@ -111,9 +111,9 @@ class tx_civserv_commit {
 				unset($row['uid_temp']);
 				$sub_result = $GLOBALS['TYPO3_DB']->exec_UPDATEquery($mmTable,'uid_temp = '.$uid_temp,$row);
 			}
-		}		
+		}
 	}
-	
+
 	/**
 	 * ATTENTION ATTENTION ATTENTION
 	 * Hook function, called through a hook within the class t3lib/class.t3lib_tcemain.php
@@ -122,18 +122,18 @@ class tx_civserv_commit {
 	 */
 	function processDatamap_preProcessIncomingFieldArray($incomingFieldArray, $table, $id, $pObj){
 		//dummy-Hook
-		if (array_key_exists($table,$this->tables) && substr($id,0,3)!='NEW') 
+		if (array_key_exists($table,$this->tables) && substr($id,0,3)!='NEW')
 			$this->saveMMentries($incomingFieldArray, $table, $id);
 	}
-	 	
+
 	/**
 	 * Hook function, called through a hook within the class t3lib/class.t3lib_tcemain.php
-	 * Typo3 always drops all entries in a MM-table with the uid_foreign from the contenttype that 
-	 * is actually worked on and saved. After this, it writes 
+	 * Typo3 always drops all entries in a MM-table with the uid_foreign from the contenttype that
+	 * is actually worked on and saved. After this, it writes
 	 * back the entries, that still selected in the contenttype. Problem at this procedure is, that some MM-tables in this
 	 * extension have extra-attributes, that are not saved by Typo3 and so get lost. Typo3 only copies the uid_local, uid_foreign and sorting attributes.
 	 * Concerned tables: tx_civserv_service_sv_position_mm', tx_civserv_employee_em_position_mm, tx_civserv_building_bl_floor_mm
-	 * 
+	 *
 	 * This hook calls a function, that saves all concerned MM-entries, before the Typo3 logic starts
 	 *
 	 * @see saveMMentries
@@ -146,17 +146,17 @@ class tx_civserv_commit {
 	 */
 	function processDatamap_preProcessFieldArray($incomingFieldArray, $table, $id, $pObj){
 		//saves the current MM-entries
-		if (array_key_exists($table,$this->tables) && (substr($id,0,3)!='NEW')) 
+		if (array_key_exists($table,$this->tables) && (substr($id,0,3)!='NEW'))
 			$this->saveMMentries($incomingFieldArray, $table, $id);
 	}
-	
+
 	/**
 	 * This function saves all concerned MM-entries that would be deleted through Typo3.
 	 * Concerned entries are copied to the end of the MM-table under a uid_local, which is the old uid_local + 1000000000.
 	 * The old uid is saved in the attribute uid_temp, which is needed, to write the entrie back to its origin position in the MM-table.
 	 * This is done by another function (renewMMentries).
 	 * Concerned tables: tx_civserv_service_sv_position_mm', tx_civserv_employee_em_position_mm, tx_civserv_building_bl_floor_mm
-	 * 
+	 *
 	 * @see renewMMentries
 	 * @param	array		$incomingFieldArray are parameters sent along to alt_doc.php from the contenttype, that is worked on. This requires a much more details description which you must seek in Inside TYPO3s documentation API
 	 * @param	string		&table is the actuell table that belongs to the contenttype, that is worked on
@@ -171,7 +171,7 @@ class tx_civserv_commit {
 		//$incomingFieldArray[sv_position];
 		//for all concerned MM-tables save the concerned entries at the end of the MM-tables and backup the origin uid in the field uid_temp
 		foreach($mmTables as $mmTable){
-			//only get this entries, which are selected in the actuall backendmask for the contenttype "service". So deleted once are not listed here 
+			//only get this entries, which are selected in the actuall backendmask for the contenttype "service". So deleted once are not listed here
 			$entries = explode(',',$incomingFieldArray[$this->attributes[$mmTable]]);
 			$foreign_uids=array();
 			foreach ($entries as $entry){
@@ -179,10 +179,10 @@ class tx_civserv_commit {
 					$pos=strrpos($entry,'_')+1;
 					//debug($pos);
 					if ($pos>1)	$foreign_uids[]=substr($entry,$pos);
-					else $foreign_uids[]=$entry;	
-				}		
+					else $foreign_uids[]=$entry;
+				}
 			}
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$mmTable,'!deleted AND !hidden AND uid_local = '.$id); 
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$mmTable,'!deleted AND !hidden AND uid_local = '.$id);
 				//copy each concerned entrie to the end of table
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
 				if (in_array($row['uid_foreign'],$foreign_uids)){
@@ -190,7 +190,7 @@ class tx_civserv_commit {
 					$row['uid_local'] = $row['uid_local']+1000000000;
 					unset($row['uid']);
 					$sub_result = $GLOBALS['TYPO3_DB']->exec_INSERTquery($mmTable,$row);
-				}				
+				}
 			}
 		}
 	}
@@ -235,6 +235,7 @@ class tx_civserv_commit {
 		if ($params['table']=='tx_civserv_model_service')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_ms_maintenance.php']){
 				$update_obj = t3lib_div::makeInstance('tx_civserv_ms_maintenance');
+				$update_obj->check_ms_name_changed($params);
 				$update_obj->transfer_ms($params);
 			}
 		}
@@ -248,7 +249,7 @@ class tx_civserv_commit {
 			$this->makeDirs($params);
 		}
 	}
-	
+
 	/**
 	 * This function makes the missing directories on the file server
 	 *
@@ -265,24 +266,24 @@ class tx_civserv_commit {
 		$base=substr($base,0,strrpos($base,'/'));
 		if (!file_exists($base.'/fileadmin/civserv/'.$community)){
 			mkdir($base.'/fileadmin/civserv/'.$community, 0775);
-		}	
+		}
 		if (!file_exists($base.'/fileadmin/civserv/'.$community.'/images')){
 			mkdir($base.'/fileadmin/civserv/'.$community.'/images', 0775);
 		}
 		if (! file_exists($base.'/fileadmin/civserv/'.$community.'/forms')){
 			mkdir($base.'/fileadmin/civserv/'.$community.'/forms', 0775);
 		}
-		
+
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'cf_value',			 							// SELECT ...
-			'tx_civserv_configuration',						// FROM ...    
+			'tx_civserv_configuration',						// FROM ...
 			'cf_key = "model_service_image_folder"',		// AND title LIKE "%blabla%"', // WHERE...
 			'', 											// GROUP BY...
 			'',   											// ORDER BY...
 			'' 												// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 		);
-		
-		$model_service_image_folder = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res); 
+
+		$model_service_image_folder = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 		$model_service_folder = $model_service_image_folder['cf_value'];
 		if (!file_exists($base.'/'.$model_service_folder)){
 			mkdir($base.'/'.$model_service_folder, 0775);

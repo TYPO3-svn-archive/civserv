@@ -298,6 +298,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$accurate = $this->showLegalNotice($smartyObject);
 					break;
 
+				case 'plain_text':
+					$template = $this->conf['tpl_plain_text'];
+					$accurate = $this->showPlainText($smartyObject);
+					break;
+
 				default:
 					$accurate = false;
 					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi1_error.invalid_mode','Invalid mode');
@@ -2540,7 +2545,17 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 
 
+	/**
+	 * Displays just any plain text but with the correct styles
+	 *
+	 * @param	object		Smarty object, the template key/value-pairs should be assigned to
+	 * @return	boolean		True, if the function was executed without any error, otherwise false
+	 */
+	function showPlainText(&$plaintext) {
 
+		//yet to be implemented
+		return true;
+	}
 
 
 
@@ -2866,7 +2881,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 
 	/**
-	 * Shows information about the hoster's legal notice.
+	 * Displays the hoster's legal notice.
 	 *
 	 * @param	object		Smarty object, the template key/value-pairs should be assigned to
 	 * @return	boolean		True, if the function was executed without any error, otherwise false

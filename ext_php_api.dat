@@ -1,56 +1,2393 @@
-a:2:{s:4:"meta";a:3:{s:5:"title";s:7:"civserv";s:5:"descr";s:0:"";s:7:"options";a:2:{s:10:"usageCount";N;s:19:"includeCodeAbstract";N;}}s:5:"files";a:3:{s:14:"MD5_dc9f93f79b";a:4:{s:8:"filename";s:35:"res/class.tx_civserv_floorbuild.php";s:8:"filesize";i:4023;s:6:"header";a:5:{s:4:"text";s:405:"
+a:2:{s:4:"meta";a:3:{s:5:"title";s:31:"Extension Development Evaluator";s:5:"descr";s:46:"Documentation of the classes in this extension";s:7:"options";a:2:{s:10:"usageCount";N;s:19:"includeCodeAbstract";s:1:"1";}}s:5:"files";a:43:{s:14:"MD5_28b11e99ee";a:4:{s:8:"filename";s:14:"ext_emconf.php";s:8:"filesize";i:9008;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_650ba9004d";a:4:{s:8:"filename";s:17:"ext_localconf.php";s:8:"filesize";i:5950;s:6:"header";a:5:{s:4:"text";s:358:"
+
+
+Definition of some Typo Script Config which is set for special tables, pages and frontend-functions
+Definition of logical names for all used classes. the path of each class is assigned to a logical name,
+which is used by Typo3 to address the class (for example in the tca.php). If a path changes, this is the
+only part in the code, you have to update!
+
+
+
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:7:{i:0;s:50:"@author Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:49:"@author Tobias Müller (mullerto@uni-muenster.de),";i:2;s:49:"@author Maurits Hinzen (mhinzen@uni-muenster.de),";i:3;s:56:"@author Christoph Rosenkranz (rosenkra@uni-muenster.de),";i:4;s:14:"@package TYPO3";i:5;s:22:"@subpackage tx_civserv";i:6;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:4:{i:0;s:42:"Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:41:"Tobias Müller (mullerto@uni-muenster.de),";i:2;s:41:"Maurits Hinzen (mhinzen@uni-muenster.de),";i:3;s:48:"Christoph Rosenkranz (rosenkra@uni-muenster.de),";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:0:{}}s:14:"MD5_78af9ebebb";a:4:{s:8:"filename";s:14:"ext_tables.php";s:8:"filesize";i:20488;s:6:"header";a:5:{s:4:"text";s:217:"
+
+This file holds the complete definition of own classes, all
+tables which are supposed to be contenttypes with there standard
+attributes and icon-files as well as definitions needed for the
+context sensitive help
+
+
+
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:7:{i:0;s:50:"@author Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:49:"@author Tobias Müller (mullerto@uni-muenster.de),";i:2;s:49:"@author Maurits Hinzen (mhinzen@uni-muenster.de),";i:3;s:56:"@author Christoph Rosenkranz (rosenkra@uni-muenster.de),";i:4;s:14:"@package TYPO3";i:5;s:22:"@subpackage tx_civserv";i:6;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:4:{i:0;s:42:"Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:41:"Tobias Müller (mullerto@uni-muenster.de),";i:2;s:41:"Maurits Hinzen (mhinzen@uni-muenster.de),";i:3;s:48:"Christoph Rosenkranz (rosenkra@uni-muenster.de),";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:0:{}}s:14:"MD5_eaa23d78e9";a:4:{s:8:"filename";s:16:"locallang_db.php";s:8:"filesize";i:23539;s:6:"header";a:5:{s:4:"text";s:81:"
+
+Language labels for database tables/fields belonging to extension "civserv"
+
+
+
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:7:{i:0;s:50:"@author Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:49:"@author Tobias Müller (mullerto@uni-muenster.de),";i:2;s:49:"@author Maurits Hinzen (mhinzen@uni-muenster.de),";i:3;s:56:"@author Christoph Rosenkranz (rosenkra@uni-muenster.de),";i:4;s:14:"@package TYPO3";i:5;s:22:"@subpackage tx_civserv";i:6;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:4:{i:0;s:42:"Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:41:"Tobias Müller (mullerto@uni-muenster.de),";i:2;s:41:"Maurits Hinzen (mhinzen@uni-muenster.de),";i:3;s:48:"Christoph Rosenkranz (rosenkra@uni-muenster.de),";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:0:{}}s:14:"MD5_a3d98baa72";a:4:{s:8:"filename";s:7:"tca.php";s:8:"filesize";i:103530;s:6:"header";a:5:{s:4:"text";s:246:"
+
+This file holds the complete definition of the appearance of the tables and
+contenttypes in the backend from Typo3 for the extension "Virtual civil Service".
+Some aditional logic is implemented to hold different mandants in one installation
+
+
+
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:7:{i:0;s:50:"@author Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:49:"@author Tobias Müller (mullerto@uni-muenster.de),";i:2;s:49:"@author Maurits Hinzen (mhinzen@uni-muenster.de),";i:3;s:56:"@author Christoph Rosenkranz (rosenkra@uni-muenster.de),";i:4;s:14:"@package TYPO3";i:5;s:22:"@subpackage tx_civserv";i:6;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:4:{i:0;s:42:"Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:41:"Tobias Müller (mullerto@uni-muenster.de),";i:2;s:41:"Maurits Hinzen (mhinzen@uni-muenster.de),";i:3;s:48:"Christoph Rosenkranz (rosenkra@uni-muenster.de),";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:0:{}}s:14:"MD5_2e42a0ea3c";a:4:{s:8:"filename";s:30:"CSH/locallang_csh_building.php";s:8:"filesize";i:2214;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_c3fdb47246";a:4:{s:8:"filename";s:30:"CSH/locallang_csh_employee.php";s:8:"filesize";i:2669;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_905f7b1405";a:4:{s:8:"filename";s:45:"CSH/locallang_csh_employee_em_position_mm.php";s:8:"filesize";i:3087;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_f982d458dd";a:4:{s:8:"filename";s:27:"CSH/locallang_csh_floor.php";s:8:"filesize";i:1688;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_73f6e82d4b";a:4:{s:8:"filename";s:26:"CSH/locallang_csh_form.php";s:8:"filesize";i:2579;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_b0115ce3cc";a:4:{s:8:"filename";s:35:"CSH/locallang_csh_model_service.php";s:8:"filesize";i:2339;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_3af0428c4d";a:4:{s:8:"filename";s:32:"CSH/locallang_csh_navigation.php";s:8:"filesize";i:1615;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_ef3b353738";a:4:{s:8:"filename";s:34:"CSH/locallang_csh_organisation.php";s:8:"filesize";i:2261;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_7bdbabfd41";a:4:{s:8:"filename";s:33:"CSH/locallang_csh_search_word.php";s:8:"filesize";i:1778;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_320dd100f9";a:4:{s:8:"filename";s:29:"CSH/locallang_csh_service.php";s:8:"filesize";i:3674;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_eabdfa47b0";a:4:{s:8:"filename";s:44:"CSH/locallang_csh_service_sv_position_mm.php";s:8:"filesize";i:1808;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_04a40a48d6";a:4:{s:8:"filename";s:34:"pi1/class.tx_civserv_accesslog.php";s:8:"filesize";i:4193;s:6:"header";a:5:{s:4:"text";s:250:"
 
 This class holds some functions used by the TYPO3 backend....
 
-Some scripts that use this class: tca.php (Invocation), ext_tables.php (Definition), ext_localconf.php (Definition)
+Some scripts that use this class: ?
 Depends on: ?
 
-$Id: ext_php_api.dat,v 1.1.1.1 2004/08/16 18:37:35 smeesters Exp $
+$Id: class.tx_civserv_accesslog.php,v 1.1.1.1 2004/11/28 17:14:48 bkohorst Exp $
 
 
-Changes:	06.08.04, CR - Anpassung an Konventionen
-			13.08.04, GN - PID wird jetzt ganz sauber und _verständlich_ extrahiert ;-)";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:49:"@author Georg Niemeyer (niemeyer@uni-muenster.de)";i:1;s:14:"@package TYPO3";i:2;s:22:"@subpackage tx_civserv";i:3;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:1:{i:0;s:41:"Georg Niemeyer (niemeyer@uni-muenster.de)";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:2:{i:1;a:5:{s:6:"header";s:29:"class tx_civserv_floorbuild {";s:5:"class";i:1;s:11:"parentClass";s:21:"tx_civserv_floorbuild";s:4:"cDat";a:3:{s:4:"text";s:212:"
+Changes: Datum, Initialen - vorgenommene Änderungen";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:49:"@author Georg Niemeyer (niemeyer@uni-muenster.de)";i:1;s:14:"@package TYPO3";i:2;s:22:"@subpackage tx_civserv";i:3;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:1:{i:0;s:41:"Georg Niemeyer (niemeyer@uni-muenster.de)";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:3:{i:1;a:8:{s:6:"header";s:28:"class tx_civserv_accesslog {";s:5:"class";i:1;s:11:"parentClass";s:20:"tx_civserv_accesslog";s:4:"cDat";a:3:{s:4:"text";s:262:"
 
 [CLASS/FUNCTION INDEX of SCRIPT]
 
 
 
-  55: class tx_civserv_floorbuild
-  57:     function main(& $params, & $pObj)
+  55: class tx_civserv_accesslog
+  57:     function update_log($service_uid, $log_interval, $ip)
+  91:     function aggr_log ()
 
-TOTAL FUNCTIONS: 1
+TOTAL FUNCTIONS: 2
 (This index is automatically created/updated by the extension "extdeveval")
-";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:6:"atLine";i:53;}i:3;a:6:{s:6:"header";s:35:"function main(& $params, & $pObj) {";s:11:"parentClass";s:21:"tx_civserv_floorbuild";s:7:"content";s:0:"";s:12:"content_size";i:2093;s:13:"content_lines";i:38;s:6:"atLine";i:55;}}}s:14:"MD5_55c3a61e69";a:4:{s:8:"filename";s:34:"res/class.tx_civserv_oepupdate.php";s:8:"filesize";i:3108;s:6:"header";a:5:{s:4:"text";s:313:"
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:0:"";i:1;i:-1;}s:12:"content_size";i:0;s:13:"content_lines";i:0;s:6:"atLine";i:53;}i:3;a:3:{s:6:"header";s:54:"function update_log($service_uid, $log_interval, $ip){";s:11:"parentClass";s:20:"tx_civserv_accesslog";s:6:"atLine";i:55;}i:5;a:7:{s:6:"header";s:21:"function aggr_log (){";s:11:"parentClass";s:20:"tx_civserv_accesslog";s:4:"cDat";a:3:{s:4:"text";s:25:"
 
-This class holds some functions used by the TYPO3 backend....
+[Describe function...]
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		$time = time();
+		$aggr_result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('al_service_uid, sum(al_number) as al_number, FROM_UNIXTIME( tstamp,\'%Y%m%d\') as tstamp',
+															  'tx_civserv_accesslog',
+															  'tstamp > 99999999 AND TO_DAYS(FROM_UNIXTIME(tstamp))< TO_DAYS(FROM_UNIXTIME('.$time.'))',
+															  'al_service_uid, FROM_UNIXTIME( tstamp,\'%Y
+[...]
+sslog.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/pi1/class.tx_civserv_accesslog.php']);
+}
+?>";i:1;i:1;}s:12:"content_size";i:1150;s:13:"content_lines";i:28;s:6:"atLine";i:89;}}}s:14:"MD5_df458de5e5";a:4:{s:8:"filename";s:28:"pi1/class.tx_civserv_pi1.php";s:8:"filesize";i:141853;s:6:"header";a:5:{s:4:"text";s:128:"
+
+Plugin 'Civil Services' for the 'civserv' extension.
+
+$Id: class.tx_civserv_pi1.php,v 1.5 2004/12/23 08:47:08 bkohorst Exp $
+
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:5:{i:0;s:49:"@author	Stephan Dümmer <sduemmer@uni-muenster.de>";i:1;s:50:"@author	Stefan Meesters <meesters@uni-muenster.de>";i:2;s:14:"@package TYPO3";i:3;s:22:"@subpackage tx_civserv";i:4;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:2:{i:0;s:41:"Stephan Dümmer <sduemmer@uni-muenster.de>";i:1;s:42:"Stefan Meesters <meesters@uni-muenster.de>";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:38:{i:1;a:8:{s:6:"header";s:43:"class tx_civserv_pi1 extends tslib_pibase {";s:5:"class";i:1;s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:36:"
+
+Class for plugin 'Civil Services'
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:226:"	var $prefixId = 'tx_civserv_pi1';						// Same as class name
+	var $scriptRelPath = 'pi1/class.tx_civserv_pi1.php';	// Path to this script relative to the extension dir
+	var $extKey = 'civserv';								// The extension key
+
+
+	";i:1;i:-1;}s:12:"content_size";i:226;s:13:"content_lines";i:5;s:6:"atLine";i:106;}i:3;a:7:{s:6:"header";s:31:"function main($content,$conf)	{";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:1:"
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:49:"Content that is to be displayed within the plugin";}i:1;a:2:{i:0;s:5:"array";i:1;s:19:"Configuration array";}}s:6:"return";a:2:{i:0;s:8:"$content";i:1;s:49:"Content that is to be displayed within the plugin";}}s:7:"content";a:2:{i:0;s:507:"		//$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging
+
+		// Load configuration array
+		$this->conf = $conf;
+		// Get default values for piVars from template setup
+		$this->pi_setPiVarDefaults();
+		// Get language for the frontend, necessary for pi_getLL-functions
+		$this->pi_loadLL();
+
+		// Necessary for formatStr
+		$this->local_cObj = t3lib_div::makeInstance('tslib_cO
+[...]
+	}
+
+
+
+
+
+
+
+
+
+	/******************************
+	 *
+	 * Functions for the navigation:
+	 *
+	 *******************************/
+
+
+	";i:1;i:1;}s:12:"content_size";i:8594;s:13:"content_lines";i:219;s:6:"atLine";i:117;}i:5;a:8:{s:6:"header";s:89:"function serviceList(&$smartyServiceList,$abcBar=false,$searchBox=false,$topList=false) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:11:"sectionText";a:1:{i:0;s:29:"Functions for the navigation:";}s:4:"cDat";a:3:{s:4:"text";s:97:"
+
+Generates a list of all available services. Is also used from other modes than 'service_list'.
+";s:5:"param";a:4:{i:0;a:2:{i:0;s:6:"object";i:1;s:65:"Smarty object, the template key/value-pairs should be assigned to";}i:1;a:2:{i:0;s:7:"boolean";i:1;s:60:"If true, an ABC-bar is generated to navigate throug services";}i:2;a:2:{i:0;s:7:"boolean";i:1;s:50:"If true, a searchbox is generated (keyword search)";}i:3;a:2:{i:0;s:7:"boolean";i:1;s:88:"If true, a list with the top <i>plugin.tx_civserv_pi1.topCount</i> services is generated";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:69:"True, if the function was executed without any error, otherwise false";}}s:7:"content";a:2:{i:0;s:507:"		$query = $this->makeServiceListQuery($this->piVars[char]);
+		if (!$query) {
+			return false;
+		}
+		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+
+		$row_counter = 0;
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
+			$services[$row_counter]['link'] =  htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $row['uid']),$this->co
+[...]
+wing services'));
+		$smartyServiceList->assign('pagebar',$this->pi_list_browseresults(true,'',' | '));
+
+		return true;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:1980;s:13:"content_lines";i:54;s:6:"atLine";i:346;}i:7;a:7:{s:6:"header";s:67:"function makeServiceListQuery($char=all,$limit=true,$count=false) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:309:"
+
+Generates a database query for the function serviceList. The returned query depends on the given parameter (like described below)
+and the piVars 'mode', 'char' and 'pointer', additionally the pidlist for the actual community is fetched from the class variable community.
+The returned query contains UNIONs.
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"string";i:1;s:103:"The beginning character, the list should be limited to. Can also be a sequence of beginning characters.";}i:1;a:2:{i:0;s:7:"boolean";i:1;s:151:"If true, the list is limited to 'max_services_per_page' (constant from $this->conf) services per page. The page number is fetched from piVars[pointer].";}i:2;a:2:{i:0;s:7:"boolean";i:1;s:39:"If true, the services are only counted.";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:18:"The database query";}}s:7:"content";a:2:{i:0;s:507:"		$from  =	'tx_civserv_service';
+		$where =	'NOT tx_civserv_service.deleted AND NOT tx_civserv_service.hidden
+					 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime)
+					 	OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime = 0))
+					 	OR (tx_civserv_service.starttime 
+[...]
+		$count = $this->conf['services_per_page'];
+				$query .= 'LIMIT ' . $start . ',' . $count;
+			}
+		}
+		return $query;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:4524;s:13:"content_lines";i:93;s:6:"atLine";i:411;}i:9;a:7:{s:6:"header";s:44:"function getServiceListHeading($mode,$uid) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:190:"
+
+Builds the heading for service list (used from function serviceList()). The heading depends on the mode and,
+if mode ist not 'service_list', the selected organisation id or navigation id.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:36:"The mode like given in piVars[mode].";}i:1;a:2:{i:0;s:7:"integer";i:1;s:65:"The uid from the selected organisation or circumstancd/usergroup.";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:11:"The heading";}}s:7:"content";a:2:{i:0;s:507:"		switch ($mode) {
+			case 'service_list' :
+				$heading = $this->pi_getLL('tx_civserv_pi1_service_list.service_list','Service list');
+				break;
+			case 'circumstance' :
+				$heading = $this->pi_getLL('tx_civserv_pi1_service_list.circumstance','Circumstance');
+				$field = 'nv_name';
+				$table = 'tx_civserv_navigation';
+				break;
+			case 'usergroup' :
+				$heading = $th
+[...]
+se {
+			$heading .= ': ' . $this->pi_getLL('tx_civserv_pi1_service_list.overview','Overview');
+		}
+
+		return $heading;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:1300;s:13:"content_lines";i:40;s:6:"atLine";i:513;}i:11;a:7:{s:6:"header";s:76:"function navigationTree(&$smartyTree,$uid,$searchBox=false,$topList=false) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:71:"
+
+Generate and return tree structure for circumstances und usergroups.
+";s:5:"param";a:4:{i:0;a:2:{i:0;s:6:"object";i:1;s:65:"Smarty object, the template key/value-pairs should be assigned to";}i:1;a:2:{i:0;s:7:"integer";i:1;s:56:"UID of highest level circumstance/usergroup/organisation";}i:2;a:2:{i:0;s:7:"boolean";i:1;s:50:"If true, a searchbox is generated (keyword search)";}i:3;a:2:{i:0;s:7:"boolean";i:1;s:88:"If true, a list with the top <i>plugin.tx_civserv_pi1.topCount</i> services is generated";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:69:"True, if the function was executed without any error, otherwise false";}}s:7:"content";a:2:{i:0;s:507:"		$mode = $this->piVars[mode];
+		$content = $this->makeTree($uid,$content,$mode);
+		$smartyTree->assign('content',$content);
+
+		if ($searchBox) {
+			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
+			$smartyTree->assign('searchbox', $this->pi_list_searchBox('',true));
+		}
+
+		if ($topList) {
+			if (!$this->calculate_top15($smar
+[...]
+anisation_tree_label',$this->pi_getLL('tx_civserv_pi1_organisation.organisation_tree','Organisation'));
+		return true;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:864;s:13:"content_lines";i:23;s:6:"atLine";i:563;}i:13;a:7:{s:6:"header";s:118:"function formList(&$smartyFormList,$organisation_id=0,$abcBar=false,$searchBox=false,$topList=false,$orgaList=false) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:76:"
+
+Generates a list of all available forms, including the assigned services.
+";s:5:"param";a:6:{i:0;a:2:{i:0;s:6:"object";i:1;s:65:"Smarty object, the template key/value-pairs should be assigned to";}i:1;a:2:{i:0;s:7:"integer";i:1;s:112:"If given, only the forms according to the organisation with the given organisation id are contained in the list.";}i:2;a:2:{i:0;s:7:"boolean";i:1;s:58:"If true, an ABC-bar is generated to navigate throug forms.";}i:3;a:2:{i:0;s:7:"boolean";i:1;s:50:"If true, a searchbox is generated (keyword search)";}i:4;a:2:{i:0;s:7:"boolean";i:1;s:88:"If true, a list with the top <i>plugin.tx_civserv_pi1.topCount</i> services is generated";}i:5;a:2:{i:0;s:7:"boolean";i:1;s:51:"If true, a list with all organisations is generated";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:69:"True, if the function was executed without any error, otherwise false";}}s:7:"content";a:2:{i:0;s:507:"		//Set path to forms of services
+		$folder_forms = $this->conf['folder_services'];
+		$folder_forms .= $this->community['id'] . '/forms/';
+
+		$query = $this->makeFormListQuery($this->piVars[char],$organisation_id);
+		$forms_res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+
+		$form_row_counter = 0;
+		while ($form_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($forms_res) ) {
+
+[...]
+$row['name'];
+				$row_counter++;
+			}
+			$smartyFormList->assign('organisations',$organisations);
+		}
+
+		return true;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:6567;s:13:"content_lines";i:123;s:6:"atLine";i:598;}i:15;a:7:{s:6:"header";s:83:"function makeFormListQuery($char=all,$organisation_id=0,$limit=true,$count=false) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:298:"
+
+Generates a database query for the function formList. The returned query depends on the given parameter (like described below)
+and the piVars 'char' and 'pointer', additionally the pidlist for the actual community is fetched from the class variable community.
+The returned query contains UNIONs.
+";s:5:"param";a:4:{i:0;a:2:{i:0;s:6:"string";i:1;s:111:"The beginning character, on which the list should be limited. Could also be a sequence of beginning characters.";}i:1;a:2:{i:0;s:7:"integer";i:1;s:92:"Organisation uid. If not sero, the query is limited to forms according to this organisation.";}i:2;a:2:{i:0;s:7:"boolean";i:1;s:144:"If true, the list is limited to 'forms_per_page' (constant from $this->conf) services per page. The page number is fetched from piVars[pointer].";}i:3;a:2:{i:0;s:7:"boolean";i:1;s:39:"If true, the services are only counted.";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:19:"The database query.";}}s:7:"content";a:2:{i:0;s:507:"		if ($count) {
+			$select = 'count(*)';
+		} else {
+			$select = 'tx_civserv_form.uid, tx_civserv_form.fo_name AS name, tx_civserv_form.fo_descr AS descr, tx_civserv_form.fo_external_checkbox AS checkbox, tx_civserv_form.fo_url AS url, tx_civserv_form.fo_formular_file AS file';
+		}
+
+		$from  =	'tx_civserv_form, tx_civserv_service, tx_civserv_service_sv_form_mm';
+		$where =
+[...]
+
+				$count = $this->conf['forms_per_page'];
+				$query .= 'LIMIT ' . $start . ',' . $count;
+			}
+		}
+		return $query;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:3144;s:13:"content_lines";i:67;s:6:"atLine";i:733;}i:17;a:7:{s:6:"header";s:53:"function do_search(&$smartySearchResult,$searchBox) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:56:"
+
+Executes a search in the database for given keywords.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"object";i:1;s:65:"Smarty object, the template key/value-pairs should be assigned to";}i:1;a:2:{i:0;s:7:"boolean";i:1;s:50:"If true, a searchbox is generated (keyword search)";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:69:"True, if the function was executed without any error, otherwise false";}}s:7:"content";a:2:{i:0;s:507:"		$searchString = $this->piVars['sword'];
+		$searchString = ereg_replace('"', '', $searchString);	//Delete quotation marks from search value
+		$sword = preg_split('/[\s,.\"]+/',$searchString);		//Split search string into multiple keywords and store them in an array
+
+		//Set initial where clauses
+		$querypart_where = 'pid IN (' . $this->community[pidlist] . ')';
+		$querypar
+[...]
+'tx_civserv_pi1_search.empty_query','Empty query! Search string required.');
+			return false;
+		}
+		// End empty query
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:6611;s:13:"content_lines";i:145;s:6:"atLine";i:808;}i:19;a:7:{s:6:"header";s:81:"function calculate_top15(&$smartyTop15,$showCounts=1,$topN=15,$searchBox=false) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:76:"
+
+Calculates the 15 most frequently used services through a database query.
+";s:5:"param";a:4:{i:0;a:2:{i:0;s:6:"object";i:1;s:65:"Smarty object, the template key/value-pairs should be assigned to";}i:1;a:2:{i:0;s:7:"boolean";i:1;s:68:"If true, the count the service is visited is shown. Default is true.";}i:2;a:2:{i:0;s:7:"integer";i:1;s:64:"Sets how many frequently used services are shown. Default is 15.";}i:3;a:2:{i:0;s:7:"boolean";i:1;s:50:"If true, a searchbox is generated (keyword search)";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:69:"True, if the function was executed without any error, otherwise false";}}s:7:"content";a:2:{i:0;s:507:"		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('sv.uid as uid,sv.sv_name as name,SUM(al.al_number) as number',	//WHERE
+														 'tx_civserv_accesslog as al,tx_civserv_service as sv',			//FROM
+														 '!sv.deleted AND !sv.hidden AND sv.uid = al.al_service_uid
+														  AND sv.pid IN (' . $this->community[pidlist] . ')',							//WHERE
+														 'al.a
+[...]
+**************************
+	 *
+	 * Heplper functions for the navigation functions:
+	 *
+	 *******************************/
+
+
+	";i:1;i:1;}s:12:"content_size";i:1712;s:13:"content_lines";i:44;s:6:"atLine";i:963;}i:21;a:8:{s:6:"header";s:29:"function makeAbcBar($query) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:11:"sectionText";a:1:{i:0;s:47:"Heplper functions for the navigation functions:";}s:4:"cDat";a:3:{s:4:"text";s:326:"
+
+Builds a bar with all characters from the alphabet and an last item 'A-Z'. If a special character has to be active (if it contains items),
+is determined from the result set of the given query. The link for each character is build by adding piVars[char] to the actual url.
+Used by the functions 'serviceList' and 'formList'.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:29:"A query which gets all items.";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:22:"HTML-Code for abc-bar.";}}s:7:"content";a:2:{i:0;s:507:"		// getting all accouring initial from the DB
+		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+
+		$row_counter = 0;
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
+			$initial = str_replace(array('Ä','Ö','Ü'),array('A','O','U'),strtoupper($row['name']{0}));
+			$occuringInitials[] = $initial;
+			$row_counter++;
+		}
+		if ($occuringInitials ) $occuringInit
+[...]
+0) . '%s' . "\n",
+						$actual?'<strong>':'',
+						$actual?'</strong>':'');
+		$abcBar .= "</p>\n";
+		return $abcBar;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:1311;s:13:"content_lines";i:36;s:6:"atLine";i:1016;}i:23;a:7:{s:6:"header";s:29:"function buildRegexp($char) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:259:"
+
+Build a regular expression to select all items which begin with the given string (normally one character).
+In oder to use this function with the abc-bar, umlauts are treated like the corrospendent vocals.
+Used by the functions 'serviceList' and 'formList'.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:53:"The charavter or string the alement should begin with";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:23:"The regular expression.";}}s:7:"content";a:2:{i:0;s:268:"		switch (strtoupper($char)) {
+			case ''  :
+				break;
+			case 'A' :
+				$regexp = '^A|^Ä';
+			break;
+			case 'O' :
+				$regexp = '^O|^Ö';
+				break;
+			case 'U' :
+		 		$regexp = '^U|^Ü';
+				break;
+			default :
+				$regexp = '^' . $char;
+		}
+		return $regexp;
+	}
+
+
+	";i:1;i:0;}s:12:"content_size";i:268;s:13:"content_lines";i:19;s:6:"atLine";i:1061;}i:25;a:7:{s:6:"header";s:44:"function makeTree($uid,$add_content,$mode) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:165:"
+
+Generates a tree structure for circumstances, organisations and usergroups based on html list tags.
+Used by the functions 'navigationTree' and 'organisationTree'.
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:7:"integer";i:1;s:46:"UID of circumstance, organisation or usergroup";}i:1;a:2:{i:0;s:6:"string";i:1;s:12:"HTML content";}i:2;a:2:{i:0;s:6:"string";i:1;s:40:"Mode for which tree is to be generated (";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:49:"Content that is to be displayed within the plugin";}}s:7:"content";a:2:{i:0;s:507:"		global $add_content;
+		//Execute query depending on mode
+		if ($mode == 'circumstance_tree' || $mode == 'usergroup_tree') {
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+								'nv1.uid as uid, nv1.nv_name as name',
+								'tx_civserv_navigation as nv1,tx_civserv_navigation_nv_structure_mm as nvmm,tx_civserv_navigation as nv2',
+								'!nv1.deleted AND !nv1.hid
+[...]
+********
+	 *
+	 * Functions for the detail pages (service, employee, organisation):
+	 *
+	 *******************************/
+
+
+	";i:1;i:1;}s:12:"content_size";i:2027;s:13:"content_lines";i:65;s:6:"atLine";i:1090;}i:27;a:8:{s:6:"header";s:73:"function serviceDetail(&$smartyService,$searchBox=false,$topList=false) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:11:"sectionText";a:1:{i:0;s:65:"Functions for the detail pages (service, employee, organisation):";}s:4:"cDat";a:3:{s:4:"text";s:50:"
+
+Generates information about a specific service.
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:6:"object";i:1;s:65:"Smarty object, the template key/value-pairs should be assigned to";}i:1;a:2:{i:0;s:7:"boolean";i:1;s:50:"If true, a searchbox is generated (keyword search)";}i:2;a:2:{i:0;s:7:"boolean";i:1;s:88:"If true, a list with the top <i>plugin.tx_civserv_pi1.topCount</i> services is generated";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:69:"True, if the function was executed without any error, otherwise false";}}s:7:"content";a:2:{i:0;s:507:"		$uid = $this->piVars[id];
+		$community_id = $this->community['id'];
+
+		//Set path to forms of services
+		$folder_forms = $this->conf['folder_services'];
+		$folder_forms .= $this->community['id'] . '/forms/';
+
+		//Query for standard service details
+		$res_common = $this->queryService(intval($uid));
+
+		//Query for associated forms
+		$res_forms = $GLOBALS['TYPO3_DB']->exec_
+[...]
+	//Title for the Indexed Search Engine
+		$GLOBALS['TSFE']->indexedDocTitle = $service_common[sv_name];
+
+		return true;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:17364;s:13:"content_lines";i:300;s:6:"atLine";i:1164;}i:29;a:7:{s:6:"header";s:29:"function queryService($uid) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:50:"
+
+Generates a query for standard service details.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:7:"integer";i:1;s:11:"Service uid";}}s:6:"return";a:2:{i:0;s:10:"result_set";i:1;s:24:"Result of database query";}}s:7:"content";a:2:{i:0;s:570:"		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'uid, pid, sv_name, sv_descr_short, sv_descr_long, sv_image, sv_image_text, sv_fees, sv_documents, sv_legal_local, sv_legal_global, sv_region_checkbox, sv_region_link, sv_model_service',
+						'tx_civserv_service',
+						'!deleted AND !hidden AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN starttime AND endtime) OR
+												  ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > starttime) AND (endtime=0)) OR
+												  (starttime=0 AND endtime=0) ) AND uid = ' . $uid . '',
+						'',
+						'',
+						'');
+		return $res;
+	}
+
+
+	";i:1;i:0;}s:12:"content_size";i:570;s:13:"content_lines";i:13;s:6:"atLine";i:1471;}i:31;a:7:{s:6:"header";s:54:"function employeeDetail(&$smartyEmployee,$searchBox) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:51:"
+
+Generates information about a specific employee.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"object";i:1;s:65:"Smarty object, the template key/value-pairs should be assigned to";}i:1;a:2:{i:0;s:7:"boolean";i:1;s:50:"If true, a searchbox is generated (keyword search)";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:69:"True, if the function was executed without any error, otherwise false";}}s:7:"content";a:2:{i:0;s:507:"		$uid = $this->piVars[id];
+		$pos_id = $this->piVars[pos_id];
+
+		//Standard query for employee details
+		$res_common = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'uid, em_address, em_title, em_name, em_firstname, em_telephone, em_fax, em_email, em_image, em_datasec',
+						'tx_civserv_employee',
+						'!deleted AND !hidden AND uid='.$uid.' AND em_datasec=1',
+						'',
+
+[...]
+=> 'search_result'),0,1);
+			$smartyTop15->assign('searchbox', $this->pi_list_searchBox('',true));
+		}
+
+		return true;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:11633;s:13:"content_lines";i:194;s:6:"atLine";i:1492;}i:33;a:7:{s:6:"header";s:51:"function organisationDetail(&$smartyOrganisation) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:55:"
+
+Generates information about a specific organisation.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"object";i:1;s:65:"Smarty object, the template key/value-pairs should be assigned to";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:69:"True, if the function was executed without any error, otherwise false";}}s:7:"content";a:2:{i:0;s:507:"		$uid = $this->piVars[id];
+
+		//Standard query for organisation details
+		$res_common = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'uid, or_name,or_telephone,or_fax,or_email,or_image,or_infopage,or_addinfo',
+						'tx_civserv_organisation',
+						'!deleted AND !hidden AND uid='.$uid,
+						'',
+						'',
+						'');
+
+		//Query for supervisor of organisation
+		$res_superv
+[...]
+*********************
+	 *
+	 * Functions for choosing and changeing the community :
+	 *
+	 *******************************/
+
+
+	";i:1;i:1;}s:12:"content_size";i:10298;s:13:"content_lines";i:177;s:6:"atLine";i:1693;}i:35;a:8:{s:6:"header";s:45:"function chooseCommunity(&$smartyCommunity) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:11:"sectionText";a:1:{i:0;s:52:"Functions for choosing and changeing the community :";}s:4:"cDat";a:3:{s:4:"text";s:278:"
+
+Shows a list of available communities to choose.
+changes made by bkohorst:
+--> parent::pi_linkTP_keepPIvars_url(...) is fed with the pageID of the community in question, so as to be able to switch style sheet.
+    pageID must be the 4th argument!! i.e. 3 arguments won't work
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"object";i:1;s:65:"Smarty object, the template key/value-pairs should be assigned to";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:69:"True, if the function was executed without any error, otherwise false";}}s:7:"content";a:2:{i:0;s:507:"		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'*',
+						'tx_civserv_conf_mandant',
+						'NOT deleted AND NOT hidden',
+						'',
+						'cm_community_name');
+
+		$row_counter = 0;
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
+			$community_data[$row_counter]['name'] = $row['cm_community_name'];
+			$community_data[$row_counter]['link'] = htmlspecial
+[...]
+unity yet. Please choose your community.'));
+		$smartyCommunity->assign('communities',$community_data);
+		return true;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:986;s:13:"content_lines";i:23;s:6:"atLine";i:1880;}i:37;a:7:{s:6:"header";s:46:"function linkCommunityChoice($content,$conf) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:249:"
+
+Returns the HTML-Code for displaying a notice with the active community and a link to choose another community,
+if the constant "community_choice" in the template is set to 1. Otherwise nothing is returned.
+This function is not used at this time.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:7:"content";}i:1;a:2:{i:0;s:5:"array";i:1;s:19:"configuration array";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:38:"HTML-Code with the notice and the link";}}s:7:"content";a:2:{i:0;s:559:"		if ($this->conf['community_choice']) {
+			$notice = str_replace('###COMMUNITY_NAME###','<span class="community_name">' . $this->community['name'] . '</span>',$this->pi_getLL('tx_civserv_pi1_community_choice.notice','The following information is related to ###COMMUNITY_NAME###.'));
+			$link_text = $this->pi_getLL('tx_civserv_pi1_community_choice.link_text','Click here, to choose another community.');
+			$link = $this->pi_linkTP_keepPIvars($link_text,array(community_id => 'choose',mode => 'service_list'),1,1);
+			return $notice . ' ' . $link;
+		}
+	}
+
+
+	";i:1;i:0;}s:12:"content_size";i:559;s:13:"content_lines";i:9;s:6:"atLine";i:1913;}i:39;a:7:{s:6:"header";s:43:"function getCommunityName($content,$conf) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:97:"
+
+Returns the community name of the sctive community.
+Normaly used from a template userfunction.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:5:"sting";i:1;s:7:"content";}i:1;a:2:{i:0;s:5:"array";i:1;s:19:"configuration array";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:18:"The community name";}}s:7:"content";a:2:{i:0;s:507:"		if (trim($this->piVars[community_id]) <= '') {
+			$community_id = $conf['community_id'];
+		} else {
+			$community_id = $this->piVars[community_id];
+		}
+		if ($_SESSION[community_name] > '') {
+			$content = $_SESSION[community_name];
+		} elseif ($community_id > '') {
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'cm_community_name',
+						'tx_civserv_conf_mandan
+[...]
+_fetch_assoc($res)) {
+				$content = $row['cm_community_name'];
+			}
+		}else {
+			$content = '';
+		}
+		return $content;
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:624;s:13:"content_lines";i:22;s:6:"atLine";i:1931;}i:41;a:7:{s:6:"header";s:41:"function getChoiceLink($content, $conf) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:919:"
+
+Returns link to choice the community.
+Normaly used from a template userfunction.
+changes made by bkohorst --> switch the page-id from the search-page of a mandant to the frontend-page to make sure the choicelink works under all circumstances
+The setup in the static template which calls this function looks like:
+marks.CHOICE_LINK = USER
+marks.CHOICE_LINK.community_id = {$community_id}
+marks.CHOICE_LINK.pageid = {$pageid}
+marks.CHOICE_LINK.fulltext_search_id ={$fulltext_search_id}
+marks.CHOICE_LINK.userFunc = tx_civserv_pi1->getChoiceLink
+with the above scenario the id-switching would be as follows:
+		if($pageid == $conf['fulltext_search_id']){
+			$pageid = $conf['pageid'];
+		}
+--> this depends on the values being set correctly in the mandant's typoscript-template
+--> instead the values are retrieved from the database directly (which depends on the table tx_civserv_conf_mandant to be maintained correctly)
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:7:"content";}i:1;a:2:{i:0;s:5:"array";i:1;s:19:"configuration array";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:8:"The link";}}s:7:"content";a:2:{i:0;s:507:"		if ($conf['pageid'] > '') {
+			$pageid = $conf['pageid']; //not available :-(
+		} else {
+			$pageid = $GLOBALS['TSFE']->id;
+		}
+
+		//retrieve uid of frontend-page and of fulltext-search-page from db:
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+								'cm_page_uid, cm_search_uid',
+								'tx_civserv_conf_mandant',
+								'NOT deleted AND NOT hidden');
+		while($row
+[...]
+);
+	}
+
+
+
+
+
+
+	/******************************
+	 *
+	 * Functions for the email form:
+	 *
+	 *******************************/
+
+
+	";i:1;i:1;}s:12:"content_size";i:840;s:13:"content_lines";i:32;s:6:"atLine";i:1975;}i:43;a:8:{s:6:"header";s:42:"function setEmailForm(&$smartyEmailForm) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:11:"sectionText";a:1:{i:0;s:29:"Functions for the email form:";}s:4:"cDat";a:3:{s:4:"text";s:31:"
+
+Sets up an empty email form.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"object";i:1;s:65:"Smarty object, the template key/value-pairs should be assigned to";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:69:"True, if the function was executed without any error, otherwise false";}}s:7:"content";a:2:{i:0;s:507:"		//Check if there is a valid email address in the database for the given combination of employee, service, position and organisation id
+		if ($this->getEmailAddress($smartyEmailForm) || $this->piVars[mode]=='set_contact_form') {
+			if($this->getEmailAddress($smartyEmailForm)){
+				//Assign action url of email form with mode 'check_email_form'
+				$smartyEmailForm->assign(
+[...]
+eset functionality
+			$smartyEmailForm->assign('button_type','reset');
+
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:3145;s:13:"content_lines";i:41;s:6:"atLine";i:2014;}i:45;a:7:{s:6:"header";s:44:"function checkEmailForm(&$smartyEmailForm) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:91:"
+
+Checks the submitted email form and sends it via typo3 mail-function, if it is complete.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"object";i:1;s:65:"Smarty object, the template key/value-pairs should be assigned to";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:69:"True, if the function was executed without any error, otherwise false";}}s:7:"content";a:2:{i:0;s:507:"		//Retrieve submitted form fields
+		$title =  t3lib_div::_POST('title');
+		$firstname = t3lib_div::_POST('firstname');
+		$surname = t3lib_div::_POST('surname');
+		$phone = t3lib_div::_POST('phone');
+		$fax = t3lib_div::_POST('fax');
+		$email = t3lib_div::_POST('email');
+		$street = t3lib_div::_POST('street');
+		$postcode = t3lib_div::_POST('postcode');
+		$city = t3lib_div
+[...]
+'submit');
+
+				return true;
+			} // End return email form template with error markers
+		} else {
+			return false;
+		}
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:6872;s:13:"content_lines";i:125;s:6:"atLine";i:2062;}i:47;a:7:{s:6:"header";s:28:"function getEmailAddress() {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:137:"
+
+Checks if there is a valid email address in the database for the given combination of employee, service, position and organisation id.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:98:"The Email-Adress, if found. Otherwise false (and a error-message is assigned to the smartyObject).";}}s:7:"content";a:2:{i:0;s:507:"		//Retrieve submitted id parameters
+		$org_id = intval($this->piVars[org_id]);
+		$emp_id = intval($this->piVars[id]);
+		$pos_id = intval($this->piVars[pos_id]);
+		$sv_id = intval($this->piVars[sv_id]);
+
+		if (!empty($org_id)) {	//Email form is called from organisation detail page (organisation email)
+			//Standard query for organisation details
+			$res_organisation = $GLO
+[...]
+nisation id, employee id, position id and service id wrong or not set. No email address found!');
+			return false;
+		}
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:2893;s:13:"content_lines";i:58;s:6:"atLine";i:2193;}i:49;a:7:{s:6:"header";s:49:"function makeEmailQuery($emp_id,$pos_id,$sv_id) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:66:"
+
+Generates a query to retrieve the email address of an employee.
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:7:"integer";i:1;s:12:"Employee uid";}i:1;a:2:{i:0;s:7:"integer";i:1;s:12:"Position uid";}i:2;a:2:{i:0;s:7:"integer";i:1;s:11:"Service uid";}}s:6:"return";a:2:{i:0;s:10:"result_set";i:1;s:24:"Result of database query";}}s:7:"content";a:2:{i:0;s:507:"		$querypart_select = '';
+		$querypart_from = '';
+		$querypart_where = '';
+
+		if (!empty($emp_id) && !empty($pos_id) && !empty($sv_id)) {	//Email form is called from service detail page
+			$querypart_select = ', ep_email';
+			$querypart_from = ', tx_civserv_service, tx_civserv_service_sv_position_mm, tx_civserv_position, tx_civserv_employee_em_position_mm';
+			$querypart_w
+[...]
+
+	}
+
+
+
+
+
+
+
+
+
+	/******************************
+	 *
+	 * Functions for the debit form:
+	 *
+	 *******************************/
+
+	";i:1;i:1;}s:12:"content_size";i:2830;s:13:"content_lines";i:60;s:6:"atLine";i:2260;}i:51;a:8:{s:6:"header";s:42:"function setDebitForm(&$smartyDebitForm) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:11:"sectionText";a:1:{i:0;s:29:"Functions for the debit form:";}s:4:"cDat";a:3:{s:4:"text";s:45:"
+
+Sets up an empty debit authorisation form.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"object";i:1;s:65:"Smarty object, the template key/value-pairs should be assigned to";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:69:"True, if the function was executed without any error, otherwise false";}}s:7:"content";a:2:{i:0;s:507:"		//Check if debit form was called from a specific service (id = service id)
+		if ($this->piVars[id] > '') {
+			//Query for standard service details
+			$result = $this->queryService(intval($this->piVars[id]));
+
+			//Check if query returned a result
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
+				$service = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+			}
+[...]
+Form->assign('button_reset_label',$this->pi_getLL('tx_civserv_pi1_debit_form.button_reset','Cancel'));
+
+		return true;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:5333;s:13:"content_lines";i:88;s:6:"atLine";i:2327;}i:53;a:7:{s:6:"header";s:44:"function checkDebitForm(&$smartyDebitForm) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:86:"
+
+Checks the submitted debit authorisation form and stores the entry in the database.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"object";i:1;s:65:"Smarty object, the template key/value-pairs should be assigned to";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:69:"True, if the function was executed without any error, otherwise false";}}s:7:"content";a:2:{i:0;s:507:"		//Retrieve passed parameters
+		$service = t3lib_div::_POST('service');		//service = service.uid|service.name
+		$cashNumber = t3lib_div::_POST('cashNumber');
+		$bankName = t3lib_div::_POST('bankName');
+		$bankCode = t3lib_div::_POST('bankCode');
+		$accountNumber = t3lib_div::_POST('accountNumber');
+		$firstname = t3lib_div::_POST('firstname');
+		$surname = t3lib_div::_POS
+[...]
+		}
+	}
+
+
+
+
+
+
+
+
+
+	/******************************
+	 *
+	 * Various helper functions:
+	 *
+	 *******************************/
+
+
+	";i:1;i:1;}s:12:"content_size";i:6500;s:13:"content_lines";i:130;s:6:"atLine";i:2422;}i:55;a:8:{s:6:"header";s:26:"function formatStr($str)	{";s:11:"parentClass";s:14:"tx_civserv_pi1";s:11:"sectionText";a:1:{i:0;s:25:"Various helper functions:";}s:4:"cDat";a:3:{s:4:"text";s:51:"
+
+Format string with nl2br and htmlspecialchars().
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:6:"string";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:16:"formatted string";}}s:7:"content";a:2:{i:0;s:152:"		if (is_array($this->conf["general_stdWrap."]))	{
+			$str = $this->local_cObj->stdWrap($str,$this->conf["general_stdWrap."]);
+		}
+		return $str;
+	}
+
+
+	";i:1;i:0;}s:12:"content_size";i:152;s:13:"content_lines";i:7;s:6:"atLine";i:2559;}i:57;a:7:{s:6:"header";s:52:"function getImageCode($image,$path,$conf,$altText)	{";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:120:"
+
+Builds the HTML-code for including an image in a page, including a link to enlarge the image.
+Depends on cObj->IMAGE.
+";s:5:"param";a:4:{i:0;a:2:{i:0;s:6:"string";i:1;s:10:"Image name";}i:1;a:2:{i:0;s:6:"string";i:1;s:10:"Image path";}i:2;a:2:{i:0;s:6:"string";i:1;s:16:"TS configuration";}i:3;a:2:{i:0;s:6:"string";i:1;s:32:"alternativley text for the image";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:43:"HTML-Code for including the image in a page";}}s:7:"content";a:2:{i:0;s:107:"		$conf['file'] = $path . $image;
+		$conf['altText'] = $altText;
+		return $this->cObj->IMAGE($conf);
+	}
+
+
+	";i:1;i:0;}s:12:"content_size";i:107;s:13:"content_lines";i:6;s:6:"atLine";i:2577;}i:59;a:7:{s:6:"header";s:37:"function sql_fetch_array_r($result)	{";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:76:"
+
+Fetches result of db query with multiple rows and stores them in an array
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:10:"result_set";i:1;s:24:"Result of database query";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:38:"Array with results from database query";}}s:7:"content";a:2:{i:0;s:179:"		$row_counter = 0;
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result) ) {
+			$whole_result[$row_counter] = $row;
+			$row_counter++;
+		}
+		return $whole_result;
+	}
+
+
+	";i:1;i:0;}s:12:"content_size";i:179;s:13:"content_lines";i:9;s:6:"atLine";i:2590;}i:61;a:7:{s:6:"header";s:97:"function pi_linkTP_keepPIvars_url($overrulePIvars=array(),$cache=0,$clearAnyway=0,$altPageId=0) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:5:{s:4:"text";s:292:"
+
+Overwrites the same function from the parent class tslib_pibase. Does the same,
+but keeps always piVars[community_id]. If no community_id could be determined, caching is disabled.
+Get URL to the current page while keeping currently set values in piVars.
+Returns only the URL from the link.
+";s:5:"param";a:4:{i:0;a:2:{i:0;s:5:"array";i:1;s:299:"Array of values to override in the current piVars. Contrary to pi_linkTP the keys in this array must correspond to the real piVars array and therefore NOT be prefixed with the $this->prefixId string. Further, if a value is a blank string it means the piVar key will not be a part of the link (unset)";}i:1;a:2:{i:0;s:7:"boolean";i:1;s:187:"If $cache is set, the page is asked to be cached by a &cHash value (unless the current plugin using this class is a USER_INT). Otherwise the no_cache-parameter will be a part of the link.";}i:2;a:2:{i:0;s:7:"boolean";i:1;s:108:"If set, then the current values of piVars will NOT be preserved anyways... (except for piVars[community_id])";}i:3;a:2:{i:0;s:7:"integer";i:1;s:84:"Alternative page ID for the link. (By default this function links to the SAME page!)";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:38:"The URL ($this->cObj->lastTypoLinkUrl)";}s:5:"other";a:1:{i:0;s:41:"@see tslib_pibase::pi_linkTP_keepPIvars()";}s:11:"other_index";a:1:{s:4:"@see";a:1:{i:0;s:37:"tslib_pibase::pi_linkTP_keepPIvars() ";}}}s:7:"content";a:2:{i:0;s:261:"	 	if ($this->piVars[community_id] > '') {
+	 		$overrulePIvars = t3lib_div::array_merge($overrulePIvars,array(community_id => $this->piVars[community_id]));
+	 	}
+	 	return parent::pi_linkTP_keepPIvars_url($overrulePIvars,$cache,$clearAnyway,$altPageId);
+	 }
+
+
+	";i:1;i:0;}s:12:"content_size";i:261;s:13:"content_lines";i:7;s:6:"atLine";i:2613;}i:63;a:7:{s:6:"header";s:57:"function pi_list_searchBox($divParams='',$header=false) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:310:"
+
+Overwrites the same function from the parent class tslib_pibase. Does the same, but uses no tables and is optimized for accessibility.
+Returns a Search box, sending search words to piVars "sword" and setting the "no_cache" parameter as well in the form.
+Submits the search request to the current REQUEST_URI
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:92:"Attributes for the div tag which is wrapped around the table cells containing the search box";}i:1;a:2:{i:0;s:7:"boolean";i:1;s:48:"If true, a heading for the search box is printed";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:57:"Output HTML, wrapped in <div>-tags with a class attribute";}}s:7:"content";a:2:{i:0;s:507:"		// Search box design:
+		if ($this->piVars[sword] <= '') {
+			 $this->piVars[sword] = $this->pi_getLL('pi_list_searchBox_defaultValue','search item');
+		}
+		$sBox = '
+
+		<!--
+			List search box:
+		-->
+
+		<div' . $this->pi_classParam('searchbox') . '>
+			<form method="post" action="'.htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')).'" style="margin: 0 0 0 0;" >
+				<
+[...]
+refixId.'[pointer]" value="" />
+          				</div>
+       			</fieldset>
+     		 </form>
+		</div>';
+
+		return $sBox;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:1814;s:13:"content_lines";i:31;s:6:"atLine";i:2630;}i:65;a:7:{s:6:"header";s:85:"function pi_list_browseresults($showResultCount=1,$divParams='',$spacer=false)      {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:462:"
+
+Returns a results browser. This means a bar of page numbers plus a "previous" and "next" link. For each entry in the bar the piVars "pointer" will be pointing to the "result page" to show.
+Using $this->piVars['pointer'] as pointer to the page to display
+Using $this->internal['res_count'], $this->internal['results_at_a_time'] and $this->internal['maxPages'] for count number, how many results to show and the max number of pages to include in the browse bar.
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:7:"boolean";i:1;s:78:"If set (default) the text "Displaying results..." will be show, otherwise not.";}i:1;a:2:{i:0;s:6:"string";i:1;s:94:"Attributes for the div tag which is wrapped around the table cells containing the browse links";}i:2;a:2:{i:0;s:6:"string";i:1;s:57:"If given, the passed string is used to seperate the links";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:57:"Output HTML, wrapped in <div>-tags with a class attribute";}}s:7:"content";a:2:{i:0;s:507:"
+			// Initializing variables:
+		$pointer=$this->piVars['pointer'];
+		$count=$this->internal['res_count'];
+		$results_at_a_time = t3lib_div::intInRange($this->internal['results_at_a_time'],1,1000);
+		$maxPages = t3lib_div::intInRange($this->internal['maxPages'],1,100);
+		$max = t3lib_div::intInRange(ceil($count/$results_at_a_time),1,$maxPages);
+		$pointer=intval($pointer);
+[...]
+
+
+
+
+	/******************************
+	 *
+	 * Function for generating a menu array:
+	 *
+	 *******************************/
+
+
+	";i:1;i:1;}s:12:"content_size";i:2941;s:13:"content_lines";i:78;s:6:"atLine";i:2672;}i:67;a:8:{s:6:"header";s:43:"function makeMenuArray($content,$conf)    {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:11:"sectionText";a:1:{i:0;s:37:"Function for generating a menu array:";}s:4:"cDat";a:3:{s:4:"text";s:541:"
+
+Builds an array, wich could be included with a user function in a menu.
+The menuarray contains the items 'Services A-Z', 'Circumstances', 'Usergroups', 'Organisation', 'TOP 15' and optional 'Fulltext search'.
+The setup in a template could look like:
+  menu= HMENU
+  menu.special = userfunction
+  menu.special.pageid = {$pageid}
+  menu.special.fulltext_search_id = {$fulltext_search_id}
+  menu.special.userFunc = tx_civserv_pi1->makeMenuArray
+  menu.stdWrap.wrap  = <ul> | </ul>
+  menu.1 = TMENU
+  menu.1.NO {
+    allWrap =<li> | </li>
+  }
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:5:"sting";i:1;s:7:"content";}i:1;a:2:{i:0;s:5:"array";i:1;s:19:"configuration array";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:13:"the menuarray";}}s:7:"content";a:2:{i:0;s:507:"		// Get language for the frontend, necessary for pi_getLL-functions
+		$this->pi_loadLL();
+
+		if ($conf['pageid'] > '') {
+			$pageid = $conf['pageid'];
+		} else {
+			$pageid = $GLOBALS['TSFE']->id;
+		}
+
+		// Start or resume session
+		session_name($this->extKey);
+		session_start();
+		// Save community id in session, to ensure that the id is also saved when vititing sites wi
+[...]
+****************
+	 *
+	 * Functions for the legal_notice_link in den main navigation
+	 *
+	 *******************************/
+
+	";i:1;i:1;}s:12:"content_size";i:3446;s:13:"content_lines";i:76;s:6:"atLine";i:2770;}i:69;a:8:{s:6:"header";s:46:"function getLegalNoticeLink($content, $conf) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:11:"sectionText";a:1:{i:0;s:58:"Functions for the legal_notice_link in den main navigation";}s:4:"cDat";a:3:{s:4:"text";s:111:"
+
+Returns link to legal notice of the hoster (imprint, web credits)
+Normaly used from a template userfunction.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:7:"content";}i:1;a:2:{i:0;s:5:"array";i:1;s:19:"configuration array";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:8:"The link";}}s:7:"content";a:2:{i:0;s:203:"		if ($conf['pageid'] > '') {
+			$pageid = $conf['pageid'];
+		} else {
+			$pageid = $GLOBALS['TSFE']->id;
+		}
+		return parent::pi_linkTP_keepPIvars_url(array(mode => 'legal_notice'),1,1,$pageid);
+	}
+
+
+
+	";i:1;i:0;}s:12:"content_size";i:203;s:13:"content_lines";i:10;s:6:"atLine";i:2855;}i:71;a:7:{s:6:"header";s:47:"function showLegalNotice(&$smartyLegalNotice) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:4:"cDat";a:3:{s:4:"text";s:53:"
+
+Shows information about the hoster's legal notice.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"object";i:1;s:65:"Smarty object, the template key/value-pairs should be assigned to";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:69:"True, if the function was executed without any error, otherwise false";}}s:7:"content";a:2:{i:0;s:325:"
+		$smartyLegalNotice->assign('contactLink', $this->getContactLink($content,$conf));
+		$smartyLegalNotice->assign('imgPath', $this->conf['folder_global_images']);
+		return true;
+	}
+
+
+
+
+
+
+
+	/******************************
+	 *
+	 * Functions for the contact_link in den main navigation
+	 *
+	 *******************************/
+
+
+	";i:1;i:0;}s:12:"content_size";i:325;s:13:"content_lines";i:19;s:6:"atLine";i:2872;}i:73;a:5:{s:6:"header";s:42:"function getContactLink($content, $conf) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:11:"sectionText";a:1:{i:0;s:53:"Functions for the contact_link in den main navigation";}s:4:"cDat";a:3:{s:4:"text";s:80:"
+
+Returns link to contact the hoster
+Normaly used from a template userfunction.
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:7:"content";}i:1;a:2:{i:0;s:5:"array";i:1;s:19:"configuration array";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:8:"The link";}}s:6:"atLine";i:2900;}i:75;a:8:{s:6:"header";s:25:"function js_alert($msg) {";s:11:"parentClass";s:14:"tx_civserv_pi1";s:11:"sectionText";a:1:{i:0;s:28:"Functions for mere debugging";}s:4:"cDat";a:3:{s:4:"text";s:148:"
+
+only for testing the value of certain parameters
+--> attention: triggers xhtml-error!
+gives out the value of a given param in a js_alert-box...
+
+
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:9:"$msg: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:301:"			echo "<script type=\"text/javascript\">alert('".$msg."');</script>";
+	}
+
+
+}
+
+
+
+if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/civserv/pi1/class.tx_civserv_pi1.php"])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/civserv/pi1/class.tx_civserv_pi1.php"]);
+}
+
+?>";i:1;i:0;}s:12:"content_size";i:301;s:13:"content_lines";i:12;s:6:"atLine";i:2932;}}}s:14:"MD5_eb3db5c1b2";a:4:{s:8:"filename";s:17:"pi1/locallang.php";s:8:"filesize";i:26789;s:6:"header";a:5:{s:4:"text";s:93:"
+
+Language labels for plugin 'civserv_pi1'
+
+This file is detected by the translation tool.
+
+
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:5:{i:0;s:49:"@author	Stephan Dümmer <sduemmer@uni-muenster.de>";i:1;s:50:"@author	Stefan Meesters <meesters@uni-muenster.de>";i:2;s:14:"@package TYPO3";i:3;s:22:"@subpackage tx_civserv";i:4;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:2:{i:0;s:41:"Stephan Dümmer <sduemmer@uni-muenster.de>";i:1;s:42:"Stefan Meesters <meesters@uni-muenster.de>";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:0:{}}s:14:"MD5_dc9f93f79b";a:4:{s:8:"filename";s:35:"res/class.tx_civserv_floorbuild.php";s:8:"filesize";i:5180;s:6:"header";a:5:{s:4:"text";s:92:"
+
+This class holds functionality to ensure a consistency within the building-floor-mm-table
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:3:{i:0;s:49:"@author	Georg Niemeyer <niemeyer@uni-muenster.de>";i:1;s:18:"@package Extension";i:2;s:19:"@subpackage civserv";}s:11:"other_index";a:3:{s:7:"@author";a:1:{i:0;s:41:"Georg Niemeyer <niemeyer@uni-muenster.de>";}s:8:"@package";a:1:{i:0;s:10:"Extension ";}s:11:"@subpackage";a:1:{i:0;s:8:"civserv ";}}}s:3:"DAT";a:3:{i:1;a:8:{s:6:"header";s:29:"class tx_civserv_floorbuild {";s:5:"class";i:1;s:11:"parentClass";s:21:"tx_civserv_floorbuild";s:4:"cDat";a:5:{s:4:"text";s:92:"
+
+This class holds functionality to ensure a consistency within the building-floor-mm-table
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:3:{i:0;s:49:"@author	Georg Niemeyer <niemeyer@uni-muenster.de>";i:1;s:18:"@package Extension";i:2;s:19:"@subpackage civserv";}s:11:"other_index";a:3:{s:7:"@author";a:1:{i:0;s:41:"Georg Niemeyer <niemeyer@uni-muenster.de>";}s:8:"@package";a:1:{i:0;s:10:"Extension ";}s:11:"@subpackage";a:1:{i:0;s:8:"civserv ";}}}s:7:"content";a:2:{i:0;s:2:"
+	";i:1;i:-1;}s:12:"content_size";i:2;s:13:"content_lines";i:1;s:6:"atLine";i:61;}i:3;a:4:{s:6:"header";s:35:"function main(& $params, & $pObj) {";s:11:"parentClass";s:21:"tx_civserv_floorbuild";s:4:"cDat";a:3:{s:4:"text";s:156:"
+
+Gets valid Building-Floor-combinations and write them back in the $params-Array as items which are shown in the selectorbox under the uid of the mm-entry
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:150:"$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API";}i:1;a:2:{i:0;s:6:"string";i:1;s:42:"$pObj is a reference to the calling object";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:6:"atLine";i:70;}i:5;a:7:{s:6:"header";s:29:"function update_pid($params){";s:11:"parentClass";s:21:"tx_civserv_floorbuild";s:4:"cDat";a:3:{s:4:"text";s:120:"
+
+Initializes an update of the PID to show it right in the tree structure.
+Currently it sets the same PID for all pages
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:150:"$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";a:2:{i:0;s:507:"		if (is_array($params) && $params['table']== 'tx_civserv_building') {
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('tx_civserv_building_bl_floor_mm.uid, tx_civserv_building.pid', 'tx_civserv_building', 'tx_civserv_building_bl_floor_mm', '', '', '', '', '');
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$GLOBALS['TYPO3_DB']->exec_UPDATEquery('
+[...]
+uild.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_floorbuild.php']);
+}
+?>";i:1;i:1;}s:12:"content_size";i:777;s:13:"content_lines";i:12;s:6:"atLine";i:99;}}}s:14:"MD5_51d082d1e0";a:4:{s:8:"filename";s:32:"res/class.tx_civserv_mandant.php";s:8:"filesize";i:9666;s:6:"header";a:5:{s:4:"text";s:374:"
+
+This class holds some functions used by the TYPO3 backend to ensure that only
+that data records are shown which belong to a given mandant. By this Typo3 is extended
+to the ability to handle several mandants within one system
+
+Some scripts that use this class: tca.php
+Depends on: -
+
+$Id: class.tx_civserv_mandant.php,v 1.1.1.1 2004/11/28 17:14:49 bkohorst Exp $
+
+
+Changes:";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:49:"@author Georg Niemeyer (niemeyer@uni-muenster.de)";i:1;s:14:"@package TYPO3";i:2;s:22:"@subpackage tx_civserv";i:3;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:1:{i:0;s:41:"Georg Niemeyer (niemeyer@uni-muenster.de)";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:8:{i:1;a:8:{s:6:"header";s:25:"class tx_civserv_mandant{";s:5:"class";i:1;s:11:"parentClass";s:18:"tx_civserv_mandant";s:4:"cDat";a:3:{s:4:"text";s:35:"
+
+[CLASS/FUNCTION INDEX of SCRIPT]
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:2:"
+	";i:1;i:-1;}s:12:"content_size";i:2;s:13:"content_lines";i:1;s:6:"atLine";i:46;}i:3;a:7:{s:6:"header";s:33:"function main(&$params, &$pObj) {";s:11:"parentClass";s:18:"tx_civserv_mandant";s:4:"cDat";a:3:{s:4:"text";s:152:"
+
+Returning the Community_No in the Params-Array.
+Was originally used to fill a selectorbox in the backend with the community-ID of the editing mandant
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:7:"$params";i:1;s:49:"Params-Array in which the Community-No is written";}i:1;a:2:{i:0;s:5:"$pObj";i:1;s:31:"Reference to the calling object";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:245:"		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
+		//debug($pObj);
+		if ($pid > 0) $mandant = $this->get_mandant($pid);
+		//debug($row);
+		$params['items'][0] = Array ($mandant, $mandant);
+	}
+
+	";i:1;i:0;}s:12:"content_size";i:245;s:13:"content_lines";i:7;s:6:"atLine";i:56;}i:5;a:7:{s:6:"header";s:38:"function get_path($node,$valid_uids) {";s:11:"parentClass";s:18:"tx_civserv_mandant";s:4:"cDat";a:3:{s:4:"text";s:97:"
+
+This function gets recursively to the top element of a mandant and returns the id of this node
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:3:"int";i:1;s:75:"$node is the name of the starting node from where we want to go up the tree";}i:1;a:2:{i:0;s:3:"int";i:1;s:61:"Array of uids which are the root elements for the communities";}}s:6:"return";a:2:{i:0;s:3:"int";i:1;s:87:"the uid of the highest level in the tree for a given mandant (right under the rootline)";}}s:7:"content";a:2:{i:0;s:521:"		// look up the parent of this node
+		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
+
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('pid, uid','pages','!deleted AND !hidden AND uid = '.$GLOBALS['TYPO3_DB']->quoteStr($node,'pages'),'','','','');
+		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+		//debug($row[uid]);
+		// save the path in this array
+		$path = array();
+		// only continue if this $node isn't the root node (that's the node with no parent)
+		if ($row['pid']!=0 && !in_array($row['uid'],$valid_uids)) ";i:1;i:0;}s:12:"content_size";i:521;s:13:"content_lines";i:9;s:6:"atLine";i:71;}i:7;a:6:{s:6:"header";s:28:"function get_mandant($pid) {";s:11:"parentClass";s:18:"tx_civserv_mandant";s:7:"content";a:2:{i:0;s:424:"		if ($pid > 0){
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_uid','tx_civserv_conf_mandant','!deleted AND !hidden','','','','');
+			$valid_uids = array();
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
+				$valid_uids[]=$row['cm_uid'];
+			}
+		 	$master_uid = $this->get_path($pid,$valid_uids);
+		}
+
+		//debug($master_uid);
+		if ($master_uid == NULL) $master_uid = $pid;
+		if ($master_uid > 0) ";i:1;i:0;}s:12:"content_size";i:424;s:13:"content_lines";i:11;s:6:"atLine";i:97;}i:9;a:6:{s:6:"header";s:32:"function get_mandant_name($pid){";s:11:"parentClass";s:18:"tx_civserv_mandant";s:7:"content";a:2:{i:0;s:112:"		if ($pid > 0) $this->get_mandant($pid);
+		if ($master_uid == NULL) $master_uid = $pid;
+		if ($master_uid > 0) ";i:1;i:0;}s:12:"content_size";i:112;s:13:"content_lines";i:2;s:6:"atLine";i:123;}i:11;a:6:{s:6:"header";s:39:"function limit_items(&$params, &$pObj){";s:11:"parentClass";s:18:"tx_civserv_mandant";s:7:"content";a:2:{i:0;s:435:"		$table = $params['config']['foreign_table'];
+		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
+		if ($pid > 0) $mandant = $this->get_mandant($pid);
+		//debug($mandant,'Mandant');
+		if(array_key_exists("",$params['items'])){
+			$empty_entry=1;
+		} $empty_entry=0;
+		$params['items'] = $this->manipulate_array($mandant, $params,$table);
+		if ($params['table']=='tx_civserv_navigation')";i:1;i:0;}s:12:"content_size";i:435;s:13:"content_lines";i:8;s:6:"atLine";i:143;}i:13;a:3:{s:6:"header";s:59:"function manipulate_array($mandant, $source_array, $table){";s:11:"parentClass";s:18:"tx_civserv_mandant";s:6:"atLine";i:166;}i:15;a:6:{s:6:"header";s:56:"function additional_remove($source_array, $table, $pid){";s:11:"parentClass";s:18:"tx_civserv_mandant";s:7:"content";a:2:{i:0;s:507:"		$target_array = array();
+		$valid_nav = array();
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$GLOBALS['TYPO3_DB']->quoteStr($table,$table),'!deleted AND !hidden AND pid = '.intval($pid),'','','','');
+		foreach ($source_array as $value){
+			array_push($valid_nav, $value[1]);
+		}
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				//debug($source_arr
+[...]
+mandant.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_mandant.php']);
+}
+?>";i:1;i:1;}s:12:"content_size";i:752;s:13:"content_lines";i:18;s:6:"atLine";i:208;}}}s:14:"MD5_2236c8a9cf";a:4:{s:8:"filename";s:39:"res/class.tx_civserv_ms_maintenance.php";s:8:"filesize";i:13407;s:6:"header";a:5:{s:4:"text";s:296:"
+
+This class holds some functions used by the TYPO3 backend to guarantee the consistency within the pids
+
+Some scripts that use this class: ?
+Depends on: ?
+
+$Id: class.tx_civserv_ms_maintenance.php,v 1.1.1.1 2004/11/28 17:14:50 bkohorst Exp $
+
+
+Changes: Datum, Initialen - vorgenommene Änderungen";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:6:{i:0;s:49:"@author Georg Niemeyer (niemeyer@uni-muenster.de)";i:1;s:48:"@author Maurits Hinzen (mhinzen@uni-muenster.de)";i:2;s:48:"@author Tobias Müller (mullerto@uni-muenster.de)";i:3;s:14:"@package TYPO3";i:4;s:22:"@subpackage tx_civserv";i:5;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:3:{i:0;s:41:"Georg Niemeyer (niemeyer@uni-muenster.de)";i:1;s:40:"Maurits Hinzen (mhinzen@uni-muenster.de)";i:2;s:40:"Tobias Müller (mullerto@uni-muenster.de)";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:6:{i:1;a:8:{s:6:"header";s:33:"class tx_civserv_ms_maintenance {";s:5:"class";i:1;s:11:"parentClass";s:25:"tx_civserv_ms_maintenance";s:4:"cDat";a:3:{s:4:"text";s:464:"
+
+[CLASS/FUNCTION INDEX of SCRIPT]
+
+
+
+  61: class tx_civserv_ms_maintenance
+  68:     function main()
+  78:     function check_changes($params)
+ 108:     function compute_checksum($model_service_temp)
+ 143:     function write_checksum_and_flags($model_service_temp, $new_hash)
+ 157:     function transfer_ms($params)
+ 233:     function show_mandants(&$params, &$pObj)
+
+TOTAL FUNCTIONS: 6
+(This index is automatically created/updated by the extension "extdeveval")
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:2:"
+	";i:1;i:-1;}s:12:"content_size";i:2;s:13:"content_lines";i:1;s:6:"atLine";i:59;}i:3;a:7:{s:6:"header";s:33:"function check_changes($params) {";s:11:"parentClass";s:25:"tx_civserv_ms_maintenance";s:4:"cDat";a:3:{s:4:"text";s:159:"
+
+Checks, if a currently saved dataset has actually been saved by computing a checksum of the data fields and
+comparing it with the previously saved checksum.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:52:"$params [array]: the parameters of the saved dataset";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";a:2:{i:0;s:507:"		if ($params['table']=='tx_civserv_model_service_temp')	{
+
+				// Gets all data from the currently saved record...
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'*',			 					// SELECT ...
+				'tx_civserv_model_service_temp',	// FROM ...
+				'uid='.$params['uid'],				// AND title LIKE "%blabla%"', // WHERE...
+				'', 								// GROUP BY...
+				'',   								/
+[...]
+sh!=$model_service_temp['ms_checksum'])	{
+				$this->write_checksum_and_flags($model_service_temp, $new_hash);
+			}
+		}
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:895;s:13:"content_lines";i:23;s:6:"atLine";i:68;}i:5;a:7:{s:6:"header";s:48:"function compute_checksum($model_service_temp)	{";s:11:"parentClass";s:25:"tx_civserv_ms_maintenance";s:4:"cDat";a:3:{s:4:"text";s:118:"
+
+Computes a checksum of all fields from model service, which can be edited by a mandant, by using the MD5-Algorithm.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:119:"$model_service_temp [array]: a model service dataset, which can be edited and therefore is stored as model service temp";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:89:"md5-checksum, which is computed over all given fields excepted the once listed with unset";}}s:7:"content";a:2:{i:0;s:507:"			// Gets all field names except uid,pid,tstamp,crdate,cruser_id,deleted,hidden,fe_group,ms_mandant,
+			// ms_approver_one and ms_approver_two out of the model service table.
+		$field_names = $GLOBALS['TYPO3_DB']->admin_get_fields('tx_civserv_model_service');
+		unset($field_names['pid']);
+		unset($field_names['tstamp']);
+		unset($field_names['crdate']);
+		unset($field_nam
+[...]
+d_names[$i]];
+		}
+
+			// Computes a hashsum of the string above.
+		$new_hash=md5($data_as_string);
+
+		return $new_hash;
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:1017;s:13:"content_lines";i:27;s:6:"atLine";i:98;}i:7;a:7:{s:6:"header";s:67:"function write_checksum_and_flags($model_service_temp, $new_hash)	{";s:11:"parentClass";s:25:"tx_civserv_ms_maintenance";s:4:"cDat";a:3:{s:4:"text";s:315:"
+
+Stores a Checksum in a model service dataset and sets a flag, which indicates, that the dataset has been changed.
+Also sets approver-flags to null, because both approvers have to commit when any data has been changed.
+At the end there will be sent an email to the approver to inform them, that there were changes
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:86:"$model_service_temp [array]: a model service dataset of the model service temp - table";}i:1;a:2:{i:0;s:6:"string";i:1;s:28:"$new_hash [string]: checksum";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+		$LANG->includeLLFile(t3lib_extMgm::extPath('civserv')."modmsworkflow/locallang.php");
+			// Sets the ms_has_changed field to 1 so that it indicates, that data has been changed,
+			// stores the new checksum in the dataset and finally sets both commit checkboxes to null.
+		$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_model_service_temp', 'uid = '.$mo
+[...]
+t3lib_div::validEmail($to=$eMailTwo['cm_target_email'])){
+			t3lib_div::plainMailEncoded($to,$subject,$text,$from);
+		}
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:2187;s:13:"content_lines";i:36;s:6:"atLine";i:135;}i:9;a:4:{s:6:"header";s:30:"function transfer_ms($params){";s:11:"parentClass";s:25:"tx_civserv_ms_maintenance";s:4:"cDat";a:3:{s:4:"text";s:483:"
+
+This function is called from the tx_civserv_commit-class to initiate the modelservice-workflow. Depending on the made decision concerning the
+maintainer of a modelservice and its controllinstances the modelservice is temporally copied in a table to achieve a kind of versioning in maintaining.
+And the pid of the copied record is set to the configured cm_model_service_temp_uid in the mandant-configuration-table to let the maintainer work on
+the modelservice in his treestructur.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:150:"$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:6:"atLine";i:181;}i:11;a:7:{s:6:"header";s:42:"function show_mandants(&$params, &$pObj) {";s:11:"parentClass";s:25:"tx_civserv_ms_maintenance";s:4:"cDat";a:3:{s:4:"text";s:120:"
+
+writes all existing and configured mandants back into the $params-Array as items which can be chosen in a selectorbox
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:150:"$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API";}i:1;a:2:{i:0;s:6:"string";i:1;s:42:"$pObj is a reference to the calling object";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";a:2:{i:0;s:507:"		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_community_id, cm_community_name', // Field list for SELECT
+			'tx_civserv_conf_mandant ', // Tablename, local table
+			'!deleted AND !hidden', // Optional additional WHERE clauses
+			'', // Optional GROUP BY field(s), if none, supply blank string.
+			'cm_community_name', // Optional ORDER BY field(s), if none, supply blan
+[...]
+.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_ms_maintenance.php']);
+}
+?>";i:1;i:1;}s:12:"content_size";i:982;s:13:"content_lines";i:18;s:6:"atLine";i:254;}}}s:14:"MD5_55c3a61e69";a:4:{s:8:"filename";s:34:"res/class.tx_civserv_oepupdate.php";s:8:"filesize";i:8629;s:6:"header";a:5:{s:4:"text";s:446:"
+
+Updates some content for Employee-Position-Relationship which have to be made as a workaround for non-existing Typo3 functionality.
 
 Some scripts that use this class: tca.php (Invocation), ext_tables.php (Definition), ext_localconf.php (Definition)
 Depends on: ?
 
-$Id: ext_php_api.dat,v 1.1.1.1 2004/08/16 18:37:35 smeesters Exp $
+$Id: class.tx_civserv_oepupdate.php,v 1.1.1.1 2004/11/28 17:14:49 bkohorst Exp $
 
 
-Changes: 10.08.04, CR - Initial Build";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:55:"@author Christoph Rosenkranz (rosenkra@uni-muenster.de)";i:1;s:14:"@package TYPO3";i:2;s:22:"@subpackage tx_civserv";i:3;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:1:{i:0;s:47:"Christoph Rosenkranz (rosenkra@uni-muenster.de)";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:2:{i:1;a:5:{s:6:"header";s:28:"class tx_civserv_oepupdate {";s:5:"class";i:1;s:11:"parentClass";s:20:"tx_civserv_oepupdate";s:4:"cDat";a:3:{s:4:"text";s:106:"
+Changes: 23.08.04, CR - Initial Build
+		   02.08.04, GN - the main-method isn't needed any longer";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:55:"@author Christoph Rosenkranz (rosenkra@uni-muenster.de)";i:1;s:14:"@package TYPO3";i:2;s:22:"@subpackage tx_civserv";i:3;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:1:{i:0;s:47:"Christoph Rosenkranz (rosenkra@uni-muenster.de)";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:5:{i:1;a:8:{s:6:"header";s:28:"class tx_civserv_oepupdate {";s:5:"class";i:1;s:11:"parentClass";s:20:"tx_civserv_oepupdate";s:4:"cDat";a:3:{s:4:"text";s:133:"
 
-Updates the PID so that the officehours_oep_employee_em_position_mm_mm
-is placed in the right SysFolder
-";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:6:"atLine";i:59;}i:3;a:6:{s:6:"header";s:35:"function main(& $params, & $pObj) {";s:11:"parentClass";s:20:"tx_civserv_oepupdate";s:7:"content";s:0:"";s:12:"content_size";i:1145;s:13:"content_lines";i:24;s:6:"atLine";i:61;}}}s:14:"MD5_f131108519";a:4:{s:8:"filename";s:39:"res/class.tx_civserv_wizard_auswahl.php";s:8:"filesize";i:6388;s:6:"header";a:5:{s:4:"text";s:409:"
+Updates some content for Employee-Position-Relationship which have to be made as a workaround for non-existing Typo3 functionality.";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:2:"
+	";i:1;i:-1;}s:12:"content_size";i:2;s:13:"content_lines";i:1;s:6:"atLine";i:52;}i:3;a:7:{s:6:"header";s:29:"function update_pid($params){";s:11:"parentClass";s:20:"tx_civserv_oepupdate";s:4:"cDat";a:3:{s:4:"text";s:138:"
 
-This class holds a user defined wizard to select and show content from extension tables
+Initializes an update of the PID to show it right in the tree structure.
+All mm-entries are updated to the corresponding employee's pid
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:150:"$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";a:2:{i:0;s:507:"		if (is_array($params) && ($params['table']== 'tx_civserv_employee' || $params['table']=='tx_civserv_employee_em_position_mm')) {
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+			'tx_civserv_employee_em_position_mm.uid, tx_civserv_employee.pid',
+			'tx_civserv_employee',
+			'tx_civserv_employee_em_position_mm',
+			'', '', '', '', '');
+			while ($row = $GLOBALS['TY
+[...]
+OBALS['TYPO3_DB']->quoteStr($row['uid'], 'tx_civserv_employee_em_position_mm'), array ("pid" => $row['pid']));
+			}
+		}
+	}
 
-Some scripts that use this class: tca.php (Invocation), ext_tables.php (Definition), ext_localconf.php (Definition)
-Depends on: tca.php, there it must be defined as wizard / userfunc
+	";i:1;i:1;}s:12:"content_size";i:628;s:13:"content_lines";i:12;s:6:"atLine";i:61;}i:5;a:7:{s:6:"header";s:31:"function update_label($params){";s:11:"parentClass";s:20:"tx_civserv_oepupdate";s:4:"cDat";a:3:{s:4:"text";s:340:"
 
-$Id: ext_php_api.dat,v 1.1.1.1 2004/08/16 18:37:35 smeesters Exp $
+Updates the label of all employee-position-relations to get a speaking name for mm-relation-entries
+This is a workaround which is needed in Typo3 at the moment because the labels of a record (defined in ext_tables.php)
+can only consist of attributes in the same record out of the same table and can't be resolved out of foreign-relations
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:150:"$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";a:2:{i:0;s:507:"		//debug($params);
+		if (is_array($params) && ($params['table']== 'tx_civserv_employee' || $params['table']=='tx_civserv_employee_em_position_mm')) {
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				'tx_civserv_employee_em_position_mm.uid, tx_civserv_employee.em_name, tx_civserv_employee.em_firstname, tx_civserv_position.po_name ',
+				'tx_civserv_employee',
+				
+[...]
+e_em_position_mm'), array ("ep_label" => $row['em_name'].', '.$row['em_firstname'].' ('.$row['po_name'].')'));
+			}
+		}
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:804;s:13:"content_lines";i:14;s:6:"atLine";i:82;}i:7;a:4:{s:6:"header";s:36:"function ep_room(&$params, &$pObj) {";s:11:"parentClass";s:20:"tx_civserv_oepupdate";s:4:"cDat";a:3:{s:4:"text";s:296:"
+
+Shows building and floor in the selectorbox for each room in the Employee-Position-Relationship (this version of
+Employee-Position-Relationship is a real entity and thus a faked MM-Relation.) Only rooms which have an associated Building-Floor-Relationship
+are shown.  (column 'ep_room' in TCA)
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:150:"$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API";}i:1;a:2:{i:0;s:6:"string";i:1;s:42:"$pObj is a reference to the calling object";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:6:"atLine";i:106;}i:9;a:7:{s:6:"header";s:37:"function ep_room2(&$params, &$pObj) {";s:11:"parentClass";s:20:"tx_civserv_oepupdate";s:4:"cDat";a:3:{s:4:"text";s:295:"
+
+Shows building and floor in the selectorbox for each room in the Employee-Position-Relationship (this version of
+Employee-Position-Relationship is a real MM-Relation and thus a faked entity.) Only rooms which have an associated Building-Floor-Relationship
+are shown. (column 'ep_room' in TCA)
+";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:150:"$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API";}i:1;a:2:{i:0;s:6:"string";i:1;s:42:"$pObj is a reference to the calling object";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";a:2:{i:0;s:507:"		//The Pid ist now extracted from the cachedTSconfig. This seems to be the best way!
+		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
+
+		$admin = t3lib_div::makeInstance('tx_civserv_mandant');
+
+		if ($pid > 0) $uidAdministration = $admin->get_mandant($pid);
+
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'tx_civserv_
+[...]
+pdate.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_oepupdate.php']);
+}
+?>";i:1;i:1;}s:12:"content_size";i:1577;s:13:"content_lines";i:30;s:6:"atLine";i:142;}}}s:14:"MD5_3b3d9209fe";a:4:{s:8:"filename";s:44:"res/class.tx_civserv_service_maintenance.php";s:8:"filesize";i:6689;s:6:"header";a:5:{s:4:"text";s:291:"
+
+This class maintains the external services passed on by other communities
+and creates speaking labels for the service-position-relation
+
+Some scripts that use this class: ?
+Depends on: ?
+
+$Id: class.tx_civserv_service_maintenance.php,v 1.1.1.1 2004/11/28 17:14:50 bkohorst Exp $
 
 
-Changes: 09.08.04, CR - Anpassung an Konventionen";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:48:"@author Tobias Müller (mullerto@uni-muenster.de)";i:1;s:14:"@package TYPO3";i:2;s:22:"@subpackage tx_civserv";i:3;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:1:{i:0;s:40:"Tobias Müller (mullerto@uni-muenster.de)";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:4:{i:1;a:7:{s:6:"header";s:33:"class tx_civserv_wizard_auswahl {";s:5:"class";i:1;s:11:"parentClass";s:25:"tx_civserv_wizard_auswahl";s:7:"content";s:0:"";s:12:"content_size";i:1019;s:13:"content_lines";i:18;s:6:"atLine";i:52;}i:3;a:7:{s:6:"header";s:17:"function init()	{";s:11:"parentClass";s:25:"tx_civserv_wizard_auswahl";s:4:"cDat";a:3:{s:4:"text";s:34:"
+Changes:";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:49:"@author Georg Niemeyer (niemeyer@uni-muenster.de)";i:1;s:14:"@package TYPO3";i:2;s:22:"@subpackage tx_civserv";i:3;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:1:{i:0;s:41:"Georg Niemeyer (niemeyer@uni-muenster.de)";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:3:{i:1;a:8:{s:6:"header";s:38:"class tx_civserv_service_maintenance {";s:5:"class";i:1;s:11:"parentClass";s:30:"tx_civserv_service_maintenance";s:4:"cDat";a:3:{s:4:"text";s:34:"
 
-Some initial initializations ;)
-";s:5:"param";a:1:{i:0;a:2:{i:0;s:4:"none";i:1;s:0:"";}}s:6:"return";a:2:{i:0;s:4:"none";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:162;s:13:"content_lines";i:5;s:6:"atLine";i:77;}i:5;a:4:{s:6:"header";s:30:"function getPID($table,$uid)	{";s:11:"parentClass";s:25:"tx_civserv_wizard_auswahl";s:4:"cDat";a:3:{s:4:"text";s:52:"
+[CLASS/FUNCTION INDEX of SCRIPT]";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:2:"
+	";i:1;i:-1;}s:12:"content_size";i:2;s:13:"content_lines";i:1;s:6:"atLine";i:45;}i:3;a:4:{s:6:"header";s:36:"function transfer_services($params){";s:11:"parentClass";s:30:"tx_civserv_service_maintenance";s:4:"cDat";a:3:{s:4:"text";s:325:"
 
-Returns the pid of a record from $table with $uid
-";s:5:"param";a:2:{i:0;a:2:{i:0;s:6:"string";i:1;s:10:"Table name";}i:1;a:2:{i:0;s:7:"integer";i:1;s:10:"Record uid";}}s:6:"return";a:2:{i:0;s:7:"integer";i:1;s:63:"PID value (unless the record did not exist in which case FALSE)";}}s:6:"atLine";i:90;}i:7;a:7:{s:6:"header";s:17:"function main()	{";s:11:"parentClass";s:25:"tx_civserv_wizard_auswahl";s:4:"cDat";a:3:{s:4:"text";s:34:"
+This function maintains the external services for a community which are passed on to it by an other community.
+Therefore it checks, whether a service configured for pass on is new and should be inserted as a new external service
+or the a service formally configured for pass on is no longer passed on and should be deleted
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:150:"$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:6:"atLine";i:55;}i:5;a:7:{s:6:"header";s:35:"function update_position(&$params){";s:11:"parentClass";s:30:"tx_civserv_service_maintenance";s:4:"cDat";a:3:{s:4:"text";s:339:"
 
-Main Method, executes the logic
-";s:5:"param";a:1:{i:0;a:2:{i:0;s:4:"none";i:1;s:0:"";}}s:6:"return";a:2:{i:0;s:4:"none";i:1;s:0:"";}}s:7:"content";s:0:"";s:12:"content_size";i:2641;s:13:"content_lines";i:78;s:6:"atLine";i:103;}}}}}
+Updates the label of all service-position-relations to get a speaking name for mm-relation-entries
+This is a workaround which is needed in Typo3 at the moment because the labels of a record (defined in ext_tables.php)
+can only consist of attributes in the same record out of the same table and can't be resolved out of foreign-relations
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:150:"$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";a:2:{i:0;s:507:"		if (is_array($params) && ($params['table']== 'tx_civserv_service' || $params['table']=='tx_civserv_service_sv_position_mm')) {
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				'tx_civserv_service_sv_position_mm.uid, sv_name, po_name, tx_civserv_service.pid',
+				'tx_civserv_service',
+				'tx_civserv_service_sv_position_mm',
+				'tx_civserv_position',
+				 '', ''
+[...]
+]) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_service_maintenance.php']);
+}
+?>";i:1;i:1;}s:12:"content_size";i:908;s:13:"content_lines";i:16;s:6:"atLine";i:116;}}}s:14:"MD5_d962192b5a";a:4:{s:8:"filename";s:44:"res/class.tx_civserv_weekday_maintenance.php";s:8:"filesize";i:2783;s:6:"header";a:5:{s:4:"text";s:282:"
+
+This class provides functionality to updates the label of the given officehour-entry to guarantee the I18N within the weekdays
+
+Some scripts that use this class: ?
+Depends on: ?
+
+$Id: class.tx_civserv_weekday_maintenance.php,v 1.1.1.1 2004/11/28 17:14:49 bkohorst Exp $
+
+
+Changes:";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:49:"@author Georg Niemeyer (niemeyer@uni-muenster.de)";i:1;s:14:"@package TYPO3";i:2;s:22:"@subpackage tx_civserv";i:3;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:1:{i:0;s:41:"Georg Niemeyer (niemeyer@uni-muenster.de)";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:2:{i:1;a:5:{s:6:"header";s:38:"class tx_civserv_weekday_maintenance {";s:5:"class";i:1;s:11:"parentClass";s:30:"tx_civserv_weekday_maintenance";s:4:"cDat";a:3:{s:4:"text";s:35:"
+
+[CLASS/FUNCTION INDEX of SCRIPT]
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:6:"atLine";i:44;}i:3;a:7:{s:6:"header";s:32:"function update_labels($params){";s:11:"parentClass";s:30:"tx_civserv_weekday_maintenance";s:4:"cDat";a:3:{s:4:"text";s:92:"
+
+Updates the label of the given officehour-entry to guarantee the I18N within the weekdays
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:150:"$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API";}}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:0:"";}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+		$LANG->includeLLFile(t3lib_extMgm::extPath('civserv')."locallang_db.php");
+
+		//debug($LANG);
+
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+
+		if ($params['table']=='tx_civserv_officehours')	{
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('oh_weekday','tx_civserv_officehours','uid = '.$params['uid'],'','','');
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_a
+[...]
+]) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_weekday_maintenance.php']);
+}
+?>";i:1;i:1;}s:12:"content_size";i:815;s:13:"content_lines";i:18;s:6:"atLine";i:52;}}}s:14:"MD5_91b73596d1";a:4:{s:8:"filename";s:52:"res/class.tx_civserv_wizard_employee_em_position.php";s:8:"filesize";i:24149;s:6:"header";N;s:3:"DAT";a:6:{i:1;a:8:{s:6:"header";s:67:"class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {";s:5:"class";i:1;s:11:"parentClass";s:38:"tx_civserv_wizard_employee_em_position";s:4:"cDat";a:3:{s:4:"text";s:99:"
+
+This is an abc-wizard for choosing positions for an employee. Multiple positions can be selected.";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:399:"
+	var $content;		// whole HTML-Content to be displayed in Wizard
+	var $res;			// results from SQL-Queries
+	var $P;				// Array given from the parent window in backend
+	var $bparams;		// reads the value of the "caller-field" from backend, needed to adress and change this field
+	var $mode;			// mode for group box, "db" in this case
+	var $pArr;			// contains parts of the $bparams
+	var $PItemName;
+
+	";i:1;i:-1;}s:12:"content_size";i:399;s:13:"content_lines";i:9;s:6:"atLine";i:77;}i:3;a:7:{s:6:"header";s:17:"function init() {";s:11:"parentClass";s:38:"tx_civserv_wizard_employee_em_position";s:4:"cDat";a:5:{s:4:"text";s:63:"
+
+Initializes the wizard by getting values out of the p-array.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:59:"Returns the HTML-Header including all JavaScript-Functions.";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;		// Has to be in every function which uses localization data.
+
+			// Gets parameters out of the p-array.
+		$this->P = t3lib_div::_GP('P');
+
+			// Find "mode"
+		$this->mode='db';
+
+			// Is $P set? If not, read from URL. This is needed because otherwise
+			// the p-array will be lost and no data could be written back to the
+			// main window.
+		if ($this->P['
+[...]
+ptions);
+				return false;
+			}
+
+			</script>
+			<!--###POSTJSMARKER###-->
+			</head>
+		';
+		parent::init();
+	}//end init
+
+
+	";i:1;i:1;}s:12:"content_size";i:6988;s:13:"content_lines";i:187;s:6:"atLine";i:93;}i:5;a:7:{s:6:"header";s:17:"function main()	{";s:11:"parentClass";s:38:"tx_civserv_wizard_employee_em_position";s:4:"cDat";a:5:{s:4:"text";s:196:"
+
+Contains all the logic of the wizard. Shows the abc and in a selectorbox underneath the
+positions beginning with the selected letter. The User can select one or more positions
+for one employee.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:55:"Returns the HTML-Body with the abc and the selectorbox.";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+			// Draw the body.
+		$this->content.='
+			<body scroll="auto" id="typo3-browse-links-php">
+			<form name="employeeposition" action="" method="post">
+
+			<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_employee_em_position.select_letter_text').':</h3>
+			<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
+				<tr class="bgColor">
+				
+[...]
+wizard_employee_em_position.Cancel_Button').'" onclick="parent.close();">
+		</form>
+		</body>
+		</html>
+		';
+	}//end main
+
+
+	";i:1;i:1;}s:12:"content_size";i:8925;s:13:"content_lines";i:92;s:6:"atLine";i:289;}i:7;a:7:{s:6:"header";s:32:"function getPositions($letter)	{";s:11:"parentClass";s:38:"tx_civserv_wizard_employee_em_position";s:4:"cDat";a:5:{s:4:"text";s:82:"
+
+Generates a selector box with the positions locally available for this install.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:93:"$letter: the selected letter to show positions beginning with this letter in the selectorbox.";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:45:"@@return	string		Selector box with positions.";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:35:"string Selector box with positions.";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+
+		if ($letter != "other") {
+				// Gets all positions with the selected letter at the
+				// beginning out of the database. Checks also if positions aren't hidden or
+				// deleted.
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'*',			 							// SELECT ...
+				'tx_civserv_position',						// FROM ...
+[...]
+ name="selectedPositions" size="10" multiple="multiple">'.implode('',$menuItems).'</select>
+			   ';
+	}//end getPositions
+
+
+	";i:1;i:1;}s:12:"content_size";i:3153;s:13:"content_lines";i:55;s:6:"atLine";i:389;}i:9;a:4:{s:6:"header";s:43:"function position_selected($position_uid) {";s:11:"parentClass";s:38:"tx_civserv_wizard_employee_em_position";s:4:"cDat";a:5:{s:4:"text";s:56:"
+
+Checks if a position is already selected by the user.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:45:"$position_uid [string]: the uid of a position";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:16:"@@return	boolean";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:8:"boolean ";}}}s:6:"atLine";i:452;}i:11;a:7:{s:6:"header";s:25:"function printContent()	{";s:11:"parentClass";s:38:"tx_civserv_wizard_employee_em_position";s:4:"cDat";a:5:{s:4:"text";s:59:"
+
+Displays all of the content above in the browser window.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:533:"		echo $this->content;
+	}//end printContent
+
+
+} //end class
+
+
+//checking for and including an extending-class file
+   if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_wizard_employee_em_position.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_wizard_employee_em_position.php']);
+   }
+
+
+//Instantiating
+$SOBE = t3lib_div::makeInstance('tx_civserv_wizard_employee_em_position');
+$SOBE->init();
+$SOBE->main();
+$SOBE->printContent();
+?>";i:1;i:0;}s:12:"content_size";i:533;s:13:"content_lines";i:18;s:6:"atLine";i:469;}}}s:14:"MD5_13e82e1ce3";a:4:{s:8:"filename";s:44:"res/class.tx_civserv_wizard_modelservice.php";s:8:"filesize";i:15047;s:6:"header";N;s:3:"DAT";a:7:{i:1;a:8:{s:6:"header";s:59:"class tx_civserv_wizard_modelservice extends t3lib_SCbase {";s:5:"class";i:1;s:11:"parentClass";s:30:"tx_civserv_wizard_modelservice";s:4:"cDat";a:3:{s:4:"text";s:102:"
+
+This is a wizard for choosing a model service for a service. Only one model service can be selected.";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:438:"
+	var $content;		// whole HTML-Content to be displayed in Wizard
+	var $res;			// results from SQL-Queries
+	var $P;				// Array given from the parent window in backend
+	var $bparams;		// reads the value of the "caller-field" from backend, needed to adress and change this field
+	var $mode;			// mode for group box, "db" in this case
+	var $pArr;			// contains parts of the $bparams
+	var $selectorbox1_checked;
+	var $selectorbox2_checked;
+
+	";i:1;i:-1;}s:12:"content_size";i:438;s:13:"content_lines";i:10;s:6:"atLine";i:77;}i:3;a:7:{s:6:"header";s:17:"function init() {";s:11:"parentClass";s:30:"tx_civserv_wizard_modelservice";s:4:"cDat";a:5:{s:4:"text";s:63:"
+
+Initializes the wizard by getting values out of the p-array.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:59:"Returns the HTML-Header including all JavaScript-Functions.";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;		// Has to be in every function which uses localization data.
+
+			// Gets parameters out of the p-array.
+		$this->P = t3lib_div::_GP('P');
+		$this->selectorbox1_checked = t3lib_div::_GP('select1');
+		$this->selectorbox2_checked = t3lib_div::_GP('select2');
+
+			// Find "mode"
+		$this->mode='db';
+
+			// Is $P set? if not, read from URL. This is needed because
+[...]
+		}
+				}
+				return false;
+			}
+			</script>
+			<!--###POSTJSMARKER###-->
+			</head>
+		';
+		parent::init();
+	}//end init
+
+
+	";i:1;i:1;}s:12:"content_size";i:3066;s:13:"content_lines";i:87;s:6:"atLine";i:94;}i:5;a:7:{s:6:"header";s:17:"function main()	{";s:11:"parentClass";s:30:"tx_civserv_wizard_modelservice";s:4:"cDat";a:5:{s:4:"text";s:195:"
+
+Contains all the logic of the wizard. Shows the two selectorboxes for selecting model service categories
+and the model service itself. The User can select only one model service for a service.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:49:"Returns the HTML-Body with the two selectorboxes.";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+
+			// Draw the body.
+		$this->content.='
+			<body scroll="auto" id="typo3-browse-links-php">
+			<form name="modelservice" action="" method="post">
+
+			<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_modelservice.select_category_text').':</h3>
+			<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
+				<tr class="bgColor">
+					<td nowr
+[...]
+civserv_wizard_modelservice.Cancel_Button').'" onclick="parent.close();">
+		</form>
+		</body>
+		</html>
+		';
+	}//end main
+
+
+	";i:1;i:1;}s:12:"content_size";i:2169;s:13:"content_lines";i:62;s:6:"atLine";i:189;}i:7;a:7:{s:6:"header";s:23:"function menuConfig()	{";s:11:"parentClass";s:30:"tx_civserv_wizard_modelservice";s:4:"cDat";a:5:{s:4:"text";s:188:"
+
+Adds items to the ->MOD_MENU array. Used for the function menu selector.
+This function configures the selectorbox by searching the model service data-
+base for model service categories.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:73:"@@return	void		Returns the selectorbox with the model service categories.";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:63:"void Returns the selectorbox with the model service categories.";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;		// Has to be in every function which uses localization data.
+
+			// Gets the root-UID of model service out of the config table and stores
+			// it in $uidModelService.
+		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'cf_value',			 							// SELECT ...
+			'tx_civserv_configuration',		 				// FROM ...
+			'cf_module="model service" AND cf_key="uid"'
+[...]
+			'phpFile' => '',
+			'tuneXHTML' => '',
+			'tuneQuotes' => '',
+			'tuneBeautify' => '',
+		);
+		parent::menuConfig();
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:1804;s:13:"content_lines";i:45;s:6:"atLine";i:260;}i:9;a:7:{s:6:"header";s:37:"function getSelectForModelService()	{";s:11:"parentClass";s:30:"tx_civserv_wizard_modelservice";s:4:"cDat";a:5:{s:4:"text";s:87:"
+
+Generates a selector box with the model services locally available for this install.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:50:"@@return	string		Selector box with model services.";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:40:"string Selector box with model services.";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+
+			// Selects all model services of the selected category AND categories underneath it by checking if
+			// the PIDs of the model services and the UID of the model service
+			// categories are the same.
+		$folders = $this->get_folders($this->MOD_SETTINGS['function']);
+		$pid_top=(string)$this->MOD_SETTINGS['function'];
+		if(count($folders)>0){
+			$where_cl
+[...]
+''.htmlspecialchars($PItemName).'\',this);">'.implode('',$menuItems).'</select>
+			   ';
+	}//end getSelectForModelService
+
+
+	";i:1;i:1;}s:12:"content_size";i:2465;s:13:"content_lines";i:47;s:6:"atLine";i:312;}i:11;a:4:{s:6:"header";s:34:"function get_folders($startnode) {";s:11:"parentClass";s:30:"tx_civserv_wizard_modelservice";s:4:"cDat";a:5:{s:4:"text";s:77:"
+
+Gives back all uid's from folders in the pagetree underneath the startnode
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:15:"$startnode: ...";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:2:{i:0;s:33:"@@param	the uid of the startnode.";i:1;s:13:"@@return	void";}s:11:"other_index";a:2:{s:7:"@@param";a:1:{i:0;s:25:"the uid of the startnode.";}s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:6:"atLine";i:368;}i:13;a:7:{s:6:"header";s:25:"function printContent()	{";s:11:"parentClass";s:30:"tx_civserv_wizard_modelservice";s:4:"cDat";a:5:{s:4:"text";s:59:"
+
+Displays all of the content above in the browser window.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:509:"		echo $this->content;
+	}//end printContent
+
+
+} //end class
+
+
+//checking for and including an extending-class file
+   if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_wizard_modelservice.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_wizard_modelservice.php']);
+   }
+
+
+//Instantiating
+$SOBE = t3lib_div::makeInstance('tx_civserv_wizard_modelservice');
+$SOBE->init();
+$SOBE->main();
+$SOBE->printContent();
+?>";i:1;i:0;}s:12:"content_size";i:509;s:13:"content_lines";i:18;s:6:"atLine";i:393;}}}s:14:"MD5_30e849e89a";a:4:{s:8:"filename";s:55:"res/class.tx_civserv_wizard_organisation_supervisor.php";s:8:"filesize";i:24533;s:6:"header";N;s:3:"DAT";a:6:{i:1;a:8:{s:6:"header";s:70:"class tx_civserv_wizard_organisation_supervisor extends t3lib_SCbase {";s:5:"class";i:1;s:11:"parentClass";s:41:"tx_civserv_wizard_organisation_supervisor";s:4:"cDat";a:3:{s:4:"text";s:120:"
+
+This is an abc-wizard for choosing an employee as a supervisor for an organization. Only one employee can be selected.";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:399:"
+	var $content;		// whole HTML-Content to be displayed in Wizard
+	var $res;			// results from SQL-Queries
+	var $P;				// Array given from the parent window in backend
+	var $bparams;		// reads the value of the "caller-field" from backend, needed to adress and change this field
+	var $mode;			// mode for group box, "db" in this case
+	var $pArr;			// contains parts of the $bparams
+	var $PItemName;
+
+	";i:1;i:-1;}s:12:"content_size";i:399;s:13:"content_lines";i:9;s:6:"atLine";i:77;}i:3;a:7:{s:6:"header";s:17:"function init() {";s:11:"parentClass";s:41:"tx_civserv_wizard_organisation_supervisor";s:4:"cDat";a:5:{s:4:"text";s:63:"
+
+Initializes the wizard by getting values out of the p-array.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:59:"Returns the HTML-Header including all JavaScript-Functions.";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;		// Has to be in every function which uses localization data.
+
+			// Gets parameters out of the p-array.
+		$this->P = t3lib_div::_GP('P');
+
+			// Find "mode"
+		$this->mode='db';
+
+			// Is $P set? If not, read from URL. This is needed because otherwise
+			// the p-array will be lost and no data could be written back to the
+			// main window.
+		if ($this->P['
+[...]
+ptions);
+				return false;
+			}
+
+			</script>
+			<!--###POSTJSMARKER###-->
+			</head>
+		';
+		parent::init();
+	}//end init
+
+
+	";i:1;i:1;}s:12:"content_size";i:6891;s:13:"content_lines";i:184;s:6:"atLine";i:93;}i:5;a:7:{s:6:"header";s:17:"function main()	{";s:11:"parentClass";s:41:"tx_civserv_wizard_organisation_supervisor";s:4:"cDat";a:5:{s:4:"text";s:213:"
+
+Contains all the logic of the wizard. Shows the abc and in a selectorbox underneath the
+employees beginning with the selected letter. The User can select one or more supervisor (=employee)
+for one organisation.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:55:"Returns the HTML-Body with the abc and the selectorbox.";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+			// Draw the body.
+		$this->content.='
+			<body scroll="auto" id="typo3-browse-links-php">
+			<form name="organisationform" action="" method="post">
+
+			<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_organisation_supervisor.select_letter_text').':</h3>
+			<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
+				<tr class="bgColor">
+	
+[...]
+ard_organisation_supervisor.Cancel_Button').'" onclick="parent.close();">
+		</form>
+		</body>
+		</html>
+		';
+	}//end main
+
+
+	";i:1;i:1;}s:12:"content_size";i:9126;s:13:"content_lines";i:92;s:6:"atLine";i:286;}i:7;a:7:{s:6:"header";s:34:"function getSupervisors($letter)	{";s:11:"parentClass";s:41:"tx_civserv_wizard_organisation_supervisor";s:4:"cDat";a:5:{s:4:"text";s:82:"
+
+Generates a selector box with the employees locally available for this install.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:93:"$letter: the selected letter to show employees beginning with this letter in the selectorbox.";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:45:"@@return	string		Selector box with employees.";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:35:"string Selector box with employees.";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+
+		if ($letter != "other") {
+				// Gets all employees with the selected letter at the
+				// beginning out of the database. Checks also if employees aren't hidden or
+				// deleted.
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'*',			 							// SELECT ...
+				'tx_civserv_employee',						// FROM ...
+[...]
+
+		return '<select name="selectedsupervisor" size="1">'.implode('',$menuItems).'</select>
+			   ';
+	}//end getSupervisors
+
+
+	";i:1;i:1;}s:12:"content_size";i:3372;s:13:"content_lines";i:59;s:6:"atLine";i:386;}i:9;a:4:{s:6:"header";s:43:"function employee_selected($employee_uid) {";s:11:"parentClass";s:41:"tx_civserv_wizard_organisation_supervisor";s:4:"cDat";a:5:{s:4:"text";s:57:"
+
+Checks if an employee is already selected by the user.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:46:"$employee_uid [string]: the uid of an employee";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:16:"@@return	boolean";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:8:"boolean ";}}}s:6:"atLine";i:453;}i:11;a:7:{s:6:"header";s:25:"function printContent()	{";s:11:"parentClass";s:41:"tx_civserv_wizard_organisation_supervisor";s:4:"cDat";a:5:{s:4:"text";s:59:"
+
+Displays all of the content above in the browser window.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:542:"		echo $this->content;
+	}//end printContent
+
+
+} //end class
+
+
+//checking for and including an extending-class file
+   if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_wizard_organisation_supervisor.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_wizard_organisation_supervisor.php']);
+   }
+
+
+//Instantiating
+$SOBE = t3lib_div::makeInstance('tx_civserv_wizard_organisation_supervisor');
+$SOBE->init();
+$SOBE->main();
+$SOBE->printContent();
+?>";i:1;i:0;}s:12:"content_size";i:542;s:13:"content_lines";i:18;s:6:"atLine";i:470;}}}s:14:"MD5_f9206fa090";a:4:{s:8:"filename";s:44:"res/class.tx_civserv_wizard_service_form.php";s:8:"filesize";i:23909;s:6:"header";N;s:3:"DAT";a:6:{i:1;a:8:{s:6:"header";s:59:"class tx_civserv_wizard_service_form extends t3lib_SCbase {";s:5:"class";i:1;s:11:"parentClass";s:30:"tx_civserv_wizard_service_form";s:4:"cDat";a:3:{s:4:"text";s:97:"
+
+This is an abc-wizard for choosing formulars for a service. Multiple formulars can be selected.";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:399:"
+	var $content;		// whole HTML-Content to be displayed in Wizard
+	var $res;			// results from SQL-Queries
+	var $P;				// Array given from the parent window in backend
+	var $bparams;		// reads the value of the "caller-field" from backend, needed to adress and change this field
+	var $mode;			// mode for group box, "db" in this case
+	var $pArr;			// contains parts of the $bparams
+	var $PItemName;
+
+	";i:1;i:-1;}s:12:"content_size";i:399;s:13:"content_lines";i:9;s:6:"atLine";i:77;}i:3;a:7:{s:6:"header";s:17:"function init() {";s:11:"parentClass";s:30:"tx_civserv_wizard_service_form";s:4:"cDat";a:5:{s:4:"text";s:63:"
+
+Initializes the wizard by getting values out of the p-array.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:59:"Returns the HTML-Header including all JavaScript-Functions.";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;		// Has to be in every function which uses localization data.
+
+			// Gets parameters out of the p-array.
+		$this->P = t3lib_div::_GP('P');
+
+			// Find "mode"
+		$this->mode='db';
+
+			// Is $P set? if not, read from URL. This is needed because otherwise
+			// the p-array will be lost and no data could be written back to the
+			// main window.
+		if ($this->P['
+[...]
+ptions);
+				return false;
+			}
+
+			</script>
+			<!--###POSTJSMARKER###-->
+			</head>
+		';
+		parent::init();
+	}//end init
+
+
+	";i:1;i:1;}s:12:"content_size";i:6907;s:13:"content_lines";i:187;s:6:"atLine";i:93;}i:5;a:7:{s:6:"header";s:17:"function main()	{";s:11:"parentClass";s:30:"tx_civserv_wizard_service_form";s:4:"cDat";a:5:{s:4:"text";s:195:"
+
+Contains all the logic of the wizard. Shows the abc and in a selectorbox underneath the
+formulars beginning with the selected letter. The User can select one or more formulars
+for one service.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:55:"Returns the HTML-Body with the abc and the selectorbox.";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+			// Draw the body.
+		$this->content.='
+			<body scroll="auto" id="typo3-browse-links-php">
+			<form name="serviceform" action="" method="post">
+
+			<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_form.select_letter_text').':</h3>
+			<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
+				<tr class="bgColor">
+					<td nowrap="
+[...]
+_civserv_wizard_service_form.Cancel_Button').'" onclick="parent.close();">
+		</form>
+		</body>
+		</html>
+		';
+	}//end main
+
+	";i:1;i:1;}s:12:"content_size";i:8825;s:13:"content_lines";i:91;s:6:"atLine";i:289;}i:7;a:7:{s:6:"header";s:32:"function getFormulars($letter)	{";s:11:"parentClass";s:30:"tx_civserv_wizard_service_form";s:4:"cDat";a:5:{s:4:"text";s:82:"
+
+Generates a selector box with the formulars locally available for this install.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:94:"$letter:  the selected letter to show formulars beginning with this letter in the selectorbox.";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:45:"@@return	string		Selector box with formulars.";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:35:"string Selector box with formulars.";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+
+		if ($letter != "other") {
+				// Gets all formulars with the selected letter at the
+				// beginning out of the database. Checks also if formulars aren't hidden or
+				// deleted.
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'*',			 							// SELECT ...
+				'tx_civserv_form',							// FROM ...
+		
+[...]
+ name="selectedFormulars" size="10" multiple="multiple">'.implode('',$menuItems).'</select>
+			   ';
+	}//end getFormulars
+
+
+	";i:1;i:1;}s:12:"content_size";i:3146;s:13:"content_lines";i:56;s:6:"atLine";i:388;}i:9;a:4:{s:6:"header";s:43:"function formular_selected($formular_uid) {";s:11:"parentClass";s:30:"tx_civserv_wizard_service_form";s:4:"cDat";a:5:{s:4:"text";s:56:"
+
+Checks if a formular is already selected by the user.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:36:"$formular_uid: the uid of a formular";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:16:"@@return	boolean";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:8:"boolean ";}}}s:6:"atLine";i:452;}i:11;a:7:{s:6:"header";s:25:"function printContent()	{";s:11:"parentClass";s:30:"tx_civserv_wizard_service_form";s:4:"cDat";a:5:{s:4:"text";s:59:"
+
+Displays all of the content above in the browser window.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:509:"		echo $this->content;
+	}//end printContent
+
+
+} //end class
+
+
+//checking for and including an extending-class file
+   if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_wizard_service_form.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_wizard_service_form.php']);
+   }
+
+
+//Instantiating
+$SOBE = t3lib_div::makeInstance('tx_civserv_wizard_service_form');
+$SOBE->init();
+$SOBE->main();
+$SOBE->printContent();
+?>";i:1;i:0;}s:12:"content_size";i:509;s:13:"content_lines";i:18;s:6:"atLine";i:469;}}}s:14:"MD5_9a37d37cc7";a:4:{s:8:"filename";s:48:"res/class.tx_civserv_wizard_service_position.php";s:8:"filesize";i:23985;s:6:"header";N;s:3:"DAT";a:6:{i:1;a:8:{s:6:"header";s:63:"class tx_civserv_wizard_service_position extends t3lib_SCbase {";s:5:"class";i:1;s:11:"parentClass";s:34:"tx_civserv_wizard_service_position";s:4:"cDat";a:3:{s:4:"text";s:97:"
+
+This is an abc-wizard for choosing positions for a service. Multiple positions can be selected.";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:399:"
+	var $content;		// whole HTML-Content to be displayed in Wizard
+	var $res;			// results from SQL-Queries
+	var $P;				// Array given from the parent window in backend
+	var $bparams;		// reads the value of the "caller-field" from backend, needed to adress and change this field
+	var $mode;			// mode for group box, "db" in this case
+	var $pArr;			// contains parts of the $bparams
+	var $PItemName;
+
+	";i:1;i:-1;}s:12:"content_size";i:399;s:13:"content_lines";i:9;s:6:"atLine";i:77;}i:3;a:7:{s:6:"header";s:17:"function init() {";s:11:"parentClass";s:34:"tx_civserv_wizard_service_position";s:4:"cDat";a:5:{s:4:"text";s:63:"
+
+Initializes the wizard by getting values out of the p-array.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:59:"Returns the HTML-Header including all JavaScript-Functions.";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;		// Has to be in every function which uses localization data.
+
+			// Gets parameters out of the p-array.
+		$this->P = t3lib_div::_GP('P');
+
+			// Find "mode"
+		$this->mode='db';
+
+			// Is $P set? if not, read from URL. This is needed because otherwise
+			// the p-array will be lost and no data could be written back to the
+			// main window.
+		if ($this->P['
+[...]
+ptions);
+				return false;
+			}
+
+			</script>
+			<!--###POSTJSMARKER###-->
+			</head>
+		';
+		parent::init();
+	}//end init
+
+
+	";i:1;i:1;}s:12:"content_size";i:6925;s:13:"content_lines";i:187;s:6:"atLine";i:93;}i:5;a:7:{s:6:"header";s:17:"function main()	{";s:11:"parentClass";s:34:"tx_civserv_wizard_service_position";s:4:"cDat";a:5:{s:4:"text";s:195:"
+
+Contains all the logic of the wizard. Shows the abc and in a selectorbox underneath the
+positions beginning with the selected letter. The User can select one or more positions
+for one service.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:55:"Returns the HTML-Body with the abc and the selectorbox.";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+			// Draw the body.
+		$this->content.='
+			<body scroll="auto" id="typo3-browse-links-php">
+			<form name="serviceform" action="" method="post">
+
+			<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_position.select_letter_text').':</h3>
+			<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
+				<tr class="bgColor">
+					<td nowr
+[...]
+serv_wizard_service_position.Cancel_Button').'" onclick="parent.close();">
+		</form>
+		</body>
+		</html>
+		';
+	}//end main
+
+	";i:1;i:1;}s:12:"content_size";i:8843;s:13:"content_lines";i:90;s:6:"atLine";i:289;}i:7;a:7:{s:6:"header";s:32:"function getPositions($letter)	{";s:11:"parentClass";s:34:"tx_civserv_wizard_service_position";s:4:"cDat";a:5:{s:4:"text";s:82:"
+
+Generates a selector box with the positions locally available for this install.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:93:"$letter: the selected letter to show positions beginning with this letter in the selectorbox.";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:45:"@@return	string		Selector box with positions.";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:35:"string Selector box with positions.";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+
+		if ($letter != "other") {
+				// Gets all positions with the selected letter at the
+				// beginning out of the database. Checks also if positions aren't hidden or
+				// deleted.
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'*',			 							// SELECT ...
+				'tx_civserv_position',						// FROM ...
+[...]
+ name="selectedPositions" size="10" multiple="multiple">'.implode('',$menuItems).'</select>
+			   ';
+	}//end getPositions
+
+
+	";i:1;i:1;}s:12:"content_size";i:3154;s:13:"content_lines";i:57;s:6:"atLine";i:387;}i:9;a:4:{s:6:"header";s:43:"function position_selected($position_uid) {";s:11:"parentClass";s:34:"tx_civserv_wizard_service_position";s:4:"cDat";a:5:{s:4:"text";s:56:"
+
+Checks if a position is already selected by the user.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:45:"$position_uid [string]: the uid of a position";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:16:"@@return	boolean";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:8:"boolean ";}}}s:6:"atLine";i:452;}i:11;a:7:{s:6:"header";s:25:"function printContent()	{";s:11:"parentClass";s:34:"tx_civserv_wizard_service_position";s:4:"cDat";a:5:{s:4:"text";s:59:"
+
+Displays all of the content above in the browser window.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:521:"		echo $this->content;
+	}//end printContent
+
+
+} //end class
+
+
+//checking for and including an extending-class file
+   if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_wizard_service_position.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_wizard_service_position.php']);
+   }
+
+
+//Instantiating
+$SOBE = t3lib_div::makeInstance('tx_civserv_wizard_service_position');
+$SOBE->init();
+$SOBE->main();
+$SOBE->printContent();
+?>";i:1;i:0;}s:12:"content_size";i:521;s:13:"content_lines";i:18;s:6:"atLine";i:469;}}}s:14:"MD5_af908aefc1";a:4:{s:8:"filename";s:50:"res/class.tx_civserv_wizard_service_searchword.php";s:8:"filesize";i:21476;s:6:"header";N;s:3:"DAT";a:6:{i:1;a:8:{s:6:"header";s:65:"class tx_civserv_wizard_service_searchword extends t3lib_SCbase {";s:5:"class";i:1;s:11:"parentClass";s:36:"tx_civserv_wizard_service_searchword";s:4:"cDat";a:3:{s:4:"text";s:103:"
+
+This is an abc-wizard for choosing search words for a service. Multiple search words can be selected.";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:399:"
+	var $content;		// whole HTML-Content to be displayed in Wizard
+	var $res;			// results from SQL-Queries
+	var $P;				// Array given from the parent window in backend
+	var $bparams;		// reads the value of the "caller-field" from backend, needed to adress and change this field
+	var $mode;			// mode for group box, "db" in this case
+	var $pArr;			// contains parts of the $bparams
+	var $PItemName;
+
+	";i:1;i:-1;}s:12:"content_size";i:399;s:13:"content_lines";i:9;s:6:"atLine";i:76;}i:3;a:7:{s:6:"header";s:17:"function init() {";s:11:"parentClass";s:36:"tx_civserv_wizard_service_searchword";s:4:"cDat";a:5:{s:4:"text";s:63:"
+
+Initializes the wizard by getting values out of the p-array.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:59:"Returns the HTML-Header including all JavaScript-Functions.";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;		// Has to be in every function which uses localization data.
+
+			// Gets parameters out of the p-array.
+		$this->P = t3lib_div::_GP('P');
+
+			// Find "mode"
+		$this->mode='db';
+
+			// Is $P set? if not, read from URL. This is needed because otherwise
+			// the p-array will be lost and no data could be written back to the
+			// main window.
+		if ($this->P['
+[...]
+ptions);
+				return false;
+			}
+
+			</script>
+			<!--###POSTJSMARKER###-->
+			</head>
+		';
+		parent::init();
+	}//end init
+
+
+	";i:1;i:1;}s:12:"content_size";i:6095;s:13:"content_lines";i:170;s:6:"atLine";i:92;}i:5;a:7:{s:6:"header";s:17:"function main()	{";s:11:"parentClass";s:36:"tx_civserv_wizard_service_searchword";s:4:"cDat";a:5:{s:4:"text";s:218:"
+
+Contains all the logic of the wizard. Shows the abc and in a selectorbox underneath the
+search words beginning with the selected letter. The User can select one or more search words
+for one service or model service.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:55:"Returns the HTML-Body with the abc and the selectorbox.";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+			// Draw the body.
+		$this->content.='
+			<body scroll="auto" id="typo3-browse-links-php">
+			<form name="serviceform" action="" method="post">
+
+			<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_searchword.select_letter_text').':</h3>
+			<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
+				<tr class="bgColor">
+					<td no
+[...]
+rv_wizard_service_searchword.Cancel_Button').'" onclick="parent.close();">
+		</form>
+		</body>
+		</html>
+		';
+	}//end main
+
+	";i:1;i:1;}s:12:"content_size";i:7302;s:13:"content_lines";i:91;s:6:"atLine";i:271;}i:7;a:7:{s:6:"header";s:34:"function getSearchwords($letter)	{";s:11:"parentClass";s:36:"tx_civserv_wizard_service_searchword";s:4:"cDat";a:5:{s:4:"text";s:85:"
+
+Generates a selector box with the search words locally available for this install.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:96:"$letter: the selected letter to show search words beginning with this letter in the selectorbox.";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:48:"@@return	string		Selector box with search words.";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:38:"string Selector box with search words.";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+
+		if ($letter != "other") {
+				// Gets all search words with the selected letter at the
+				// beginning out of the database. Checks also if formulars aren't hidden or
+				// deleted.
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'*',			 							// SELECT ...
+				'tx_civserv_search_word',					// FRO
+[...]
+e="selectedSearchwords" size="10" multiple="multiple">'.implode('',$menuItems).'</select>
+			   ';
+	}//end getSearchwords
+
+
+	";i:1;i:1;}s:12:"content_size";i:3053;s:13:"content_lines";i:49;s:6:"atLine";i:370;}i:9;a:4:{s:6:"header";s:47:"function searchword_selected($searchword_uid) {";s:11:"parentClass";s:36:"tx_civserv_wizard_service_searchword";s:4:"cDat";a:5:{s:4:"text";s:59:"
+
+Checks if a search word is already selected by the user.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:50:"$searchword_uid [string]: the uid of a search word";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:16:"@@return	boolean";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:8:"boolean ";}}}s:6:"atLine";i:427;}i:11;a:7:{s:6:"header";s:25:"function printContent()	{";s:11:"parentClass";s:36:"tx_civserv_wizard_service_searchword";s:4:"cDat";a:5:{s:4:"text";s:59:"
+
+Displays all of the content above in the browser window.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:527:"		echo $this->content;
+	}//end printContent
+
+
+} //end class
+
+
+//checking for and including an extending-class file
+   if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_wizard_service_searchword.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_wizard_service_searchword.php']);
+   }
+
+
+//Instantiating
+$SOBE = t3lib_div::makeInstance('tx_civserv_wizard_service_searchword');
+$SOBE->init();
+$SOBE->main();
+$SOBE->printContent();
+?>";i:1;i:0;}s:12:"content_size";i:527;s:13:"content_lines";i:18;s:6:"atLine";i:444;}}}s:14:"MD5_d3fc49b829";a:4:{s:8:"filename";s:56:"res/class.tx_civserv_wizard_service_similar_services.php";s:8:"filesize";i:19599;s:6:"header";N;s:3:"DAT";a:8:{i:1;a:8:{s:6:"header";s:71:"class tx_civserv_wizard_service_similar_services extends t3lib_SCbase {";s:5:"class";i:1;s:11:"parentClass";s:42:"tx_civserv_wizard_service_similar_services";s:4:"cDat";a:3:{s:4:"text";s:98:"
+
+This is a wizard for choosing similar services for a service. Multiple services can be selected.";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:420:"
+	var $content;		// whole HTML-Content to be displayed in Wizard
+	var $res;			// results from SQL-Queries
+	var $P;				// Array given from the parent window in backend
+	var $bparams;		// reads the value of the "caller-field" from backend, needed to adress and change this field
+	var $mode;			// mode for group box, "db" in this case
+	var $pArr;			// contains parts of the $bparams
+	var $PItemName;
+	var $category_uid;
+
+
+	";i:1;i:-1;}s:12:"content_size";i:420;s:13:"content_lines";i:11;s:6:"atLine";i:80;}i:3;a:7:{s:6:"header";s:17:"function init() {";s:11:"parentClass";s:42:"tx_civserv_wizard_service_similar_services";s:4:"cDat";a:5:{s:4:"text";s:63:"
+
+Initializes the wizard by getting values out of the p-array.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:59:"Returns the HTML-Header including all JavaScript-Functions.";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;		// Has to be in every function which uses localization data.
+
+			// Gets parameters out of the p-array.
+		$this->P = t3lib_div::_GP('P');
+
+			// Find "mode"
+		$this->mode='db';
+
+			// Is $P set? if not, read from URL. This is needed because otherwise
+			// the p-array will be lost and no data could be written back to the
+			// main window.
+		if ($this->P['
+[...]
+->service_folder_uid).'\');
+			}
+			</script>
+			<!--###POSTJSMARKER###-->
+			</head>
+		';
+		parent::init();
+	}//end init
+
+
+	";i:1;i:1;}s:12:"content_size";i:8979;s:13:"content_lines";i:221;s:6:"atLine";i:98;}i:5;a:7:{s:6:"header";s:17:"function main()	{";s:11:"parentClass";s:42:"tx_civserv_wizard_service_similar_services";s:4:"cDat";a:5:{s:4:"text";s:234:"
+
+Contains all the logic of the wizard. Shows the service categories in a first selectorbox and all services
+of a selected category in a second selectorbox underneath. The User can select one or more similar services
+for one service.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:49:"Returns the HTML-Body with the two selectorboxes.";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+			// Draw the body.
+		$this->content.='
+			<body scroll="auto" id="typo3-browse-links-php">
+			<form name="similarservices" action="" method="post">
+
+			<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_similar_services.select_category_text').':</h3>
+			<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
+				<tr class="bgColor">
+[...]
+rd_service_similar_services.Cancel_Button').'" onclick="parent.close();">
+		</form>
+		</body>
+		</html>
+		';
+	}//end main
+
+
+	";i:1;i:1;}s:12:"content_size";i:1764;s:13:"content_lines";i:57;s:6:"atLine";i:328;}i:7;a:7:{s:6:"header";s:33:"function getServiceCategories()	{";s:11:"parentClass";s:42:"tx_civserv_wizard_service_similar_services";s:4:"cDat";a:5:{s:4:"text";s:91:"
+
+Generates a selector box with the service categories locally available for this install.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:54:"@@return	string		Selector box with service categories.";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:44:"string Selector box with service categories.";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+
+			// Gets all categories which aren't hidden or deleted out of the database.
+		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'*',																	// SELECT ...
+			'pages',																// FROM ...
+			'pid = '.intval($this->service_folder_uid).' AND !deleted AND !hidden',	// AND title LIKE "%blabla%"'
+[...]
+selectedCategories" onchange="changeCategory()">'.implode('',$menuItems).'</select>
+			   ';
+	}//end getServiceCategories
+
+
+	";i:1;i:1;}s:12:"content_size";i:1518;s:13:"content_lines";i:34;s:6:"atLine";i:392;}i:9;a:7:{s:6:"header";s:24:"function getServices()	{";s:11:"parentClass";s:42:"tx_civserv_wizard_service_similar_services";s:4:"cDat";a:5:{s:4:"text";s:73:"
+
+Generates a selector box with the services from the selected category.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:44:"@@return	string		Selector box with services.";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:34:"string Selector box with services.";}}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+
+			// Gets all services with the selected category_uid out of the database.
+			// Checks also if positions aren't hidden or deleted.
+
+			// get all the child-folders to the chosen category (only 1 level recursion)
+		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'uid',			 				// SELECT ...
+			'pages',			
+[...]
+ct name="selectedServices" size="10" multiple="multiple">'.implode('',$menuItems).'</select>
+			   ';
+	}//end getServices
+
+
+	";i:1;i:1;}s:12:"content_size";i:1901;s:13:"content_lines";i:52;s:6:"atLine";i:433;}i:11;a:7:{s:6:"header";s:41:"function service_selected($service_uid) {";s:11:"parentClass";s:42:"tx_civserv_wizard_service_similar_services";s:4:"cDat";a:5:{s:4:"text";s:55:"
+
+Checks if a service is already selected by the user.
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"[type]";i:1;s:43:"$service_uid [string]: the uid of a service";}}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:16:"@@return	boolean";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:8:"boolean ";}}}s:7:"content";a:2:{i:0;s:213:"		$selected_uid = explode('|',(string)t3lib_div::_GP('selected_uid'));
+		foreach($selected_uid AS $key => $val) {
+			if ($val==$service_uid) {
+				return true;
+			}
+		}
+		return false;
+	}//end service_selected
+
+
+	";i:1;i:0;}s:12:"content_size";i:213;s:13:"content_lines";i:10;s:6:"atLine";i:493;}i:13;a:4:{s:6:"header";s:25:"function printContent()	{";s:11:"parentClass";s:42:"tx_civserv_wizard_service_similar_services";s:4:"cDat";a:5:{s:4:"text";s:59:"
+
+Displays all of the content above in the browser window.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:1:{i:0;s:13:"@@return	void";}s:11:"other_index";a:1:{s:8:"@@return";a:1:{i:0;s:5:"void ";}}}s:6:"atLine";i:510;}i:15;a:6:{s:6:"header";s:25:"function js_alert($msg) {";s:11:"parentClass";s:42:"tx_civserv_wizard_service_similar_services";s:7:"content";a:2:{i:0;s:577:"				echo "<script type=\"text/javascript\">alert('".$msg."');</script>";
+	}
+
+
+} //end class
+
+
+//checking for and including an extending-class file
+   if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_wizard_service_similar_services.php']) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_wizard_service_similar_services.php']);
+   }
+
+
+//Instantiating
+$SOBE = t3lib_div::makeInstance('tx_civserv_wizard_service_similar_services');
+$SOBE->init();
+$SOBE->main();
+$SOBE->printContent();
+?>";i:1;i:0;}s:12:"content_size";i:577;s:13:"content_lines";i:18;s:6:"atLine";i:514;}}}s:14:"MD5_0ad307d6f7";a:4:{s:8:"filename";s:12:"res/conf.php";s:8:"filesize";i:2141;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_c252006b0f";a:4:{s:8:"filename";s:24:"res/locallang_wizard.php";s:8:"filesize";i:16384;s:6:"header";a:5:{s:4:"text";s:79:"
+
+Language labels for wizards
+
+This file is detected by the translation tool.
+
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:5:{i:0;s:49:"@author Tobias Müller (mullerto@uni-muenster.de),";i:1;s:49:"@author Maurits Hinzen (mhinzen@uni-muenster.de),";i:2;s:14:"@package TYPO3";i:3;s:22:"@subpackage tx_civserv";i:4;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:2:{i:0;s:41:"Tobias Müller (mullerto@uni-muenster.de),";i:1;s:41:"Maurits Hinzen (mhinzen@uni-muenster.de),";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:0:{}}s:14:"MD5_8d212b99ed";a:4:{s:8:"filename";s:60:"modcacheservices/class.tx_civserv_modcacheservices_cache.php";s:8:"filesize";i:18029;s:6:"header";a:5:{s:4:"text";s:150:"
+
+Module 'Cache Services' for the 'civserv' extension.
+
+$Id: class.tx_civserv_modcacheservices_cache.php,v 1.1.1.1 2004/11/28 17:14:50 bkohorst Exp $
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:50:"@author	Stefan Meesters <meesters@uni-muenster.de>";i:1;s:14:"@package TYPO3";i:2;s:22:"@subpackage tx_civserv";i:3;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:1:{i:0;s:42:"Stefan Meesters <meesters@uni-muenster.de>";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:7:{i:1;a:8:{s:6:"header";s:41:"class tx_civserv_modcacheservices_cache {";s:5:"class";i:1;s:11:"parentClass";s:33:"tx_civserv_modcacheservices_cache";s:4:"cDat";a:3:{s:4:"text";s:634:"
+
+[CLASS/FUNCTION INDEX of SCRIPT]
+
+
+
+  54: class tx_civserv_modcacheservices_cache
+  67:     function main(&$parentObj, $uid, $site)
+ 215:     function cacheServices ($lastProcessed, $startTime, $site)
+ 288:     function cHashParams($addQueryParams)
+
+             SECTION: Helper functions for generating the pidlist:
+ 330:     function getTreeList($id,$depth,$begin=0,$dontCheckEnableFields=0,$addSelectFields='',$moreWhereClauses='')
+ 365:     function checkEnableFields($row)
+ 383:     function checkPagerecordForIncludeSection($row)
+
+TOTAL FUNCTIONS: 6
+(This index is automatically created/updated by the extension "extdeveval")
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:108:"
+	var $totalPages;		// contains the number of total pages being processed, for statistical purposes only.
+
+	";i:1;i:-1;}s:12:"content_size";i:108;s:13:"content_lines";i:3;s:6:"atLine";i:52;}i:3;a:7:{s:6:"header";s:44:"function main(&$parentObj, $uid, $site)    {";s:11:"parentClass";s:33:"tx_civserv_modcacheservices_cache";s:4:"cDat";a:3:{s:4:"text";s:105:"
+
+Main function of this class, starts caching of a given page.
+Generates the content and the prgressbar.
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:3:"Obj";i:1;s:17:"The parent object";}i:1;a:2:{i:0;s:7:"integer";i:1;s:42:"Uid of the site, which is used for caching";}i:2;a:2:{i:0;s:6:"string";i:1;s:58:"Sitepath to the index.php, wich is used to cache the pages";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:49:"Content that is to be displayed within the module";}}s:7:"content";a:2:{i:0;s:507:"		global $BACK_PATH, $LANG;
+
+		$content = '';
+
+		// Start or resume session
+		session_name('modcacheservices');
+		session_start();
+		if ($_SESSION['uid'] != $uid) {
+			$_SESSION['uid'] = $uid;
+
+			// get the community name and the page uid
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'cm_community_name, cm_community_id, cm_uid, cm_page_uid',
+						'tx_civserv_co
+[...]
+ue="' . $LANG->getLL('startCaching') . '" />
+			';
+		}
+		return $parentObj->doc->section($community_name,$content,0,1);
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:6568;s:13:"content_lines";i:139;s:6:"atLine";i:65;}i:5;a:7:{s:6:"header";s:60:"function cacheServices ($lastProcessed, $startTime, $site) {";s:11:"parentClass";s:33:"tx_civserv_modcacheservices_cache";s:4:"cDat";a:3:{s:4:"text";s:50:"
+
+Caches as much paches as possible in 5 seconds.
+";s:5:"param";a:3:{i:0;a:2:{i:0;s:7:"integer";i:1;s:26:"the last prozessed service";}i:1;a:2:{i:0;s:7:"integer";i:1;s:14:"the start time";}i:2;a:2:{i:0;s:6:"string";i:1;s:58:"sitepath to the index.php, wich is used to cache the pages";}}s:6:"return";a:2:{i:0;s:7:"integer";i:1;s:30:"the new last prozessed service";}}s:7:"content";a:2:{i:0;s:507:"		global $TYPO3_DB;
+
+		// first time function is called get service id's
+		if ($lastProcessed == 0) {
+			// get the services of selected community
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'tx_civserv_service.uid',
+						'tx_civserv_service',
+						'NOT tx_civserv_service.deleted AND ' .
+						' NOT tx_civserv_service.hidden AND ' .
+						'((UNIX_TIMESTAMP(LO
+[...]
+	$newLastProcessed ++;
+		}
+
+		if ($newLastProcessed > $totalServices) {
+			return -1;
+		}
+
+		return $newLastProcessed;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:2840;s:13:"content_lines";i:62;s:6:"atLine";i:213;}i:7;a:7:{s:6:"header";s:39:"function cHashParams($addQueryParams) {";s:11:"parentClass";s:33:"tx_civserv_modcacheservices_cache";s:4:"cDat";a:6:{s:4:"text";s:212:"
+
+(function is copied from class.tslib_fe.php and a little bit customized for using in the BE)
+Splits the input query-parameters into an array with certain parameters filtered out.
+Used to create the cHash value
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:6:"string";i:1;s:36:"Query-parameters: "&xxx=yyy&zzz=uuu"";}}s:6:"return";a:2:{i:0;s:5:"array";i:1;s:191:"Array with key/value pairs of query-parameters WITHOUT a certain list of variable names (like id, type, no_cache etc) and WITH a variable, encryptionKey, specific for this server/installation";}s:6:"access";s:7:"private";s:5:"other";a:1:{i:0;s:44:"@see makeCacheHash(), tslib_cObj::typoLink()";}s:11:"other_index";a:1:{s:4:"@see";a:1:{i:0;s:39:"makeCacheHash(), tslib_cObj::typoLink()";}}}s:7:"content";a:2:{i:0;s:507:"		global $TYPO3_CONF_VARS;
+		$params = explode('&',substr($addQueryParams,1));       // Splitting parameters up
+		// Make array:
+		$pA = array();
+		foreach($params as $theP)       {
+			$pKV = explode('=', $theP);     // Splitting single param by '=' sign
+			if (!t3lib_div::inList('id,type,no_cache,cHash,MP,ftu',$pKV[0]))        {
+				$pA[$pKV[0]] = (string)rawurldecode($pK
+[...]
+*****************************
+	 *
+	 * Helper functions for generating the pidlist:
+	 *
+	 *******************************/
+
+ 	";i:1;i:1;}s:12:"content_size";i:619;s:13:"content_lines";i:22;s:6:"atLine";i:286;}i:9;a:8:{s:6:"header";s:113:"function getTreeList($id,$depth,$begin=0,$dontCheckEnableFields=0,$addSelectFields='',$moreWhereClauses='')     {";s:11:"parentClass";s:33:"tx_civserv_modcacheservices_cache";s:11:"sectionText";a:1:{i:0;s:44:"Helper functions for generating the pidlist:";}s:4:"cDat";a:5:{s:4:"text";s:593:"
+
+(function is a copied from class.tslib_content.php and a little bit customized for using in the BE)
+Generates a list of Page-uid's from $id. List does not include $id itself
+ The only pages WHICH PREVENTS DECENDING in a branch are
+   - deleted pages,
+   - pages in a recycler or of the Backend User Section type
+   - pages that has the extendToSubpages set, WHERE start/endtime, hidden and fe_users would hide the records.
+
+ Returns the list with a comma in the end (if any pages selected!) - which means the input page id can comfortably be appended to the output string if you need it to.
+";s:5:"param";a:6:{i:0;a:2:{i:0;s:7:"integer";i:1;s:69:"The id of the start page from which point in the page tree to decend.";}i:1;a:2:{i:0;s:7:"integer";i:1;s:177:"The number of levels to decend. If you want to decend infinitely, just set this to 100 or so. Should be at least "1" since zero will just make the function return (no decend...)";}i:2;a:2:{i:0;s:7:"integer";i:1;s:155:"$begin is an optional integer that determines at which level in the tree to start collecting uid's. Zero means 'start right away', 1 = 'next level and out'";}i:3;a:2:{i:0;s:7:"boolean";i:1;s:24:"See function description";}i:4;a:2:{i:0;s:6:"string";i:1;s:67:"Additional fields to select. Syntax: ",[fieldname],[fieldname],..."";}i:5;a:2:{i:0;s:6:"string";i:1;s:68:"Additional where clauses. Syntax: " AND [fieldname]=[value] AND ..."";}}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:57:"A list of page ID integer values for the decended levels.";}s:5:"other";a:1:{i:0;s:80:"@see tslib_fe::checkEnableFields(), tslib_fe::checkPagerecordForIncludeSection()";}s:11:"other_index";a:1:{s:4:"@see";a:1:{i:0;s:75:"tslib_fe::checkEnableFields(), tslib_fe::checkPagerecordForIncludeSection()";}}}s:7:"content";a:2:{i:0;s:507:"		$depth=intval($depth);
+		$begin=intval($begin);
+		$id=intval($id);
+		$theList='';
+		$allFields = 'uid,hidden,starttime,endtime,fe_group,extendToSubpages,doktype,php_tree_stop'.$addSelectFields;
+		if ($id && $depth>0)    {
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($allFields, 'pages', 'pid='.intval($id).' AND NOT deleted AND doktype!=255 AND doktype!=6'.$moreWhereC
+[...]
+th-1, $begin-1, $dontCheckEnableFields, $addSelectFields, $moreWhereClauses);
+					}
+				}
+			}
+		}
+		return $theList;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:924;s:13:"content_lines";i:24;s:6:"atLine";i:328;}i:11;a:4:{s:6:"header";s:41:"function checkEnableFields($row)        {";s:11:"parentClass";s:33:"tx_civserv_modcacheservices_cache";s:4:"cDat";a:5:{s:4:"text";s:288:"
+
+(function is copied from class.tslib_fe.php and a little bit customized for using in the BE)
+Checks page record for enableFields
+Returns true if enableFields does not disable the page record.
+Takes notice of the ->showHiddenPage flag and uses SIM_EXEC_TIME for start/endtime evaluation
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:80:"The page record to evaluate (needs fields; hidden, starttime, endtime, fe_group)";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:28:"True, if record is viewable.";}s:5:"other";a:1:{i:0;s:66:"@see tslib_cObj::getTreeList(), checkPagerecordForIncludeSection()";}s:11:"other_index";a:1:{s:4:"@see";a:1:{i:0;s:61:"tslib_cObj::getTreeList(), checkPagerecordForIncludeSection()";}}}s:6:"atLine";i:363;}i:13;a:7:{s:6:"header";s:49:"function checkPagerecordForIncludeSection($row) {";s:11:"parentClass";s:33:"tx_civserv_modcacheservices_cache";s:4:"cDat";a:6:{s:4:"text";s:134:"
+
+(function is copied from class.tslib_fe.php and a little bit customized for using in the BE)
+Checks page record for include section
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"array";i:1;s:98:"The page record to evaluate (needs fields;extendToSubpages + hidden, starttime, endtime, fe_group)";}}s:6:"return";a:2:{i:0;s:7:"boolean";i:1;s:111:"Returns true if either extendToSubpages is not checked or if the enableFields does not disable the page record.";}s:6:"access";s:7:"private";s:5:"other";a:1:{i:0;s:85:"@see checkEnableFields(), tslib_cObj::getTreeList(), checkRootlineForIncludeSection()";}s:11:"other_index";a:1:{s:4:"@see";a:1:{i:0;s:80:"checkEnableFields(), tslib_cObj::getTreeList(), checkRootlineForIncludeSection()";}}}s:7:"content";a:2:{i:0;s:376:"		return (!$row['extendToSubpages'] || $this->checkEnableFields($row)) ? 1 : 0;
+	}
+
+}
+
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/modcacheservices/class.tx_civserv_modcacheservices_cache.php'])    {
+    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/modcacheservices/class.tx_civserv_modcacheservices_cache.php']);
+}
+
+?>";i:1;i:0;}s:12:"content_size";i:376;s:13:"content_lines";i:9;s:6:"atLine";i:381;}}}s:14:"MD5_02828d80b6";a:4:{s:8:"filename";s:25:"modcacheservices/conf.php";s:8:"filesize";i:1674;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_db35d3f107";a:4:{s:8:"filename";s:26:"modcacheservices/index.php";s:8:"filesize";i:6406;s:6:"header";a:5:{s:4:"text";s:116:"
+
+Module 'Cache Services' for the 'civserv' extension.
+
+$Id: index.php,v 1.1.1.1 2004/11/28 17:14:50 bkohorst Exp $
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:4:{i:0;s:50:"@author	Stefan Meesters <meesters@uni-muenster.de>";i:1;s:14:"@package TYPO3";i:2;s:22:"@subpackage tx_civserv";i:3;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:1:{i:0;s:42:"Stefan Meesters <meesters@uni-muenster.de>";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:6:{i:1;a:7:{s:6:"header";s:53:"class tx_civserv_cacheservices extends t3lib_SCbase {";s:5:"class";i:1;s:11:"parentClass";s:24:"tx_civserv_cacheservices";s:7:"content";a:2:{i:0;s:18:"	var $pageinfo;
+
+	";i:1;i:-1;}s:12:"content_size";i:18;s:13:"content_lines";i:2;s:6:"atLine";i:66;}i:3;a:7:{s:6:"header";s:17:"function init()	{";s:11:"parentClass";s:24:"tx_civserv_cacheservices";s:4:"cDat";a:3:{s:4:"text";s:25:"
+
+Initialize the Module.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:8:"Nothing.";}}s:7:"content";a:2:{i:0;s:136:"		global $AB,$BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$HTTP_GET_VARS,$HTTP_POST_VARS,$CLIENT,$TYPO3_CONF_VARS;
+
+		parent::init();
+	}
+
+	";i:1;i:0;}s:12:"content_size";i:136;s:13:"content_lines";i:5;s:6:"atLine";i:74;}i:5;a:7:{s:6:"header";s:23:"function menuConfig()	{";s:11:"parentClass";s:24:"tx_civserv_cacheservices";s:4:"cDat";a:3:{s:4:"text";s:75:"
+
+Adds items to the ->MOD_MENU array. Used for the function menu selector.
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+		$MOD_MENUfunction['0'] = $LANG->getLL('overview','Overview');
+
+		// get the communities from the table 'tx_civserv_conf_mandant'
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'uid, cm_community_name',
+			'tx_civserv_conf_mandant',
+			'NOT deleted and NOT hidden');
+
+		$row_counter = 0;
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
+		
+[...]
+e, you will need to consider the $this->id parameter which will contain the uid-number of the page clicked in the page tree
+	";i:1;i:1;}s:12:"content_size";i:701;s:13:"content_lines";i:21;s:6:"atLine";i:85;}i:7;a:7:{s:6:"header";s:20:"function main()    {";s:11:"parentClass";s:24:"tx_civserv_cacheservices";s:4:"cDat";a:3:{s:4:"text";s:67:"
+
+Main function of the module. Write the content to $this->content
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:8:"Nothing.";}}s:7:"content";a:2:{i:0;s:507:"		global $BE_USER,$LANG,$BACK_PATH;
+
+			// Draw the header.
+		$this->doc = t3lib_div::makeInstance('mediumDoc');
+		$this->doc->docType= 'xhtml_trans';
+		$this->doc->backPath = $BACK_PATH;
+		$this->doc->form='<form action="'.htmlspecialchars('index.php?id='.$this->id).'" method="post" autocomplete="off">';
+
+			// Add some JavaScript:
+		$this->doc->JScode.= $this->doc->wrapS
+[...]
+con('id',implode(',',array_keys($this->MOD_MENU)),$this->MCONF['name']));
+		}
+
+		$this->content.=$this->doc->endPage();
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:1053;s:13:"content_lines";i:28;s:6:"atLine";i:112;}i:9;a:4:{s:6:"header";s:25:"function printContent()	{";s:11:"parentClass";s:24:"tx_civserv_cacheservices";s:4:"cDat";a:3:{s:4:"text";s:29:"
+
+Prints out the module HTML
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"void";i:1;s:8:"Nothing.";}}s:6:"atLine";i:146;}i:11;a:7:{s:6:"header";s:26:"function moduleContent()	{";s:11:"parentClass";s:24:"tx_civserv_cacheservices";s:4:"cDat";a:3:{s:4:"text";s:31:"
+
+Generates the module content
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"string";i:1;s:49:"Content that is to be displayed within the module";}}s:7:"content";a:2:{i:0;s:507:"		global $LANG;
+		$content = '';
+		switch((string)$this->MOD_SETTINGS['function']) {
+			case 0:
+				$content .= $this->doc->section($LANG->getLL('overview').":",$content,0,1);
+				$content .= $LANG->getLL('description') . '<br /><br />';
+				$content .= $LANG->getLL('caching_note') . ':';
+				$content .= '<ul>';
+				$content .= '<li>' . $LANG->getLL('no_cache1') . '</li>';
+[...]
+nce);
+while(list(,$INC_FILE)=each($SOBE->include_once))	{include_once($INC_FILE);}
+
+$SOBE->main();
+$SOBE->printContent();
+
+?>";i:1;i:1;}s:12:"content_size";i:1452;s:13:"content_lines";i:49;s:6:"atLine";i:155;}}}s:14:"MD5_28467a74d2";a:4:{s:8:"filename";s:30:"modcacheservices/locallang.php";s:8:"filesize";i:4698;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_808c6afbc7";a:4:{s:8:"filename";s:34:"modcacheservices/locallang_mod.php";s:8:"filesize";i:1917;s:6:"header";N;s:3:"DAT";a:0:{}}s:14:"MD5_835cb44460";a:4:{s:8:"filename";s:22:"modmsworkflow/conf.php";s:8:"filesize";i:1857;s:6:"header";a:5:{s:4:"text";s:109:"
+
+Configuration for the model service workflow
+
+$Id: conf.php,v 1.1.1.1 2004/11/28 17:14:50 bkohorst Exp $
+
+
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:6:{i:0;s:50:"@author Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:49:"@author Tobias Müller (mullerto@uni-muenster.de),";i:2;s:49:"@author Maurits Hinzen (mhinzen@uni-muenster.de),";i:3;s:14:"@package TYPO3";i:4;s:22:"@subpackage tx_civserv";i:5;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:3:{i:0;s:42:"Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:41:"Tobias Müller (mullerto@uni-muenster.de),";i:2;s:41:"Maurits Hinzen (mhinzen@uni-muenster.de),";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:0:{}}s:14:"MD5_12260b70f9";a:4:{s:8:"filename";s:23:"modmsworkflow/index.php";s:8:"filesize";i:31329;s:6:"header";a:5:{s:4:"text";s:133:"
+
+This class holds a part of the logic for the model service workflow
+
+$Id: index.php,v 1.1.1.1 2004/11/28 17:14:50 bkohorst Exp $
+
+
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:6:{i:0;s:50:"@author Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:49:"@author Tobias Müller (mullerto@uni-muenster.de),";i:2;s:49:"@author Maurits Hinzen (mhinzen@uni-muenster.de),";i:3;s:14:"@package TYPO3";i:4;s:22:"@subpackage tx_civserv";i:5;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:3:{i:0;s:42:"Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:41:"Tobias Müller (mullerto@uni-muenster.de),";i:2;s:41:"Maurits Hinzen (mhinzen@uni-muenster.de),";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:9:{i:1;a:7:{s:6:"header";s:51:"class tx_civserv_ms_workflow extends t3lib_SCbase {";s:5:"class";i:1;s:11:"parentClass";s:22:"tx_civserv_ms_workflow";s:7:"content";a:2:{i:0;s:5:"
+
+   ";i:1;i:-1;}s:12:"content_size";i:5;s:13:"content_lines";i:2;s:6:"atLine";i:74;}i:3;a:7:{s:6:"header";s:17:"function init()	{";s:11:"parentClass";s:22:"tx_civserv_ms_workflow";s:4:"cDat";a:3:{s:4:"text";s:96:"
+
+Default initialization of the needed global variables, for example the Language-variable $LANG";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}}s:7:"content";a:2:{i:0;s:132:"		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$HTTP_GET_VARS,$HTTP_POST_VARS,$CLIENT,$TYPO3_CONF_VARS;
+		parent::init();
+	}
+
+
+	";i:1;i:0;}s:12:"content_size";i:132;s:13:"content_lines";i:5;s:6:"atLine";i:82;}i:5;a:7:{s:6:"header";s:17:"function main()	{";s:11:"parentClass";s:22:"tx_civserv_ms_workflow";s:4:"cDat";a:3:{s:4:"text";s:267:"
+
+Main function of the workflow module. Setup of the HTML-Header-Information, JavaScript Code etc.
+Creates the actuell content of the workflow module (main window, display window, commit window or revise window)
+to display in addiction of parameters given in the URL
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"module";i:1;s:7:"content";}}s:7:"content";a:2:{i:0;s:507:"		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$HTTP_GET_VARS,$HTTP_POST_VARS,$CLIENT,$TYPO3_CONF_VARS;
+
+			// Draw the header.
+		$this->doc = t3lib_div::makeInstance("mediumDoc");
+		$this->doc->backPath = $BACK_PATH;
+		$this->doc->form='<form action="" method="POST" name="msworkflow">';
+
+		$this->tceform = t3lib_div::makeInstance("t3lib_TCEforms");
+		$this->tceform->b
+[...]
+="javascript" type="text/javascript">
+				var T3_THIS_LOCATION = \'/typo3/ext/civserv/modmsworkflow/\';
+				script_ended = 0;";i:1;i:1;}s:12:"content_size";i:624;s:13:"content_lines";i:15;s:6:"atLine";i:95;}i:7;a:6:{s:6:"header";s:25:"function jumpToUrl(URL)	{";s:11:"parentClass";s:22:"tx_civserv_ms_workflow";s:7:"content";a:2:{i:0;s:507:"					document.location = URL;
+				}
+			</script>
+		';
+		$this->doc->postCode='
+			<script language="javascript" type="text/javascript">
+				script_ended = 1;
+				if (top.fsMod) top.fsMod.recentIds["web"] = '.intval($this->id).';
+			</script>
+		';
+
+		$headerSection = $this->doc->getHeader("pages",$this->pageinfo,$this->pageinfo["_thePath"])."<br>".$LANG->sL("LLL:EXT:lang/lo
+[...]
+"revise":
+				$this->reviseContent($uid, $responsible);
+				break;
+			default:
+				$this->mainContent();
+				break;
+		}
+	}
+
+	";i:1;i:1;}s:12:"content_size";i:1564;s:13:"content_lines";i:55;s:6:"atLine";i:112;}i:9;a:7:{s:6:"header";s:45:"function approveContent($uid, $responsible)	{";s:11:"parentClass";s:22:"tx_civserv_ms_workflow";s:4:"cDat";a:3:{s:4:"text";s:354:"
+
+Generates the area for committing a model service in the workflow. Different buttons are generated to give a commit or to abort.
+In addiction of the pressed button, some update queries in the db for model_services_temp are made.
+
+						two mandants are involved in the workflow and have to give a commit, to complete the workflow for this model service";s:5:"param";a:2:{i:0;a:2:{i:0;s:5:"[int]";i:1;s:62:"$uid: the uid from the model service, which should be approved";}i:1;a:2:{i:0;s:8:"[string]";i:1;s:101:"$responsible: describes, if the actuall mandant is the only responsible for this model service, or if";}}s:6:"return";a:2:{i:0;s:6:"module";i:1;s:7:"content";}}s:7:"content";a:2:{i:0;s:507:"		global $LANG,$HTTP_GET_VARS,$HTTP_POST_VARS;
+
+		$submit = $HTTP_POST_VARS['submit'];
+		$abort = $HTTP_POST_VARS['abort'];
+			//if neither commit nor abort was pressed, this is the initial display mode
+		if (empty($submit) && empty($abort)){
+				//Qustion: Should edited model services really be committed?
+			$content.='<div align=center>'.$LANG->getLL("modmsworkflow.appro
+[...]
+om);
+			}
+
+			$content .= $this->mainContent();
+		} else if (isset($abort))	{
+			$content .= $this->mainContent();
+		}
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:6177;s:13:"content_lines";i:104;s:6:"atLine";i:178;}i:11;a:7:{s:6:"header";s:43:"function reviseContent($uid, $responsible){";s:11:"parentClass";s:22:"tx_civserv_ms_workflow";s:4:"cDat";a:3:{s:4:"text";s:367:"
+
+Generates a little textarea to enter comments (why model service should be revised). The textarea also contains old
+comments. Underneath the textarea the model service is displayed, so it is easier to comment, whats wrong with the service ;)
+
+						two mandants are involved in the workflow and have to give a commit, to complete the workflow for this model service";s:5:"param";a:2:{i:0;a:2:{i:0;s:5:"[int]";i:1;s:61:"$uid: the uid from the model service, which should be revised";}i:1;a:2:{i:0;s:8:"[string]";i:1;s:101:"$responsible: describes, if the actuall mandant is the only responsible for this model service, or if";}}s:6:"return";a:2:{i:0;s:6:"module";i:1;s:7:"content";}}s:7:"content";a:2:{i:0;s:507:"		global $LANG,$HTTP_GET_VARS,$HTTP_POST_VARS;
+
+		$submit = $HTTP_POST_VARS['submit'];
+		$comment = $HTTP_POST_VARS['comment'];
+		$reset = $HTTP_POST_VARS['reset'];
+		$abort = $HTTP_POST_VARS['abort'];
+
+		$checked = true;
+		if (isset($submit)){
+			if (empty($comment)) $checked = false;
+		}
+
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+
+		if ((empty($submit) || (!$checked)) 
+[...]
+se"));
+					t3lib_div::plainMailEncoded($to,$subject,$text,$from);
+				}
+			}
+			$content .= $this->mainContent();
+		}
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:4092;s:13:"content_lines";i:85;s:6:"atLine";i:293;}i:13;a:7:{s:6:"header";s:24:"function mainContent()	{";s:11:"parentClass";s:22:"tx_civserv_ms_workflow";s:4:"cDat";a:3:{s:4:"text";s:207:"
+
+Generates the content for the main window. This contains a HTML table with all model services, which are
+actual in the workflow. For each model service you have 3 options to choose: view, commit or revise
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"module";i:1;s:7:"content";}}s:7:"content";a:2:{i:0;s:507:"		global $LANG,$BE_USER;
+
+		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
+		$community_id = $mandant_obj->get_mandant($BE_USER->user["db_mountpoints"]);
+
+			//which approver am i? show only model services, which are currently not revised
+		$resp_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'org.ms_mandant, org.ms_approver_one, org.ms_approver_two, cm_co
+[...]
+LL("modmsworkflow.no_work");
+		else $content .= $LANG->getLL("modmsworkflow.notAsAdmin");
+		$this->content.= $content;
+	}
+
+
+	";i:1;i:1;}s:12:"content_size";i:4494;s:13:"content_lines";i:72;s:6:"atLine";i:385;}i:15;a:4:{s:6:"header";s:28:"function viewContent($uid)	{";s:11:"parentClass";s:22:"tx_civserv_ms_workflow";s:4:"cDat";a:3:{s:4:"text";s:104:"
+
+Will get the data from the model_service_temp tabel and displays it in a complex table in the backend
+";s:5:"param";a:1:{i:0;a:2:{i:0;s:5:"[int]";i:1;s:62:"$uid: the uid from the model service, which should be dislayed";}}s:6:"return";a:2:{i:0;s:10:"HTML-table";i:1;s:11:"for backend";}}s:6:"atLine";i:464;}i:17;a:7:{s:6:"header";s:25:"function printContent()	{";s:11:"parentClass";s:22:"tx_civserv_ms_workflow";s:4:"cDat";a:3:{s:4:"text";s:44:"
+
+Prints out the module HTML in the backend
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:4:"HTML";i:1;s:7:"content";}}s:7:"content";a:2:{i:0;s:498:"
+		$this->content.=$this->doc->endPage();
+		echo $this->content;
+	}
+}
+
+if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/civserv/modmsworkflow/index.php"])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/civserv/modmsworkflow/index.php"]);
+}
+
+
+// Make instance:
+$SOBE = t3lib_div::makeInstance("tx_civserv_ms_workflow");
+$SOBE->init();
+
+// Include files?
+foreach($SOBE->include_once as $INC_FILE)	include_once($INC_FILE);
+
+$SOBE->main();
+$SOBE->printContent();
+?>";i:1;i:0;}s:12:"content_size";i:498;s:13:"content_lines";i:20;s:6:"atLine";i:745;}}}s:14:"MD5_7bad946eca";a:4:{s:8:"filename";s:27:"modmsworkflow/locallang.php";s:8:"filesize";i:12089;s:6:"header";a:5:{s:4:"text";s:126:"
+
+Language labels for module "web_txmzminiworkflowM1" - header, description
+
+This file is detected by the translation tool.
+
+
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:6:{i:0;s:50:"@author Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:49:"@author Tobias Müller (mullerto@uni-muenster.de),";i:2;s:49:"@author Maurits Hinzen (mhinzen@uni-muenster.de),";i:3;s:14:"@package TYPO3";i:4;s:22:"@subpackage tx_civserv";i:5;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:3:{i:0;s:42:"Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:41:"Tobias Müller (mullerto@uni-muenster.de),";i:2;s:41:"Maurits Hinzen (mhinzen@uni-muenster.de),";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:0:{}}s:14:"MD5_2bba66257b";a:4:{s:8:"filename";s:31:"modmsworkflow/locallang_mod.php";s:8:"filesize";i:1907;s:6:"header";a:5:{s:4:"text";s:126:"
+
+Language labels for module "web_txmzminiworkflowM1" - header, description
+
+This file is detected by the translation tool.
+
+
+";s:5:"param";a:0:{}s:6:"return";a:2:{i:0;s:6:"[type]";i:1;s:3:"...";}s:5:"other";a:6:{i:0;s:50:"@author Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:49:"@author Tobias Müller (mullerto@uni-muenster.de),";i:2;s:49:"@author Maurits Hinzen (mhinzen@uni-muenster.de),";i:3;s:14:"@package TYPO3";i:4;s:22:"@subpackage tx_civserv";i:5;s:12:"@version 1.0";}s:11:"other_index";a:4:{s:7:"@author";a:3:{i:0;s:42:"Georg Niemeyer (niemeyer@uni-muenster.de),";i:1;s:41:"Tobias Müller (mullerto@uni-muenster.de),";i:2;s:41:"Maurits Hinzen (mhinzen@uni-muenster.de),";}s:8:"@package";a:1:{i:0;s:6:"TYPO3 ";}s:11:"@subpackage";a:1:{i:0;s:11:"tx_civserv ";}s:8:"@version";a:1:{i:0;s:4:"1.0 ";}}}s:3:"DAT";a:0:{}}}}

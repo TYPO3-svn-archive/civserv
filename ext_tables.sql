@@ -274,6 +274,7 @@ CREATE TABLE tx_civserv_model_service (
 	hidden tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	fe_group int(11) DEFAULT '0' NOT NULL,
 	ms_name tinytext NOT NULL,
+	ms_stored_name tinytext NOT NULL,
 	ms_synonym1 tinytext NOT NULL,
 	ms_synonym2 tinytext NOT NULL,
 	ms_synonym3 tinytext NOT NULL,
