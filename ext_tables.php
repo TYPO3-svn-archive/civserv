@@ -119,7 +119,7 @@ $TCA["tx_civserv_conf_mandant"] = Array (
 		"iconfile" => t3lib_extMgm::extRelPath($_EXTKEY)."icon_tx_civserv_mandant.gif",
 	),
 	"feInterface" => Array (
-		"fe_admin_fieldList" => "hidden, fe_group, cm_community_name, cm_community_id, cm_uid, cm_circumstance_uid, cm_usergroup_uid, cm_organisation_uid, cm_service_folder_uid, cm_external_service_folder_uid, cm_model_service_temp_uid, cm_page_uid, cm_community_type, cm_target_email",
+		"fe_admin_fieldList" => "hidden, fe_group, cm_community_name, cm_community_id, cm_uid, cm_circumstance_uid, cm_usergroup_uid, cm_organisation_uid, cm_service_folder_uid, cm_external_service_folder_uid, cm_model_service_temp_uid, cm_page_uid, cm_search_uid, cm_community_type, cm_target_email",
 	)
 );
 

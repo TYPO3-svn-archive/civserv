@@ -34,6 +34,24 @@ leftmenu {
 	}
 }
 		
+		
+		
+# ************************************* #
+# ********** Define choice link ********* #
+# ************************************* #
+includeLibs.DEVELOPER_Functions =    typo3conf/ext/civserv/pi1/class.tx_civserv_pi1.php
+temp.choicelink = USER
+temp.choicelink {
+	community_id = {$community_id}
+	pageid = {$pageid}
+	fulltext_search_id ={$fulltext_search_id}
+	userFunc = tx_civserv_pi1->getChoiceLink
+}
+
+
+
+
+
 
 # ************************************* #
 # ********* Define PAGE object ******** #
@@ -99,9 +117,15 @@ page.10 {
 	marks.COMMUNITY.community_id = {$community_id}
 	marks.COMMUNITY.userFunc = tx_civserv_pi1->getCommunityName
 	
+	marks.CHOICE_LINK < temp.choicelink
+	
+	/*
 	marks.CHOICE_LINK = USER
-	marks.CHOICE_LINK.community_id = {$pageid}
+	marks.CHOICE_LINK.community_id = {$community_id}
+	marks.CHOICE_LINK.pageid = {$pageid}
+	marks.CHOICE_LINK.fulltext_search_id ={$fulltext_search_id}
 	marks.CHOICE_LINK.userFunc = tx_civserv_pi1->getChoiceLink
+	*/
 	
 	marks.LEGAL_NOTICE_LINK = USER
 	marks.LEGAL_NOTICE_LINK.community_id = {$community_id}

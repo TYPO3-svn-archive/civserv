@@ -1872,6 +1872,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 	/**
 	 * Shows a list of available communities to choose.
+	 * changes made by bkohorst:
+	 * --> parent::pi_linkTP_keepPIvars_url(...) is fed with the pageID of the community in question, so as to be able to switch style sheet.
+	 *     pageID must be the 4th argument!! i.e. 3 arguments won't work
 	 *
 	 * @param	object		Smarty object, the template key/value-pairs should be assigned to
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
@@ -1940,7 +1943,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'cm_community_name',
 						'tx_civserv_conf_mandant',
 						'NOT deleted AND NOT hidden
-						 AND cm_community_id = ' . $community_id);
+						 AND cm_community_id = '.$community_id);
 			if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$content = $row['cm_community_name'];
 			}
@@ -1953,16 +1956,41 @@ class tx_civserv_pi1 extends tslib_pibase {
 	/**
 	 * Returns link to choice the community.
 	 * Normaly used from a template userfunction.
+	 * changes made by bkohorst --> switch the page-id from the search-page of a mandant to the frontend-page to make sure the choicelink works under all circumstances
+	 * The setup in the static template which calls this function looks like:
+	 * marks.CHOICE_LINK = USER
+	 * marks.CHOICE_LINK.community_id = {$community_id}
+	 * marks.CHOICE_LINK.pageid = {$pageid}
+	 * marks.CHOICE_LINK.fulltext_search_id ={$fulltext_search_id}
+	 * marks.CHOICE_LINK.userFunc = tx_civserv_pi1->getChoiceLink
+	 * with the above scenario the id-switching would be as follows:
+	 * 		if($pageid == $conf['fulltext_search_id']){
+	 * 			$pageid = $conf['pageid'];
+	 * 		}
+	 * --> this depends on the values being set correctly in the mandant's typoscript-template
+	 * --> instead the values are retrieved from the database directly (which depends on the table tx_civserv_conf_mandant to be maintained correctly)
 	 *
 	 * @param	string		content
 	 * @param	array		configuration array
 	 * @return	string		The link
 	 */
-	function getChoiceLink() {
+	function getChoiceLink($content, $conf) {
 		if ($conf['pageid'] > '') {
-			$pageid = $conf['pageid'];
+			$pageid = $conf['pageid']; //not available :-(
 		} else {
 			$pageid = $GLOBALS['TSFE']->id;
+		}
+
+		//retrieve uid of frontend-page and of fulltext-search-page from db:
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+								'cm_page_uid, cm_search_uid',
+								'tx_civserv_conf_mandant',
+								'NOT deleted AND NOT hidden');
+		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
+			//feed the link with the id of the frontend-page (and never with the id of the search-page)!!
+			if ($pageid == $row['cm_search_uid']){
+				$pageid = $row['cm_page_uid'];
+			}
 		}
 		return parent::pi_linkTP_keepPIvars_url(array(community_id => 'choose',mode => 'service_list'),1,1,$pageid);
 	}
@@ -1987,13 +2015,23 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function setEmailForm(&$smartyEmailForm) {
 		//Check if there is a valid email address in the database for the given combination of employee, service, position and organisation id
-		if ($this->getEmailAddress($smartyEmailForm)) {
-			//Assign action url of email form
-			$smartyEmailForm->assign('action_url',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'check_email_form'),0,0)));
+		if ($this->getEmailAddress($smartyEmailForm) || $this->piVars[mode]=='set_contact_form') {
+			if($this->getEmailAddress($smartyEmailForm)){
+				//Assign action url of email form with mode 'check_email_form'
+				$smartyEmailForm->assign('action_url',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'check_email_form'),0,0)));
+			}else{
+				//Assign action url of email form with mode 'check_contact_form'
+				$smartyEmailForm->assign('action_url',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'check_contact_form'),0,0)));
+			}
 
 			//Assign template labels
 			$smartyEmailForm->assign('email_form_label',$this->pi_getLL('tx_civserv_pi1_email_form.email_form','E-Mail Form'));
+			$smartyEmailForm->assign('contact_form_label',$this->pi_getLL('tx_civserv_pi1_email_form.contact_form','Contact osiris@citeq.de'));
 			$smartyEmailForm->assign('notice_label',$this->pi_getLL('tx_civserv_pi1_email_form.notice','Please enter your postal address oder email address, so that we can send you an answer'));
+			$smartyEmailForm->assign('title_label', $this->pi_getLL('tx_civserv_pi1_email_form.title','Title'));
+			$smartyEmailForm->assign('chose_option', $this->pi_getLL('tx_civserv_pi1_email_form.chose','Please chose'));
+			$smartyEmailForm->assign('female_option', $this->pi_getLL('tx_civserv_pi1_email_form.female','Ms.'));
+			$smartyEmailForm->assign('male_option', $this->pi_getLL('tx_civserv_pi1_email_form.male','Mr.'));
 			$smartyEmailForm->assign('firstname_label',$this->pi_getLL('tx_civserv_pi1_email_form.firstname','Firstname'));
 			$smartyEmailForm->assign('surname_label',$this->pi_getLL('tx_civserv_pi1_email_form.surname','Surname'));
 			$smartyEmailForm->assign('street_label',$this->pi_getLL('tx_civserv_pi1_email_form.street','Street, Nr.'));
@@ -2025,6 +2063,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function checkEmailForm(&$smartyEmailForm) {
 		//Retrieve submitted form fields
+		$title =  t3lib_div::_POST('title');
 		$firstname = t3lib_div::_POST('firstname');
 		$surname = t3lib_div::_POST('surname');
 		$phone = t3lib_div::_POST('phone');
@@ -2079,7 +2118,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 			if ($is_valid) {
 
 				// Format body of email message
-				$body = $this->pi_getLL('tx_civserv_pi1_email_form.firstname','Firstname') . ': ' . $firstname.
+				$body = $this->pi_getLL('tx_civserv_pi1_email_form.title','Title') . ': ' . $title.
+				   "\n" . $this->pi_getLL('tx_civserv_pi1_email_form.firstname','Firstname') . ': ' . $firstname.
 				   "\n" . $this->pi_getLL('tx_civserv_pi1_email_form.surname','Surname') . ': ' . $surname.
 				   "\n" . $this->pi_getLL('tx_civserv_pi1_email_form.phone','Phone') . ': ' . $phone.
 				   "\n" . $this->pi_getLL('tx_civserv_pi1_email_form.fax','Fax') . ': ' . $fax.
@@ -2094,9 +2134,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$smartyEmailForm->assign('complete',$this->pi_getLL('tx_civserv_pi1_email_form.complete','Thank you! Your message has been sent successfully.'));
 				return true;
 			} else { //Return email form template with error markers
-
-				// Assign action url of email form
-				$smartyEmailForm->assign('action_url',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'check_email_form'),0,0)));
+				if($this->piVars[mode]=="check_contact_form"){
+					// Assign action url of email form
+					$smartyEmailForm->assign('action_url',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'check_contact_form'),0,0)));
+				} else {
+					// Assign action url of email form
+					$smartyEmailForm->assign('action_url',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'check_email_form'),0,0)));
+				}
 
 				// Set form fields to previously entered values
 				$smartyEmailForm->assign('firstname',$firstname);
@@ -2112,7 +2156,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 				// Assign template labels
 				$smartyEmailForm->assign('email_form_label',$this->pi_getLL('tx_civserv_pi1_email_form.email_form','E-Mail Form'));
+				$smartyEmailForm->assign('contact_form_label',$this->pi_getLL('tx_civserv_pi1_email_form.contact_form','Contact osiris@citeq.de'));
 				$smartyEmailForm->assign('notice_label',$this->pi_getLL('tx_civserv_pi1_email_form.notice','Please enter your postal address oder email address, so that we can send you an answer'));
+				$smartyEmailForm->assign('title_label', $this->pi_getLL('tx_civserv_pi1_email_form.title','Title'));
+				$smartyEmailForm->assign('chose_option', $this->pi_getLL('tx_civserv_pi1_email_form.chose','Please chose'));
+				$smartyEmailForm->assign('female_option', $this->pi_getLL('tx_civserv_pi1_email_form.female','Ms.'));
+				$smartyEmailForm->assign('male_option', $this->pi_getLL('tx_civserv_pi1_email_form.male','Mr.'));
 				$smartyEmailForm->assign('firstname_label',$this->pi_getLL('tx_civserv_pi1_email_form.firstname','Firstname'));
 				$smartyEmailForm->assign('surname_label',$this->pi_getLL('tx_civserv_pi1_email_form.surname','Surname'));
 				$smartyEmailForm->assign('street_label',$this->pi_getLL('tx_civserv_pi1_email_form.street','Street, Nr.'));
@@ -2192,6 +2241,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi1_email_form.error_pos_id','Wrong employee id oder position id. No email address found!');
 				return false;
 			}
+		} elseif ($this->piVars[mode]=='check_contact_form') {	//Email form ist called by the contact_link in the main Navigation
+			//todo: add database field for hoster from which the address below should be retrieved
+			return 'osiris@citeq.de';
 		} else {
 			$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi1_email_form.error_general','Organisation id, employee id, position id and service id wrong or not set. No email address found!');
 			return false;
@@ -2691,14 +2743,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 
 
-
-
-
-
-
-
-
-
 	/******************************
 	 *
 	 * Function for generating a menu array:
@@ -2707,7 +2751,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 
 	/**
-	 * Builds an arry, wich could be included with a user function in a menu.
+	 * Builds an array, wich could be included with a user function in a menu.
 	 * The menuarray contains the items 'Services A-Z', 'Circumstances', 'Usergroups', 'Organisation', 'TOP 15' and optional 'Fulltext search'.
 	 * The setup in a template could look like:
 	 *   menu= HMENU
@@ -2810,7 +2854,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	array		configuration array
 	 * @return	string		The link
 	 */
-	function getLegalNoticeLink() {
+	function getLegalNoticeLink($content, $conf) {
 		if ($conf['pageid'] > '') {
 			$pageid = $conf['pageid'];
 		} else {
@@ -2829,7 +2873,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function showLegalNotice(&$smartyLegalNotice) {
 
-		$smartyLegalNotice->assign('contactLink', $this->getContactLink());
+		$smartyLegalNotice->assign('contactLink', $this->getContactLink($content,$conf));
 		$smartyLegalNotice->assign('imgPath', $this->conf['folder_global_images']);
 		return true;
 	}
@@ -2855,7 +2899,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	array		configuration array
 	 * @return	string		The link
 	 */
-	function getContactLink() {
+	function getContactLink($content, $conf) {
 		if ($conf['pageid'] > '') {
 			$pageid = $conf['pageid'];
 		} else {
@@ -2863,6 +2907,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		return parent::pi_linkTP_keepPIvars_url(array(mode => 'set_contact_form'),1,1,$pageid);
 	}
+
+
+
+
+
+
+
 
 
 
@@ -2874,7 +2925,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 	/**
 	 * only for testing the value of certain parameters
-	 * --> attention triggers xhtml-error!
+	 * --> attention: triggers xhtml-error!
 	 * gives out the value of a given param in a js_alert-box...
 	 *
 	 *

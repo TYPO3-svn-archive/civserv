@@ -1,29 +1,5 @@
-<!--TYPO3SEARCH_begin-->
-<!--TYPO3SEARCH_end-->
-
 <div id="right">
-		<div id="suche">
-			<form method="get" action="#">
-		      	<fieldset>
-				<legend>Suchformular</legend>
-					<div class="searchform">
-							<p><label for="query" title="Geben Sie hier Ihren Suchbegriff ein"><strong>Volltextsuche:</strong><br /></label></p>
-							<input name="query" id="query" class="suchbegriff" size="16" maxlength="60" value="Suchbegriff" onfocus="clearDefault(this)" />
-							<input type="submit" value="Suchen" accesskey="5" class="suchebutton" title="Hier klicken um die Suchanfrage abzusenden" />
-					</div>
-				</fieldset>
-			</form>
-		</div><!-- suche end -->
-		<h3 class="invisible">Serviceinformation:</h3>
-		<div id="serviceinformationen">
-		<strong>Folgende Seiten wurden von Ihnen zuletzt aufgerufen:</strong><br /><br />
-			<a href="#" class="link">Beratungsstelle f&uuml;r entwicklungsverz&ouml;gerte Kinder</a><br />
-			<a href="#" class="link">Regionale Reitroute</a><br />
-			<a href="#" class="link">Mahnung und Vollstreckung</a><br />
-			<a href="#" class="link">Umzug innerhalb des Kreises bzw. Namens&auml;nderung</a><br />
-			<a href="#" class="link">Amtliche Entfernungsbescheinigung</a><br />
-			<a href="#" class="link">Artengesch&uuml;tzte Tiere</a>
-		</div><!-- serviceinformationen end -->
+		&nbsp;
 </div><!-- right end -->
 
 <div id="centrecontent">
@@ -31,17 +7,16 @@
 		<br />
 		<p>{$complete}</p>
 	<!--{else}-->
-		<br />
-		<h1>{$email_form_label}</h1>
+		<h1>{$contact_form_label}</h1>
 		<p>{$notice_label}</p>
 		<form name="email" method="post" action="{$action_url}">
 			<fieldset>
 				<legend>Kontaktdaten</legend><br />
-				<label for="title" class="left">Anrede:</label>
+				<label for="title" class="left">{$title_label}</label>
 				<select id="title" name="title" title="Hier bitte die Anrede ausw&auml;hlen">
 					<option selected="selected">Bitte w&auml;hlen</option>
-					<option>Frau</option>
-					<option>Herr</option>
+					<option>{$female_option}</option>
+					<option>{$male_option}</option>
 				</select><br />
 				<br />
 				<label for="surname" class="left">{$surname_label}&nbsp;*:</label>
