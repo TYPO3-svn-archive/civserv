@@ -87,19 +87,26 @@ page.10 = TEMPLATE
 page.10 {
 	template = FILE
 	template.file = typo3conf/ext/civserv/templates/index.html
+	
 	workOnSubpart = DOCUMENT
+	
 	marks.CONTENT = CONTENT
 	marks.CONTENT.table= tt_content
+	
 	marks.MENU < leftmenu
+	
 	marks.COMMUNITY = USER
 	marks.COMMUNITY.community_id = {$community_id}
 	marks.COMMUNITY.userFunc = tx_civserv_pi1->getCommunityName
+	
 	marks.CHOICE_LINK = USER
 	marks.CHOICE_LINK.community_id = {$pageid}
 	marks.CHOICE_LINK.userFunc = tx_civserv_pi1->getChoiceLink
+	
 	marks.LEGAL_NOTICE_LINK = USER
 	marks.LEGAL_NOTICE_LINK.community_id = {$community_id}
 	marks.LEGAL_NOTICE_LINK.userFunc = tx_civserv_pi1->getLegalNoticeLink
+	
 	marks.CONTACT_LINK = USER
 	marks.CONTACT_LINK.community_id = {$community_id}
 	marks.CONTACT_LINK.userFunc = tx_civserv_pi1->getContactLink

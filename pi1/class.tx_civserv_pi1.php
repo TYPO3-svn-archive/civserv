@@ -291,8 +291,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 				case 'set_contact_form':
 					$template = $this->conf['tpl_contact_form'];
 					$accurate = $this->setEmailForm($smartyObject);
-					#$accurate = true;
-					#Baustelle
 					break;
 
 				case 'legal_notice':
@@ -2865,6 +2863,27 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		return parent::pi_linkTP_keepPIvars_url(array(mode => 'set_contact_form'),1,1,$pageid);
 	}
+
+
+
+	/******************************
+	 *
+	 * Functions for mere debugging
+	 *
+	 *******************************/
+
+	/**
+	 * only for testing the value of certain parameters
+	 * --> attention triggers xhtml-error!
+	 * gives out the value of a given param in a js_alert-box...
+	 *
+	 *
+	 *
+	 */
+	function js_alert($msg) {
+			echo "<script type=\"text/javascript\">alert('".$msg."');</script>";
+	}
+
 
 }
 
