@@ -356,7 +356,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 			return false;
 		}
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
-
+		
+		//this won't work for reasons unknown
+		$GLOBAlS['TSFE']->page['title']=$this->getServiceListHeading($this->piVars[mode],$this->piVars[id]);
+		
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 			$services[$row_counter]['link'] =  htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $row['uid']),$this->conf['cache_services'],1));
@@ -386,7 +389,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$smartyServiceList->assign('abcbar',$this->makeAbcBar($query));
 		}
 		$smartyServiceList->assign('heading',$this->getServiceListHeading($this->piVars[mode],$this->piVars[id]));
-
+		
 		if ($searchBox) {
 			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
 			$smartyServiceList->assign('searchbox', $this->pi_list_searchBox('',true));
@@ -400,7 +403,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		$smartyServiceList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_service_list.available_services','Here you find the following services'));
 		$smartyServiceList->assign('pagebar',$this->pi_list_browseresults(true,'',' | '));
-
 		return true;
 	}
 
@@ -1086,6 +1088,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 			default :
 				$regexp = '^' . $char;
 		}
+		if($char!=''){
+			$GLOBALS['TSFE']->page['title']='Anliegen: Buchstabe '.$char;
+		}
 		return $regexp;
 	}
 
@@ -1339,7 +1344,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		$smartyService->assign('name',$name);
 		$GLOBALS['TSFE']->page['title'] = $name;
-
+		
 		//Short description
 		if ($service_common[sv_descr_short] != "") {
 			$descr_short = trim($service_common[sv_descr_short]);
@@ -1348,6 +1353,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$descr_short = trim($model_service[ms_descr_short]);
 		}
 		$smartyService->assign('descr_short',$this->formatStr($this->local_cObj->stdWrap($descr_short,$this->conf['sv_descr_short_stdWrap.'])));
+		$GLOBALS['TSFE']->additionalHeaderData[].='<meta name="description" content="'.$descr_short.'">';
 
 		//Long description
 		$descr_long_ms = '';
