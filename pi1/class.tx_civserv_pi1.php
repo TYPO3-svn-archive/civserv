@@ -71,7 +71,7 @@
  *              SECTION: Functions for the email form:
  * 1967:     function setEmailForm(&$smartyEmailForm)
  * 2005:     function checkEmailForm(&$smartyEmailForm)
- * 2125:     function getEmailAddress()
+ * 2125:     function getEhoster_email()
  * 2189:     function makeEmailQuery($emp_id,$pos_id,$sv_id)
  *
  *              SECTION: Functions for the debit form:
@@ -1338,6 +1338,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$name = trim($model_service[ms_name]);
 		}
 		$smartyService->assign('name',$name);
+		$GLOBALS['TSFE']->page['title'] = $name;
 
 		//Short description
 		if ($service_common[sv_descr_short] != "") {
@@ -1463,7 +1464,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'',
 						'');
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-		$log_interval = intval($row[cf_value]);
+		$log_interval = intval($row[cf_value]);//warum nicht $row['cf_value']
 		$accesslog = t3lib_div::makeInstance('tx_civserv_accesslog');
 		$accesslog->update_log($uid,$log_interval, $_SERVER['REMOTE_ADDR']);
 
@@ -2025,8 +2026,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function setEmailForm(&$smartyEmailForm) {
 		//Check if there is a valid email address in the database for the given combination of employee, service, position and organisation id
-		if ($this->getEmailAddress($smartyEmailForm) || $this->piVars[mode]=='set_contact_form') {
-			if($this->getEmailAddress($smartyEmailForm)){
+		if ($this->getEhoster_email($smartyEmailForm) || $this->piVars[mode]=='set_contact_form') {
+			if($this->getEhoster_email($smartyEmailForm)){
 				//Assign action url of email form with mode 'check_email_form'
 				$smartyEmailForm->assign('action_url',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'check_email_form'),0,0)));
 			}else{
@@ -2035,8 +2036,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}
 
 			//Assign template labels
+			$hoster_email=$this->get_hoster_email();
 			$smartyEmailForm->assign('email_form_label',$this->pi_getLL('tx_civserv_pi1_email_form.email_form','E-Mail Form'));
-			$smartyEmailForm->assign('contact_form_label',$this->pi_getLL('tx_civserv_pi1_email_form.contact_form','Contact osiris@citeq.de'));
+			$smartyEmailForm->assign('contact_form_label',str_replace('###HOSTER###', $hoster_email, $this->pi_getLL('tx_civserv_pi1_email_form.contact_form','Contact '.$hoster_email)));
 			$smartyEmailForm->assign('notice_label',$this->pi_getLL('tx_civserv_pi1_email_form.notice','Please enter your postal address oder email address, so that we can send you an answer'));
 			$smartyEmailForm->assign('title_label', $this->pi_getLL('tx_civserv_pi1_email_form.title','Title'));
 			$smartyEmailForm->assign('chose_option', $this->pi_getLL('tx_civserv_pi1_email_form.chose','Please chose'));
@@ -2089,7 +2091,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$is_valid = true;
 
 		// Get Email-Adress or otherwise false
-		$email_address = $this->getEmailAddress($smartyEmailForm);
+		$email_address = $this->getEhoster_email($smartyEmailForm);
 
 		// Check if there is a valid email address in the database for the given combination of employee, service, position and organisation id
 		if ($email_address) {
@@ -2165,8 +2167,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$smartyEmailForm->assign('bodytext',$bodytext);
 
 				// Assign template labels
+				$hoster_email=$this->get_hoster_email();
 				$smartyEmailForm->assign('email_form_label',$this->pi_getLL('tx_civserv_pi1_email_form.email_form','E-Mail Form'));
-				$smartyEmailForm->assign('contact_form_label',$this->pi_getLL('tx_civserv_pi1_email_form.contact_form','Contact osiris@citeq.de'));
+				$smartyEmailForm->assign('contact_form_label',str_replace('###HOSTER###', $hoster_email, $this->pi_getLL('tx_civserv_pi1_email_form.contact_form','Contact '.$hoster_email)));
 				$smartyEmailForm->assign('notice_label',$this->pi_getLL('tx_civserv_pi1_email_form.notice','Please enter your postal address oder email address, so that we can send you an answer'));
 				$smartyEmailForm->assign('title_label', $this->pi_getLL('tx_civserv_pi1_email_form.title','Title'));
 				$smartyEmailForm->assign('chose_option', $this->pi_getLL('tx_civserv_pi1_email_form.chose','Please chose'));
@@ -2202,7 +2205,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 *
 	 * @return	string		The Email-Adress, if found. Otherwise false (and a error-message is assigned to the smartyObject).
 	 */
-	function getEmailAddress() {
+	function getEhoster_email() {
 		//Retrieve submitted id parameters
 		$org_id = intval($this->piVars[org_id]);
 		$emp_id = intval($this->piVars[id]);
@@ -2253,7 +2256,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}
 		} elseif ($this->piVars[mode]=='check_contact_form') {	//Email form ist called by the contact_link in the main Navigation
 			//todo: add database field for hoster from which the address below should be retrieved
-			return 'osiris@citeq.de';
+			$hoster_email =$this->get_hoster_email();
+			return $hoster_email;
 		} else {
 			$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi1_email_form.error_general','Organisation id, employee id, position id and service id wrong or not set. No email address found!');
 			return false;
@@ -2616,6 +2620,37 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$row_counter++;
 		}
 		return $whole_result;
+	}
+
+	
+	
+	
+	/**
+	 * Fetches result of db query with multiple rows and stores them in an array
+	 *
+	 * @param	result_set		Result of database query
+	 * @return	array		Array with results from database query
+	 */
+	function get_hoster_email()	{
+		$hoster_email="";
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'cf_value',			 							// SELECT ...
+			'tx_civserv_configuration',						// FROM ...    
+			'cf_key = "mail_to"',		// AND title LIKE "%blabla%"', // WHERE...
+			'', 											// GROUP BY...
+			'',   											// ORDER BY...
+			'' 												// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+		);
+		if($res){
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res); 
+			$hoster_email = $row['cf_value'];//oder $row[cf_value]
+		}else{
+			$hoster_email = "info@some_hoster.de";
+		}
+		if ($hoster_email == ''){
+			$hoster_email = "info@some_hoster.de";
+		}
+		return $hoster_email;
 	}
 
 
