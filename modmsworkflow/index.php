@@ -391,7 +391,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 		$resp_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'org.ms_mandant, org.ms_approver_one, org.ms_approver_two, cm_community_name, temp.*',			 							// SELECT ...
 			'tx_civserv_model_service AS org, tx_civserv_model_service_temp AS temp, tx_civserv_conf_mandant',		// FROM ...
-			'org.uid = temp.uid AND ((org.ms_approver_one = '.$community_id.' AND !temp.ms_commit_approver_one AND !temp.ms_revised_approver_one) OR (org.ms_approver_two = '.$community_id.' AND !temp.ms_commit_approver_two AND !temp.ms_revised_approver_two)) AND ms_mandant = cm_community_id AND temp.ms_has_changed AND !org.deleted',					// AND title LIKE "%blabla%"', // WHERE...
+			'org.uid = temp.uid AND ((org.ms_approver_one = '.$community_id.' AND !temp.ms_commit_approver_one AND !temp.ms_revised_approver_one) OR (org.ms_approver_two = '.$community_id.' AND !temp.ms_commit_approver_two AND !temp.ms_revised_approver_two)) AND ms_mandant = cm_community_id AND temp.ms_has_changed AND !temp.hidden AND !org.deleted',					// AND title LIKE "%blabla%"', // WHERE...
 			'', 										// GROUP BY...
 			'cm_community_name, temp.ms_name',   										// ORDER BY...
 			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
@@ -546,6 +546,24 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 		';
 		$tableStart .='
 			<!--
+			 	Short description:
+			-->
+				<tr  bgcolor="#CBC7C3">
+					<td>&nbsp;</td>
+					<td width="99%"><font color="black"><b>'.$LANG->getLL("modmsworkflow.ms_descr_short").'</b></font></td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr  bgcolor="#E4E0DB" height="100">
+						<td nowrap="nowrap"></td>
+						<td valign="top" bgcolor="white">
+						    <div style="height:80px; width:460px; overflow:auto">'.$resp_services_row["ms_descr_short"].'
+							</div>
+						</td>
+						<td>&nbsp;</td>
+				</tr>
+		';
+		$tableStart .='
+			<!--
 			 	Long description:
 			-->
 				<tr  bgcolor="#CBC7C3">
@@ -553,10 +571,10 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 					<td width="99%"><font color="black"><b>'.$LANG->getLL("modmsworkflow.ms_descr_long").'</b></font></td>
 					<td>&nbsp;</td>
 				</tr>
-				<tr  bgcolor="#E4E0DB" height="400">
+				<tr  bgcolor="#E4E0DB" height="300">
 						<td nowrap="nowrap"></td>
 						<td valign="top" bgcolor="white">
-						    <div style="height:280px; width:460px; overflow:auto">'.$resp_services_row["ms_descr_long"].'
+						    <div style="height:80px; width:460px; overflow:auto">'.$resp_services_row["ms_descr_long"].'
 							</div>
 						</td>
 						<td>&nbsp;</td>
@@ -653,10 +671,10 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 					<td width="99%"><font color="black"><b>'.$LANG->getLL("modmsworkflow.ms_fees").'</b></font></td>
 					<td>&nbsp;</td>
 				</tr>
-				<tr  bgcolor="#E4E0DB" >
+				<tr  bgcolor="#E4E0DB" height="300">
 						<td nowrap="nowrap"></td>
 						<td valign="top" bgcolor="white">
-						    <div style="height:280px; width:460px; overflow:auto">'.$resp_services_row["ms_fees"].'
+						    <div style="height:180px; width:460px; overflow:auto">'.$resp_services_row["ms_fees"].'
 							</div>
 						</td>
 						<td>&nbsp;</td>
@@ -671,10 +689,10 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 					<td width="99%"><font color="black"><b>'.$LANG->getLL("modmsworkflow.ms_documents").'</b></font></td>
 					<td>&nbsp;</td>
 				</tr>
-				<tr  bgcolor="#E4E0DB" height="400">
+				<tr  bgcolor="#E4E0DB" height="300">
 						<td nowrap="nowrap"></td>
 						<td valign="top" bgcolor="white">
-						    <div style="height:280px; width:460px; overflow:auto">'.$resp_services_row["ms_documents"].'
+						    <div style="height:180px; width:460px; overflow:auto">'.$resp_services_row["ms_documents"].'
 							</div>
 						</td>
 						<td>&nbsp;</td>
@@ -689,10 +707,10 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 					<td width="99%"><font color="black"><b>'.$LANG->getLL("modmsworkflow.ms_legal_global").'</b></font></td>
 					<td>&nbsp;</td>
 				</tr>
-				<tr  bgcolor="#E4E0DB" height="400">
+				<tr  bgcolor="#E4E0DB" height="300">
 						<td nowrap="nowrap"></td>
 						<td valign="top" bgcolor="white">
-						    <div style="height:280px; width:460px; overflow:auto">'.$resp_services_row["ms_legal_global"].'
+						    <div style="height:180px; width:460px; overflow:auto">'.$resp_services_row["ms_legal_global"].'
 							</div>
 						</td>
 						<td>&nbsp;</td>
@@ -719,10 +737,10 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 					<td width="99%"><font color="black"><b>'.$LANG->getLL("modmsworkflow.ms_searchword").'</b></font></td>
 					<td>&nbsp;</td>
 				</tr>
-				<tr  bgcolor="#E4E0DB">
+				<tr  bgcolor="#E4E0DB" height="300">
 						<td nowrap="nowrap"></td>
 						<td valign="top" bgcolor="white">
-						    <div style="height:280px; width:460px; overflow:auto">'.$searchwords.'
+						    <div style="height:180px; width:460px; overflow:auto">'.$searchwords.'
 							</div>
 						</td>
 						<td>&nbsp;</td>

@@ -242,10 +242,25 @@ class tx_civserv_ms_maintenance {
 				'',										// Optional ORDER BY field(s), if none, supply blank string.
 				'' 										// Optional LIMIT value ([begin,]max), if none, supply blank string.
 			);
+			
+			$i = 0;
+			$old_uid_flag=false;
+			while ($i < mysql_num_fields($res)) {
+    			$meta = mysql_fetch_field($res, $i);
+    			if($meta->name=="old_uid"){
+					$old_uid_flag=true;
+					break;//one instance reicht, dann gibt es das feld in alle datensätzen
+				}
+				$i++;
+    		}
+			
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				//get rid of the extra-field for name-logging in tx_civserv_model_service (or else insert will fail because tx_civserv_model_service_temp has no such field)
 				unset($row['ms_stored_name']);
-
+				//get rid of the old uid field because it doesn't exist in tx_civserv_model_service_temp
+				if($old_uid_flag){
+					unset($row['old_uid']);
+				}
 				//does a copy of this dataset from tx_civserv_model_service already exist in tx_civserv_model_service_temp? (remember: same uids!!)
 				$exists_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'*',											// Field list for SELECT

@@ -584,6 +584,7 @@ CREATE TABLE tx_civserv_organisation (
 	deleted tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	hidden tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	fe_group int(11) DEFAULT '0' NOT NULL,
+	or_number tinytext NOT NULL,
 	or_name tinytext NOT NULL,
 	or_supervisor int(11) unsigned DEFAULT '0' NOT NULL,
 	or_hours int(11) unsigned DEFAULT '0' NOT NULL,
