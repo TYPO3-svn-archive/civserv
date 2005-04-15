@@ -617,11 +617,14 @@ CREATE TABLE tx_civserv_officehours (
 	hidden tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	fe_group int(11) DEFAULT '0' NOT NULL,
 	oh_descr tinytext NOT NULL,
+	oh_name tinytext NOT NULL,
 	oh_start_morning varchar(30) DEFAULT '0' NOT NULL,
 	oh_end_morning varchar(30) DEFAULT '0' NOT NULL,
 	oh_start_afternoon varchar(30) DEFAULT '0' NOT NULL,
 	oh_end_afternoon varchar(30) DEFAULT '0' NOT NULL,
 	oh_weekday int(11) DEFAULT '0' NOT NULL,
+	oh_manual_checkbox int(11) unsigned DEFAULT '0' NOT NULL,
+	oh_freestyle varchar(255) DEFAULT '' NOT NULL,
 	
 	PRIMARY KEY (uid),
 	KEY parent (pid)

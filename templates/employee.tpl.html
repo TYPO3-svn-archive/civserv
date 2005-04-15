@@ -76,16 +76,20 @@
 					<!--{foreach from=$emp_pos_hours item=hours }-->
 						<tr>
 							<td>{$hours.weekday}</td>
-							<!--{if $hours.end_morning == "0" AND $hours.start_afternoon == "0"}-->
-								<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+							<!--{if $hours.freestyle > ''}-->
+								<td colspan="2">{$hours.freestyle}</td>
 							<!--{else}-->
-								<!--{if $hours.start_morning != "0" AND $hours.end_morning != "0"}-->
-									<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_morning}</td>
+								<!--{if $hours.end_morning == "0" AND $hours.start_afternoon == "0"}-->
+									<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+								<!--{else}-->
+									<!--{if $hours.start_morning != "0" AND $hours.end_morning != "0"}-->
+										<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_morning}</td>
+									<!--{/if}-->
+									<!--{if $hours.start_afternoon != "0" AND $hours.end_afternoon != "0"}-->
+										<td colspan="2" style="text-align:right">{$hours.start_afternoon}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+									<!--{/if}-->
 								<!--{/if}-->
-								<!--{if $hours.start_afternoon != "0" AND $hours.end_afternoon != "0"}-->
-									<td>{$hours.start_afternoon}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
-								<!--{/if}-->
-							<!--{/if}-->
+							<!--{/if}-->	
 						</tr>
 					<!--{/foreach}-->
 				</tbody>
@@ -104,16 +108,20 @@
 					<!--{foreach from=$emp_hours item=hours }-->
 						<tr>
 							<td>{$hours.weekday}</td>
-							<!--{if $hours.end_morning == "0" AND $hours.start_afternoon == "0"}-->
-								<td colspan="2">{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+							<!--{if $hours.freestyle > ''}-->
+								<td colspan="2">{$hours.freestyle}</td>
 							<!--{else}-->
-								<!--{if $hours.start_morning != "0" AND $hours.end_morning != "0"}-->
-									<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_morning}</td>
+								<!--{if $hours.end_morning == "0" AND $hours.start_afternoon == "0"}-->
+									<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+								<!--{else}-->
+									<!--{if $hours.start_morning != "0" AND $hours.end_morning != "0"}-->
+										<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_morning}</td>
+									<!--{/if}-->
+									<!--{if $hours.start_afternoon != "0" AND $hours.end_afternoon != "0"}-->
+										<td colspan="2" style="text-align:right">{$hours.start_afternoon}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+									<!--{/if}-->
 								<!--{/if}-->
-								<!--{if $hours.start_afternoon != "0" AND $hours.end_afternoon != "0"}-->
-									<td>{$hours.start_afternoon}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
-								<!--{/if}-->
-							<!--{/if}-->
+							<!--{/if}-->	
 						</tr>
 					<!--{/foreach}-->
 				</tbody>
@@ -132,16 +140,20 @@
 					<!--{foreach from=$emp_org_hours item=hours }-->
 						<tr>
 							<td>{$hours.weekday}</td>
-							<!--{if $hours.end_morning == "0" AND $hours.start_afternoon == "0"}-->
-								<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+							<!--{if $hours.freestyle > ''}-->
+								<td colspan="2">{$hours.freestyle}</td>
 							<!--{else}-->
-								<!--{if $hours.start_morning != "0" AND $hours.end_morning != "0"}-->
-									<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_morning}</td>
+								<!--{if $hours.end_morning == "0" AND $hours.start_afternoon == "0"}-->
+									<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+								<!--{else}-->
+									<!--{if $hours.start_morning != "0" AND $hours.end_morning != "0"}-->
+										<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_morning}</td>
+									<!--{/if}-->
+									<!--{if $hours.start_afternoon != "0" AND $hours.end_afternoon != "0"}-->
+										<td colspan="2" style="text-align:right">{$hours.start_afternoon}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+									<!--{/if}-->
 								<!--{/if}-->
-								<!--{if $hours.start_afternoon != "0" AND $hours.end_afternoon != "0"}-->
-									<td>{$hours.start_afternoon}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
-								<!--{/if}-->
-							<!--{/if}-->
+							<!--{/if}-->	
 						</tr>
 					<!--{/foreach}-->
 				</tbody>

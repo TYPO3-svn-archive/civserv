@@ -395,7 +395,9 @@ $TCA["tx_civserv_officehours"] = Array (
 	"ctrl" => Array (
 		"title" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_officehours",
 		"label" => "oh_descr",
-		"label_alt" => "oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon,",
+		"requestUpdate" => "oh_manual_checkbox",
+		#"label_alt" => "oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon,",
+		"label_alt" => "oh_name",
 		"label_alt_force" => 1,
 		"tstamp" => "tstamp",
 		"crdate" => "crdate",
@@ -411,7 +413,7 @@ $TCA["tx_civserv_officehours"] = Array (
 		"iconfile" => t3lib_extMgm::extRelPath($_EXTKEY)."icon_tx_civserv_officehours.gif",
 	),
 	"feInterface" => Array (
-		"fe_admin_fieldList" => "hidden, fe_group, oh_descr, oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_weekday",
+		"fe_admin_fieldList" => "hidden, fe_group, oh_descr, oh_manual_checkbox, oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_weekday, oh_freestyle",
 	)
 );
 

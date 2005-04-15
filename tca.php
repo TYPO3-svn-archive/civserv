@@ -1964,9 +1964,27 @@ $TCA["tx_civserv_officehours"] = Array (
 				"eval" => "required",
 			)
 		),
+		"oh_name" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_officehours.oh_name",
+			"config" => Array (
+				"type" => "input",
+				"size" => "30",
+				"max" => "255",
+				"eval" => "required",
+			)
+		),
+		"oh_manual_checkbox" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_officehours.oh_manual_checkbox",
+			"config" => Array (
+				"type" => "check",
+			)
+		),
 		"oh_start_morning" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_officehours.oh_start_morning",
+			"displayCond" => "FIELD:oh_manual_checkbox:REQ:false",
 			"config" => Array (
 				"type" => "select",
 				"items" => Array (
@@ -1990,6 +2008,7 @@ $TCA["tx_civserv_officehours"] = Array (
 		"oh_end_morning" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_officehours.oh_end_morning",
+			"displayCond" => "FIELD:oh_manual_checkbox:REQ:false",
 			"config" => Array (
 				"type" => "select",
 				"items" => Array (
@@ -2016,6 +2035,7 @@ $TCA["tx_civserv_officehours"] = Array (
 		"oh_start_afternoon" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_officehours.oh_start_afternoon",
+			"displayCond" => "FIELD:oh_manual_checkbox:REQ:false",
 			"config" => Array (
 				"type" => "select",
 				"items" => Array (
@@ -2044,6 +2064,7 @@ $TCA["tx_civserv_officehours"] = Array (
 		"oh_end_afternoon" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_officehours.oh_end_afternoon",
+			"displayCond" => "FIELD:oh_manual_checkbox:REQ:false",
 			"config" => Array (
 				"type" => "select",
 				"items" => Array (
@@ -2070,6 +2091,17 @@ $TCA["tx_civserv_officehours"] = Array (
 				"eval" => "required,time",
 			)
 		),
+		"oh_freestyle" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_officehours.oh_freestyle",
+			"displayCond" => "FIELD:oh_manual_checkbox:REQ:true",
+			"config" => Array (
+				"type" => "input",
+				"size" => "25",
+				"max" => "255",
+				"eval" => "trim",
+			)
+		),
 		"oh_weekday" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_officehours.oh_weekday",
@@ -2090,7 +2122,7 @@ $TCA["tx_civserv_officehours"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_weekday")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, oh_name, oh_manual_checkbox, oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_freestyle, oh_weekday")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")
@@ -2498,7 +2530,7 @@ $TCA["tx_civserv_employee_em_position_mm"] = Array (
 			"config" => Array (
 				"type" => "select",
 				"foreign_table" => "tx_civserv_officehours",
-				"foreign_table_where" => "ORDER BY tx_civserv_officehours.oh_descr, tx_civserv_officehours.oh_weekday, tx_civserv_officehours.oh_start_morning",
+				"foreign_table_where" => "ORDER BY tx_civserv_officehours.oh_weekday, tx_civserv_officehours.oh_weekday, tx_civserv_officehours.oh_start_morning",
 				"itemsProcFunc" => "tx_civserv_mandant->limit_items",
 				"size" => 5,
 				"minitems" => 0,

@@ -1537,7 +1537,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Query for employee office hours
 		$res_emp_hours = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-					'oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_weekday',
+					'oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_freestyle, oh_weekday',
 					'tx_civserv_employee',
 					'tx_civserv_employee_em_hours_mm',
 					'tx_civserv_officehours',
@@ -1553,7 +1553,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 			//Query for employee-position office hours
 			$res_emp_pos_hours = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_weekday',
+					'oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_freestyle, oh_weekday',
 					'tx_civserv_employee, tx_civserv_position, tx_civserv_officehours, tx_civserv_employee_em_position_mm, tx_civserv_officehours_oep_employee_em_position_mm_mm',
 					'!tx_civserv_employee.deleted AND !tx_civserv_employee.hidden
 					 AND !tx_civserv_position.deleted AND !tx_civserv_position.hidden
@@ -1569,7 +1569,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 			//Query for employee-organisation office hours
 			$res_emp_org_hours = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_weekday',
+					'oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_freestyle, oh_weekday',
 					'tx_civserv_employee, tx_civserv_organisation, tx_civserv_position, tx_civserv_officehours, tx_civserv_employee_em_position_mm, tx_civserv_position_po_organisation_mm, tx_civserv_organisation_or_hours_mm',
 					'!tx_civserv_organisation.deleted AND !tx_civserv_organisation.hidden
 					 AND !tx_civserv_officehours.deleted AND !tx_civserv_officehours.hidden
@@ -1623,6 +1623,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$emp_pos_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
 			$emp_pos_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
 			$emp_pos_hours[$row_counter]['end_afternoon'] = $row[oh_end_afternoon];
+			$emp_pos_hours[$row_counter]['freestyle'] = $row[oh_freestyle];
 			$row_counter++;
 		}
 		$smartyEmployee->assign('emp_pos_hours',$emp_pos_hours);
@@ -1636,6 +1637,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$emp_org_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
 			$emp_org_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
 			$emp_org_hours[$row_counter]['end_afternoon'] = $row[oh_end_afternoon];
+			$emp_org_hours[$row_counter]['freestyle'] = $row[oh_freestyle];
 			$row_counter++;
 		}
 		$smartyEmployee->assign('emp_org_hours',$emp_org_hours);
@@ -1683,6 +1685,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$emp_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
 			$emp_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
 			$emp_hours[$row_counter]['end_afternoon'] = $row[oh_end_afternoon];
+			$emp_hours[$row_counter]['freestyle'] = $row[oh_freestyle];
 			$row_counter++;
 		}
 		$smartyEmployee->assign('emp_hours',$emp_hours);
@@ -1773,7 +1776,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Query for office hours
 		$res_hour = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-						'oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_weekday',
+						'oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_freestyle, oh_weekday',
 						'tx_civserv_organisation',
 						'tx_civserv_organisation_or_hours_mm',
 						'tx_civserv_officehours',
@@ -1809,6 +1812,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$organisation_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
 			$organisation_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
 			$organisation_hours[$row_counter]['end_afternoon'] = $row[oh_end_afternoon];
+			$organisation_hours[$row_counter]['freestyle'] = $row[oh_freestyle];
 			$row_counter++;
 		}
 		$smartyOrganisation->assign('office_hours',$organisation_hours);
