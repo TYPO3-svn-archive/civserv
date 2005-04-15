@@ -135,6 +135,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// create and instanciate smarty object
 		$tx_smarty = t3lib_div::makeInstanceClassName('tx_smarty');
 		$smartyObject = new $tx_smarty($this->extKey);
+		$smartyObject->template_dir = PATH_site;
+		$smartyObject->compile_dir =t3lib_extMgm::siteRelPath($this->extKey).'templates_c/'; 
+		
+		//set path variables for includes within templates
+		$smartyObject->assign('right_searchbox_template', $this->conf['tpl_right_searchbox']);
+		$smartyObject->assign('right_top_template', $this->conf['tpl_right_top']);
+		$smartyObject->assign('organisation_template', $this->conf['tpl_organisation']);
 
 		// If community-id is given in GET or POST variable, priority is POST,
 		// get the community name and the pidlist for this community from the

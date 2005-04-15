@@ -1,22 +1,25 @@
 # Template path definition
-tpl_service_list = service_list.tpl.html
-tpl_circumstance_tree = circumstance_tree.tpl.html
-tpl_usergroup_tree = usergroup_tree.tpl.html
-tpl_organisation_tree = organisation_tree.tpl.html
-tpl_service = service.tpl.html
-tpl_employee = employee.tpl.html
-tpl_circumstance = service_list.tpl.html
-tpl_usergroup = service_list.tpl.html
-tpl_organisation = organisation.tpl.html
-tpl_form_list = form_list.tpl.html
-tpl_community_choice = community_choice.tpl.html
-tpl_error_page = error_page.tpl.html
-tpl_search_result = search_result.tpl.html
-tpl_top15 = top15.tpl.html
-tpl_email_form = email_form.tpl.html
-tpl_debit_authorisation = debit_authorisation.tpl.html
-tpl_legal_notice = legal_notice.tpl.html
-tpl_contact_form = contact_form.tpl.html
+tpl_service_list = typo3conf/ext/civserv/templates/service_list.tpl.html
+tpl_circumstance_tree = typo3conf/ext/civserv/templates/circumstance_tree.tpl.html
+tpl_usergroup_tree = typo3conf/ext/civserv/templates/usergroup_tree.tpl.html
+tpl_organisation_tree = typo3conf/ext/civserv/templates/organisation_tree.tpl.html
+tpl_service = typo3conf/ext/civserv/templates/service.tpl.html
+tpl_employee = typo3conf/ext/civserv/templates/employee.tpl.html
+tpl_circumstance = typo3conf/ext/civserv/templates/service_list.tpl.html
+tpl_usergroup = typo3conf/ext/civserv/templates/service_list.tpl.html
+tpl_organisation = typo3conf/ext/civserv/templates/organisation.tpl.html
+tpl_form_list = typo3conf/ext/civserv/templates/form_list.tpl.html
+tpl_community_choice = typo3conf/ext/civserv/templates/community_choice.tpl.html
+tpl_error_page = typo3conf/ext/civserv/templates/error_page.tpl.html
+tpl_search_result = typo3conf/ext/civserv/templates/search_result.tpl.html
+tpl_top15 = typo3conf/ext/civserv/templates/top15.tpl.html
+tpl_email_form = typo3conf/ext/civserv/templates/email_form.tpl.html
+tpl_debit_authorisation = typo3conf/ext/civserv/templates/debit_authorisation.tpl.html
+tpl_legal_notice = typo3conf/ext/civserv/templates/legal_notice.tpl.html
+tpl_contact_form = typo3conf/ext/civserv/templates/contact_form.tpl.html
+tpl_right_searchbox = typo3conf/ext/civserv/templates/right_searchbox.tpl.html
+tpl_right_top = typo3conf/ext/civserv/templates/right_top.tpl.html
+
 
 # Path definitions (common part)
 folder_services = fileadmin/civserv/

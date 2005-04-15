@@ -18,6 +18,9 @@ plugin.tx_civserv_pi1 {
 	tpl_debit_authorisation = {$tpl_debit_authorisation}
 	tpl_contact_form = {$tpl_contact_form}
 	tpl_legal_notice = {$tpl_legal_notice}
+	tpl_right_searchbox = {$tpl_right_searchbox}
+	tpl_right_top = {$tpl_right_top}
+
 	
 
 	folder_services = {$folder_services}
