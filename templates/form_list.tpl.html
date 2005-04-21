@@ -1,1 +1,45 @@
-<!--TYPO3SEARCH_end--><div id="right">	{include file=$right_searchbox_template}	{* For the form list could be shown organisations with forms. *}	<!--{if $organisations != "" }-->		<h3 class="invisible">{$subnavigation_label}:</h3>		<div id="rightmenu">			<ul class="level1">				<!--{foreach from=$organisations item=organisation }-->					<li><a href="{$organisation.link}">{$organisation.name}</a></li>				<!--{/foreach}-->			</ul><!-- level1 end -->		</div><!-- rightmenu end -->	<!--{/if}-->	{include file=$right_top_template}</div><!-- right end -->				<div id="centrecontent">	<!--{if $heading != ""}-->		<h1>{$heading}</h1>	<!--{/if}-->	<!--{if $abcbar != ""}-->		{$abcbar}	<!--{/if}-->		<h2>{$subheading}:</h2>		<!--{if $form_list != ""}-->		<ul>		<!--{foreach from=$form_list item=form}-->			<li><strong><a href="{$form.url}">{$form.name}&nbsp;</a></strong><br />				<!--{if $form.descr != ""}-->					{$form.descr}				<!--{/if}-->									<!--{if $form.services != ""}-->					{$assigned_services}:<br />					<ul>					<!--{foreach from=$form.services item=service}-->						<li><a href="{$service.link}">{$service.name}</a></li>					<!--{/foreach}-->					</ul>				<!--{/if}-->				<br />			</li>		<!--{/foreach}-->		</ul>	<!--{/if}-->	{$pagebar}</div><!-- centrecontent end -->
+<!--TYPO3SEARCH_end-->
+<div id="right">
+	{include file=$right_searchbox_template}	
+	{* For the form list could be shown organisations with forms. *}	
+	<!--{if $organisations != "" }-->		
+		<h3 class="invisible">{$subnavigation_label}:</h3>
+		<div id="rightmenu">
+			<ul class="level1">
+				<!--{foreach from=$organisations item=organisation }-->
+					<li><a href="{$organisation.link}">{$organisation.name}</a></li>
+				<!--{/foreach}-->			
+			</ul><!-- level1 end -->
+		</div><!-- rightmenu end -->	
+	<!--{/if}-->
+	{include file=$right_top_template}
+</div><!-- right end -->
+<div id="centrecontent">	
+	<!--{if $heading != ""}-->		
+		<h1>{$heading}</h1>	
+	<!--{/if}-->	
+	<!--{if $abcbar != ""}-->		
+		{$abcbar}	
+	<!--{/if}-->		
+	<h2>{$subheading}:</h2>		
+	<!--{if $form_list != ""}-->		
+		<ul>		
+		<!--{foreach from=$form_list item=form}-->			
+			<li><strong><a href="{$form.url}">{$form.name}&nbsp;</a></strong><br />				
+			<!--{if $form.descr != ""}-->					
+				{$form.descr}				
+			<!--{/if}-->									
+			<!--{if $form.services != ""}-->					
+				{$assigned_services}:<br />					
+				<ul>					
+				<!--{foreach from=$form.services item=service}-->						
+					<li><a href="{$service.link}">{$service.name}</a></li>					
+				<!--{/foreach}-->					
+				</ul>				
+			<!--{/if}--><br />			
+			</li>		
+		<!--{/foreach}-->		
+		</ul>	
+	<!--{/if}-->	
+	{$pagebar}
+</div><!-- centrecontent end -->

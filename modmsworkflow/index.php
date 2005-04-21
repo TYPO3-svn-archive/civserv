@@ -556,7 +556,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 				<tr  bgcolor="#E4E0DB" height="100">
 						<td nowrap="nowrap"></td>
 						<td valign="top" bgcolor="white">
-						    <div style="height:80px; width:460px; overflow:auto">'.$resp_services_row["ms_descr_short"].'
+						    <div style="height:280px; width:460px; overflow:auto">'.$resp_services_row["ms_descr_short"].'
 							</div>
 						</td>
 						<td>&nbsp;</td>
@@ -574,7 +574,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 				<tr  bgcolor="#E4E0DB" height="300">
 						<td nowrap="nowrap"></td>
 						<td valign="top" bgcolor="white">
-						    <div style="height:80px; width:460px; overflow:auto">'.$resp_services_row["ms_descr_long"].'
+						    <div style="height:280px; width:460px; overflow:auto">'.$resp_services_row["ms_descr_long"].'
 							</div>
 						</td>
 						<td>&nbsp;</td>

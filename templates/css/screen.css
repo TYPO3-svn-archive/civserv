@@ -141,6 +141,21 @@ unknown {
 	padding-top: 20px;
 }
 
+/* 
+* to use on pages without searchword or right menu
+* contact.tpl.html
+* email.tpl.html
+* in cases where you give a background-color to the #right area
+* else you would get an empty red, green, blue... box
+*/
+#right_dummy {
+	float: right;
+	width: 195px;
+	margin-right: -195px;
+	position: relative;
+	padding-top: 20px;
+}
+
 html #right {
 	padding-bottom: 4.5em; 
 	margin-right: -200px;
