@@ -1972,9 +1972,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		} else {
 			$community_id = $this->piVars[community_id];
 		}
-		if ($_SESSION[community_name] > '') {
+		if ($_SESSION[community_name] > '' ) {
 			$content = $_SESSION[community_name];
-		} elseif ($community_id > '') {
+		} elseif ($community_id > ''  && $community_id != 'choose') {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'cm_community_name',
 						'tx_civserv_conf_mandant',

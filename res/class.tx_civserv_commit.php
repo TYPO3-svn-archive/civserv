@@ -96,11 +96,12 @@ class tx_civserv_commit {
 	 */
 	function recheckModifyAccessList($table, $cmdmap, $pObj, &$res){
 		if (isset($cmdmap) && isset($cmdmap['tx_civserv_model_service_temp'])){
+			//debug($cmdmap['tx_civserv_model_service_temp']);
 			foreach($cmdmap['tx_civserv_model_service_temp'] as $id => $incomingCmdArray)	{
 				if (is_array($incomingCmdArray))	{
 					reset($incomingCmdArray);
 					$command = key($incomingCmdArray);
-					if (!$pObj->admin && $command = 'delete') $res = 0;
+					if (!$pObj->admin && $command == 'delete') $res = 0;
 				}
 			}
 		}
@@ -229,6 +230,7 @@ class tx_civserv_commit {
 	 */
 	function updateDB($params) {
 		global $GLOBALS, $BE_USER;
+		debug($GLOBALS['GLOBALS']['TYPO3_CONF_VARS']);
 		if ($params['table']=='tx_civserv_building')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_floorbuild.php']){
 				$update_obj = t3lib_div::makeInstance('tx_civserv_floorbuild');

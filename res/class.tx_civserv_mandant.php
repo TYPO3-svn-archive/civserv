@@ -193,7 +193,22 @@ class tx_civserv_mandant{
 		  	array_push($target_array,$source_array['items'][$i]);
 		  }
 		  $i++;
-		}			
+		}	
+
+		if (isset($source_array['field']) && $source_array['field']=='or_structure'){		
+			//debug($source_array);
+			//debug($target_array,'vor löschen');
+			$length = count($target_array);
+			for ($j = 0; $j < $length; $j++){
+				//debug($target_array[$j][1], $source_array['row']['uid'])
+				if ($target_array[$j][1] == $source_array['row']['uid']) {
+					$pos = $j;
+				}
+			}
+			//debug($pos,'Posititon');
+			if ($pos) unset($target_array[$pos]);
+			//debug ($target_array,'nach löschen');
+		}		
 		return $target_array;
 	}	
 	
