@@ -117,6 +117,9 @@ page.10 {
 	marks.COMMUNITY.community_id = {$community_id}
 	marks.COMMUNITY.userFunc = tx_civserv_pi1->getCommunityName
 	
+	marks.HOMEPAGE = USER
+	marks.HOMEPAGE.userFunc = tx_civserv_pi1->getHomepage
+	
 	marks.CHOICE_LINK < temp.choicelink
 	
 	/*

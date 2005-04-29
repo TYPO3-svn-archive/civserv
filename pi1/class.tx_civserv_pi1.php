@@ -2989,6 +2989,33 @@ class tx_civserv_pi1 extends tslib_pibase {
 	}
 
 
+	/******************************
+	 *
+	 * Functions for the startpage-link in left navigation
+	 *
+	 *******************************/
+
+
+	/**
+	 * Returns link to set startpage in servicenavigation
+	 * Normaly used from a template userfunction.
+	 *
+	 * @param	string		content
+	 * @param	array		configuration array
+	 * @return	string		The link
+	 */
+	function getHomepage($content, $conf) {
+	
+		if ($conf['pageid'] > '') {
+			$pageid = $conf['pageid'];
+		} else {
+			$pageid = $GLOBALS['TSFE']->id;
+		}
+		return  str_replace("http://", "", t3lib_div::getIndpEnv(TYPO3_SITE_URL).parent::pi_getPageLink($pageid));
+		#return 'www.die-maus.de';
+	}
+
+
 
 
 

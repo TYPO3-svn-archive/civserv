@@ -35,7 +35,7 @@
 					<li><a href="###CHOICE_LINK###">Andere Kommune</a></li>
 					<li><a href="###LEGAL_NOTICE_LINK###">Impressum</a></li>
 					<li><a href="###CONTACT_LINK###">Kontakt</a></li>
-					<!--<li><a href="#">Sitemap</a></li>-->
+					<li><a href="#">hallo: ###HOMEPAGE###</a></li>
 				</ul>
 				</div><!-- globalenavigation end -->
 		</div><!-- header end -->
@@ -58,7 +58,7 @@
 								document.write('onMouseOut="window.status=\' \'; return true;"');
 								document.write(' class="bookmark">Lesezeichen setzen</a></li>');
 							}
-							favsetz = '<li><a href="" onClick="this.style.behavior=\'url(#default#homepage)\';this.setHomePage(\'http://www.regio-komm.de\');" rel="prev" title="Hier können Sie www.regio-komm.de als Startseite in Ihrem Browser festsetzen" class="home">Startseite festlegen</a></li>';
+							favsetz = '<li><a href="http://###HOMEPAGE###" onClick="this.style.behavior=\'url(#default#homepage)\';this.setHomePage(\'###HOMEPAGE###\');" rel="prev" title="Hier können Sie ###HOMEPAGE### als Startseite in Ihrem Browser festsetzen" class="home">Startseite festlegen</a></li>';
 							document.writeln( favsetz );
 							document.writeln('</ul>');
 							//-->

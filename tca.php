@@ -1571,7 +1571,7 @@ $TCA["tx_civserv_employee"] = Array (
 				"type" => "input",
 				"size" => "30",
 				"max" => "55",
-				"eval" => "required",
+				#"eval" => "required",
 			)
 		),
 		"em_telephone" => Array (
