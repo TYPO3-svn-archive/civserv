@@ -1253,6 +1253,17 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'',
 						'tx_civserv_service_sv_position_mm.sorting');	//ORDER BY
 
+		//Query for search words
+		$res_search_word = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'tx_civserv_service.uid as suid, tx_civserv_search_word.uid as wuid, tx_civserv_service.sv_name as sname, tx_civserv_search_word.sw_search_word as sword',
+						'tx_civserv_service, tx_civserv_search_word, tx_civserv_service_sv_searchword_mm',
+						'tx_civserv_service.uid = ' . $uid . '
+						AND !tx_civserv_service.deleted AND !tx_civserv_service.hidden
+						AND tx_civserv_service.uid = tx_civserv_service_sv_searchword_mm.uid_local
+						AND tx_civserv_search_word.uid = tx_civserv_service_sv_searchword_mm.uid_foreign',
+						'',
+						'tx_civserv_search_word.sw_search_word'); //ORDER BY
+						
 		//Query for similar services
 		$res_similar = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'similar.uid AS uid, similar.sv_name AS name',
@@ -1341,6 +1352,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$row_counter++;
 		}
 		$smartyService->assign('organisations',$service_organisations);
+		
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_search_word) ) {
+			$search_words[] = $row[sword];
+		}
+		if ($search_words > 0){
+			$search_words = implode(", ", $search_words);
+			$smartyService->assign('searchwords',$search_words);
+		}
 
 		//Query for model service
 		if ($service_common[sv_model_service] > 0) {

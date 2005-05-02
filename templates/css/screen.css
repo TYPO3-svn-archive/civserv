@@ -285,6 +285,11 @@ html #centrecontent {
 	display: none;
 }
 
+.searchwords{
+	display: none;
+	visibility: hidden;
+}
+
 table.right {
 	margin: 0;
 	font-size: 0.95em;
