@@ -769,6 +769,7 @@ CREATE TABLE tx_civserv_conf_mandant (
     cm_search_uid int(11) unsigned DEFAULT '0' NOT NULL,
     cm_community_type int(11) unsigned DEFAULT '0' NOT NULL,
     cm_target_email tinytext NOT NULL,
+	cm_employeesearch tinyint(3) unsigned DEFAULT '0' NOT NULL,
     
     PRIMARY KEY (uid)
 );

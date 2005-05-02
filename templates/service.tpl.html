@@ -139,7 +139,10 @@
 		<p><a href="#centrecontent" class="topofpage" title="{$link_to_top}">{$top}</a></p><br />
 	<!--{/if}-->
 
-<!--TYPO3SEARCH_end-->
+<!--{if $employee_search == "0"}-->
+	<!--TYPO3SEARCH_end-->
+	<div class="MAA"></div>
+<!--{/if}-->	
 
 	<!--{if $organisations != ""}-->
 		<h2>{$organisation_label}</h2>
@@ -182,5 +185,11 @@
 			</p>
 		<!--{/foreach}-->
 		<p><a href="#centrecontent" class="topofpage" title="{$link_to_top}">{$top}</a></p>
+		<!--{if $employee_search == "0"}-->
+			<div class="MAE"></div>
+		<!--{/if}-->	
+		<!--{if $employee_search == "1"}-->
+			<!--TYPO3SEARCH_end-->
+		<!--{/if}-->	
 	<!--{/if}-->
 </div><!-- centrecontent end -->

@@ -3272,9 +3272,16 @@ $TCA["tx_civserv_conf_mandant"] = Array (
 				"eval" => "trim",
 			)
 		),
+		"cm_employeesearch" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_conf_mandant.cm_employeesearch",
+			"config" => Array (
+				"type" => "check",
+			)
+		),		
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, cm_community_name, cm_community_id, cm_uid, cm_circumstance_uid, cm_usergroup_uid, cm_organisation_uid, cm_service_folder_uid, cm_external_service_folder_uid, cm_model_service_temp_uid, cm_page_uid, cm_search_uid, cm_target_email, cm_community_type")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, cm_community_name, cm_community_id, cm_uid, cm_circumstance_uid, cm_usergroup_uid, cm_organisation_uid, cm_service_folder_uid, cm_external_service_folder_uid, cm_model_service_temp_uid, cm_page_uid, cm_search_uid, cm_target_email, cm_employeesearch, cm_community_type")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")

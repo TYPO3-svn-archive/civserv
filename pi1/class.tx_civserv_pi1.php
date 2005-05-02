@@ -177,6 +177,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$_SESSION['circumstance_uid'] = $community_data[0]['cm_circumstance_uid'];
 					$_SESSION['usergroup_uid'] = $community_data[0]['cm_usergroup_uid'];
 					$_SESSION['organisation_uid'] = $community_data[0]['cm_organisation_uid'];
+					$_SESSION['employee_search'] = $community_data[0]['cm_employeesearch'];
 					break;
 				default:
 					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi1_error.community_id_twice','The current system seems to be misconfigured. The given community-id exists at least twice in the configuration table.');
@@ -192,6 +193,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$this->community['circumstance_uid'] = $_SESSION['circumstance_uid'];
 			$this->community['usergroup_uid'] = $_SESSION['usergroup_uid'];
 			$this->community['organisation_uid'] = $_SESSION['organisation_uid'];
+			$this->community['employee_search'] = $_SESSION['employee_search'];
 
 			// Set piVars[community_id] because it could only be registered in the session and not in the URL
 			$this->piVars[community_id] = $_SESSION['community_id'];
@@ -1198,6 +1200,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 	function serviceDetail(&$smartyService,$searchBox=false,$topList=false) {
 		$uid = $this->piVars[id];
 		$community_id = $this->community['id'];
+		$employee = $this->community['employee_search'];
+				
+		//search Employee Details
+		$smartyService->assign('employee_search',$employee);
 
 		//Set path to forms of services
 		$folder_forms = $this->conf['folder_services'];
