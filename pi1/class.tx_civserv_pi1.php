@@ -1650,6 +1650,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_pos_hours) )
 		{
+			if($row[oh_weekday] == 8){ //monday to friday
+				unset($emp_pos_hours);
+			}
 			$emp_pos_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
 			$emp_pos_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
 			$emp_pos_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
@@ -1664,6 +1667,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_org_hours) )
 		{
+			if($row[oh_weekday] == 8){ //monday to friday
+				unset($emp_org_hours);
+			}
 			$emp_org_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
 			$emp_org_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
 			$emp_org_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
@@ -1712,6 +1718,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_hours) )
 		{
+			if($row[oh_weekday] == 8){ //monday to friday
+				unset($emp_hours);
+			}
 			$emp_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
 			$emp_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
 			$emp_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
@@ -1839,6 +1848,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_hour) )
 		{
+			if($row[oh_weekday] == 8){ //monday to friday
+				unset($organisation_hours);
+			}
 			$organisation_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
 			$organisation_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
 			$organisation_hours[$row_counter]['end_morning'] = $row[oh_end_morning];

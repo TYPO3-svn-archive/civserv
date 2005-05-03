@@ -2116,6 +2116,8 @@ $TCA["tx_civserv_officehours"] = Array (
 					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_5", 5),
 					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_6", 6),
 					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_7", 7),
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_8", 8),
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_9", 9),
 				),
 				//"eval" => "required,time",
 			)

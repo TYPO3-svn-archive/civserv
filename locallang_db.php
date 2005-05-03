@@ -227,6 +227,8 @@ $LOCAL_LANG = Array (
 		"tx_civserv_weekday_5" => "Friday",
 		"tx_civserv_weekday_6" => "Saturday",
 		"tx_civserv_weekday_7" => "Sun- and Holiday",
+		"tx_civserv_weekday_8" => "Monday to Friday",
+		"tx_civserv_weekday_9" => "Extra hours",
 		"tt_content.list_type_pi1" => "Virtual Civil Services",	 // Name of Plug-in (for Flag)
 	),
 	"de" => Array (
@@ -417,6 +419,8 @@ $LOCAL_LANG = Array (
 		"tx_civserv_weekday_5" => "Freitag",
 		"tx_civserv_weekday_6" => "Samstag",
 		"tx_civserv_weekday_7" => "Sonn- und Feiertag",
+		"tx_civserv_weekday_8" => "Montag bis Freitag",
+		"tx_civserv_weekday_9" => "zusätzlich",
 	),
 );
 ?>
