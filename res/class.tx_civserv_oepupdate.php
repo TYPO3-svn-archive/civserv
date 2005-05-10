@@ -60,15 +60,26 @@ class tx_civserv_oepupdate {
 	* @return	void
 	*/
 	function update_pid($params){
+		debug($params, 'jetzt update_pid!' );
+		
 		if (is_array($params) && ($params['table']== 'tx_civserv_employee' || $params['table']=='tx_civserv_employee_em_position_mm')) {		
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_civserv_employee_em_position_mm.uid, tx_civserv_employee.pid',
-			'tx_civserv_employee', 
-			'tx_civserv_employee_em_position_mm', 
-			'', '', '', '', '');
+			'tx_civserv_employee_em_position_mm.uid, tx_civserv_employee.pid',	//SELECT
+			'tx_civserv_employee', 												//LOCAL_TABLE
+			'tx_civserv_employee_em_position_mm', 								//MM_TABLE
+			'', 																//foreign_table
+			'', 																//whereClause
+			'', 																//groupBy
+			'', 																//orderBy
+			'');																//limit
+			
+			$liste="";
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_employee_em_position_mm', 'uid = '.$GLOBALS['TYPO3_DB']->quoteStr($row['uid'], 'tx_civserv_employee_em_position_mm'), array ("pid" => $row['pid']));
+				$liste.=$row['uid'].", ";
 			}
+			#echo "<script type=\"text/javascript\">alert('".$liste."');</script>";
+			
 		}
 	}
 	

@@ -1596,7 +1596,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					 AND tx_civserv_officehours.uid = tx_civserv_officehours_oep_employee_em_position_mm_mm.uid_foreign
 					 AND tx_civserv_employee.uid = ' . $uid . ' AND tx_civserv_position.uid = '.$pos_id,
 					'',
-					'',
+					'oh_weekday',
 					'');
 
 			//Query for employee-organisation office hours

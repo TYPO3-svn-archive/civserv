@@ -165,6 +165,7 @@ class tx_civserv_mandant{
 	* @return int $target_array Array consisting only of elements containing to the given mandant
 	*/
 	function manipulate_array($mandant, $source_array, $table){
+		//debug($table, 'die tabelle um die es geht?');
 		$res_pids = $GLOBALS['TYPO3_DB']->exec_SELECTquery('distinct pid',$GLOBALS['TYPO3_DB']->quoteStr($table,$table),'!deleted AND !hidden','','','','');
 		$valid_pid = '';
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_pids)) { 	
@@ -178,8 +179,6 @@ class tx_civserv_mandant{
 		$array_temp = array();
 		if (strlen($valid_pid)>2){
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid, pid',$GLOBALS['TYPO3_DB']->quoteStr($table,$table),'!deleted AND !hidden AND pid IN '.$valid_pid,'','','','');
-		
-			
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) { 	
 				array_push($array_temp,$row['uid']);
 			}
@@ -194,21 +193,52 @@ class tx_civserv_mandant{
 		  }
 		  $i++;
 		}	
-
-		if (isset($source_array['field']) && $source_array['field']=='or_structure'){		
-			//debug($source_array);
-			//debug($target_array,'vor löschen');
-			$length = count($target_array);
-			for ($j = 0; $j < $length; $j++){
-				//debug($target_array[$j][1], $source_array['row']['uid'])
-				if ($target_array[$j][1] == $source_array['row']['uid']) {
-					$pos = $j;
+		
+		//additional queries by b.kohorst: get rid of 'children' or else endless loops can be constructed in the BE (which will kill the webserver!)
+		//affected are all tables which contain hierarchical references to themselves (i.e. organisations, usergroups and circumstances
+		$critical = $this->get_critical_table($table);
+		//debug($critical, 'rückgabewert der fkt get_critical_table');
+		if(is_array($critical)){//either false or array
+			if (isset($source_array['field']) && $source_array['field']==$critical['field']){	//either or_structure or nav_structure	
+				//debug($source_array, 'source_array');
+				//debug($target_array,'target_array vor löschen');
+				
+				//get rid of the 'children' --> recursive!!!!
+				
+				$forbidden_uids=array();
+				debug($source_array['row']['uid'], 'source_array_uid');
+				if(substr($source_array['row']['uid'],0,3)!='NEW'){//or else the following select will crash!
+					$forbidden_uids[]=$source_array['row']['uid'];
+					//the following two lines are equivalent to each other:
+					//$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', $GLOBALS['TYPO3_DB']->quoteStr($critical['mm'],$critical['mm']), 'uid_foreign = '.$source_array['row']['uid'],'','','',''); 
+					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', $GLOBALS['TYPO3_DB']->quoteStr($source_array['config']['MM'],$source_array['config']['MM']), 'uid_foreign = '.$source_array['row']['uid'],'','','',''); 
+					
+					$this->get_forbidden($res, &$forbidden_uids, $source_array['config']['MM']);
 				}
-			}
-			//debug($pos,'Posititon');
-			if ($pos) unset($target_array[$pos]);
-			//debug ($target_array,'nach löschen');
-		}		
+				//debug($forbidden_uids, 'forbidden_uids');
+				
+				$kill_pos=array();
+				$length = count($target_array);
+				for ($j = 0; $j < $length; $j++){
+					//debug($target_array[$j][1], $source_array['row']['uid']);
+					if ($target_array[$j][1] == $source_array['row']['uid']) {
+						$kill_pos[] = $j;
+					}
+					for($k=0; $k<count($forbidden_uids); $k++){
+						if($target_array[$j][1] == $forbidden_uids[$k]){
+							$kill_pos[] = $j;
+						}
+					}
+				}
+				//debug($pos,'Posititon');
+				if (count($kill_pos)>0){
+					foreach($kill_pos as $pos){
+						unset($target_array[$pos]);
+					}
+				} 
+				//debug ($target_array,'target_array nach löschen');
+			}	//field
+		}	//table
 		return $target_array;
 	}	
 	
@@ -229,13 +259,56 @@ class tx_civserv_mandant{
 			array_push($valid_nav, $value[1]);
 		}
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) { 	
-				//debug($source_array);
-				if (in_array($row['uid'],$valid_nav))
-					array_push($target_array,array($row['nv_name'], $row['uid']));
+			//debug($source_array);
+			if (in_array($row['uid'],$valid_nav))
+				array_push($target_array,array($row['nv_name'], $row['uid']));
 			}	
 		return $target_array;
 	}
 	
+	
+	/*
+	* This function enlarges the limiting functionality:
+	* identifies uids of elements below a given element in the navigation hierarchie of organisations, life-concepts
+	*
+	* @param mysql_result_set
+	* @param reference to string Array with uids of elements that will be removed from selectorbox in the BE
+	* @param string name of the affected table
+	* @return -- nothing! call by reference.....
+	*/
+	function get_forbidden($res, &$forbidden_uids, $table){
+		if($res){
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
+				$forbidden_uids[]=$row['uid_local'];
+				$res2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', $GLOBALS['TYPO3_DB']->quoteStr($table,$table), 'uid_foreign = '.$row['uid_local'],'','','',''); 
+				$this->get_forbidden($res2, &$forbidden_uids, $table);
+			}
+		}
+	}
+	
+	/*
+	* This function enlarges the limiting functionality:
+	* stores the names of tables and fields needed for eleminating the child-elements in hierachical structures
+	*
+	* @param string name of the actual table, function checks if this table is among the critical tables
+	* @return either false (if actual table is not critical) or string Array with names of tables and fields
+	*/
+	function get_critical_table($table){
+		$crittable=array();
+		$tabby= false;
+		$crittable[0]['name']='tx_civserv_organisation';
+		$crittable[0]['mm']='tx_civserv_organisation_or_structure_mm';
+		$crittable[0]['field']='or_structure';
+		$crittable[1]['name']='tx_civserv_navigation';
+		$crittable[1]['mm']='tx_civserv_navigation_nv_structure_mm';
+		$crittable[1]['field']='nv_structure';
+		for($i=0; $i<count($crittable); $i++){
+			if($crittable[$i]['name']==$table){
+				return $crittable[$i];
+			}
+		}
+		return $tabby;
+	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_mandant.php']) {
 	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_mandant.php']);

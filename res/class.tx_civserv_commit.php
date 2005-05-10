@@ -57,10 +57,16 @@
  * @package Extension
  * @subpackage civserv
  */
+ 
+ 
+#require_once (PATH_t3lib."class.t3lib_tcemain.php");
+
+ 
 class tx_civserv_commit {
 
 	var $tables = array('tx_civserv_service'=>'tx_civserv_service_sv_position_mm', 'tx_civserv_employee'=>'tx_civserv_employee_em_position_mm', 'tx_civserv_building'=>'tx_civserv_building_bl_floor_mm');
 	var $attributes = array('tx_civserv_service_sv_position_mm'=>'sv_position', 'tx_civserv_employee_em_position_mm'=>'em_position', 'tx_civserv_building_bl_floor_mm'=>'bl_floor');
+	var $fieldarry = array();
 
 	/**
 	 * This function is central to guarantee the consistency within the DB.
@@ -73,12 +79,13 @@ class tx_civserv_commit {
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
 	function update_postAction(&$params, &$pObj){
-		$this->updateDB($params);
-			//call the function renewMMentries($params), which writes back MM-entries that have been backuped through saveMMentries
+		//call the function renewMMentries($params), which writes back MM-entries that have been backuped through saveMMentries
 		if (isset($params['table'])){
 			if (array_key_exists($params['table'],$this->tables))
 				$this->renewMMentries($params);
 		}
+		//test: call updateDB after the MMentries have been renewed.... without effect as far as we can see....
+		$this->updateDB($params);
 	}
 	
 	
@@ -108,8 +115,8 @@ class tx_civserv_commit {
 	}
 
 	/**
-	 * This function writes back all MM-entries from the end of the table, which have been backuped through saveMMentries.
-	 * Actuall entries in the front of the table get deleted and replace by the once from the end. See
+	 * This function writes back all MM-entries from the end of the table, which have been backuped through saveMMentries().
+	 * Actuall entries in the front of the table get deleted and replaced by the ones from the end. See
 	 * Concerned tables: tx_civserv_service_sv_position_mm', tx_civserv_employee_em_position_mm, tx_civserv_building_bl_floor_mm
 	 *
 	 * @see rocessDatamap_preProcessFieldArray
@@ -130,7 +137,7 @@ class tx_civserv_commit {
 				$oldEntries[]=$row;
 				$del_result = $GLOBALS['TYPO3_DB']->exec_DELETEquery($mmTable,'uid_local = '.$row['uid_local'].' AND uid_foreign = '.$row['uid_foreign']);
 			}
-				//get the entries from the back and set there uid to the one deleted above, so the backup is completet and all extra attributes from our MM-tables are saved!
+				//get the entries from the back and set their uid to the one deleted above, so the backup is completet and all extra attributes from our MM-tables are saved!
 			foreach($oldEntries as $row){
 				$row['uid']=$row['uid_temp'];
 				$uid_temp=$row['uid_temp'];
@@ -148,7 +155,8 @@ class tx_civserv_commit {
 	 */
 	function processDatamap_preProcessIncomingFieldArray($incomingFieldArray, $table, $id, $pObj){
 		//dummy-Hook
-		if (array_key_exists($table,$this->tables) && substr($id,0,3)!='NEW')
+		#if (array_key_exists($table,$this->tables) && substr($id,0,3)!='NEW')
+		if (array_key_exists($table,$this->tables))
 			$this->saveMMentries($incomingFieldArray, $table, $id);
 	}
 
@@ -172,7 +180,8 @@ class tx_civserv_commit {
 	 */
 	function processDatamap_preProcessFieldArray($incomingFieldArray, $table, $id, $pObj){
 		//saves the current MM-entries
-		if (array_key_exists($table,$this->tables) && (substr($id,0,3)!='NEW'))
+		#if (array_key_exists($table,$this->tables) && (substr($id,0,3)!='NEW'))
+		if (array_key_exists($table,$this->tables))
 			$this->saveMMentries($incomingFieldArray, $table, $id);
 	}
 
@@ -191,13 +200,18 @@ class tx_civserv_commit {
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
 	function saveMMentries($incomingFieldArray, $table, $id){
-			//get all MM tables, which could be concerned by the typo3 MM-entrie problem
+		$msg="hallo";
+		echo "<script type=\"text/javascript\">alert('".$msg."');</script>";
+		debug($incomingFieldArray, 'saveMMentries, $incomingFieldArray');
+		debug($table, 'saveMMentries, $table');
+		debug($id, 'saveMMentries, $id');
+		//get all MM tables, which could be concerned by the typo3 MM-entrie problem
 		$mmTables = explode(',',$this->tables[$table]);
 		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
 		//$incomingFieldArray[sv_position];
 		//for all concerned MM-tables save the concerned entries at the end of the MM-tables and backup the origin uid in the field uid_temp
 		foreach($mmTables as $mmTable){
-			//only get this entries, which are selected in the actuall backendmask for the contenttype "service". So deleted once are not listed here
+			//only get this entries, which are selected in the actuall backendmask for the contenttype "service". So deleted ones are not listed here
 			$entries = explode(',',$incomingFieldArray[$this->attributes[$mmTable]]);
 			$foreign_uids=array();
 			foreach ($entries as $entry){
@@ -208,7 +222,7 @@ class tx_civserv_commit {
 					else $foreign_uids[]=$entry;
 				}
 			}
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$mmTable,'!deleted AND !hidden AND uid_local = '.$id);
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$mmTable,'!deleted AND !hidden AND uid_local = \''.$id.'\'');
 				//copy each concerned entrie to the end of table
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
 				if (in_array($row['uid_foreign'],$foreign_uids)){
@@ -230,14 +244,23 @@ class tx_civserv_commit {
 	 */
 	function updateDB($params) {
 		global $GLOBALS, $BE_USER;
-		debug($GLOBALS['GLOBALS']['TYPO3_CONF_VARS']);
+		#debug($GLOBALS['GLOBALS']['TYPO3_CONF_VARS']);
+		#debug($params, '$params, fkt updateDB(), Klasse commit.php');
 		if ($params['table']=='tx_civserv_building')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_floorbuild.php']){
 				$update_obj = t3lib_div::makeInstance('tx_civserv_floorbuild');
 				$update_obj->update_pid($params);
 			}
 		}
-		if ($params['table']=='tx_civserv_employee' || $params['table']=='tx_civserv_employee_em_position_mm')	{
+		if ($params['table']=='tx_civserv_employee')	{
+			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_oepupdate.php']){
+				$update_obj = t3lib_div::makeInstance('tx_civserv_oepupdate');
+				$update_obj->update_pid($params);
+				//This could be much faster if only the current employee would be updated
+				$update_obj->update_label($params);
+			}
+		}
+		if ($params['table']=='tx_civserv_employee_em_position_mm')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_oepupdate.php']){
 				$update_obj = t3lib_div::makeInstance('tx_civserv_oepupdate');
 				$update_obj->update_pid($params);
