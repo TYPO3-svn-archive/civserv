@@ -200,11 +200,9 @@ class tx_civserv_commit {
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
 	function saveMMentries($incomingFieldArray, $table, $id){
-		$msg="hallo";
-		echo "<script type=\"text/javascript\">alert('".$msg."');</script>";
-		debug($incomingFieldArray, 'saveMMentries, $incomingFieldArray');
-		debug($table, 'saveMMentries, $table');
-		debug($id, 'saveMMentries, $id');
+		//debug($incomingFieldArray, 'saveMMentries, $incomingFieldArray');
+		//debug($table, 'saveMMentries, $table');
+		//debug($id, 'saveMMentries, $id');
 		//get all MM tables, which could be concerned by the typo3 MM-entrie problem
 		$mmTables = explode(',',$this->tables[$table]);
 		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;

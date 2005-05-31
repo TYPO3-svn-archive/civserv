@@ -152,7 +152,7 @@ $TCA["tx_civserv_service"] = Array (
 			"label" => "LLL:EXT:lang/locallang_general.php:LGL.hidden",
 			"config" => Array (
 				"type" => "check",
-				"default" => "0"
+				"default" => "1"
 			)
 		),
 		"starttime" => Array (
