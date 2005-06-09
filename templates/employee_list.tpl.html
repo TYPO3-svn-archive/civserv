@@ -1,0 +1,37 @@
+<!--TYPO3SEARCH_end-->
+<div id="right">
+	{include file=$right_searchbox_template}	
+	{* For the form list could be shown organisations with forms. *}	
+	<!--{if $organisations != "" }-->		
+		<h3 class="invisible">{$subnavigation_label}:</h3>
+		<div id="rightmenu">
+			<ul class="level1">
+				<!--{foreach from=$organisations item=organisation }-->
+					<li><a href="{$organisation.link}">{$organisation.name}</a></li>
+				<!--{/foreach}-->			
+			</ul><!-- level1 end -->
+		</div><!-- rightmenu end -->	
+	<!--{/if}-->
+	{include file=$right_top_template}
+</div><!-- right end -->
+<div id="centrecontent">	
+	<!--{if $heading != ""}-->		
+		<h1>{$heading}</h1>	
+	<!--{/if}-->	
+	<!--{if $abcbar != ""}-->		
+		{$abcbar}	
+	<!--{/if}-->		
+	<h2>{$subheading}:</h2>	
+			<div class="list">
+			<ul>
+		<!--{foreach from=$employees item=employee}-->				
+		<!--{if $employee.em_datasec == "1"}-->
+				<li><a href="{$employee.em_url}">{$employee.em_name}, {$employee.em_firstname}</a> ({$employee.orga_name})</li>
+		<!--{else}-->
+				<li>{$employee.em_name}, {$employee.em_firstname} ({$employee.orga_name})</li>
+		<!--{/if}-->
+		<!--{/foreach}-->	
+			</ul>
+			</div>
+		{$pagebar}
+</div><!-- centrecontent end -->
