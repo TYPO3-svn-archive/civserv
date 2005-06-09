@@ -15,6 +15,7 @@ leftmenu {
 		menuCircumstanceTree = {$menuCircumstanceTree}
 		menuUsergroupTree = {$menuUsergroupTree}
 		menuOrganisationTree = {$menuOrganisationTree}
+		menuEmployeeList = {$menuEmployeeList}
 		menuFormList = {$menuFormList}
 		menuTop15 = {$menuTop15}
 		userFunc = tx_civserv_pi1->makeMenuArray

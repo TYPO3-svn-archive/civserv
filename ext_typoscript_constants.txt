@@ -19,6 +19,7 @@ tpl_legal_notice = typo3conf/ext/civserv/templates/legal_notice.tpl.html
 tpl_contact_form = typo3conf/ext/civserv/templates/contact_form.tpl.html
 tpl_right_searchbox = typo3conf/ext/civserv/templates/right_searchbox.tpl.html
 tpl_right_top = typo3conf/ext/civserv/templates/right_top.tpl.html
+tpl_employee_list = typo3conf/ext/civserv/templates/employee_list.tpl.html
 
 
 # Path definitions (common part)
@@ -36,6 +37,8 @@ recursive = 10
 # Defines how many items are displayed in the lists
 services_per_page = 50
 forms_per_page = 25
+employee_per_page = 20
+
 
 # Defines how many Pages with links are displyed below the lists
 max_pages_in_pagebar = 15
@@ -68,6 +71,8 @@ searchAtOrganisation = 1
 searchAtForms = 0
 searchAtTop15 = 1
 searchAtEmployee = 0
+searchAtEmployeeList = 0
+
 
 # Defines at which sites the abcBar will be shown
 abcBarAtServiceList = 1
@@ -78,6 +83,8 @@ abcBarAtOrganisation = 0
 abcBarAtFormList_all = 1
 # View with forms of one organisation
 abcBarAtFormList_orga = 0
+abcBarAtEmployeeList = 1
+
 
 # Defines at which sites the Top-services will be shown 
 topAtServiceList = 1
@@ -89,6 +96,8 @@ topAtCircumstance = 1
 topAtUsergroup = 1
 topAtOrganisation = 1
 topAtService = 0
+topAtEmployeeList = 0 
+
 
 # count of top-services
 topCount = 6
@@ -109,6 +118,7 @@ menuUsergroupTree = 1
 menuOrganisationTree = 1
 menuFormList = 1
 menuTop15 = 1
+menuEmployeeList = 0
 
 # Enable/disable RTE conversion
 content.RTE_compliant = 1

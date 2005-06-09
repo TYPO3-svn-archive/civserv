@@ -222,6 +222,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$template = $this->conf['tpl_organisation_tree'];
 					$accurate = $this->navigationTree($smartyObject,$this->community[organisation_uid],$this->conf['searchAtOrganisationTree'],$this->conf['topAtOrganisationTree']);
 					break;
+					
+				case 'employee_list':
+					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_employee_list.employee_list','Employees A - Z');
+					$template = $this->conf['tpl_employee_list'];
+					$accurate = $this->employee_list($smartyObject,$this->conf['abcBarAtEmployeeList'],$this->conf['searchAtEmployeeList'],$this->conf['topAtEmployeeList']);
+					break;					
 
 				case 'form_list':
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_form_list.form_list','Forms');
@@ -612,7 +618,119 @@ class tx_civserv_pi1 extends tslib_pibase {
 		return true;
 	}
 
+	/**
+	 * Generates a list of all employees
+	 *
+	 * @param	[type]		$$smartyEmployeeList: ...
+	 * @param	[type]		$abcBar: ...
+	 * @param	[type]		$searchBox: ...
+	 * @param	[type]		$topList: ...
+	 * @return	[type]		...
+	 */
+	function employee_list(&$smartyEmployeeList,$abcBar=false,$searchBox=false,$topList=false){
+		$query = $this->makeEmployeeListQuery($this->piVars[char]);
+		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+		$row_counter = 0;
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
+				$employees[$row_counter]['em_name'] = $row['em_name'];
+				$employees[$row_counter]['em_firstname'] = $row['em_firstname'];
+				$employees[$row_counter]['em_datasec'] = $row['em_datasec'];
 
+				//select the organisation assigned to the employee
+				$orga_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'tx_civserv_position.uid as pos_uid, tx_civserv_organisation.uid as or_uid, tx_civserv_employee.uid as emp_uid, or_name as organisation',
+					'tx_civserv_employee, tx_civserv_position, tx_civserv_organisation, tx_civserv_employee_em_position_mm, tx_civserv_position_po_organisation_mm',
+					'tx_civserv_employee.uid = ' . $row['emp_uid'] . ' AND tx_civserv_position.uid = '.$row['pos_uid'] .'
+					 AND !tx_civserv_organisation.deleted AND !tx_civserv_organisation.hidden
+					 AND !tx_civserv_employee.deleted AND !tx_civserv_employee.hidden
+					 AND !tx_civserv_position.deleted AND !tx_civserv_position.hidden
+					 AND !tx_civserv_organisation.deleted AND !tx_civserv_organisation.hidden
+					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
+					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
+					 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
+					 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign',
+					 '',
+					 '',
+					 '');
+					while ($orga_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($orga_res) ) {
+						$employees[$row_counter]['orga_name'] = $orga_row[organisation];
+					}
+					$employees[$row_counter]['em_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $row['emp_uid'],pos_id => $row['pos_uid']),1,1));
+					$row_counter++;
+		}
+
+
+		// Retrieve the employee count
+		$row_count = 0;
+		$query = $this->makeEmployeeListQuery($this->piVars[char],false,true);
+		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			#$row_count += $row['anzahl'];
+			$row_count += $row['count(*)'];
+		}
+
+		$this->internal['res_count'] = $row_count;
+		$this->internal['results_at_a_time']= $this->conf['employee_per_page'];
+		$this->internal['maxPages'] = $this->conf['max_pages_in_pagebar'];
+
+		$smartyEmployeeList->assign('heading',$this->pi_getLL('tx_civserv_pi1_employee_list.employee_list.heading','Employees'));
+		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_employee_list.available_employees','Here you find the following employees'));
+		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true,'',' | '));
+		$smartyEmployeeList->assign('employees',$employees);
+
+		if ($abcBar) {
+			$query = $this->makeEmployeeListQuery(all,false);
+			$smartyEmployeeList->assign('abcbar',$this->makeAbcBar($query));
+		}
+
+		return true;
+	}
+	
+	/**
+	 * Generates a database query for the function employee_list. The returned query depends on the given parameter (like described below)
+	 * and the piVars 'char' and 'pointer', additionally the pidlist for the actual community is fetched from the class variable community.
+	 *
+	 * @param	[type]		$char: ...
+	 * @param	[type]		$limit: ...
+	 * @param	[type]		$count: ...
+	 * @return	[type]		...
+	 */
+	function makeEmployeeListQuery($char=all,$limit=true,$count=false) {
+			if ($char != all) {
+				$regexp = $this->buildRegexp($char);
+			}
+			if ($count){
+				$query = 'Select count(*) from tx_civserv_employee, tx_civserv_position, tx_civserv_employee_em_position_mm where tx_civserv_employee.pid IN (' . $this->community[pidlist] . ') AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid';
+			} else {
+				$query = 'Select tx_civserv_employee.em_name, tx_civserv_employee.em_firstname, tx_civserv_employee.em_name as name, tx_civserv_employee.em_datasec, '.
+					'tx_civserv_employee.uid as emp_uid, tx_civserv_position.uid as pos_uid ' .
+					'from tx_civserv_employee, tx_civserv_position, tx_civserv_employee_em_position_mm ' .
+					 'where tx_civserv_employee.pid IN (' . $this->community[pidlist] . ') '
+					 . ($regexp?'AND em_name REGEXP "' . $regexp . '"':'') .
+					 'AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local ' .
+					 'AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid' ;
+			}
+
+			$orderby =	$this->piVars[sort]?'name DESC':'name ASC';
+
+			if (!$count) {
+			$query .= ' ORDER BY ' . $orderby . ' ';
+
+				if ($limit) {
+					if ($this->piVars[pointer] > '') {
+						$start = $this->conf['employee_per_page'] * $this->piVars[pointer];
+					} else {
+						$start = 0;
+					}
+					$max = $this->conf['employee_per_page'];
+					$query .= 'LIMIT ' . $start . ',' . $max;
+					}
+			}
+			return $query;
+		}
+
+	
+	
 	/**
 	 * Generates a list of all available forms, including the assigned services.
 	 *
@@ -2931,6 +3049,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.organisation_tree','Organisation'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'organisation_tree'),1,1,$pageid),
 								'ITEM_STATE' => (($this->piVars[mode]=='organisation_tree') || ($this->piVars[mode]=='organisation'))?'ACT':'NO');
+		}
+		if ($conf['menuEmployeeList']) {
+			$menuArray[] = array(
+								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.employee_list','Employees A - Z'),
+								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'employee_list'),1,1,$pageid),
+								'ITEM_STATE' => ($this->piVars[mode]=='employee_list')?'ACT':'NO');
 		}
 		if ($conf['menuFormList']) {
 			$menuArray[] = array(
