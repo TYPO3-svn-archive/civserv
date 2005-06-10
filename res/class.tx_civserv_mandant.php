@@ -206,7 +206,7 @@ class tx_civserv_mandant{
 				//get rid of the 'children' --> recursive!!!!
 				
 				$forbidden_uids=array();
-				debug($source_array['row']['uid'], 'source_array_uid');
+				//debug($source_array['row']['uid'], 'source_array_uid');
 				if(substr($source_array['row']['uid'],0,3)!='NEW'){//or else the following select will crash!
 					$forbidden_uids[]=$source_array['row']['uid'];
 					//the following two lines are equivalent to each other:

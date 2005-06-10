@@ -283,9 +283,14 @@ function init() {
 
 				// Adds selected items (=options) and refreshes the
 				// browser window.
-			function add_options_refresh(category_uid,cur_selected_uid,cur_selected_name,script,PItemName,service_pid,service_folder_uid)	{	//
+			function add_options_refresh(category_uid,mode,cur_selected_uid,cur_selected_name,script,PItemName,service_pid,service_folder_uid)	{	//
+				variable = document.similarservices.suchname.value;
 				options = returnOptions(cur_selected_uid,cur_selected_name);
-				jumpToUrl(script+"?category_uid="+category_uid+options+PItemName+service_pid+service_folder_uid,this);
+				if (mode=="suchen" && variable=="") {
+					alert ("Bitte geben Sie einen gültigen Suchbegriff ein !");
+				} else {
+				jumpToUrl(script+"?category_uid="+category_uid+options+PItemName+service_pid+service_folder_uid+"&suchname="+variable+"&mode="+mode,this);
+				}
 			}
 
 				// Writes all selected items back to main window and
@@ -308,7 +313,7 @@ function init() {
 				if (category_uid == "0") {
 					category_uid="";
 				}
-				add_options_refresh(category_uid,\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\',\'&service_folder_uid='.htmlspecialchars($this->service_folder_uid).'\');
+				add_options_refresh(category_uid,\'normal\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\',\'&service_folder_uid='.htmlspecialchars($this->service_folder_uid).'\');
 			}
 			</script>
 			<!--###POSTJSMARKER###-->
@@ -345,6 +350,10 @@ function init() {
 		$this->content.=$this->getServiceCategories();
 
 		$this->content.='
+					</td>
+					<td>
+						<input type="text" size="20" name="suchname" id="suchname" value=""> <br />
+						<a href="#" onclick="add_options_refresh(\''.$this->service_folder_uid.'\',\'suchen\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\',\'&service_folder_uid='.htmlspecialchars($this->service_folder_uid).'\');">'.$LANG->getLL('all_category_wizards.search').'</a>
 					</td>
 				</tr>
 			</table>
@@ -392,7 +401,7 @@ function init() {
 	 */
 	function getServiceCategories()	{
 		global $LANG;
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+		//$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 
 			// Gets all categories which aren't hidden or deleted out of the database.
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -434,17 +443,21 @@ function init() {
 	function getServices()	{
 		global $LANG;
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+		$suchname = (string)t3lib_div::_GP('suchname');
+		$mode = (string)t3lib_div::_GP('mode');
+		$suchname = $this->make_clean($suchname);
 
 			// Gets all services with the selected category_uid out of the database.
 			// Checks also if positions aren't hidden or deleted.
 
 			// get all the child-folders to the chosen category (only 1 level recursion)
-		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		if ($mode == "normal") {
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid',			 				// SELECT ...
 			'pages',						// FROM ...
 			'pid='.$this->category_uid.' AND !deleted AND !hidden',	// AND title LIKE "%blabla%"', // WHERE...
 			'', 										// GROUP BY...
-			'',   								// ORDER BY...
+			'',   										// ORDER BY...
 			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 			);
 		$pidList=array();
@@ -455,6 +468,7 @@ function init() {
 
 		$liste=implode(',',$pidList);
 
+
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'*',			 							// SELECT ...
 			'tx_civserv_service',						// FROM ...
@@ -463,7 +477,35 @@ function init() {
 			'sv_name',   								// ORDER BY...
 			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 			);
-
+		} 
+		
+		
+		if ($suchname != "" AND $mode == "suchen") {
+		
+		
+		$fliste = array();
+			
+		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'uid',			 							// SELECT ...
+			'pages',									// FROM ...
+			'pid = '.$this->service_folder_uid.' AND !deleted AND !hidden',			// AND title LIKE "%blabla%"', // WHERE...
+			'', 										// GROUP BY...
+			'',   										// ORDER BY...
+			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+			);
+		
+		$fliste = $this->getlist($this->res, $fliste);
+		$fliste = implode(',',$fliste);
+		
+		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'*',			 							// SELECT ...
+			'tx_civserv_service',						// FROM ...
+			'pid in('.$fliste.') AND sv_name like \'%'.$suchname.'%\' AND !deleted AND !hidden',	// AND title LIKE "%blabla%"', // WHERE...
+			'', 										// GROUP BY...
+			'sv_name',   								// ORDER BY...
+			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+			);
+		}
 		$menuItems=array();
 
 		while ($services = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
@@ -501,6 +543,41 @@ function init() {
 		return false;
 	}//end service_selected
 
+	
+	/**
+	 * Gets pid by recursion.
+	 *
+	  */
+
+	function getlist($result, $fliste){
+	global $fliste;
+	if($result){
+			while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
+			$fliste[]=$row[0];
+			$res2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'uid',			 							// SELECT ...
+				'pages',									// FROM ...
+				'pid = '.$row[0].' AND !deleted AND !hidden',// AND title LIKE "%blabla%"', // WHERE...
+				'', 										// GROUP BY...
+				'',   										// ORDER BY...
+				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+				);
+			$this->getlist($res2, $liste);
+			}
+		}
+		return $fliste;
+	}
+	
+	/**
+	 * Cleans up User input in Search field.
+	 *
+	  */
+	 	
+	function make_clean($value) {
+		$legal_chars = "%[^0-9a-zA-ZäöüÄÖÜß ]%"; //allow letters, numbers & space
+		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
+		return $new_value;
+	}	
 
 	/**
 	 * Displays all of the content above in the browser window.

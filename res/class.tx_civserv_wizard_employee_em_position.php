@@ -255,13 +255,18 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 				// Adds selected items (=options) and refreshes the
 				// browser window.
 			function add_options_refresh(letter,cur_selected_uid,cur_selected_name,script,PItemName,employee_pid)	{	//
+				variable = document.employeeposition.suchname.value
 				if (document.employeeposition.selectedPositions) {
 					options = returnOptions(cur_selected_uid,cur_selected_name);
 				} else {	// if no selectorbox is displayed at beginning
 					options = "";
 				}
-				jumpToUrl(script+"?letter="+letter+options+PItemName+employee_pid,this);
-			}
+				if (letter=="suchen" && variable=="") {
+					alert ("Bitte geben Sie einen Suchbegriff ein !");
+				} else {
+					jumpToUrl(script+"?letter="+letter+options+PItemName+employee_pid+"&suchname="+variable,this);
+					}
+				}
 
 				// Writes all selected items back to main window and
 				// closes the popup wizard.
@@ -336,6 +341,10 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 
 		$this->content.='
 					</td>
+					<td>
+						<input type="text" size="20" name="suchname" id="suchname" value=""> <br />
+						<a href="#" onclick="add_options_refresh(\'suchen\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\')">'.$LANG->getLL('all_abc_wizards.search').'</a>
+					</td>
 				</tr>
 			</table>
 		';
@@ -389,9 +398,11 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 	 */
 	function getPositions($letter)	{
 		global $LANG;
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+		//$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+		$suchname = (string)t3lib_div::_GP('suchname');
+		$suchname = $this->make_clean($suchname);
 
-		if ($letter != "other") {
+		if ($letter != "other" and $letter != "suchen") {
 				// Gets all positions with the selected letter at the
 				// beginning out of the database. Checks also if positions aren't hidden or
 				// deleted.
@@ -403,7 +414,8 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 				'po_name',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 				);
-		} else {
+		} 
+		if ($letter == "other") {
 				// Gets all positions which don't begin with a letter
 				// out of the database. Checks also if positions aren't hidden or
 				// deleted.
@@ -415,7 +427,17 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 				'po_name',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 				);
-		}
+		} 
+		if ($letter == "suchen" AND $suchname != "") {
+				$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'*',			 							// SELECT ...
+				'tx_civserv_position',						// FROM ...
+				'po_name like \'%'.$suchname.'%\' AND !deleted AND !hidden',	// AND title LIKE "%blabla%"', // WHERE...
+				'', 										// GROUP BY...
+				'po_name',   								// ORDER BY...
+				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+				);
+		} 
 		$menuItems=array();
 
 			// Removes all positions from other mandants so that only
@@ -423,6 +445,7 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 			// selectorbox.
 		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
 		$mandant = $mandant_obj->get_mandant($this->employee_pid);
+		if ($this->res) {
 		while ($positions = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
 				// Checks if the uid is already selected.
 			if ($mandant_obj->get_mandant($positions['pid'])==$mandant){
@@ -432,9 +455,9 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 					$selVal = '';
 				}
 				$menuItems[]='<option label="'.htmlspecialchars($positions[po_name]).'" value="'.htmlspecialchars($positions[uid]).'"'.$selVal.'">'.htmlspecialchars($positions[po_name]).'</option>';
+				}
 			}
 		}
-
 		$PItemName = "&PItemName=".$this->pArr[0];
 
 			// Displays the second selectorbox with the positions.
@@ -460,7 +483,18 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 		return false;
 	}//end position_selected
 
-
+	/**
+	 * Cleans up User input in Search field.
+	 *
+	  */
+	 	
+	function make_clean($value) {
+		$legal_chars = "%[^0-9a-zA-Z‰ˆ¸ƒ÷‹ﬂ ]%"; //allow letters, numbers & space
+		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
+		return $new_value;
+	}	
+	
+	
 	/**
 	 * Displays all of the content above in the browser window.
 	 *
