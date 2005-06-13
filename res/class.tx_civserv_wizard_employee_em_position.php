@@ -356,7 +356,7 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 		if ($letter=='') {
 			// do nothing
 		} else {
-			if ($letter != "other") {
+			if ($letter != "other" and $letter != "suchen") {
 				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_employee_em_position.select_positions_text').''.$letter.':</h3>';
 			} else {
 				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_employee_em_position.select_positions_text_no_abc').':</h3>';
@@ -414,7 +414,7 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 				'po_name',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 				);
-		} 
+			} 
 		if ($letter == "other") {
 				// Gets all positions which don't begin with a letter
 				// out of the database. Checks also if positions aren't hidden or
@@ -427,7 +427,7 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 				'po_name',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 				);
-		} 
+			} 
 		if ($letter == "suchen" AND $suchname != "") {
 				$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',			 							// SELECT ...
@@ -437,7 +437,7 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 				'po_name',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 				);
-		} 
+			} 
 		$menuItems=array();
 
 			// Removes all positions from other mandants so that only

@@ -255,12 +255,17 @@ function init() {
 				// Adds selected items (=options) and refreshes the
 				// browser window.
 			function add_options_refresh(letter,cur_selected_uid,cur_selected_name,script,PItemName,service_pid)	{	//
+				variable = document.serviceform.suchname.value
 				if (document.serviceform.selectedPositions) {
 					options = returnOptions(cur_selected_uid,cur_selected_name);
 				} else {	// if no selectorbox is displayed at beginning
 					options = "";
 				}
-				jumpToUrl(script+"?letter="+letter+options+PItemName+service_pid,this);
+				if (letter=="suchen" && variable=="") {
+					alert ("Bitte geben Sie einen Suchbegriff ein !");
+				} else {
+					jumpToUrl(script+"?letter="+letter+options+PItemName+service_pid+"&suchname="+variable,this);
+				}
 			}
 
 				// Writes all selected items back to main window and
@@ -336,6 +341,10 @@ function init() {
 
 		$this->content.='
 					</td>
+					<td>
+						<input type="text" size="20" name="suchname" id="suchname" value=""> <br />
+						<a href="#" onclick="add_options_refresh(\'suchen\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.search').'</a>
+					</td>
 				</tr>
 			</table>
 		';
@@ -347,7 +356,7 @@ function init() {
 		if ($letter=='') {
 			// do nothing
 		} else {
-			if ($letter != "other") {
+			if ($letter != "other" and $letter != "suchen") {
 				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_position.select_positions_text').''.$letter.':</h3>';
 			}else {
 				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_position.select_positions_text_no_abc').':</h3>';
@@ -388,8 +397,11 @@ function init() {
 	function getPositions($letter)	{
 		global $LANG;
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+		$suchname = (string)t3lib_div::_GP('suchname');
+		$suchname = $this->make_clean($suchname);
 
-		if ($letter != "other") {
+
+		if ($letter != "other" and $letter != "suchen") {
 				// Gets all positions with the selected letter at the
 				// beginning out of the database. Checks also if positions aren't hidden or
 				// deleted.
@@ -401,7 +413,8 @@ function init() {
 				'po_name',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 				);
-		} else {
+			} 
+		if ($letter == "other") {
 				// Gets all positions which don't begin with a letter
 				// out of the database. Checks also if positions aren't hidden or
 				// deleted.
@@ -413,8 +426,17 @@ function init() {
 				'po_name',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 				);
-		}
-
+			}
+		if ($letter == "suchen" AND $suchname != "") {
+				$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'*',			 							// SELECT ...
+				'tx_civserv_position',						// FROM ...
+				'po_name like \'%'.$suchname.'%\' AND !deleted AND !hidden',	// AND title LIKE "%blabla%"', // WHERE...
+				'', 										// GROUP BY...
+				'po_name',   								// ORDER BY...
+				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+				);
+			} 
 		$menuItems=array();
 
 			// Removes all positions from other mandants so that only
@@ -422,19 +444,19 @@ function init() {
 			// selectorbox.
 		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
 		$mandant = $mandant_obj->get_mandant($this->service_pid);
-		while ($positions = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
-				// Checks if the uid is already selected.
-			if ($mandant_obj->get_mandant($positions['pid'])==$mandant){
-				if ($this->position_selected($positions[uid])) {
-					$selVal = 'selected="selected"';
-				} else {
-					$selVal = '';
+		if ($this->res) {
+			while ($positions = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
+					// Checks if the uid is already selected.
+				if ($mandant_obj->get_mandant($positions['pid'])==$mandant){
+					if ($this->position_selected($positions[uid])) {
+						$selVal = 'selected="selected"';
+					} else {
+						$selVal = '';
+					}
+						$menuItems[]='<option label="'.htmlspecialchars($positions[po_name]).'" value="'.htmlspecialchars($positions[uid]).'"'.$selVal.'">'.htmlspecialchars($positions[po_name]).'</option>';
 				}
-
-				$menuItems[]='<option label="'.htmlspecialchars($positions[po_name]).'" value="'.htmlspecialchars($positions[uid]).'"'.$selVal.'">'.htmlspecialchars($positions[po_name]).'</option>';
 			}
 		}
-
 		$PItemName = "&PItemName=".$this->pArr[0];
 
 			// Displays the second selectorbox with the positions.
@@ -459,7 +481,17 @@ function init() {
 		}
 		return false;
 	}//end position_selected
-
+	
+	/**
+	 * Cleans up User input in Search field.
+	 *
+	  */
+	 	
+	function make_clean($value) {
+		$legal_chars = "%[^0-9a-zA-Z‰ˆ¸ƒ÷‹ﬂ ]%"; //allow letters, numbers & space
+		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
+		return $new_value;
+	}	
 
 	/**
 	 * Displays all of the content above in the browser window.
