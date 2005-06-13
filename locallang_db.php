@@ -226,9 +226,11 @@ $LOCAL_LANG = Array (
 		"tx_civserv_weekday_4" => "Thursday",
 		"tx_civserv_weekday_5" => "Friday",
 		"tx_civserv_weekday_6" => "Saturday",
-		"tx_civserv_weekday_7" => "Sun- and Holiday",
-		"tx_civserv_weekday_8" => "Monday to Friday",
-		"tx_civserv_weekday_9" => "Extra hours",
+		"tx_civserv_weekday_7" => "Sunday",
+		"tx_civserv_weekday_8" => "Holiday",
+		"tx_civserv_weekday_9" => "Sun- and Holiday",
+		"tx_civserv_weekday_10" => "Monday to Friday",
+		"tx_civserv_weekday_11" => "Extra hours",
 		"tt_content.list_type_pi1" => "Virtual Civil Services",	 // Name of Plug-in (for Flag)
 	),
 	"de" => Array (
@@ -418,9 +420,11 @@ $LOCAL_LANG = Array (
 		"tx_civserv_weekday_4" => "Donnerstag",
 		"tx_civserv_weekday_5" => "Freitag",
 		"tx_civserv_weekday_6" => "Samstag",
-		"tx_civserv_weekday_7" => "Sonn- und Feiertag",
-		"tx_civserv_weekday_8" => "Montag bis Freitag",
-		"tx_civserv_weekday_9" => "zusätzlich",
+		"tx_civserv_weekday_7" => "Sonntag",
+		"tx_civserv_weekday_8" => "An Feiertagen",
+		"tx_civserv_weekday_9" => "Sonn- und Feiertag",
+		"tx_civserv_weekday_10" => "Montag bis Freitag",
+		"tx_civserv_weekday_11" => "zusätzlich",
 	),
 );
 ?>

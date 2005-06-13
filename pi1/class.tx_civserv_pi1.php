@@ -1836,7 +1836,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_hours) )
 		{
-			if($row[oh_weekday] == 8){ //monday to friday
+			if($row[oh_weekday] == 10){ //"monday to friday" only one item to be displayed instead of four or five
 				unset($emp_hours);
 			}
 			$emp_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
