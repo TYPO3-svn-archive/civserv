@@ -85,6 +85,7 @@ class tx_civserv_wizard_modelservice extends t3lib_SCbase {
 	var $pArr;			// contains parts of the $bparams
 	var $selectorbox1_checked;
 	var $selectorbox2_checked;
+	var $searchitem;
 
 	/**
 	 * Initializes the wizard by getting values out of the p-array.
@@ -94,7 +95,7 @@ class tx_civserv_wizard_modelservice extends t3lib_SCbase {
 	 */
 function init() {
 		global $LANG;		// Has to be in every function which uses localization data.
-
+		
 			// Gets parameters out of the p-array.
 		$this->P = t3lib_div::_GP('P');
 		$this->selectorbox1_checked = t3lib_div::_GP('select1');
@@ -136,10 +137,20 @@ function init() {
 				// JavaScript
 		$this->content.='
 			<script type="text/javascript">
-
 			script_ended = 0;
+			var searchitem="";
 			function jumpToUrl(URL)	{	//
-				document.location = URL;
+				if (document.modelservice.searchitem.value){
+					searchitem = document.modelservice.searchitem.value;
+					URL = URL+"&searchitem="+searchitem;
+				}
+					split = URL.split("&");
+					for(i=0;i<split.length;++i) {
+							if (split[i] == "mode=search" && searchitem == "") {
+								alert ("'.$LANG->getLL('all_wizards.search_warning').'");
+							}
+					}
+					document.location = URL;
 			}
 	// This JavaScript is primarily for RTE/Link. jumpToUrl is used in the other cases as well...
 			var elRef="";
@@ -189,8 +200,9 @@ function init() {
 	 */
 	function main()	{
 		global $LANG;
-
-			// Draw the body.
+		$script=basename(PATH_thisScript);
+		$this->searchitem = (string)t3lib_div::_GP('searchitem');
+		// Draw the body.
 		$this->content.='
 			<body scroll="auto" id="typo3-browse-links-php">
 			<form name="modelservice" action="" method="post">
@@ -209,15 +221,19 @@ function init() {
 			$this->MOD_SETTINGS['function']='0';
 			$this->content.=t3lib_BEfunc::getFuncMenu($this->id,'SET[function]','0',$this->MOD_MENU['function'],'', $PItemName);
 		}
-
 		$this->content.='
+					</td>
+					<td>
+						<input type="text" size="20" name="searchitem" id="searchitem" value="'.$this->searchitem.'"> <br />
+						<a href="#" name="link" onclick="jumpToUrl(\''.$script.'?id='.$this->id.''.$PItemName.'&SET[function]=0&mode=search\');">'.$LANG->getLL('all_category_wizards.search').'</a>
 					</td>
 				</tr>
 			</table>
 		';
 
-			// Only display second selectorbox if a model service category is selected.
-		if ((string)$this->MOD_SETTINGS['function']==0) {
+		// Only display second selectorbox if a model service category is selected.
+
+		if ((string)$this->MOD_SETTINGS['function']==0 AND $this->searchitem == "" AND !$this->selectorbox2_checked) {
 			// do nothing
 		} else {
 			$this->content.='
@@ -312,18 +328,23 @@ function init() {
 	 */
 	function getSelectForModelService()	{
 		global $LANG;
-
 			// Selects all model services of the selected category AND categories underneath it by checking if
 			// the PIDs of the model services and the UID of the model service
 			// categories are the same.
+		$this->searchitem = $this->make_clean($this->searchitem);
+		$mode = (string)t3lib_div::_GP('mode');
+		
 		$folders = $this->get_folders($this->MOD_SETTINGS['function']);
 		$pid_top=(string)$this->MOD_SETTINGS['function'];
-		if(count($folders)>0){
+		if(count($folders)>0 and $mode != "search"){
 			$where_clause = 'pid IN ('.$pid_top.', '.implode(",", $folders).')';
 		}else{
 			$where_clause = 'pid ='.$pid_top;
 		}
-
+		if($this->searchitem != ""){
+			$where_clause = 'ms_name like \'%'.$this->searchitem.'%\'';
+		}
+		
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'*',			 								// SELECT ...
 			'tx_civserv_model_service',						// FROM ...
@@ -332,7 +353,6 @@ function init() {
 			'ms_name',   											// ORDER BY...
 			'' 												// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 			);
-
 		$menuItems=array();
 
 			// Configures the selectorbox for model services. At the first call, no category should be selected,
@@ -384,7 +404,20 @@ function init() {
 		return $selectedUIDs;
 	}//end get_folders
 
-
+	
+	/**
+	 * Cleans up User input in Search field.
+	 *
+	  */
+	 	
+	function make_clean($value) {
+		$legal_chars = "%[^0-9a-zA-Z‰ˆ¸ƒ÷‹ﬂ ]%"; //allow letters, numbers & space
+		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
+		return $new_value;
+	}	
+		
+	
+	
 	/**
 	 * Displays all of the content above in the browser window.
 	 *

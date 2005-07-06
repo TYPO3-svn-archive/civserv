@@ -84,6 +84,7 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 	var $mode;			// mode for group box, "db" in this case
 	var $pArr;			// contains parts of the $bparams
 	var $PItemName;
+	var $seachitem;
 
 	/**
 	 * Initializes the wizard by getting values out of the p-array.
@@ -255,16 +256,16 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 				// Adds selected items (=options) and refreshes the
 				// browser window.
 			function add_options_refresh(letter,cur_selected_uid,cur_selected_name,script,PItemName,employee_pid)	{	//
-				variable = document.employeeposition.suchname.value
+				searchitem = document.employeeposition.searchitem.value
 				if (document.employeeposition.selectedPositions) {
 					options = returnOptions(cur_selected_uid,cur_selected_name);
 				} else {	// if no selectorbox is displayed at beginning
 					options = "";
 				}
-				if (letter=="suchen" && variable=="") {
-					alert ("Bitte geben Sie einen Suchbegriff ein !");
+				if (letter=="search" && searchitem=="") {
+					alert ("'.$LANG->getLL('all_wizards.search_warning').'");
 				} else {
-					jumpToUrl(script+"?letter="+letter+options+PItemName+employee_pid+"&suchname="+variable,this);
+					jumpToUrl(script+"?letter="+letter+options+PItemName+employee_pid+"&searchitem="+searchitem+"&letter="+letter,this);
 					}
 				}
 
@@ -294,6 +295,7 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 	 */
 	function main()	{
 		global $LANG;
+		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 			// Draw the body.
 		$this->content.='
 			<body scroll="auto" id="typo3-browse-links-php">
@@ -338,25 +340,23 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 			<a href="#" onclick="add_options_refresh(\'Z\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\')">Z</a>
 			<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>
 		';
-
 		$this->content.='
 					</td>
 					<td>
-						<input type="text" size="20" name="suchname" id="suchname" value=""> <br />
-						<a href="#" onclick="add_options_refresh(\'suchen\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\')">'.$LANG->getLL('all_abc_wizards.search').'</a>
+						<input type="text" size="20" name="searchitem" id="searchitem" value="'.$this->searchitem.'"> <br />
+						<a href="#" onclick="add_options_refresh(\'search\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\')">'.$LANG->getLL('all_abc_wizards.search').'</a>
 					</td>
 				</tr>
 			</table>
 		';
-
-			// Stores selected letter in variable.
+		// Stores selected letter in variable.
 		$letter = (string)t3lib_div::_GP('letter');
 
-			// Only display second selectorbox if a letter is selected.
+		// Only display second selectorbox if a letter is selected.
 		if ($letter=='') {
 			// do nothing
 		} else {
-			if ($letter != "other" and $letter != "suchen") {
+			if ($letter != "other" and $letter != "search") {
 				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_employee_em_position.select_positions_text').''.$letter.':</h3>';
 			} else {
 				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_employee_em_position.select_positions_text_no_abc').':</h3>';
@@ -398,11 +398,10 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 	 */
 	function getPositions($letter)	{
 		global $LANG;
-		//$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
-		$suchname = (string)t3lib_div::_GP('suchname');
-		$suchname = $this->make_clean($suchname);
+		$this->searchitem = (string)t3lib_div::_GP('searchitem');
+		$this->searchitem = $this->make_clean($this->searchitem);
 
-		if ($letter != "other" and $letter != "suchen") {
+		if ($letter != "other" and $letter != "search") {
 				// Gets all positions with the selected letter at the
 				// beginning out of the database. Checks also if positions aren't hidden or
 				// deleted.
@@ -414,7 +413,7 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 				'po_name',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 				);
-			} 
+		} 
 		if ($letter == "other") {
 				// Gets all positions which don't begin with a letter
 				// out of the database. Checks also if positions aren't hidden or
@@ -427,17 +426,17 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 				'po_name',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 				);
-			} 
-		if ($letter == "suchen" AND $suchname != "") {
+		} 
+		if ($letter == "search" AND $this->searchitem != "") {
 				$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',			 							// SELECT ...
 				'tx_civserv_position',						// FROM ...
-				'po_name like \'%'.$suchname.'%\' AND !deleted AND !hidden',	// AND title LIKE "%blabla%"', // WHERE...
+				'po_name like \'%'.$this->searchitem.'%\' AND !deleted AND !hidden',	// AND title LIKE "%blabla%"', // WHERE...
 				'', 										// GROUP BY...
 				'po_name',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 				);
-			} 
+		} 
 		$menuItems=array();
 
 			// Removes all positions from other mandants so that only
@@ -446,18 +445,19 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
 		$mandant = $mandant_obj->get_mandant($this->employee_pid);
 		if ($this->res) {
-		while ($positions = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
-				// Checks if the uid is already selected.
-			if ($mandant_obj->get_mandant($positions['pid'])==$mandant){
-				if ($this->position_selected($positions[uid])) {
-					$selVal = 'selected="selected"';
-				} else {
-					$selVal = '';
-				}
-				$menuItems[]='<option label="'.htmlspecialchars($positions[po_name]).'" value="'.htmlspecialchars($positions[uid]).'"'.$selVal.'">'.htmlspecialchars($positions[po_name]).'</option>';
+			while ($positions = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
+					// Checks if the uid is already selected.
+				if ($mandant_obj->get_mandant($positions['pid'])==$mandant){
+					if ($this->position_selected($positions[uid])) {
+						$selVal = 'selected="selected"';
+					} else {
+						$selVal = '';
+					}
+					$menuItems[]='<option label="'.htmlspecialchars($positions[po_name]).'" value="'.htmlspecialchars($positions[uid]).'"'.$selVal.'">'.htmlspecialchars($positions[po_name]).'</option>';
 				}
 			}
 		}
+
 		$PItemName = "&PItemName=".$this->pArr[0];
 
 			// Displays the second selectorbox with the positions.
@@ -483,17 +483,11 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 		return false;
 	}//end position_selected
 
-	/**
-	 * Cleans up User input in Search field.
-	 *
-	  */
-	 	
 	function make_clean($value) {
 		$legal_chars = "%[^0-9a-zA-Z‰ˆ¸ƒ÷‹ﬂ ]%"; //allow letters, numbers & space
 		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
 		return $new_value;
-	}	
-	
+	}
 	
 	/**
 	 * Displays all of the content above in the browser window.

@@ -99,15 +99,23 @@ if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
 		$current_id=t3lib_div::_GET('id');
 		if ($current_id == null){
 			$url=parse_url(t3lib_div::_GET('returnUrl'));
+			debug($url, "returnUrl");
 			parse_str($url['query'],$url_query);
 		    $current_id=$url_query['id'];
 		}
+		
+		if ($current_id == null){
+			debug($GLOBALS, "globals");
+			debug($GLOBALS['WEBMOUNTS'], "webmounts");
+			$current_id=$GLOBALS['WEBMOUNTS'][0];
+		}
+
 
 		if ($current_id > 0){
 			$mandant_obj=t3lib_div::makeInstance('tx_civserv_mandant');
-			//debug($current_id);
+			debug($current_id, "current_id");
 			$mandantID = $mandant_obj->get_mandant($current_id);
-			//debug($mandantID);
+			debug($mandantID, "mandanten_id");
 			if ($mandantID) $upload_folder = "fileadmin/civserv/".$mandantID;
 			else $upload_folder = "fileadmin/civserv";
 		} else $upload_folder = "fileadmin/civserv";
@@ -216,7 +224,7 @@ $TCA["tx_civserv_service"] = Array (
 					        'title' => 'LLL:EXT:civserv/res/locallang_wizard.php:tx_civserv_wizard_modelservice.title',
        						'script' => 'EXT:civserv/res/class.tx_civserv_wizard_modelservice.php',
 							'icon' => 'list.gif',
-							'JSopenParams' => 'height=350,width=600,status=0,menubar=0,resizable=1,location=0',
+							'JSopenParams' => 'height=350,width=800,status=0,menubar=0,resizable=1,location=0',
 							),
 				),
 			),

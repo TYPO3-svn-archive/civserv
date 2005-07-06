@@ -40,11 +40,12 @@
 
 $LOCAL_LANG = Array (
     'default' => Array (
-				// LOCAL_LANG for all wizards
+				// LOCAL_LANG for all abc-wizards
             'all_abc_wizards.other' => 'Other',
 			'all_abc_wizards.search' => 'Search',
 			'all_category_wizards.search' => 'Search',
-				// LOCAL_LANG for class.tx_civserv_wizard_employee_em_position.php
+			'all_wizards.search_warning' => 'Please enter a search item !',
+			// LOCAL_LANG for class.tx_civserv_wizard_employee_em_position.php
             'tx_civserv_wizard_employee_em_position.title' => 'Select positions of employee',
             'tx_civserv_wizard_employee_em_position.select_letter_text' => 'Select beginning letter of position',
 			'tx_civserv_wizard_employee_em_position.select_positions_text' => 'Select positions beginning with ',
@@ -125,10 +126,11 @@ $LOCAL_LANG = Array (
             'tx_civserv_wizard_service_similar_services.warning_msg_2' => 'Error - reference to main window is not set properly!',
  ),    
         'de' => Array (
-				// LOCAL_LANG for all wizards
+				// LOCAL_LANG for all abc-wizards
             'all_abc_wizards.other' => 'Sonstige',
 			'all_abc_wizards.search' => 'Suche',
 			'all_category_wizards.search' => 'Suche',
+			'all_wizards.search_warning' => 'Bitte geben Sie einen Suchbegriff ein !',
 				// LOCAL_LANG for class.tx_civserv_wizard_employee_em_position.php
             'tx_civserv_wizard_employee_em_position.title' => 'Wählen Sie die Stellen des Mitarbeiters',
             'tx_civserv_wizard_employee_em_position.select_letter_text' => 'Anfangsbuchstaben der Stellenbezeichnung wählen',

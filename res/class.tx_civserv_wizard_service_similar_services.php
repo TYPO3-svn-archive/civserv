@@ -88,6 +88,7 @@ class tx_civserv_wizard_service_similar_services extends t3lib_SCbase {
 	var $pArr;			// contains parts of the $bparams
 	var $PItemName;
 	var $category_uid;
+	var $searchitem;
 
 
 	/**
@@ -284,12 +285,12 @@ function init() {
 				// Adds selected items (=options) and refreshes the
 				// browser window.
 			function add_options_refresh(category_uid,mode,cur_selected_uid,cur_selected_name,script,PItemName,service_pid,service_folder_uid)	{	//
-				variable = document.similarservices.suchname.value;
+				searchitem = document.similarservices.searchitem.value;
 				options = returnOptions(cur_selected_uid,cur_selected_name);
-				if (mode=="suchen" && variable=="") {
-					alert ("Bitte geben Sie einen gültigen Suchbegriff ein !");
+				if (mode=="search" && searchitem=="") {
+					alert ("'.$LANG->getLL('all_wizards.search_warning').'");
 				} else {
-				jumpToUrl(script+"?category_uid="+category_uid+options+PItemName+service_pid+service_folder_uid+"&suchname="+variable+"&mode="+mode,this);
+				jumpToUrl(script+"?category_uid="+category_uid+options+PItemName+service_pid+service_folder_uid+"&searchitem="+searchitem+"&mode="+mode,this);
 				}
 			}
 
@@ -333,6 +334,7 @@ function init() {
 	 */
 	function main()	{
 		global $LANG;
+		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 			// Draw the body.
 		$this->content.='
 			<body scroll="auto" id="typo3-browse-links-php">
@@ -352,8 +354,8 @@ function init() {
 		$this->content.='
 					</td>
 					<td>
-						<input type="text" size="20" name="suchname" id="suchname" value=""> <br />
-						<a href="#" onclick="add_options_refresh(\''.$this->service_folder_uid.'\',\'suchen\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\',\'&service_folder_uid='.htmlspecialchars($this->service_folder_uid).'\');">'.$LANG->getLL('all_category_wizards.search').'</a>
+						<input type="text" size="20" name="searchitem" id="searchitem" value="'.$this->searchitem.'"> <br />
+						<a href="#" onclick="add_options_refresh(\''.$this->service_folder_uid.'\',\'search\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\',\'&service_folder_uid='.htmlspecialchars($this->service_folder_uid).'\');">'.$LANG->getLL('all_category_wizards.search').'</a>
 					</td>
 				</tr>
 			</table>
@@ -443,16 +445,16 @@ function init() {
 	function getServices()	{
 		global $LANG;
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
-		$suchname = (string)t3lib_div::_GP('suchname');
+		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$mode = (string)t3lib_div::_GP('mode');
-		$suchname = $this->make_clean($suchname);
+		$this->searchitem = $this->make_clean($this->searchitem);
 
 			// Gets all services with the selected category_uid out of the database.
 			// Checks also if positions aren't hidden or deleted.
 
 			// get all the child-folders to the chosen category (only 1 level recursion)
 		if ($mode == "normal") {
-			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid',			 				// SELECT ...
 			'pages',						// FROM ...
 			'pid='.$this->category_uid.' AND !deleted AND !hidden',	// AND title LIKE "%blabla%"', // WHERE...
@@ -468,7 +470,6 @@ function init() {
 
 		$liste=implode(',',$pidList);
 
-
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'*',			 							// SELECT ...
 			'tx_civserv_service',						// FROM ...
@@ -478,10 +479,7 @@ function init() {
 			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 			);
 		} 
-		
-		
-		if ($suchname != "" AND $mode == "suchen") {
-		
+		if ($this->searchitem != "" AND $mode == "search") {
 		
 		$fliste = array();
 			
@@ -500,7 +498,7 @@ function init() {
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'*',			 							// SELECT ...
 			'tx_civserv_service',						// FROM ...
-			'pid in('.$fliste.') AND sv_name like \'%'.$suchname.'%\' AND !deleted AND !hidden',	// AND title LIKE "%blabla%"', // WHERE...
+			'pid in('.$fliste.') AND sv_name like \'%'.$this->searchitem.'%\' AND !deleted AND !hidden',	// AND title LIKE "%blabla%"', // WHERE...
 			'', 										// GROUP BY...
 			'sv_name',   								// ORDER BY...
 			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
@@ -542,7 +540,6 @@ function init() {
 		}
 		return false;
 	}//end service_selected
-
 	
 	/**
 	 * Gets pid by recursion.
@@ -567,6 +564,7 @@ function init() {
 		}
 		return $fliste;
 	}
+	
 	
 	/**
 	 * Cleans up User input in Search field.

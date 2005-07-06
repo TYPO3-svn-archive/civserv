@@ -84,6 +84,7 @@ class tx_civserv_wizard_service_form extends t3lib_SCbase {
 	var $mode;			// mode for group box, "db" in this case
 	var $pArr;			// contains parts of the $bparams
 	var $PItemName;
+	var $searchitem;
 
 	/**
 	 * Initializes the wizard by getting values out of the p-array.
@@ -255,16 +256,16 @@ function init() {
 				// Adds selected items (=options) and refreshes the
 				// browser window.
 			function add_options_refresh(letter,cur_selected_uid,cur_selected_name,script,PItemName,service_pid)	{	//
-				variable = document.serviceform.suchname.value
+				searchitem = document.serviceform.searchitem.value
 				if (document.serviceform.selectedFormulars) {
 					options = returnOptions(cur_selected_uid,cur_selected_name);
 				} else {	// if no selectorbox is displayed at beginning
 					options = "";
 				}
-				if (letter=="suchen" && variable=="") {
-					alert ("Bitte geben Sie einen Suchbegriff ein !");
+				if (letter=="search" && searchitem=="") {
+					alert ("'.$LANG->getLL('all_wizards.search_warning').'");
 				} else {
-				jumpToUrl(script+"?letter="+letter+options+PItemName+service_pid+"&suchname="+variable,this);
+				jumpToUrl(script+"?letter="+letter+options+PItemName+service_pid+"&searchitem="+searchitem,this);
 				}
 			}
 
@@ -294,6 +295,7 @@ function init() {
 	 */
 	function main()	{
 		global $LANG;
+		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 			// Draw the body.
 		$this->content.='
 			<body scroll="auto" id="typo3-browse-links-php">
@@ -342,8 +344,8 @@ function init() {
 		$this->content.='
 					</td>
 					<td>
-						<input type="text" size="20" name="suchname" id="suchname" value=""> <br />
-						<a href="#" onclick="add_options_refresh(\'suchen\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.search').'</a>
+						<input type="text" size="20" name="searchitem" id="searchitem" value="'.$this->searchitem.'"> <br />
+						<a href="#" onclick="add_options_refresh(\'search\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.search').'</a>
 					</td>
 				</tr>
 			</table>
@@ -356,7 +358,7 @@ function init() {
 		if ($letter=='') {
 			// do nothing
 		} else {
-			if ($letter != "other" and $letter != "suchen") {
+			if ($letter != "other" and $letter != "search") {
 				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_form.select_formulars_text').''.$letter.':</h3>';
 			} else {
 				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_form.select_formulars_text_no_abc').':</h3>';
@@ -398,11 +400,11 @@ function init() {
 	function getFormulars($letter)	{
 		global $LANG;
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
-		$suchname = (string)t3lib_div::_GP('suchname');
-		$suchname = $this->make_clean($suchname);
+		$this->searchitem = (string)t3lib_div::_GP('searchitem');
+		$this->searchitem = $this->make_clean($this->searchitem);
 	
 		
-		if ($letter != "other" and $letter != "suchen") {
+		if ($letter != "other" and $letter != "search") {
 				// Gets all formulars with the selected letter at the
 				// beginning out of the database. Checks also if formulars aren't hidden or
 				// deleted.
@@ -430,11 +432,11 @@ function init() {
 				);
 			}
 			
-		if ($letter == "suchen" AND $suchname != "") {
+		if ($letter == "search" AND $this->searchitem != "") {
 				$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',			 							// SELECT ...
 				'tx_civserv_form',							// FROM ...
-				'fo_name like \'%'.$suchname.'%\' AND !deleted AND !hidden',	// AND title LIKE "%blabla%"', // WHERE...
+				'fo_name like \'%'.$this->searchitem.'%\' AND !deleted AND !hidden',	// AND title LIKE "%blabla%"', // WHERE...
 				'', 										// GROUP BY...
 				'fo_name',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)

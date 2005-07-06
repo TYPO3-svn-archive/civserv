@@ -100,9 +100,9 @@ p {
 #outer {
 	min-height: 100%;
 	margin-bottom: -40px;
-	margin-left: 190px;
+	padding-left: 190px;    /* musste für IE 5.0 von margin auf padding geändert werden */
+	padding-right: 197px;   /* musste für IE 5.0 von margin auf padding geändert werden */
 	color: #000000;
-	margin-right: 197px;
 	height: 100%;
 }
 
@@ -543,6 +543,8 @@ table.right {
 	display: inline;
 	float: left;
 	border-right: 1px solid #000000;
+	padding-right: 0.5em;    /* für IE 5.0 zusätzlich eingefügt */
+	padding-left: 0.5em;		/* für IE 5.0 zusätzlich eingefügt */
 }
 
 
