@@ -60,7 +60,7 @@ class tx_civserv_oepupdate {
 	* @return	void
 	*/
 	function update_pid($params){
-		debug($params, 'jetzt update_pid!' );
+		//debug($params, 'jetzt update_pid!' );
 		
 		if (is_array($params) && ($params['table']== 'tx_civserv_employee' || $params['table']=='tx_civserv_employee_em_position_mm')) {		
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(

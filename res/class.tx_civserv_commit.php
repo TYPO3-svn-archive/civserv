@@ -102,8 +102,9 @@ class tx_civserv_commit {
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
 	function recheckModifyAccessList($table, $cmdmap, $pObj, &$res){
+		debug($table, 'tx_civserv/commit.php - function recheckModifyAccessList wurde aufgerufen');
 		if (isset($cmdmap) && isset($cmdmap['tx_civserv_model_service_temp'])){
-			//debug($cmdmap['tx_civserv_model_service_temp']);
+			debug($cmdmap['tx_civserv_model_service_temp'], 'cmdmap zu model_service_temp');
 			foreach($cmdmap['tx_civserv_model_service_temp'] as $id => $incomingCmdArray)	{
 				if (is_array($incomingCmdArray))	{
 					reset($incomingCmdArray);
