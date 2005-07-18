@@ -101,9 +101,11 @@ class tx_civserv_ms_maintenance {
 	 * @return	void
 	 */
 	function check_ms_name_changed($params) {
+		
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		if ($params['table']=='tx_civserv_model_service')	{
-
+			#ugly but desperate
+			#echo "<script type=\"text/javascript\">alert('funktion check_ms_name_changed!');</script>";
 
 			// Gets all data from the currently saved record...
 			// by the way: ms_stored_name is not editable from the BE
@@ -119,7 +121,9 @@ class tx_civserv_ms_maintenance {
 			// ...and stores it in $model_service_names.
 			$model_service_names = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res);
 
-			//...check the value of the field ms_stored_name: if it is an empty string it is a newly inserted dataset and the value of the field ms_stored_name should be equated with the value of ms_name
+			// ...check the value of the field ms_stored_name: 
+			// if it is an empty string it is a newly inserted dataset and the value of the field ms_stored_name should 
+			// be equated with the value of ms_name
 			if ($model_service_names['ms_stored_name'] == ''){
 				$model_service_names['ms_stored_name'] == $model_service_names['ms_name'];
 				$name_to_be_stored=array('ms_stored_name'=>$model_service_names['ms_name']);
@@ -128,6 +132,7 @@ class tx_civserv_ms_maintenance {
 
 			//...has the internal name of the model service been changed?
 			if ($model_service_names['ms_name']!=$model_service_names['ms_stored_name'])	{
+				debug($model_service_names, 'name geändert?');
 				//update the name-fields in tx_model_service and tx_model_service_temp
 
 				//update tx_civserv_model_services
@@ -139,6 +144,22 @@ class tx_civserv_ms_maintenance {
 				$new_name=array('ms_name'=>$model_service_names['ms_name']);
 				$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_model_service_temp', 'ms_name = "'.$model_service_names['ms_stored_name'].'"', $new_name);
 			}
+			//...same question different aproach
+			$this->res_temp = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'ms_name',							// SELECT ...
+				'tx_civserv_model_service_temp',	// FROM ...
+				'uid='.$params['uid'],				// AND title LIKE "%blabla%"', // WHERE...
+				'', 								// GROUP BY...
+				'',   								// ORDER BY...
+				'' 									// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+			);
+		}	// ...and stores it in $model_service_names.
+		$model_service_temp_names = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res_temp);
+		if ($model_service_temp_names['ms_name']!=$model_service_names['ms_name'])	{
+			debug($model_service_temp_names, 'temp_name');
+			debug($model_service_names, 'orig_name');
+			$new_name=array('ms_name'=>$model_service_names['ms_name']);
+			$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_model_service_temp', 'uid = '.$model_service_names['uid'], $new_name);
 		}
 	}
 

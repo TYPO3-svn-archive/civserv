@@ -102,11 +102,17 @@ class tx_civserv_commit {
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
 	function recheckModifyAccessList($table, $cmdmap, $pObj, &$res){
-		debug($table, 'tx_civserv/commit.php - function recheckModifyAccessList wurde aufgerufen');
+		#ugly but desperate
+		//echo "<script type=\"text/javascript\">alert('funktion recheckModifyAccessList!');</script>";
+		//bei delete-command haut das den webserver aus den latschen, zuviele aufrufe.....? oder endlosschleife???
+		//debug($table, 'tx_civserv/commit.php - function recheckModifyAccessList ->table');
+		//debug($cmdmap['tx_civserv_model_service_temp'], 'tx_civserv/commit.php - function recheckModifyAccessList -> cmdmap[0]');
+		//debug($pObj, 'tx_civserv/commit.php - function recheckModifyAccessList wurde aufgerufen pObj');
 		if (isset($cmdmap) && isset($cmdmap['tx_civserv_model_service_temp'])){
-			debug($cmdmap['tx_civserv_model_service_temp'], 'cmdmap zu model_service_temp');
+			//debug($cmdmap['tx_civserv_model_service_temp'], "cmdmap['tx_civserv_model_service_temp'] in commit.php");
 			foreach($cmdmap['tx_civserv_model_service_temp'] as $id => $incomingCmdArray)	{
 				if (is_array($incomingCmdArray))	{
+					//debug($incomingCmdArray, 'incomingCmdArray');
 					reset($incomingCmdArray);
 					$command = key($incomingCmdArray);
 					if (!$pObj->admin && $command == 'delete') $res = 0;
@@ -243,8 +249,8 @@ class tx_civserv_commit {
 	 */
 	function updateDB($params) {
 		global $GLOBALS, $BE_USER;
-		#debug($GLOBALS['GLOBALS']['TYPO3_CONF_VARS']);
-		#debug($params, '$params, fkt updateDB(), Klasse commit.php');
+		//debug($GLOBALS['GLOBALS']['TYPO3_CONF_VARS']);
+		//debug($params, '$params, fkt updateDB(), Klasse commit.php');
 		if ($params['table']=='tx_civserv_building')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_floorbuild.php']){
 				$update_obj = t3lib_div::makeInstance('tx_civserv_floorbuild');
@@ -283,6 +289,7 @@ class tx_civserv_commit {
 		}
 		if ($params['table']=='tx_civserv_model_service')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_ms_maintenance.php']){
+				//debug($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS'], 'habe xclass!');
 				$update_obj = t3lib_div::makeInstance('tx_civserv_ms_maintenance');
 				$update_obj->check_ms_name_changed($params);
 				$update_obj->transfer_ms($params);
