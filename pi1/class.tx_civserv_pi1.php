@@ -1370,7 +1370,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid 
 						 AND tx_civserv_employee.pid IN (' . $this->community[pidlist] . ')',
 						'',
-						'tx_civserv_service_sv_position_mm.sorting');	//ORDER BY
+						'tx_civserv_service_sv_position_mm.sorting, tx_civserv_employee_em_position_mm.sorting');	//ORDER BY
 
 		//Query for search words
 		$res_search_word = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
