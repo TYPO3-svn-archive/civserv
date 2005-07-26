@@ -2412,7 +2412,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		} elseif (!empty($emp_id) && !empty($pos_id) && !empty($sv_id)) {	//Email form is called from service detail page
 			$result = $this->makeEmailQuery($emp_id,$pos_id,$sv_id);
-
+			//debug($emp_id, 'Email form is called from service detail page, Mitarbeiter: ');
+			//debug($pos_id, 'Email form is called from service detail page, Position: ');
+			//debug($sv_id, 'Email form is called from service detail page, Service: ');
 			//Check if query returned a result
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
 				$employee = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
@@ -2425,7 +2427,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}
 		} elseif (!empty($emp_id) || (!empty($pos_id) && !empty($emp_id)) ) {  //Email form is called from organisation detail page (supervisor email)
 			$result = $this->makeEmailQuery($emp_id,$pos_id,$sv_id);
-
+			//debug($emp_id, 'Email form is called from service organisation detail page');	
 			//Check if query returned a result
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
 				$employee = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
@@ -2492,8 +2494,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res_employee = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'em_email, em_datasec as datasec' . $querypart_select,
 						'tx_civserv_employee' . $querypart_from,
-						'tx_civserv_employee.em_datasec = 1
-						 AND !tx_civserv_employee.deleted AND !tx_civserv_employee.hidden ' . $querypart_where,
+						'!tx_civserv_employee.deleted AND !tx_civserv_employee.hidden ' . $querypart_where,
 						'',
 						'',
 						'');
@@ -3174,37 +3175,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$pageid = $GLOBALS['TSFE']->id;
 		}
 		return  str_replace("http://", "", t3lib_div::getIndpEnv(TYPO3_SITE_URL).parent::pi_getPageLink($pageid));
-		#return 'www.die-maus.de';
 	}
-
-
-
-
-
-
-
-
-
-
-	/******************************
-	 *
-	 * Functions for mere debugging
-	 *
-	 *******************************/
-
-	/**
-	 * only for testing the value of certain parameters
-	 * --> attention: triggers xhtml-error!
-	 * gives out the value of a given param in a js_alert-box...
-	 *
-	 *
-	 *
-	 */
-	function js_alert($msg) {
-			echo "<script type=\"text/javascript\">alert('".$msg."');</script>";
-	}
-
-
 }
 
 
