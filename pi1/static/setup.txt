@@ -1,6 +1,7 @@
 # Set language for frontend ('default' = English, 'de' = German)
 config.language = de
 
+
 # ************************************* #
 # ********** Define left menu ********* #
 # ************************************* #
@@ -72,6 +73,8 @@ page.config {
 	simulateStaticDocuments = true
 	simulateStaticDocuments_pEnc = md5
 	simulateStaticDocuments_pEnc_onlyP = tx_civserv_pi1[mode],tx_civserv_pi1[community_id],tx_civserv_pi1[id],tx_civserv_pi1[pointer],tx_civserv_pi1[char],tx_civserv_pi1[sort],tx_civserv_pi1[pos_id],tx_civserv_pi1[sv_id],tx_civserv_pi1[sword],cHash
+	# XHTML
+	inlineStyle2TempFile = 1
 }
 	
 # Stylesheet configuration
@@ -139,3 +142,5 @@ page.10 {
 	marks.CONTACT_LINK.community_id = {$community_id}
 	marks.CONTACT_LINK.userFunc = tx_civserv_pi1->getContactLink
 }
+
+
