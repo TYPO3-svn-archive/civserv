@@ -2343,11 +2343,19 @@ class tx_civserv_pi1 extends tslib_pibase {
 				   "\n" . $this->pi_getLL('tx_civserv_pi1_email_form.street','Street, Nr.') . ': ' .$street.
 				   "\n" . $this->pi_getLL('tx_civserv_pi1_email_form.postcode','Postcode') . ': ' . $postcode.
 				   "\n" . $this->pi_getLL('tx_civserv_pi1_email_form.city','City') . ': ' . $city.
+				   "\n" . $this->pi_getLL('tx_civserv_pi1_email_form.subject','Subject') . ': ' . $subject.
 				   "\n" .
+				   "\n" . $this->pi_getLL('tx_civserv_pi1_email_form.bodytext','Your text') . ': ' .
 				   "\n" . $bodytext;
+				
+				$headers = !empty($email)?	"From: ".$email."\r\nReply-To: ".$email."\r\n":"From: ".$email_address."\r\nReply-To: ".$email_address."\r\n";
 
-				t3lib_div::plainMailEncoded($email_address, $subject, $body);
-				$smartyEmailForm->assign('complete',$this->pi_getLL('tx_civserv_pi1_email_form.complete','Thank you! Your message has been sent successfully.'));
+				t3lib_div::plainMailEncoded($email_address, $subject, $body, $headers);
+				$reply = $this->pi_getLL('tx_civserv_pi1_email_form.complete','Thank you! Your message has been sent successfully ');
+				$reply .= $this->pi_getLL('tx_civserv_pi1_email_form.to','to ');
+				$reply .= $email_address.".";
+				$smartyEmailForm->assign('complete',$reply);
+
 				return true;
 			} else { //Return email form template with error markers
 				if($this->piVars[mode]=="check_contact_form"){
