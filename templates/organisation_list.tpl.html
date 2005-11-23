@@ -1,0 +1,23 @@
+<!--TYPO3SEARCH_end-->
+<div id="right">
+	{include file=$right_searchbox_template}	
+	{* For the form list could be shown organisations with forms. *}	
+	{include file=$right_top_template}
+</div><!-- right end -->
+<div id="centrecontent">	
+	<!--{if $heading != ""}-->		
+		<h1>{$heading}</h1>	
+	<!--{/if}-->	
+	<!--{if $abcbar != ""}-->		
+		{$abcbar}	
+	<!--{/if}-->		
+	<h2>{$subheading}:</h2>	
+			<div class="list">
+			<ul>
+		<!--{foreach from=$organisations item=organisation}-->	
+				<li><a href="{$organisation.or_url}">{$organisation.name}</a></li>
+		<!--{/foreach}-->	
+			</ul>
+			</div>
+		{$pagebar}
+</div><!-- centrecontent end -->
