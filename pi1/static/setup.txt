@@ -16,6 +16,7 @@ leftmenu {
 		menuCircumstanceTree = {$menuCircumstanceTree}
 		menuUsergroupTree = {$menuUsergroupTree}
 		menuOrganisationTree = {$menuOrganisationTree}
+		menuOrganisationList = {$menuOrganisationList}
 		menuEmployeeList = {$menuEmployeeList}
 		menuFormList = {$menuFormList}
 		menuTop15 = {$menuTop15}

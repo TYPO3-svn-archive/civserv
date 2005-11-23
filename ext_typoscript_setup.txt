@@ -3,6 +3,7 @@ plugin.tx_civserv_pi1 {
 	tpl_service_list = {$tpl_service_list}
 	tpl_circumstance_tree = {$tpl_circumstance_tree}
 	tpl_usergroup_tree = {$tpl_usergroup_tree} 
+	tpl_organisation_list = {$tpl_organisation_list}
 	tpl_organisation_tree = {$tpl_organisation_tree}
 	tpl_service = {$tpl_service}
 	tpl_employee = {$tpl_employee}
@@ -40,6 +41,7 @@ plugin.tx_civserv_pi1 {
 	show_counts = {$show_counts}
 	service_count = {$service_count}
 	employee_per_page = {$employee_per_page}
+	organisation_per_page = {$organisation_per_page}
 
 	searchAtServiceList = {$searchAtServiceList}
 	searchAtCircumstanceTree = {$searchAtCircumstanceTree}
@@ -53,6 +55,7 @@ plugin.tx_civserv_pi1 {
 	searchAtTop15 = {$searchAtTop15}
 	searchAtEmployee = {$searchAtEmployee}
 	searchAtEmployeeList = {$searchAtEmployeeList}
+	searchAtOrganisationList = {$searchAtOrganisationList}
 
 
 	abcBarAtServiceList = {$abcBarAtServiceList}
@@ -62,7 +65,7 @@ plugin.tx_civserv_pi1 {
 	abcBarAtFormList_all = {$abcBarAtFormList_all}
 	abcBarAtFormList_orga = {$abcBarAtFormList_orga}
 	abcBarAtEmployeeList = {$abcBarAtEmployeeList}
-	
+	abcBarAtOrganisationList = {$abcBarAtOrganisationList}	
 
 	topAtServiceList = {$topAtServiceList}
 	topAtCircumstanceTree = {$topAtCircumstanceTree}
@@ -75,7 +78,8 @@ plugin.tx_civserv_pi1 {
 	topAtService = {$topAtService}
 	topCount = {$topCount}
 	topAtEmployeeList = {$topAtEmployeeList}
-	
+	topAtOrganisationList = {$topAtOrganisationList}
+		
 
 	orgaList = {$orgaList}
 	otherEmployees = {$otherEmployees}

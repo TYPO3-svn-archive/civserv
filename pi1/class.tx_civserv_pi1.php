@@ -225,6 +225,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$accurate = $this->navigationTree($smartyObject,$this->community[organisation_uid],$this->conf['searchAtOrganisationTree'],$this->conf['topAtOrganisationTree']);
 					break;
 					
+				case 'organisation_list':
+					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_organisation_list.organisation_list','Organisation A - Z');
+					$template = $this->conf['tpl_organisation_list'];
+					$accurate = $this->organisation_list($smartyObject,$this->conf['abcBarAtOrganisationList'],$this->conf['searchAtOrganisationList'],$this->conf['topAtOrganisationList']);
+					break;						
+					
 				case 'employee_list':
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_employee_list.employee_list','Employees A - Z');
 					$template = $this->conf['tpl_employee_list'];
@@ -619,6 +625,124 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyTree->assign('organisation_tree_label',$this->pi_getLL('tx_civserv_pi1_organisation.organisation_tree','Organisation'));
 		return true;
 	}
+	
+	/**
+	 * Generates a list of all organisations
+	 *
+	 * @param	[type]		$$smartyOrganisationList: ...
+	 * @param	[type]		$abcBar: ...
+	 * @param	[type]		$searchBox: ...
+	 * @param	[type]		$topList: ...
+	 * @return	[type]		...
+	 */
+	function organisation_list(&$smartyOrganisationList,$abcBar=false,$searchBox=false,$topList=false){
+		$query = $this->makeOrganisationListQuery($this->piVars[char]);
+		$res_organisation = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+		$row_counter = 0;
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_organisation) ) {
+			if ($row['name'] == $row['realname']) {
+				$organisations[$row_counter]['name'] = $row['name'];
+			} else {
+				$organisations[$row_counter]['name'] = $row['name'] . ' (= ' . $row['realname'] . ')';
+			}
+			$organisations[$row_counter]['or_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'organisation',id => $row[or_uid]),1,1));
+			$row_counter++;
+		}
+
+
+		// Retrieve the organisation count
+		$row_count = 0;
+		$query = $this->makeOrganisationListQuery($this->piVars[char],false,true);
+		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			#$row_count += $row['anzahl'];
+			$row_count += $row['count(*)'];
+		}
+
+		$this->internal['res_count'] = $row_count;
+		$this->internal['results_at_a_time']= $this->conf['organisation_per_page'];
+		$this->internal['maxPages'] = $this->conf['max_pages_in_pagebar'];
+
+		$smartyOrganisationList->assign('heading',$this->pi_getLL('tx_civserv_pi1_organisation_list.organisation_list.heading','Organisation'));
+		$smartyOrganisationList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_organisation_list.available_organisations','Here you find the following organisations'));
+		$smartyOrganisationList->assign('pagebar',$this->pi_list_browseresults(true,'',' | '));
+		$smartyOrganisationList->assign('organisations',$organisations);
+
+		if ($abcBar) {
+			$query = $this->makeOrganisationListQuery(all,false);
+			$smartyOrganisationList->assign('abcbar',$this->makeAbcBar($query));
+		}
+		
+		if ($searchBox) {
+			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
+			$smartyOrganisationList->assign('searchbox', $this->pi_list_searchBox('',true));
+		}
+		return true;
+	}
+	
+	/**
+	 * Generates a database query for the function organisation_list. The returned query depends on the given parameter (like described below)
+	 * and the piVars 'char' and 'pointer', additionally the pidlist for the actual community is fetched from the class variable community.
+	 *
+	 * @param	[type]		$char: ...
+	 * @param	[type]		$limit: ...
+	 * @param	[type]		$count: ...
+	 * @return	[type]		...
+	 */
+
+	function makeOrganisationListQuery($char=all,$limit=true,$count=false) {
+			if ($char != all) {
+				$regexp = $this->buildRegexp($char);
+			}
+			if ($count){
+				$query = 'Select count(*) 
+					from 
+						tx_civserv_organisation 
+					where 
+						tx_civserv_organisation.pid IN (' . $this->community[pidlist] . ') AND 
+						!tx_civserv_organisation.deleted AND
+						!tx_civserv_organisation.hidden';
+			} else {
+				$query = 'Select 
+						tx_civserv_organisation.uid as or_uid,
+						tx_civserv_organisation.or_name as name,
+						tx_civserv_organisation.or_name as realname
+					from 
+						tx_civserv_organisation
+					where 
+						tx_civserv_organisation.pid IN (' . $this->community[pidlist] . ') '
+					    . ($regexp?'AND or_name REGEXP "' . $regexp . '"':'') . 'AND 
+						!tx_civserv_organisation.deleted AND
+						!tx_civserv_organisation.hidden';
+			}
+			for ($synonymNr = 1; $synonymNr <= 3; $synonymNr++) {
+			$query .=	' UNION ALL
+						 SELECT ' . ($count?'count(*) ':'tx_civserv_organisation.uid as or_uid, or_synonym' . $synonymNr . ' AS name, or_name AS realname ') . '
+							 FROM tx_civserv_organisation
+							 WHERE 	tx_civserv_organisation.pid IN (' . $this->community[pidlist] . ') '
+								. ($regexp?'AND or_synonym' . $synonymNr . ' REGEXP "' . $regexp . '"':'') .
+								'AND or_synonym' . $synonymNr . ' != "" ' . ' ';
+			}
+
+			$orderby =	$this->piVars[sort]?'name DESC':'name ASC';
+			
+			if (!$count) {
+			$query .= ' ORDER BY ' . $orderby . ' ';
+
+				if ($limit) {
+					if ($this->piVars[pointer] > '') {
+						$start = $this->conf['organisation_per_page'] * $this->piVars[pointer];
+					} else {
+						$start = 0;
+					}
+					$max = $this->conf['organisation_per_page'];
+					$query .= 'LIMIT ' . $start . ',' . $max;
+					}
+	
+			}
+			return $query;
+		}
+
 
 	/**
 	 * Generates a list of all employees
@@ -3082,6 +3206,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.organisation_tree','Organisation'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'organisation_tree'),1,1,$pageid),
 								'ITEM_STATE' => (($this->piVars[mode]=='organisation_tree') || ($this->piVars[mode]=='organisation'))?'ACT':'NO');
+		}
+		if ($conf['menuOrganisationList']) {
+			$menuArray[] = array(
+								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.organisation_list','Organisation A - Z'),
+								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'organisation_list'),1,1,$pageid),
+								'ITEM_STATE' => ($this->piVars[mode]=='organisation_list')?'ACT':'NO');
 		}
 		if ($conf['menuEmployeeList']) {
 			$menuArray[] = array(

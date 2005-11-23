@@ -3,6 +3,7 @@ tpl_service_list = typo3conf/ext/civserv/templates/service_list.tpl.html
 tpl_circumstance_tree = typo3conf/ext/civserv/templates/circumstance_tree.tpl.html
 tpl_usergroup_tree = typo3conf/ext/civserv/templates/usergroup_tree.tpl.html
 tpl_organisation_tree = typo3conf/ext/civserv/templates/organisation_tree.tpl.html
+tpl_organisation_list = typo3conf/ext/civserv/templates/organisation_list.tpl.html
 tpl_service = typo3conf/ext/civserv/templates/service.tpl.html
 tpl_employee = typo3conf/ext/civserv/templates/employee.tpl.html
 tpl_circumstance = typo3conf/ext/civserv/templates/service_list.tpl.html
@@ -38,6 +39,7 @@ recursive = 10
 services_per_page = 50
 forms_per_page = 25
 employee_per_page = 20
+organisation_per_page = 20
 
 
 # Defines how many Pages with links are displyed below the lists
@@ -72,6 +74,7 @@ searchAtForms = 0
 searchAtTop15 = 1
 searchAtEmployee = 0
 searchAtEmployeeList = 0
+searchAtOrganisationList = 0
 
 
 # Defines at which sites the abcBar will be shown
@@ -84,6 +87,7 @@ abcBarAtFormList_all = 1
 # View with forms of one organisation
 abcBarAtFormList_orga = 0
 abcBarAtEmployeeList = 1
+abcBarAtOrganisationList = 1
 
 
 # Defines at which sites the Top-services will be shown 
@@ -97,6 +101,7 @@ topAtUsergroup = 1
 topAtOrganisation = 1
 topAtService = 0
 topAtEmployeeList = 0 
+topAtOrganisationList = 0
 
 
 # count of top-services
@@ -115,6 +120,7 @@ relatedTopics = 1
 menuServiceList = 1
 menuCircumstanceTree = 1
 menuUsergroupTree = 1
+menuOrganisationList = 0
 menuOrganisationTree = 1
 menuFormList = 1
 menuTop15 = 1
