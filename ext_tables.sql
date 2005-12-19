@@ -383,7 +383,7 @@ CREATE TABLE tx_civserv_building (
 	bl_fax tinytext NOT NULL,
 	bl_email tinytext NOT NULL,
 	bl_floor int(11) unsigned DEFAULT '0' NOT NULL,
-	bl_exid int(11) unsigned DEFAULT '0' NOT NULL,
+	bl_exid tinytext NOT NULL,
 	
 	PRIMARY KEY (uid),
 	KEY parent (pid)
@@ -410,7 +410,7 @@ CREATE TABLE tx_civserv_room (
 	ro_telephone tinytext NOT NULL,
 	ro_fax tinytext NOT NULL,
 	rbf_building_bl_floor int(11) unsigned DEFAULT '0' NOT NULL,
-	ro_exid int(11) unsigned DEFAULT '0' NOT NULL,
+	ro_exid tinytext NOT NULL,
 	
 	PRIMARY KEY (uid),
 	KEY parent (pid)
@@ -602,7 +602,7 @@ CREATE TABLE tx_civserv_organisation (
 	or_addinfo text NOT NULL,
 	or_structure int(11) unsigned DEFAULT '0' NOT NULL,
 	or_building int(11) unsigned DEFAULT '0' NOT NULL,
-	or_exid int(11) unsigned DEFAULT '0' NOT NULL,
+	or_exid tinytext NOT NULL,
 	
 	PRIMARY KEY (uid),
 	KEY parent (pid)

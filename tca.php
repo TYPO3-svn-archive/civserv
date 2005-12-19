@@ -104,6 +104,9 @@ if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
 		    $current_id=$url_query['id'];
 		}
 		
+		
+		//change b.k.: if the mandant-admin wants to see all hidden services in a list, he does so in user->tasks modul and
+		//therefore the page_id is not available, but the webmounts-array can be used instead to identify the mandant
 		if ($current_id == null){
 			//debug($GLOBALS, "globals");
 			//debug($GLOBALS['WEBMOUNTS'], "webmounts");
