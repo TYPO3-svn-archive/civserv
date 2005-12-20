@@ -83,7 +83,10 @@ class tx_civserv_mandant{
 			// the last part of the path to $node, is the name of the parent of $node 
 			$path[] = $row['pid']; 
 			// we should add the path to the parent of this node to the path 
-			$path = array_merge($this->get_path($row['pid'],$valid_uids), $path);
+			// in order to be PHP5 compatible, make sure all arguments given to array_merge() are arrays themselves!
+			#$path = array_merge(array($this->get_path($row['pid'],$valid_uids)), $path); //no!
+			$var=$this->get_path($path[0],$valid_uids);
+			if($var != NULL)$path = array_merge(array($var), $path);
 		}
 		//debug($path);
 		return $path[0]; 		
