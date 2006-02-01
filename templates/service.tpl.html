@@ -161,11 +161,15 @@
 		<!--{foreach from=$employees item=employee}-->
 			<p>
 			<!--{if $employee.datasec == "1"}-->
-				<a href="{$employee.employee_url}" title="{$employee_details}><strong>{$employee.firstname}&nbsp;{$employee.name}</strong></a><br />
+				<a href="{$employee.employee_url}" title="{$employee_details}"><strong>{$employee.address_long}
+				<!--{if $employee.title > ''}-->{$employee.title}<!--{/if}-->	
+				{$employee.firstname}&nbsp;{$employee.name}</strong></a><br />
 			<!--{else}-->
-				<strong>{$employee.firstname}&nbsp;{$employee.name}</strong><br />
+				<strong>{$employee.address_long}
+				<!--{if $employee.title > ''}-->{$employee.title}<!--{/if}-->	
+				{$employee.firstname}&nbsp;{$employee.name}</strong><br />
 			<!--{/if}-->
-	
+				
 			<!--{if $employee.email_code != ""}-->
 				{$email_label}: {$employee.email_code}<br />	
 			<!--{/if}-->		

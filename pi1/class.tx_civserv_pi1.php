@@ -118,7 +118,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	$content		Content that is to be displayed within the plugin
 	 */
 	function main($content,$conf)	{
-		//$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging
+		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging
 
 		// Load configuration array
 		$this->conf = $conf;
@@ -758,8 +758,15 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
-				$employees[$row_counter]['em_name'] = $row['em_name'];
-				$employees[$row_counter]['em_firstname'] = $row['em_firstname'];
+				debug($row, 'was ist in den Mitarbeiter-Daten drinne?');
+				if($row['em_address']==2){
+					$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi1_organisation.address_female', 'Ms.');
+				}elseif($row['em_address']==1){
+					$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi1_organisation.address_male', 'Mr.');
+				}
+				$employees[$row_counter]['title'] = $row['em_title'];
+				$employees[$row_counter]['name'] = $row['em_name'];
+				$employees[$row_counter]['firstname'] = $row['em_firstname'];
 				$employees[$row_counter]['em_datasec'] = $row['em_datasec'];
 
 				//select the organisation assigned to the employee
@@ -839,10 +846,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 						!tx_civserv_employee.hidden';
 			} else {
 				$query = 'Select 
+						tx_civserv_employee.em_address, 
+						tx_civserv_employee.em_title, 
 						tx_civserv_employee.em_name, 
-						tx_civserv_employee.em_firstname, 
-						tx_civserv_employee.em_name as name, 
-						tx_civserv_employee.em_datasec,
+						tx_civserv_employee.em_firstname, '.
+						#tx_civserv_employee.em_name as name, 
+						'tx_civserv_employee.em_datasec,
 						tx_civserv_employee.uid as emp_uid, 
 						tx_civserv_position.uid as pos_uid 
 					from 
@@ -858,7 +867,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						!tx_civserv_employee.hidden';
 			}
 
-			$orderby =	$this->piVars[sort]?'name DESC':'name ASC';
+			$orderby =	$this->piVars[sort]?'em_name DESC':'em_name ASC';
 
 			if (!$count) {
 			$query .= ' ORDER BY ' . $orderby . ' ';
@@ -1504,7 +1513,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Query for associated employees
 		$res_employees = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'tx_civserv_employee.uid as emp_uid, tx_civserv_position.uid as pos_uid, tx_civserv_service.uid as sv_uid, tx_civserv_service_sv_position_mm.sp_descr as description, em_title as title, em_name as name, em_firstname as firstname, em_telephone, ep_telephone , em_email, ep_email, em_datasec as datasec',
+						'tx_civserv_employee.uid as emp_uid, tx_civserv_position.uid as pos_uid, tx_civserv_service.uid as sv_uid, tx_civserv_service_sv_position_mm.sp_descr as description, em_address as address, em_title as title, em_name as name, em_firstname as firstname, em_telephone, ep_telephone , em_email, ep_email, em_datasec as datasec',
 						'tx_civserv_service, tx_civserv_service_sv_position_mm, tx_civserv_position, tx_civserv_employee, tx_civserv_employee_em_position_mm',
 						'tx_civserv_service.uid = ' . $uid . '
 						 AND !tx_civserv_service.deleted AND !tx_civserv_service.hidden
@@ -1580,6 +1589,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Add coloumns with url for email form and employee page to array $service_employees and format position description string
 		for ($i = 0; $i < count($service_employees); $i++) {
+			if($service_employees[$i]['address']==2){
+				$service_employees[$i]['address_long'] = $this->pi_getLL('tx_civserv_pi1_organisation.address_female', 'Ms.');
+			}elseif($service_employees[$i]['address']==1){
+				$service_employees[$i]['address_long'] = $this->pi_getLL('tx_civserv_pi1_organisation.address_male', 'Mr.');
+			}
 			// use typolink, because of the possibility to use encrypted email-adresses for spam-protection
 			$service_employees[$i]['email_code'] = $this->cObj->typoLink($service_employees[$i]['ep_email']?$service_employees[$i]['ep_email']:$service_employees[$i]['em_email'],array(parameter => $service_employees[$i]['ep_email']?$service_employees[$i]['ep_email']:$service_employees[$i]['em_email'],ATagParams => 'class="email"'));	// use typolink, because of the possibility to use encrypted email-adresses for spam-protection
 			$service_employees[$i]['email_form_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'set_email_form',id => $service_employees[$i]['emp_uid'],sv_id => $service_employees[$i]['sv_uid'],pos_id => $service_employees[$i]['pos_uid']),1,1));
@@ -1742,7 +1756,15 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyService->assign('legal_local_label',$this->pi_getLL('tx_civserv_pi1_service.legal_local','Legal foundation (local)'));
 		$smartyService->assign('legal_global_label',$this->pi_getLL('tx_civserv_pi1_service.legal_global','Legal foundation (general)'));
 		$smartyService->assign('organisation_label',$this->pi_getLL('tx_civserv_pi1_service.organisation','Responsible organisational unit(s)'));
-		$smartyService->assign('contact_label',$this->pi_getLL('tx_civserv_pi1_service.contact','Contact person'));
+		if(count($service_employees)==1){
+			if($service_employees[0]['address']==2){
+				$smartyService->assign('contact_label',$this->pi_getLL('tx_civserv_pi1_service.contact_female','Contact person'));
+			}else{
+				$smartyService->assign('contact_label',$this->pi_getLL('tx_civserv_pi1_service.contact_male','Contact person'));
+			}
+		}else{
+			$smartyService->assign('contact_label',$this->pi_getLL('tx_civserv_pi1_service.contact_plural','Contact persons'));
+		}
 		$smartyService->assign('employee_details',$this->pi_getLL('tx_civserv_pi1_organisation.employee_details','Jumps to a page with details of this employee'));
 		$smartyService->assign('similar_services_label',$this->pi_getLL('tx_civserv_pi1_service.similar_services','Similar services'));
 		$smartyService->assign('phone_label',$this->pi_getLL('tx_civserv_pi1_organisation.phone','Phone'));
@@ -1998,7 +2020,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyEmployee->assign('emp_hours',$emp_hours);
 
 		//Assign template labels
-		$smartyEmployee->assign('employee_label',$this->pi_getLL('tx_civserv_pi1_employee.employee','Employee'));
+		if (intval($employee_rows[em_address]) == 2) {
+			$smartyEmployee->assign('employee_label',$this->pi_getLL('tx_civserv_pi1_employee.employee_female','Employee'));
+		} else{ //1 for male or nothing
+			$smartyEmployee->assign('employee_label',$this->pi_getLL('tx_civserv_pi1_employee.employee_male','Employee'));
+		}	
 		$smartyEmployee->assign('phone_label',$this->pi_getLL('tx_civserv_pi1_organisation.phone','Phone'));
 		$smartyEmployee->assign('fax_label',$this->pi_getLL('tx_civserv_pi1_organisation.fax','Fax'));
 		$smartyEmployee->assign('email_label',$this->pi_getLL('tx_civserv_pi1_organisation.email','E-Mail'));
@@ -2010,13 +2036,20 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyEmployee->assign('afternoon',$this->pi_getLL('tx_civserv_pi1_organisation.afternoon','in the afternoon'));
 		$smartyEmployee->assign('organisation_label',$this->pi_getLL('tx_civserv_pi1_employee.organisation','Organisation'));
 		$smartyEmployee->assign('room_label',$this->pi_getLL('tx_civserv_pi1_employee.room','Room'));
-		$smartyEmployee->assign('image_employee_label',$this->pi_getLL('tx_civserv_pi1_employee.image','Image of employee'));
+		//the image_employee_label is not being used yet
+		if (intval($employee_rows[em_address]) == 2) {
+			$smartyEmployee->assign('image_employee_label',$this->pi_getLL('tx_civserv_pi1_employee_female.image','Image of employee'));
+		} else if (intval($employee_rows[em_address]) == 1) {
+			$smartyEmployee->assign('image_employee_label',$this->pi_getLL('tx_civserv_pi1_employee_male.image','Image of employee'));
+		}
+		
 
 		if ($searchBox) {
 			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
 			$smartyTop15->assign('searchbox', $this->pi_list_searchBox('',true));
 		}
-		$GLOBALS['TSFE']->page['title']=$this->pi_getLL('tx_civserv_pi1_employee.employee','Employee');
+		//baustelle
+		$GLOBALS['TSFE']->page['title']=$this->pi_getLL('tx_civserv_pi1_employee.employee_plural','Employees');
 		return true;
 	}
 
