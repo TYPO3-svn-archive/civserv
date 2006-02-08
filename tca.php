@@ -593,6 +593,7 @@ $TCA["tx_civserv_service"] = Array (
 				"type" => "select",
 				"foreign_table" => "tx_civserv_region",
 				"foreign_table_where" => "ORDER BY tx_civserv_region.re_name",
+				"itemsProcFunc" => "tx_civserv_mandant->limit_region_items",
 				"size" => 5,
 				"minitems" => 0,
 				"maxitems" => 50,

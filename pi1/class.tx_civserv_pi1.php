@@ -133,6 +133,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// Start or resume session
 		session_name($this->extKey);
 		session_start();
+		session_destroy();
 
 		// create and instanciate smarty object
 		$tx_smarty = t3lib_div::makeInstanceClassName('tx_smarty');
@@ -199,7 +200,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 			// Set piVars[community_id] because it could only be registered in the session and not in the URL
 			$this->piVars[community_id] = $_SESSION['community_id'];
-
 			switch($this->piVars[mode])	{
 				case 'service_list':
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_service_list.service_list','Service list');
@@ -758,14 +758,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
-				debug($row, 'was ist in den Mitarbeiter-Daten drinne?');
 				if($row['em_address']==2){
 					$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi1_organisation.address_female', 'Ms.');
 				}elseif($row['em_address']==1){
 					$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi1_organisation.address_male', 'Mr.');
 				}
 				$employees[$row_counter]['title'] = $row['em_title'];
-				$employees[$row_counter]['name'] = $row['em_name'];
+				$employees[$row_counter]['name'] = $row['name']; //alias in makeEmployeeListQuery, need for generic makeabcBar
 				$employees[$row_counter]['firstname'] = $row['em_firstname'];
 				$employees[$row_counter]['em_datasec'] = $row['em_datasec'];
 
@@ -848,10 +847,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$query = 'Select 
 						tx_civserv_employee.em_address, 
 						tx_civserv_employee.em_title, 
-						tx_civserv_employee.em_name, 
-						tx_civserv_employee.em_firstname, '.
-						#tx_civserv_employee.em_name as name, 
-						'tx_civserv_employee.em_datasec,
+						tx_civserv_employee.em_name as name, 
+						tx_civserv_employee.em_firstname, 
+						tx_civserv_employee.em_datasec,
 						tx_civserv_employee.uid as emp_uid, 
 						tx_civserv_position.uid as pos_uid 
 					from 
@@ -2600,9 +2598,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		} elseif (!empty($emp_id) && !empty($pos_id) && !empty($sv_id)) {	//Email form is called from service detail page
 			$result = $this->makeEmailQuery($emp_id,$pos_id,$sv_id);
-			//debug($emp_id, 'Email form is called from service detail page, Mitarbeiter: ');
-			//debug($pos_id, 'Email form is called from service detail page, Position: ');
-			//debug($sv_id, 'Email form is called from service detail page, Service: ');
 			//Check if query returned a result
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
 				$employee = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
@@ -2615,7 +2610,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}
 		} elseif (!empty($emp_id) || (!empty($pos_id) && !empty($emp_id)) ) {  //Email form is called from organisation detail page (supervisor email)
 			$result = $this->makeEmailQuery($emp_id,$pos_id,$sv_id);
-			//debug($emp_id, 'Email form is called from service organisation detail page');	
 			//Check if query returned a result
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
 				$employee = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
@@ -3207,6 +3201,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// Start or resume session
 		session_name($this->extKey);
 		session_start();
+		session_destroy();
 		// Save community id in session, to ensure that the id is also saved when vititing sites without the civserv extension (e.g. fulltext search)
 		if ($_SESSION['community_id'] <= '') {
 			$_SESSION['community_id'] = $this->piVars[community_id];

@@ -56,9 +56,9 @@ class tx_civserv_mandant{
 	*/
 	function main(&$params, &$pObj) {
 		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
-		//debug($pObj);
+		#debug($pObj, '$pObj in main');
+		#debug($params, '$params in main');
 		if ($pid > 0) $mandant = $this->get_mandant($pid);
-		//debug($row);
 		$params['items'][0] = Array ($mandant, $mandant);
 	}
 
@@ -107,13 +107,10 @@ class tx_civserv_mandant{
 			}	
 		 	$master_uid = $this->get_path($pid,$valid_uids);
 		}
-		
-		//debug($master_uid);
 		if ($master_uid == NULL) $master_uid = $pid;
 		if ($master_uid > 0) {
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_community_id, cm_community_name','tx_civserv_conf_mandant','cm_uid = '.$GLOBALS['TYPO3_DB']->quoteStr($master_uid,'tx_civserv_conf_mandant'),'','','',''); 
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-			//debug($row['cm_community_id']);
 			return $row['cm_community_id'];
 		} else return 0;
 	}
@@ -125,6 +122,7 @@ class tx_civserv_mandant{
 	* @see get_path
 	*/
 	function get_mandant_name($pid){
+		/*
 		if ($pid > 0) $this->get_mandant($pid);
 		if ($master_uid == NULL) $master_uid = $pid;
 		if ($master_uid > 0) {
@@ -132,7 +130,47 @@ class tx_civserv_mandant{
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 			return $row['cm_community_name'];
 		} else return "";
+		*/
+		if ($pid > 0) $mandant = $this->get_mandant($pid);
+		if ($mandant > 0) {
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_community_name','tx_civserv_conf_mandant','cm_community_id = '.$GLOBALS['TYPO3_DB']->quoteStr($mandant,'tx_civserv_conf_mandant'),'','','',''); 
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+			debug($row['cm_community_name'], '$row-cm_community_name');
+			return $row['cm_community_name'];
+		} else return "";
 	}
+	
+	/*
+	* Returns the Community Name for a given PID
+	* @param	int	PID	is the node in the tree from where the mandant should be determined
+	* @return	string	community-name representing the mandant belonging to the given pid
+	* @see get_path
+	*/
+	function get_mandant_cmuid($pid){
+		if ($pid > 0) $mandant = $this->get_mandant($pid);
+		if ($mandant > 0) {
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_uid','tx_civserv_conf_mandant','cm_community_id = '.$GLOBALS['TYPO3_DB']->quoteStr($mandant,'tx_civserv_conf_mandant'),'','','',''); 
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+			return $row['cm_uid'];
+		} else return "";
+	}
+	
+	
+	/*
+	* Returns the Community UID for a given PID
+	* @param	int	PID	is the node in the tree from where the mandant should be determined
+	* @return	string	community-name representing the mandant belonging to the given pid
+	* @see get_path
+	*/
+	function get_mandant_uid($pid){
+		if ($pid > 0) $mandant = $this->get_mandant($pid);
+		if ($mandant > 0) {
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','tx_civserv_conf_mandant','cm_community_id = '.$GLOBALS['TYPO3_DB']->quoteStr($mandant,'tx_civserv_conf_mandant'),'','','',''); 
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+			return $row['uid'];
+		} else return "";
+	}
+	
 			
 	/*
 	* Limits the items of an array to guarantee, that within an treenode only elements are shown, which belong to the same mandant
@@ -148,7 +186,6 @@ class tx_civserv_mandant{
 		$table = $params['config']['foreign_table'];
 		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
 		if ($pid > 0) $mandant = $this->get_mandant($pid);
-		//debug($mandant,'Mandant');
 		if(array_key_exists("",$params['items'])){
 			$empty_entry=1;
 		} $empty_entry=0;
@@ -160,6 +197,42 @@ class tx_civserv_mandant{
 	}
 	
 	/*
+	* Limits the items of the region-array to guarantee, that within an treenode only elements are shown, which belong to the same mandant
+	* This function is central to assure the ability of handling several mandants within one Typo3-system
+	* There had to be an ugly workaround for the navigation-elements (look additional_remove for further information)
+	*
+	* @param	string		$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API
+	* @param	string		$pObj is a reference to the calling object
+	* @return	void
+	* @see manipulate_array, additional_remove
+	*/
+	function limit_region_items(&$params, &$pObj){
+	   #$pid = $params['row']['pid'];
+		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
+		if(array_key_exists("",$params['items'])){
+			$empty_entry=1;
+		} $empty_entry=0;
+		$allowed_regions=array();
+		if ($pid > 0) $mandant_uid = $this->get_mandant_uid($pid);
+		$banned_regions= array();
+		$res_regions = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', 'tx_civserv_conf_mandant_cm_region_mm', 'uid_local='.$mandant_uid,'','','','');
+		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_regions)){
+			$banned_regions[]=$row['uid_foreign'];
+		}
+		for($i=0; $i<count($params['items']); $i++){
+			#debug($params['items'][$i][0], 'region_name');
+			#debug($params['items'][$i][1], 'region_id');
+			if(!in_array($params['items'][$i][1], $banned_regions)){
+				$allowed_regions[]=$params['items'][$i];
+			}
+		}
+		$params['items']=$allowed_regions;
+		if ($empty_entry) $params['items']=array_merge(Array(""),$params['items']);
+		debug($params, '$params in limit_region_items nachher');
+	}
+
+	
+	/*
 	* This function executes the limiting functionality to an element array for a given mandant
 	*
 	* @param string Mandant on which the elements should be limited
@@ -168,7 +241,6 @@ class tx_civserv_mandant{
 	* @return int $target_array Array consisting only of elements containing to the given mandant
 	*/
 	function manipulate_array($mandant, $source_array, $table){
-		//debug($table, 'die tabelle um die es geht?');
 		$res_pids = $GLOBALS['TYPO3_DB']->exec_SELECTquery('distinct pid',$GLOBALS['TYPO3_DB']->quoteStr($table,$table),'!deleted AND !hidden','','','','');
 		$valid_pid = '';
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_pids)) { 	
@@ -177,7 +249,6 @@ class tx_civserv_mandant{
 			} 
 		}
 		$valid_pid = '('.substr($valid_pid,0,-2).')';
-		//debug($valid_pid);
 		//$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid',$GLOBALS['TYPO3_DB']->quoteStr($table,$table),'pid = '.$GLOBALS['TYPO3_DB']->quoteStr($valid_pid,$table),'','','','');
 		$array_temp = array();
 		if (strlen($valid_pid)>2){
@@ -203,17 +274,17 @@ class tx_civserv_mandant{
 		//debug($critical, 'rückgabewert der fkt get_critical_table');
 		if(is_array($critical)){//either false or array
 			if (isset($source_array['field']) && $source_array['field']==$critical['field']){	//either or_structure or nav_structure	
-				//debug($source_array, 'source_array');
-				//debug($target_array,'target_array vor löschen');
+				#debug($source_array, 'source_array');
+				#debug($target_array,'target_array vor löschen');
 				
 				//get rid of the 'children' --> recursive!!!!
 				
 				$forbidden_uids=array();
-				//debug($source_array['row']['uid'], 'source_array_uid');
+				debug($source_array['row']['uid'], 'source_array_uid');
 				if(substr($source_array['row']['uid'],0,3)!='NEW'){//or else the following select will crash!
 					$forbidden_uids[]=$source_array['row']['uid'];
 					//the following two lines are equivalent to each other:
-					//$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', $GLOBALS['TYPO3_DB']->quoteStr($critical['mm'],$critical['mm']), 'uid_foreign = '.$source_array['row']['uid'],'','','',''); 
+				  //$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', $GLOBALS['TYPO3_DB']->quoteStr($critical['mm'],$critical['mm']), 'uid_foreign = '.$source_array['row']['uid'],'','','',''); 
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', $GLOBALS['TYPO3_DB']->quoteStr($source_array['config']['MM'],$source_array['config']['MM']), 'uid_foreign = '.$source_array['row']['uid'],'','','',''); 
 					
 					$this->get_forbidden($res, &$forbidden_uids, $source_array['config']['MM']);
@@ -305,6 +376,11 @@ class tx_civserv_mandant{
 		$crittable[1]['name']='tx_civserv_navigation';
 		$crittable[1]['mm']='tx_civserv_navigation_nv_structure_mm';
 		$crittable[1]['field']='nv_structure';
+		/*
+		$crittable[2]['name']='tx_civserv_region';
+		$crittable[2]['mm']='tx_civserv_service_sv_region_mm';
+		$crittable[2]['field']='sv_region';
+		*/
 		for($i=0; $i<count($crittable); $i++){
 			if($crittable[$i]['name']==$table){
 				return $crittable[$i];
