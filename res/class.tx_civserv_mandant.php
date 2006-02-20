@@ -73,7 +73,7 @@ class tx_civserv_mandant{
 		// look up the parent of this node 
 		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
 		
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('pid, uid','pages','!deleted AND !hidden AND uid = '.$GLOBALS['TYPO3_DB']->quoteStr($node,'pages'),'','','',''); 
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('pid, uid','pages',' deleted=0 AND hidden=0 AND uid = '.$GLOBALS['TYPO3_DB']->quoteStr($node,'pages'),'','','',''); 
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 		//debug($row[uid]);
 		// save the path in this array
@@ -100,7 +100,7 @@ class tx_civserv_mandant{
 	*/
 	function get_mandant($pid) {
 		if ($pid > 0){
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_uid','tx_civserv_conf_mandant','!deleted AND !hidden','','','',''); 
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_uid','tx_civserv_conf_mandant','deleted=0 AND hidden=0','','','',''); 
 			$valid_uids = array();
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
 				$valid_uids[]=$row['cm_uid'];
@@ -241,7 +241,7 @@ class tx_civserv_mandant{
 	* @return int $target_array Array consisting only of elements containing to the given mandant
 	*/
 	function manipulate_array($mandant, $source_array, $table){
-		$res_pids = $GLOBALS['TYPO3_DB']->exec_SELECTquery('distinct pid',$GLOBALS['TYPO3_DB']->quoteStr($table,$table),'!deleted AND !hidden','','','','');
+		$res_pids = $GLOBALS['TYPO3_DB']->exec_SELECTquery('distinct pid',$GLOBALS['TYPO3_DB']->quoteStr($table,$table),'deleted=0 AND hidden=0','','','','');
 		$valid_pid = '';
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_pids)) { 	
 			if ($row['pid']>0 AND ($this->get_mandant($row['pid']) == $mandant)) {
@@ -252,7 +252,7 @@ class tx_civserv_mandant{
 		//$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid',$GLOBALS['TYPO3_DB']->quoteStr($table,$table),'pid = '.$GLOBALS['TYPO3_DB']->quoteStr($valid_pid,$table),'','','','');
 		$array_temp = array();
 		if (strlen($valid_pid)>2){
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid, pid',$GLOBALS['TYPO3_DB']->quoteStr($table,$table),'!deleted AND !hidden AND pid IN '.$valid_pid,'','','','');
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid, pid',$GLOBALS['TYPO3_DB']->quoteStr($table,$table),'deleted=0 AND hidden=0 AND pid IN '.$valid_pid,'','','','');
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) { 	
 				array_push($array_temp,$row['uid']);
 			}
@@ -328,7 +328,7 @@ class tx_civserv_mandant{
 	function additional_remove($source_array, $table, $pid){
 		$target_array = array();
 		$valid_nav = array();
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$GLOBALS['TYPO3_DB']->quoteStr($table,$table),'!deleted AND !hidden AND pid = '.intval($pid),'','','','');
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$GLOBALS['TYPO3_DB']->quoteStr($table,$table),'deleted=0 AND hidden=0 AND pid = '.intval($pid),'','','','');
 		foreach ($source_array as $value){
 			array_push($valid_nav, $value[1]);
 		}

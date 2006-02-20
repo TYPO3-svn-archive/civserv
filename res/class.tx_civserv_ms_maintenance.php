@@ -370,7 +370,7 @@ class tx_civserv_ms_maintenance {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'cm_community_id, cm_community_name',				// Field list for SELECT
 			'tx_civserv_conf_mandant ',							// Tablename, local table
-			'!deleted AND !hidden',								// Optional additional WHERE clauses
+			'deleted=0 AND hidden=0',								// Optional additional WHERE clauses
 			'',													// Optional GROUP BY field(s), if none, supply blank string.
 			'cm_community_name',								// Optional ORDER BY field(s), if none, supply blank string.
 			'' 													// Optional LIMIT value ([begin,]max), if none, supply blank string.

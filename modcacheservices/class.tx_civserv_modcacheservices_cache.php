@@ -155,8 +155,8 @@ class tx_civserv_modcacheservices_cache {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'count(*)',
 						'tx_civserv_service',
-						'NOT tx_civserv_service.deleted AND ' .
-						' NOT tx_civserv_service.hidden AND ' .
+						'tx_civserv_service.deleted=0 AND ' .
+						' tx_civserv_service.hidden=0 AND ' .
 						'((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime) OR ' .
 						'((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime = 0)) OR ' .
 						'(tx_civserv_service.starttime = 0 AND tx_civserv_service.endtime = 0)) AND ' .
@@ -173,10 +173,10 @@ class tx_civserv_modcacheservices_cache {
 						'count(*)',
 						'tx_civserv_service, tx_civserv_external_service',
 						'tx_civserv_service.uid = tx_civserv_external_service.es_external_service AND ' .
-						'NOT tx_civserv_external_service.deleted AND ' .
-						'NOT tx_civserv_external_service.hidden AND ' .
-						'NOT tx_civserv_service.deleted AND ' .
-						'NOT tx_civserv_service.hidden AND ' .
+						'tx_civserv_external_service.deleted=0 AND ' .
+						'tx_civserv_external_service.hidden=0 AND ' .
+						'tx_civserv_service.deleted=0 AND ' .
+						'tx_civserv_service.hidden=0 AND ' .
 						'((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime) OR ' .
 						'((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime = 0)) OR ' .
 						'(tx_civserv_service.starttime = 0 AND tx_civserv_service.endtime = 0)) AND ' .
@@ -221,8 +221,8 @@ class tx_civserv_modcacheservices_cache {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'tx_civserv_service.uid',
 						'tx_civserv_service',
-						'NOT tx_civserv_service.deleted AND ' .
-						' NOT tx_civserv_service.hidden AND ' .
+						'tx_civserv_service.deleted=0 AND ' .
+						' tx_civserv_service.hidden=0 AND ' .
 						'((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime) OR ' .
 						'((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime = 0)) OR ' .
 						'(tx_civserv_service.starttime = 0 AND tx_civserv_service.endtime = 0)) AND ' .
@@ -236,10 +236,10 @@ class tx_civserv_modcacheservices_cache {
 						'tx_civserv_service.uid',
 						'tx_civserv_service, tx_civserv_external_service',
 						'tx_civserv_service.uid = tx_civserv_external_service.es_external_service AND ' .
-						'NOT tx_civserv_external_service.deleted AND ' .
-						'NOT tx_civserv_external_service.hidden AND ' .
-						'NOT tx_civserv_service.deleted AND ' .
-						'NOT tx_civserv_service.hidden AND ' .
+						'tx_civserv_external_service.deleted=0 AND ' .
+						'tx_civserv_external_service.hidden=0 AND ' .
+						'tx_civserv_service.deleted=0 AND ' .
+						'tx_civserv_service.hidden=0 AND ' .
 						'((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime) OR ' .
 						'((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime = 0)) OR ' .
 						'(tx_civserv_service.starttime = 0 AND tx_civserv_service.endtime = 0)) AND ' .
@@ -334,7 +334,7 @@ class tx_civserv_modcacheservices_cache {
 		$theList='';
 		$allFields = 'uid,hidden,starttime,endtime,fe_group,extendToSubpages,doktype,php_tree_stop'.$addSelectFields;
 		if ($id && $depth>0)    {
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($allFields, 'pages', 'pid='.intval($id).' AND NOT deleted AND doktype!=255 AND doktype!=6'.$moreWhereClauses, '' ,'sorting');
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($allFields, 'pages', 'pid='.intval($id).' AND deleted=0 AND doktype!=255 AND doktype!=6'.$moreWhereClauses, '' ,'sorting');
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))      {
 				if ($dontCheckEnableFields || $this->checkPagerecordForIncludeSection($row)) {
 					if ($begin<=0)  {

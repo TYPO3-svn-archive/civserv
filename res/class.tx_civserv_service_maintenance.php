@@ -61,7 +61,7 @@ class tx_civserv_service_maintenance {
 			//get all services configured to be passed on to other communities
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('mandant.cm_external_service_folder_uid, service.uid AS service, service.sv_name', // Field list for SELECT
 				'tx_civserv_service service, tx_civserv_service_sv_region_mm sr, tx_civserv_region region, tx_civserv_conf_mandant_cm_region_mm mandant_region, tx_civserv_conf_mandant mandant', // Tablename, local table
-				'sr.uid_local = service.uid AND sr.uid_foreign = region.uid AND  !service.deleted AND  !service.hidden AND mandant_region.uid_foreign = region.uid AND mandant_region.uid_local = mandant.uid AND mandant.cm_external_service_folder_uid > 0', // Optional additional WHERE clauses
+				'sr.uid_local = service.uid AND sr.uid_foreign = region.uid AND  service.deleted=0 AND  !service.hidden AND mandant_region.uid_foreign = region.uid AND mandant_region.uid_local = mandant.uid AND mandant.cm_external_service_folder_uid > 0', // Optional additional WHERE clauses
 				'', // Optional GROUP BY field(s), if none, supply blank string.
 				'', // Optional ORDER BY field(s), if none, supply blank string.
 				'' // Optional LIMIT value ([begin,]max), if none, supply blank string.
@@ -74,7 +74,7 @@ class tx_civserv_service_maintenance {
 			//get all already existing external services for all mandants
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('pid, es_external_service, es_name', // Field list for SELECT
 				'tx_civserv_external_service  service', // Tablename, local table
-				'!service.deleted', // Optional additional WHERE clauses
+				'service.deleted=0', // Optional additional WHERE clauses
 				'', // Optional GROUP BY field(s), if none, supply blank string.
 				'', // Optional ORDER BY field(s), if none, supply blank string.
 				'' // Optional LIMIT value ([begin,]max), if none, supply blank string.

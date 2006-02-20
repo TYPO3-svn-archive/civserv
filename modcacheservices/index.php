@@ -92,7 +92,7 @@ class tx_civserv_cacheservices extends t3lib_SCbase {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid, cm_community_name',
 			'tx_civserv_conf_mandant',
-			'NOT deleted and NOT hidden');
+			'deleted=0 and hidden=0');
 
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{

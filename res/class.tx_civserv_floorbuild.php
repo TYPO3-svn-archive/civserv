@@ -78,7 +78,7 @@ class tx_civserv_floorbuild {
 			'tx_civserv_building', // Tablename, local table
 			'tx_civserv_building_bl_floor_mm', // Tablename, relation table
 			'tx_civserv_floor', // Tablename, foreign table
-			'AND tx_civserv_building_bl_floor_mm.pid='.$pid.' AND !tx_civserv_building.deleted AND !tx_civserv_building.hidden AND !tx_civserv_floor.deleted AND !tx_civserv_floor.hidden', // Optional additional WHERE clauses
+			'AND tx_civserv_building_bl_floor_mm.pid='.$pid.' AND tx_civserv_building.deleted=0 AND tx_civserv_building.hidden=0 AND tx_civserv_floor.deleted=0 AND tx_civserv_floor.hidden=0', // Optional additional WHERE clauses
 			'', // Optional GROUP BY field(s), if none, supply blank string.
 			'bl_name, fl_number', // Optional ORDER BY field(s), if none, supply blank string.
 			'' // Optional LIMIT value ([begin,]max), if none, supply blank string.

@@ -227,7 +227,7 @@ class tx_civserv_commit {
 					else $foreign_uids[]=$entry;
 				}
 			}
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$mmTable,'!deleted AND !hidden AND uid_local = \''.$id.'\'');
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$mmTable,' deleted=0 AND hidden=0 AND uid_local = \''.$id.'\'');
 				//copy each concerned entrie to the end of table
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
 				if (in_array($row['uid_foreign'],$foreign_uids)){

@@ -1748,6 +1748,15 @@ $TCA["tx_civserv_organisation"] = Array (
 				#"eval" => "required",
 			)
 		),
+		"or_code" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_organisation.or_code",
+			"config" => Array (
+				"type" => "input",
+				"size" => "30",
+				"max" => "5",
+			)
+		),
 		"or_name" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_organisation.or_name",
@@ -1949,7 +1958,7 @@ $TCA["tx_civserv_organisation"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, or_number, or_name, or_synonym1, or_synonym2, or_synonym3, or_supervisor, or_hours, or_telephone, or_fax, or_email, or_image, or_infopage, or_addinfo;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], or_structure, or_building")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, or_number, or_code, or_name, or_synonym1, or_synonym2, or_synonym3, or_supervisor, or_hours, or_telephone, or_fax, or_email, or_image, or_infopage, or_addinfo;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], or_structure, or_building")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")

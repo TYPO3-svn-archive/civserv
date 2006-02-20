@@ -129,7 +129,7 @@ class tx_civserv_oepupdate {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_civserv_room.pid, tx_civserv_room.uid uid, tx_civserv_room.ro_name ro_name, tx_civserv_building.bl_name bl_name, tx_civserv_floor.fl_descr fl_descr',	// SELECT
 			'tx_civserv_room, tx_civserv_building, tx_civserv_floor, tx_civserv_building_bl_floor_mm',	// FROM
-			'tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid AND tx_civserv_building_bl_floor_mm.uid_local = tx_civserv_building.uid AND tx_civserv_building_bl_floor_mm.uid_foreign = tx_civserv_floor.uid AND !tx_civserv_building_bl_floor_mm.deleted AND !tx_civserv_building_bl_floor_mm.hidden',	// WHERE
+			'tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid AND tx_civserv_building_bl_floor_mm.uid_local = tx_civserv_building.uid AND tx_civserv_building_bl_floor_mm.uid_foreign = tx_civserv_floor.uid AND tx_civserv_building_bl_floor_mm.deleted=0 AND !tx_civserv_building_bl_floor_mm.hidden',	// WHERE
 			'',	// GROUP_BY
 			'', // ORDER BY
 			'' // LIMIT
@@ -162,7 +162,7 @@ class tx_civserv_oepupdate {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'tx_civserv_room.pid, tx_civserv_room.uid uid, tx_civserv_room.ro_name ro_name, tx_civserv_building.bl_name bl_name, tx_civserv_floor.fl_descr fl_descr',	// SELECT
 			'tx_civserv_room, tx_civserv_building, tx_civserv_floor, tx_civserv_building_bl_floor_mm',	// FROM
-			'tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid AND tx_civserv_building_bl_floor_mm.uid_local = tx_civserv_building.uid AND tx_civserv_building_bl_floor_mm.uid_foreign = tx_civserv_floor.uid AND !tx_civserv_building_bl_floor_mm.deleted AND ! tx_civserv_building_bl_floor_mm.hidden',	// WHERE
+			'tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid AND tx_civserv_building_bl_floor_mm.uid_local = tx_civserv_building.uid AND tx_civserv_building_bl_floor_mm.uid_foreign = tx_civserv_floor.uid AND tx_civserv_building_bl_floor_mm.deleted=0 AND tx_civserv_building_bl_floor_mm.hidden=0',	// WHERE
 			'',	// GROUP_BY
 			'bl_name, fl_descr, ro_name', // ORDER BY
 			'' // LIMIT
