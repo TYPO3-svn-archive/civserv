@@ -700,7 +700,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						tx_civserv_organisation 
 					where 
 						tx_civserv_organisation.pid IN (' . $this->community[pidlist] . ') AND 
-						tx_civserv_form.deleted=0 AND
+						tx_civserv_organisation.deleted=0 AND
 						tx_civserv_organisation.hidden=0';
 			} else {
 				$query = 'Select 
@@ -712,7 +712,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					where 
 						tx_civserv_organisation.pid IN (' . $this->community[pidlist] . ') '
 					    . ($regexp?'AND or_name REGEXP "' . $regexp . '"':'') . 'AND 
-						tx_civserv_form.deleted=0 AND
+						tx_civserv_organisation.deleted=0 AND
 						tx_civserv_organisation.hidden=0';
 			}
 			for ($synonymNr = 1; $synonymNr <= 3; $synonymNr++) {
@@ -773,10 +773,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 					'tx_civserv_position.uid as pos_uid, tx_civserv_organisation.uid as or_uid, tx_civserv_employee.uid as emp_uid, or_name as organisation',
 					'tx_civserv_employee, tx_civserv_position, tx_civserv_organisation, tx_civserv_employee_em_position_mm, tx_civserv_position_po_organisation_mm',
 					'tx_civserv_employee.uid = ' . $row['emp_uid'] . ' AND tx_civserv_position.uid = '.$row['pos_uid'] .'
-					 AND tx_civserv_form.deleted=0 AND tx_civserv_organisation.hidden=0
+					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 					 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
 					 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
-					 AND tx_civserv_form.deleted=0 AND tx_civserv_organisation.hidden=0
+					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
 					 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
@@ -1889,7 +1889,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$res_emp_org_hours = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_freestyle, oh_weekday',
 					'tx_civserv_employee, tx_civserv_organisation, tx_civserv_position, tx_civserv_officehours, tx_civserv_employee_em_position_mm, tx_civserv_position_po_organisation_mm, tx_civserv_organisation_or_hours_mm',
-					'tx_civserv_form.deleted=0 AND tx_civserv_organisation.hidden=0
+					'tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 					 AND tx_civserv_officehours.deleted=0 AND tx_civserv_officehours.hidden=0
 					 AND tx_civserv_position.deleted=0 AND tx_civserv_organisation.hidden=0
 					 AND tx_civserv_employee.deleted=0 AND tx_civserv_officehours.hidden=0
@@ -1909,12 +1909,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 					'tx_civserv_position.uid as pos_uid, tx_civserv_organisation.uid as or_uid, tx_civserv_employee.uid as emp_uid, po_name as position, bl_name as building, fl_descr as floor, ro_name as room, ep_telephone as phone, ep_fax as fax, ep_email as email, or_name as organisation',
 					'tx_civserv_employee, tx_civserv_position, tx_civserv_room, tx_civserv_floor, tx_civserv_organisation, tx_civserv_building, tx_civserv_employee_em_position_mm, tx_civserv_building_bl_floor_mm, tx_civserv_position_po_organisation_mm',
 					'tx_civserv_employee.uid='.$uid.' AND em_datasec=1 AND tx_civserv_position.uid = '.$pos_id.'
-					 AND tx_civserv_form.deleted=0 AND tx_civserv_organisation.hidden=0
+					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 					 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
 					 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
 					 AND tx_civserv_room.deleted=0 AND tx_civserv_room.hidden=0
 					 AND tx_civserv_floor.deleted=0 AND tx_civserv_floor.hidden=0
-					 AND tx_civserv_form.deleted=0 AND tx_civserv_organisation.hidden=0
+					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
 					 AND tx_civserv_employee_em_position_mm.ep_room = tx_civserv_room.uid
@@ -2074,7 +2074,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res_supervisor = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'tx_civserv_employee.uid as uid, em_title, em_name, em_firstname, em_address, em_datasec',
 						'tx_civserv_organisation, tx_civserv_employee',
-						'tx_civserv_form.deleted=0 AND tx_civserv_organisation.hidden=0
+						'tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 						 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
 						 AND tx_civserv_organisation.or_supervisor = tx_civserv_employee.uid
 						 AND tx_civserv_organisation.uid='.$uid,
@@ -2086,7 +2086,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res_pos_supervisor = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'tx_civserv_employee.uid as uid, tx_civserv_position.uid as pos_uid, em_title, em_name, em_firstname, em_address, em_datasec',
 						'tx_civserv_organisation, tx_civserv_employee, tx_civserv_position, tx_civserv_employee_em_position_mm, tx_civserv_position_po_organisation_mm',
-						'tx_civserv_form.deleted=0 AND tx_civserv_organisation.hidden=0
+						'tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 						 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
 						 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
 						 AND tx_civserv_organisation.or_supervisor = tx_civserv_employee.uid
@@ -2105,7 +2105,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_organisation',
 						'tx_civserv_organisation_or_building_mm',
 						'tx_civserv_building',
-						'AND tx_civserv_form.deleted=0 AND tx_civserv_organisation.hidden=0
+						'AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 						 AND tx_civserv_building.deleted=0 AND tx_civserv_building.hidden=0
 						 AND tx_civserv_organisation.uid = ' . $uid,
 						'',
@@ -2118,7 +2118,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_organisation',
 						'tx_civserv_organisation_or_hours_mm',
 						'tx_civserv_officehours',
-						'AND tx_civserv_form.deleted=0 AND tx_civserv_organisation.hidden=0
+						'AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 						 AND tx_civserv_officehours.deleted=0 AND tx_civserv_officehours.hidden=0
 						 AND tx_civserv_organisation.uid = ' . $uid,
 						'',
