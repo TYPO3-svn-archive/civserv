@@ -453,7 +453,7 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 					} else {
 						$selVal = '';
 					}
-					$menuItems[]='<option label="'.htmlspecialchars($positions[po_name]).'" value="'.htmlspecialchars($positions[uid]).'"'.$selVal.'">'.htmlspecialchars($positions[po_name]).'</option>';
+					$menuItems[]='<option label="'.htmlspecialchars($positions[po_name]).'" value="'.htmlspecialchars($positions[uid]).'"'.$selVal.'>'.htmlspecialchars($positions[po_name]).'</option>';
 				}
 			}
 		}

@@ -455,7 +455,7 @@ function init() {
 					} else {
 						$selVal = '';
 					}
-						$menuItems[]='<option label="'.htmlspecialchars($positions[po_name]).'" value="'.htmlspecialchars($positions[uid]).'"'.$selVal.'">'.htmlspecialchars($positions[po_name]).'</option>';
+						$menuItems[]='<option label="'.htmlspecialchars($positions[po_name]).'" value="'.htmlspecialchars($positions[uid]).'"'.$selVal.'>'.htmlspecialchars($positions[po_name]).'</option>';
 				}
 			}
 		}

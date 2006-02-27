@@ -425,7 +425,7 @@ function init() {
 			} else {
 				$selVal = '';
 			}
-			$menuItems[]='<option label="'.htmlspecialchars($categories[title]).'" value="'.htmlspecialchars($categories[uid]).'"'.$selVal.'">'.htmlspecialchars($categories[title]).'</option>';
+			$menuItems[]='<option label="'.htmlspecialchars($categories[title]).'" value="'.htmlspecialchars($categories[uid]).'"'.$selVal.'>'.htmlspecialchars($categories[title]).'</option>';
 		}
 
 		$PItemName = "&PItemName=".$this->pArr[0];

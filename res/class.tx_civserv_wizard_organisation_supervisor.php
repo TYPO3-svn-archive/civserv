@@ -457,7 +457,7 @@ function init() {
 					} else {
 						$selVal = '';
 					}
-					$menuItems[]='<option label="'.htmlspecialchars($employee[em_name]).', '.htmlspecialchars($employee[em_firstname]).'" value="'.htmlspecialchars($employee[uid]).'"'.$selVal.'">'.htmlspecialchars($employee[em_name]).', '.htmlspecialchars($employee[em_firstname]).'</option>';
+					$menuItems[]='<option label="'.htmlspecialchars($employee[em_name]).', '.htmlspecialchars($employee[em_firstname]).'" value="'.htmlspecialchars($employee[uid]).'"'.$selVal.'>'.htmlspecialchars($employee[em_name]).', '.htmlspecialchars($employee[em_firstname]).'</option>';
 				}
 			}
 		}

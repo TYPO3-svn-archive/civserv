@@ -97,7 +97,6 @@ function init() {
 
 			// Gets parameters out of the p-array.
 		$this->P = t3lib_div::_GP('P');
-		debug($this->P, 'gib mir ein P!');
 
 
 			// Find "mode"
@@ -109,7 +108,6 @@ function init() {
 		if ($this->P['itemName']) {
 			$this->pArr = array();
 			$this->pArr = explode('|',$this->P['itemName']);
-			debug($this->pArr, 'wo sind die pipes?');
 			$this->service_pid = $this->P['pid'];	// Gets parent id of service from p-array.
 		} else {
 			$this->pArr = array();
@@ -117,7 +115,6 @@ function init() {
 			$this->service_pid = t3lib_div::_GP('service_pid');	// Gets parent id of service from url.
 		}
 		$this->PItemName = "&PItemName=".$this->pArr[0];
-		debug($this->pArr, 'das Parameter-Array am Ende!');
 
 			// In case the parent id of service is still not set, try to
 			// get it out of the database. The service_pid is important because with it the uid of the mandant can be retrievied.
@@ -461,13 +458,9 @@ function init() {
 					} else {
 						$selVal = '';
 					}
-						#$menuItems[]='<option label="'.htmlspecialchars($organisations[or_name]).'" value="'.htmlspecialchars($organisations[uid]).'"'.$selVal.'">'.htmlspecialchars($organisations[or_name]).'</option>';
-						
-						$withCode='<option label="'.htmlspecialchars($organisations[or_name]).'" value="'.htmlspecialchars($organisations[uid]).'"'.$selVal.'>'.htmlspecialchars($organisations[or_code].' '.$organisations[or_name]).'</option>';
-						$withoutCode='<option label="'.htmlspecialchars($organisations[or_name]).'" value="'.htmlspecialchars($organisations[uid]).'"'.$selVal.'>'.htmlspecialchars($organisations[or_name].' ('.$organisations[or_code].')').'</option>';
-						$menuItems[]=$letter=="other" || ($letter=="search" && intval($this->searchitem)>0)?$withCode:$withoutCode;
-						
-						#$menuItems[]='<option label="'.htmlspecialchars($organisations[or_name]).'" value="'.htmlspecialchars($organisations[uid]).'"'.$selVal.'">'.htmlspecialchars($organisations[or_code].' '.$organisations[or_name]).'</option>';
+					$withCode='<option label="'.htmlspecialchars($organisations[or_name]).'" value="'.htmlspecialchars($organisations[uid]).'"'.$selVal.'>'.htmlspecialchars($organisations[or_code].' '.$organisations[or_name]).'</option>';
+					$withoutCode='<option label="'.htmlspecialchars($organisations[or_name]).'" value="'.htmlspecialchars($organisations[uid]).'"'.$selVal.'>'.htmlspecialchars($organisations[or_name].' ('.$organisations[or_code].')').'</option>';
+					$menuItems[]=$letter=="other" || ($letter=="search" && intval($this->searchitem)>0)?$withCode:$withoutCode;
 				}
 			}
 		}

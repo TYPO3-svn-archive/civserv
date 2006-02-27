@@ -432,7 +432,7 @@ function init() {
 				} else {
 					$selVal = '';
 				}
-				$menuItems[]='<option label="'.htmlspecialchars($searchwords[sw_search_word]).'" value="'.htmlspecialchars($searchwords[uid]).'"'.$selVal.'">'.htmlspecialchars($searchwords[sw_search_word]).'</option>';
+				$menuItems[]='<option label="'.htmlspecialchars($searchwords[sw_search_word]).'" value="'.htmlspecialchars($searchwords[uid]).'"'.$selVal.'>'.htmlspecialchars($searchwords[sw_search_word]).'</option>';
 			}
 		}
 		$PItemName = "&PItemName=".$this->pArr[0];

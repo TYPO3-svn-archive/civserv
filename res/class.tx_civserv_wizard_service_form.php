@@ -459,7 +459,7 @@ function init() {
 					} else {
 						$selVal = '';
 					}
-					$menuItems[]='<option label="'.htmlspecialchars($formulars[fo_name]).'" value="'.htmlspecialchars($formulars[uid]).'"'.$selVal.'">'.htmlspecialchars($formulars[fo_name]).'</option>';
+					$menuItems[]='<option label="'.htmlspecialchars($formulars[fo_name]).'" value="'.htmlspecialchars($formulars[uid]).'"'.$selVal.'>'.htmlspecialchars($formulars[fo_name]).'</option>';
 				}
 			}
 		}
