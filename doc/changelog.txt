@@ -1,0 +1,6 @@
+2006-27-02 [civserv version > 3.1.11]
+- added wizard for service-organisation-relations, displays organisation-names or organisation codes, has to activated via tca.php, look at service-position - array for an example
+
+
+
+
