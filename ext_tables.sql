@@ -588,6 +588,7 @@ CREATE TABLE tx_civserv_organisation (
 	hidden tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	fe_group int(11) DEFAULT '0' NOT NULL,
 	or_number tinytext NOT NULL,
+	or_code tinytext NOT NULL,
 	or_name tinytext NOT NULL,
 	or_synonym1 tinytext NOT NULL,
 	or_synonym2 tinytext NOT NULL,
