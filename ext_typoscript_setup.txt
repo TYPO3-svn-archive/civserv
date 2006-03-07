@@ -29,6 +29,8 @@ plugin.tx_civserv_pi1 {
 	folder_organisations = {$folder_organisations}
 	folder_employees = {$folder_employees}
 	folder_global_images = {$folder_global_images}
+	german_flag = {$german_flag}
+	english_flag = {$english_flag}
 	
 	recursive = {$recursive}
 

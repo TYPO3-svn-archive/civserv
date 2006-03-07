@@ -379,6 +379,40 @@ table.right {
 	color: #FFFFFF;
 }
 
+#leftmenu .german
+{
+	background: url(../images/bgs/d.gif); 
+	background-repeat: no-repeat;
+	background-position: 45px 5px;
+}
+
+#leftmenu .german a:hover
+{
+	background: url(../images/bgs/d.gif); 
+	background-repeat: no-repeat;
+	background-position: 45px 5px;
+	color: #FFFFFF;
+	background-color: #375FFF;
+}
+
+
+#leftmenu .english
+{
+	background: url(../images/bgs/gb.gif);
+	background-repeat: no-repeat;
+	background-position: 45px 5px;
+}
+
+#leftmenu .english a:hover
+{
+	background: url(../images/bgs/gb.gif); 
+	background-repeat: no-repeat;
+	background-position: 45px 5px;
+	color: #FFFFFF;
+	background-color: #375FFF;
+}
+
+
 /* ---------------------------------------------- */
 /* ------------- End main navigation ------------ */
 /* ---------------------------------------------- */

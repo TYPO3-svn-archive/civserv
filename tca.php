@@ -561,6 +561,33 @@ $TCA["tx_civserv_service"] = Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_organisation",
 			"config" => Array (
+				"type" => "group",
+				"internal_type" => "db",
+				"size" => 5,
+				"allowed" => "tx_civserv_organisation",
+				"show_thumbs" => 0,
+				"minitems" => 0,
+				"maxitems" => 50,
+				"MM" => "tx_civserv_service_sv_organisation_mm",
+				 "wizards" => Array(
+					"_PADDING" => 2,
+					"_VERTICAL" => 1,
+					'serviceform' => Array(
+							'type' => 'popup',
+					        'title' => 'LLL:EXT:civserv/res/locallang_wizard.php:tx_civserv_wizard_service_organisation.title',
+       						'script' => 'EXT:civserv/res/class.tx_civserv_wizard_service_organisation.php',
+							'icon' => 'list.gif',
+							'JSopenParams' => 'height=350,width=600,status=0,menubar=0,resizable=1,location=0',
+					),
+				),
+			)
+		),
+		/* 
+		// don't like the wizard? switch back to old times by uncommenting this and putting the above into comments 
+		"sv_organisation" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_organisation",
+			"config" => Array (
 				"type" => "select",
 				"foreign_table" => "tx_civserv_organisation",
 				"foreign_table_where" => "ORDER BY tx_civserv_organisation.or_name",
@@ -571,6 +598,7 @@ $TCA["tx_civserv_service"] = Array (
 				"MM" => "tx_civserv_service_sv_organisation_mm",
 			)
 		),
+		*/
 		"sv_navigation" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_navigation",
@@ -1818,6 +1846,15 @@ $TCA["tx_civserv_organisation"] = Array (
 				),
 			)
 		),
+		"or_show_supervisor" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_organisation.or_show_supervisor",
+			"displayCond" => "FIELD:or_supervisor:REQ:true",
+			"config" => Array (
+				"type" => "check",
+				"default" => "1"
+			)
+		),
 		"or_hours" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_organisation.or_hours",
@@ -1913,6 +1950,15 @@ $TCA["tx_civserv_organisation"] = Array (
 				),
 			)
 		),
+		"or_addlocation" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_organisation.or_addlocation",
+			"config" => Array (
+				"type" => "input",
+				"size" => "30",
+				"max" => "255",
+			)
+		),
 		"or_structure" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_organisation.or_structure",
@@ -1958,7 +2004,7 @@ $TCA["tx_civserv_organisation"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, or_number, or_code, or_name, or_synonym1, or_synonym2, or_synonym3, or_supervisor, or_hours, or_telephone, or_fax, or_email, or_image, or_infopage, or_addinfo;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], or_structure, or_building")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, or_number, or_code, or_name, or_synonym1, or_synonym2, or_synonym3, or_supervisor, or_show_supervisor, or_hours, or_telephone, or_fax, or_email, or_image, or_infopage, or_addinfo, or_addlocation;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], or_structure, or_building")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")
@@ -3272,6 +3318,16 @@ $TCA["tx_civserv_conf_mandant"] = Array (
 				"eval" => "required",
 			)
 		),
+		"cm_alternative_language_folder_uid" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_conf_mandant.cm_alternative_language_folder_uid",
+			"config" => Array (
+				"type" => "input",
+				"size" => "30",
+				"max" => "255",
+				"eval" => "required",
+			)
+		),
 		"cm_model_service_temp_uid" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_conf_mandant.cm_model_service_temp_uid",
@@ -3295,6 +3351,16 @@ $TCA["tx_civserv_conf_mandant"] = Array (
 		"cm_search_uid" => Array (
 					"exclude" => 1,
 					"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_conf_mandant.cm_search_uid",
+					"config" => Array (
+						"type" => "input",
+						"size" => "30",
+						"max" => "255",
+						"eval" => "required",
+					)
+		),
+		"cm_alternative_page_uid" => Array (
+					"exclude" => 1,
+					"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_conf_mandant.cm_alternative_page_uid",
 					"config" => Array (
 						"type" => "input",
 						"size" => "30",
@@ -3334,7 +3400,7 @@ $TCA["tx_civserv_conf_mandant"] = Array (
 		),		
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, cm_community_name, cm_community_id, cm_uid, cm_circumstance_uid, cm_usergroup_uid, cm_organisation_uid, cm_service_folder_uid, cm_external_service_folder_uid, cm_model_service_temp_uid, cm_page_uid, cm_search_uid, cm_target_email, cm_employeesearch, cm_community_type")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, cm_community_name, cm_community_id, cm_uid, cm_circumstance_uid, cm_usergroup_uid, cm_organisation_uid, cm_service_folder_uid, cm_alternative_language_folder_uid, cm_external_service_folder_uid, cm_model_service_temp_uid, cm_page_uid, cm_search_uid, cm_alternative_page_uid, cm_target_email, cm_employeesearch, cm_community_type")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")

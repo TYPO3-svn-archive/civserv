@@ -383,7 +383,7 @@ CREATE TABLE tx_civserv_building (
 	bl_fax tinytext NOT NULL,
 	bl_email tinytext NOT NULL,
 	bl_floor int(11) unsigned DEFAULT '0' NOT NULL,
-	bl_exid tinytext NOT NULL,
+	bl_exid int(11) unsigned DEFAULT '0' NOT NULL,
 	
 	PRIMARY KEY (uid),
 	KEY parent (pid)
@@ -410,7 +410,7 @@ CREATE TABLE tx_civserv_room (
 	ro_telephone tinytext NOT NULL,
 	ro_fax tinytext NOT NULL,
 	rbf_building_bl_floor int(11) unsigned DEFAULT '0' NOT NULL,
-	ro_exid tinytext NOT NULL,
+	ro_exid int(11) unsigned DEFAULT '0' NOT NULL,
 	
 	PRIMARY KEY (uid),
 	KEY parent (pid)
@@ -594,6 +594,7 @@ CREATE TABLE tx_civserv_organisation (
 	or_synonym2 tinytext NOT NULL,
 	or_synonym3 tinytext NOT NULL,	
 	or_supervisor int(11) unsigned DEFAULT '0' NOT NULL,
+	or_show_supervisor tinyint(3) unsigned DEFAULT '0' NOT NULL,
 	or_hours int(11) unsigned DEFAULT '0' NOT NULL,
 	or_telephone tinytext NOT NULL,
 	or_fax tinytext NOT NULL,
@@ -601,9 +602,10 @@ CREATE TABLE tx_civserv_organisation (
 	or_image blob NOT NULL,
 	or_infopage tinytext NOT NULL,
 	or_addinfo text NOT NULL,
+	or_addlocation tinytext NOT NULL,
 	or_structure int(11) unsigned DEFAULT '0' NOT NULL,
 	or_building int(11) unsigned DEFAULT '0' NOT NULL,
-	or_exid tinytext NOT NULL,
+	or_exid int(11) unsigned DEFAULT '0' NOT NULL,
 	
 	PRIMARY KEY (uid),
 	KEY parent (pid)
@@ -772,10 +774,12 @@ CREATE TABLE tx_civserv_conf_mandant (
     cm_usergroup_uid int(11) unsigned DEFAULT '0' NOT NULL,
     cm_organisation_uid int(11) unsigned DEFAULT '0' NOT NULL,
     cm_service_folder_uid int(11) unsigned DEFAULT '0' NOT NULL,
+	cm_alternative_language_folder_uid int(11) unsigned DEFAULT '0' NOT NULL,
     cm_model_service_temp_uid int(11) unsigned DEFAULT '0' NOT NULL,
     cm_external_service_folder_uid int(11) unsigned DEFAULT '0' NOT NULL,
     cm_page_uid int(11) unsigned DEFAULT '0' NOT NULL,
     cm_search_uid int(11) unsigned DEFAULT '0' NOT NULL,
+	cm_alternative_page_uid int(11) unsigned DEFAULT '0' NOT NULL,
     cm_community_type int(11) unsigned DEFAULT '0' NOT NULL,
     cm_target_email tinytext NOT NULL,
 	cm_employeesearch tinyint(3) unsigned DEFAULT '0' NOT NULL,

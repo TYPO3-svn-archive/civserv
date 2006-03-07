@@ -181,6 +181,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$_SESSION['usergroup_uid'] = $community_data[0]['cm_usergroup_uid'];
 					$_SESSION['organisation_uid'] = $community_data[0]['cm_organisation_uid'];
 					$_SESSION['employee_search'] = $community_data[0]['cm_employeesearch'];
+					$_SESSION['alternative_language_folder_uid'] = $community_data[0]['cm_alternative_language_folder_uid'];
+					$_SESSION['alternative_page_uid'] = $community_data[0]['cm_alternative_page_uid'];
 					break;
 				default:
 					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi1_error.community_id_twice','The current system seems to be misconfigured. The given community-id exists at least twice in the configuration table.');
@@ -197,6 +199,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$this->community['usergroup_uid'] = $_SESSION['usergroup_uid'];
 			$this->community['organisation_uid'] = $_SESSION['organisation_uid'];
 			$this->community['employee_search'] = $_SESSION['employee_search'];
+			$this->community['alternative_language_folder_uid'] = $_SESSION['alternative_language_folder_uid'];
+			$this->community['alternative_page_uid'] = $_SESSION['alternative_page_uid'];
 
 			// Set piVars[community_id] because it could only be registered in the session and not in the URL
 			$this->piVars[community_id] = $_SESSION['community_id'];
@@ -509,6 +513,18 @@ class tx_civserv_pi1 extends tslib_pibase {
 							 AND tx_civserv_external_service.pid IN (' . $this->community[pidlist] . ')';
 				$query .= 'UNION ALL ';
 			}
+			
+			// manipulate pidlist in order to discriminate between services in the common language and services in an alternative language:
+			if($GLOBALS["TSFE"]->id == $this->community['alternative_page_uid']){
+				$this->community[pidlist]=$this->community['alternative_language_folder_uid'];
+			}else{
+				$toggled = array_flip(explode(",",$this->community[pidlist]));
+				$key = $this->community['alternative_language_folder_uid'];
+				unset($toggled[$key]);
+				$this->community[pidlist]=implode(",",array_flip($toggled));
+			}
+
+			
 
 			// services by realnames
 			$query .=	'SELECT ' . ($count?'count(*) ':'tx_civserv_service.uid, sv_name AS name, sv_name AS realname ') . '
@@ -1411,7 +1427,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		if ($mode == 'organisation_tree') {
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-								'or1.uid as uid, or1.or_name as name',
+								'or1.uid as uid, or1.or_code as code, or1.or_name as name',
 								'tx_civserv_organisation as or1,tx_civserv_organisation_or_structure_mm as ormm,tx_civserv_organisation as or2',
 								'or1.deleted=0 AND or1.hidden=0 AND or2.deleted=0 AND or2.hidden=0
 								 AND or1.uid = ormm.uid_local AND or2.uid = ormm.uid_foreign
@@ -1436,7 +1452,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						$link_mode = 'organisation';
 						break;
 				}
-				$add_content .= '    <li>&nbsp;<a href="' . htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => $link_mode,id => $row['uid']),1,1)) . '">' . $row["name"] . '</a>';
+				$add_content .= '    <li>&nbsp;<a href="' . htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => $link_mode,id => $row['uid']),1,1)) . '">'.$row["code"].' '.$row["name"].'</a>';
 				$this->makeTree($uid,$add_content,$mode);
 				$add_content .= "</li>\n";
 			}
@@ -2063,7 +2079,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Standard query for organisation details
 		$res_common = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'uid, or_name,or_telephone,or_fax,or_email,or_image,or_infopage,or_addinfo',
+						'uid, or_name,or_telephone,or_fax,or_email,or_image,or_infopage,or_addinfo,or_show_supervisor',
 						'tx_civserv_organisation',
 						'deleted=0 AND hidden=0 AND uid='.$uid,
 						'',
@@ -2101,7 +2117,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Query for building and postal address
 		$res_building = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-						'bl_mail_street, bl_mail_pob, bl_mail_postcode, bl_mail_city, bl_building_street, bl_building_postcode, bl_building_city, bl_pubtrans_stop, bl_pubtrans_url',
+						'bl_mail_street, bl_mail_pob, bl_mail_postcode, bl_mail_city, bl_name, bl_building_street, bl_building_postcode, bl_building_city, bl_pubtrans_stop, bl_pubtrans_url',
 						'tx_civserv_organisation',
 						'tx_civserv_organisation_or_building_mm',
 						'tx_civserv_building',
@@ -2126,7 +2142,34 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'');
 
 		$organisation_rows = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_common);
-		$organisation_building = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_building);
+		
+		// query for sub_organisations, 
+		// they will be exposed somewhere in the organisation_detail page
+		$res_sub_org = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'uid, or_name',
+						'tx_civserv_organisation, tx_civserv_organisation_or_structure_mm',
+						'tx_civserv_organisation_or_structure_mm.uid_local = tx_civserv_organisation.uid and
+						 tx_civserv_organisation_or_structure_mm.uid_foreign = '.$organisation_rows['uid'].' and
+						 !tx_civserv_organisation.deleted and
+						 !tx_civserv_organisation.hidden',
+						'',
+						'tx_civserv_organisation.sorting', //Order by
+						'');
+
+		$row_count_sub_orgs = 0;
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_sub_org))	{
+			$sub_organisations[$row_count_sub_orgs]['link'] =  htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'organisation',id => $row['uid']),1,1));
+			$sub_organisations[$row_count_sub_orgs]['name'] = $row['or_name'];
+			$row_count_sub_orgs++;
+		}
+		$smartyOrganisation->assign('sub_organisations',$sub_organisations);//!!!!
+
+		$organisation_buildings= array();
+		$orga_bl_count=0;
+		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_building)){
+			$organisation_buildings[] = $row;
+			$orga_bl_count++;
+		}
 
 		$pidListAll = $this->community['pidlist'];				//Get pidlist for current mandant
 		$pidListAll = t3lib_div::intExplode(',',$pidListAll);	//Parse pidlist and store int values in array
@@ -2139,6 +2182,48 @@ class tx_civserv_pi1 extends tslib_pibase {
 		} else {
 			$organisation_supervisor = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_supervisor);
 			$pos_id = '';
+		}
+		
+		//if there is more than one building assigned to the organisation, try to single out the one where the supervisor 'lives'
+		//in order to display that building to the citizens as a point of conctact....
+		if($pos_id > '' && $orga_bl_count > 1){
+			$res_bl_supervisor = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'bl_mail_street, 
+						 bl_mail_pob, 
+						 bl_mail_postcode, 
+						 bl_mail_city, 
+						 bl_name, 
+						 bl_building_street, 
+						 bl_building_postcode, 
+						 bl_building_city, 
+						 bl_pubtrans_stop, 
+						 bl_pubtrans_url',
+					'tx_civserv_organisation, 
+						tx_civserv_organisation_or_building_mm, 
+						tx_civserv_building,
+						tx_civserv_employee_em_position_mm,
+						tx_civserv_room,
+						tx_civserv_building_bl_floor_mm',
+					'tx_civserv_organisation_or_building_mm.uid_local = tx_civserv_organisation.uid AND
+						tx_civserv_organisation_or_building_mm.uid_foreign = tx_civserv_building.uid AND
+						!tx_civserv_organisation.deleted AND 
+						!tx_civserv_organisation.hidden AND 
+						!tx_civserv_building.deleted AND 
+						!tx_civserv_building.hidden AND 
+						!tx_civserv_employee_em_position_mm.deleted AND 
+						!tx_civserv_employee_em_position_mm.hidden AND 
+						tx_civserv_organisation.or_supervisor = '.$organisation_supervisor['uid'].' AND
+						tx_civserv_employee_em_position_mm.uid_foreign = '.$pos_id.' AND
+						tx_civserv_employee_em_position_mm.ep_room = tx_civserv_room.uid AND
+						tx_civserv_room.rbf_building_bl_floor =  tx_civserv_building_bl_floor_mm.uid AND
+						tx_civserv_building.uid = tx_civserv_building_bl_floor_mm.uid_local',
+					'',
+					'',
+					'');
+			if($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_bl_supervisor)){ //there must not be more than 1 buildings in which the organisation-supervisor resides!
+				$organisation_buildings[0] = $row;
+				$orga_bl_count=1;
+			}
 		}
 
 		//Assign organisation office hours
@@ -2164,6 +2249,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Assign standard data
 		$smartyOrganisation->assign('or_name',$organisation_rows[or_name]);
+		$smartyOrganisation->assign('or_addinfo',$organisation_rows[or_addinfo]);
 		$smartyOrganisation->assign('phone',$organisation_rows[or_telephone]);
 		$smartyOrganisation->assign('fax',$organisation_rows[or_fax]);
 		$smartyOrganisation->assign('email_code',$this->cObj->typoLink($organisation_rows[or_email],array(parameter => $organisation_rows[or_email],ATagParams => 'class="email"'))); 	// use typolink, because of the possibility to use encrypted email-adresses for spam-protection
@@ -2171,25 +2257,29 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyOrganisation->assign('image',$imageCode);
 
 		//Assign employee data
-		$smartyOrganisation->assign('su_title',$organisation_supervisor[em_title]);
-		$smartyOrganisation->assign('su_firstname',$organisation_supervisor[em_firstname]);
-		$smartyOrganisation->assign('su_name',$organisation_supervisor[em_name]);
-		if (intval($organisation_supervisor[em_datasec]) == 1) {
-			if ($pos_id != '') {
-				$smartyOrganisation->assign('su_link',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $organisation_supervisor[uid],pos_id => $pos_id),1,1)));
-			} else {
-				$smartyOrganisation->assign('su_link',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $organisation_supervisor[uid]),1,1)));
+		if ($organisation_rows[or_show_supervisor]) {
+			$smartyOrganisation->assign('su_title',$organisation_supervisor[em_title]);
+			$smartyOrganisation->assign('su_firstname',$organisation_supervisor[em_firstname]);
+			$smartyOrganisation->assign('su_name',$organisation_supervisor[em_name]);
+			if (intval($organisation_supervisor[em_datasec]) == 1) {
+				if ($pos_id != '') {
+					$smartyOrganisation->assign('su_link',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $organisation_supervisor[uid],pos_id => $pos_id),1,1)));
+				} else {
+					$smartyOrganisation->assign('su_link',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $organisation_supervisor[uid]),1,1)));
+				}
 			}
 		}
 
 		//Assign addresses
-		$smartyOrganisation->assign('building_street',$organisation_building[bl_building_street]);
-		$smartyOrganisation->assign('building_postcode',$organisation_building[bl_building_postcode]);
-		$smartyOrganisation->assign('building_city',$organisation_building[bl_building_city]);
-		$smartyOrganisation->assign('mail_street',$organisation_building[bl_mail_street]);
-		$smartyOrganisation->assign('mail_pob',$organisation_building[bl_mail_pob]);
-		$smartyOrganisation->assign('mail_postcode',$organisation_building[bl_mail_postcode]);
-		$smartyOrganisation->assign('mail_city',$organisation_building[bl_mail_city]);
+		$smartyOrganisation->assign('bl_available',$bl_available=$orga_bl_count==1? 1:0);
+		$smartyOrganisation->assign('building_name',$organisation_buildings[0][bl_name]);
+		$smartyOrganisation->assign('building_street',$organisation_buildings[0][bl_building_street]);
+		$smartyOrganisation->assign('building_postcode',$organisation_buildings[0][bl_building_postcode]);
+		$smartyOrganisation->assign('building_city',$organisation_buildings[0][bl_building_city]);
+		$smartyOrganisation->assign('mail_street',$organisation_buildings[0][bl_mail_street]);
+		$smartyOrganisation->assign('mail_pob',$organisation_buildings[0][bl_mail_pob]);
+		$smartyOrganisation->assign('mail_postcode',$organisation_buildings[0][bl_mail_postcode]);
+		$smartyOrganisation->assign('mail_city',$organisation_buildings[0][bl_mail_city]);
 
 		//Assign public transport information
 		$smartyOrganisation->assign('pubtrans_stop',$organisation_building[bl_pubtrans_stop]);
@@ -3266,6 +3356,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 							'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.fulltext_search','Fulltext Search'),
 							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(),0,1,$conf['fulltext_search_id']),
 							'ITEM_STATE' => ($GLOBALS['TSFE']->id==$conf['fulltext_search_id'])?'ACT':'NO');
+		}
+		// get id for alternative language from TSconfig
+		if (intval($conf['alternative_page_id']) > 0) {
+			$menuArray[] = array(
+							'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.alternative_language','Deutsche Inhalte'),
+							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'service_list'),0,1,$conf['alternative_page_id']),
+							'ITEM_STATE' => ($GLOBALS['TSFE']->id==$conf['alternative_page_id'])?'ACT':'NO');
 		}
 		return $menuArray;
 	}

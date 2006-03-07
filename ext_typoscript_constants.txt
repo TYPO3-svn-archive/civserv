@@ -28,6 +28,10 @@ folder_services = fileadmin/civserv/
 folder_organisations = fileadmin/civserv/
 folder_employees = fileadmin/civserv/
 folder_global_images = typo3conf/ext/civserv/templates/images/
+german_flag = typo3conf/ext/civserv/templates/images/bgs/d.gif
+english_flag = typo3conf/ext/civserv/templates/images/bgs/gb.gif
+
+
 
 # Empty community_id
 community_id = 
@@ -132,3 +136,4 @@ content.RTE_compliant = 1
 # Empty definitions for the "makemenuarray"-Menu
 pageid = 
 fulltext_search_id = 
+alternative_page_id =

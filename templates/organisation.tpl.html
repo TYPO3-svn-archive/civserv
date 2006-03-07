@@ -7,49 +7,46 @@
 			{$image}
 		</span>
 	<!--{/if}-->
-
-	<!--{if $mail_street != "" OR $mail_pob != "" OR $mail_postcode != "" OR $mail_city != ""}-->
-		<strong>{$postal_address_label}:</strong><br />
-		{$mail_street}<br />
-		{$postbox_label}&nbsp;{$mail_pob}<br />
-		{$mail_postcode}&nbsp;{$mail_city}<br /><br />
-	<!--{/if}-->
-
-	<!--{if $building_street != "" OR $building_postcode != "" OR $building_city != ""}-->
-		<strong>{$building_address_label}:</strong><br/>
-		{$building_street}<br/>
-		{$building_postcode}&nbsp;{$building_city}<br /><br />
-	<!--{/if}-->
-
-	<!--{if $phone != ""}-->
-		<strong>{$phone_label}:</strong> {$phone}<br />
-	<!--{/if}-->
-
-	<!--{if $fax != ""}-->
-		<strong>{$fax_label}:</strong> {$fax}<br />
-	<!--{/if}-->
-	<br />
-	
-	<!--{if $email_code != ""}-->
-		<strong>{$email_label}:</strong> {$email_code}<br/>
-		<a href="{$email_form_url}" class="link">{$web_email_label}</a><br /><br />
-	<!--{/if}-->
-
-	
-	<!--{if $pubtrans_stop != ""}-->
-		<strong>{$pub_trans_info_label}:</strong>
-		<!--{if $pubtrans_link != ""}-->
-			{$pub_trans_stop_label}:&nbsp;<a href="{$pubtrans_link}">{$pubtrans_stop}</a><br /><br />
-		<!--{else}-->
-			{$pub_trans_stop_label}:&nbsp;{$pubtrans_stop}<br /><br />
+	<!--{if $bl_available == 1}-->
+		<em>{$building_name}</em><br />
+		<!--{if $mail_street != "" OR $mail_pob != "" OR $mail_postcode != "" OR $mail_city != ""}-->
+			<strong>{$postal_address_label}:</strong><br />
+			{$mail_street}<br />
+			{$postbox_label}&nbsp;{$mail_pob}<br />
+			{$mail_postcode}&nbsp;{$mail_city}<br /><br />
+		<!--{/if}-->
+		<!--{if $building_street != "" OR $building_postcode != "" OR $building_city != ""}-->
+			<strong>{$building_address_label}:</strong><br/>
+			{$building_street}<br/>
+			{$building_postcode}&nbsp;{$building_city}<br /><br />
+		<!--{/if}-->
+		<!--{if $phone != ""}-->
+			<strong>{$phone_label}:</strong> {$phone}<br />
+		<!--{/if}-->
+		<!--{if $fax != ""}-->
+			<strong>{$fax_label}:</strong> {$fax}<br />
+		<!--{/if}-->
+		<br />
+		<!--{if $email_code != ""}-->
+			<strong>{$email_label}:</strong> {$email_code}<br/>
+			<a href="{$email_form_url}" class="link">{$web_email_label}</a><br /><br />
+		<!--{/if}-->
+		<!--{if $pubtrans_stop != ""}-->
+			<strong>{$pub_trans_info_label}:</strong>
+			<!--{if $pubtrans_link != ""}-->
+				{$pub_trans_stop_label}:&nbsp;<a href="{$pubtrans_link}">{$pubtrans_stop}</a><br /><br />
+			<!--{else}-->
+				{$pub_trans_stop_label}:&nbsp;{$pubtrans_stop}<br /><br />
+			<!--{/if}-->
 		<!--{/if}-->
 	<!--{/if}-->
-
+	<!--{if $or_addinfo != ""}-->
+		<div>{$or_addinfo}</div>
+	<!--{/if}-->	
 	<!--{if $infopage != ""}-->
 		<strong>{$infopage_label}:</strong>
-		<a href="{$infopage}" class="link">Link&nbsp;</a><br /><br />
+		<a href="{$infopage}" class="link">{$infopage}&nbsp;</a><br /><br />
 	<!--{/if}-->
-
 	<!--{if $su_name != ""}-->
 		<strong>{$supervisor_label}:</strong>
 		<!--{if $su_link != ""}-->
@@ -72,40 +69,50 @@
 		<!--{/if}-->
 		<br />
 	<!--{/if}-->
-
-	<!--{if $office_hours != ""}-->
-		<table summary="{$office_hours_summary}">
-			<caption>{$office_hours_label}:</caption>
-			<thead>
-				<tr>
-					<th>{$weekday}</th>
-					<th>{$morning}</th>
-					<th>{$afternoon}</th>
-				</tr>
-			</thead>
-			<tbody>
-				<!--{foreach from=$office_hours item=hours }-->
+	<!--{if $bl_available == 1}-->
+		<!--{if $office_hours != ""}-->
+			<table summary="{$office_hours_summary}">
+				<caption>{$office_hours_label}:</caption>
+				<thead>
 					<tr>
-						<td>{$hours.weekday}</td>
-						<!--{if $hours.freestyle > ''}-->
-							<td colspan="2">{$hours.freestyle}</td>
-						<!--{else}-->
-							<!--{if $hours.end_morning == "0" AND $hours.start_afternoon == "0"}-->
-								<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
-							<!--{else}-->
-								<!--{if $hours.start_morning != "0" AND $hours.end_morning != "0"}-->
-									<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_morning}</td>
-								<!--{/if}-->
-								<!--{if $hours.start_afternoon != "0" AND $hours.end_afternoon != "0"}-->
-									<td colspan="2" style="text-align:right">{$hours.start_afternoon}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
-								<!--{/if}-->
-							<!--{/if}-->
-						<!--{/if}-->	
+						<th>{$weekday}</th>
+						<th>{$morning}</th>
+						<th>{$afternoon}</th>
 					</tr>
-				<!--{/foreach}-->
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					<!--{foreach from=$office_hours item=hours }-->
+						<tr>
+							<td>{$hours.weekday}</td>
+							<!--{if $hours.freestyle > ''}-->
+								<td colspan="2">{$hours.freestyle}</td>
+							<!--{else}-->
+								<!--{if $hours.end_morning == "0" AND $hours.start_afternoon == "0"}-->
+									<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+								<!--{else}-->
+									<!--{if $hours.start_morning != "0" AND $hours.end_morning != "0"}-->
+										<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_morning}</td>
+									<!--{/if}-->
+									<!--{if $hours.start_afternoon != "0" AND $hours.end_afternoon != "0"}-->
+										<td colspan="2" style="text-align:right">{$hours.start_afternoon}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+									<!--{/if}-->
+								<!--{/if}-->
+							<!--{/if}-->	
+						</tr>
+					<!--{/foreach}-->
+				</tbody>
+			</table>
+		<!--{/if}-->
 	<!--{/if}-->
-
+	<!--{if $sub_organisations != ""}-->
+		<div id="linklist">
+		<strong><br /><br /><br />(das muss zweisprachig werden)...oder besuchen Sie uns hier:</strong><br /><br />
+			<ul class="level1">
+				<!--{foreach from=$sub_organisations item=organisation }-->
+					<li><a href="{$organisation.link}">{$organisation.name}</a></li>
+				<!--{/foreach}-->			
+			</ul><!-- level1 end -->
+		</div>
+	<!--{/if}-->
 </div>
 <!--TYPO3SEARCH_end-->
