@@ -490,7 +490,7 @@ function init() {
 	  */
 	 	
 	function make_clean($value) {
-		$legal_chars = "%[^0-9a-zA-ZäöüÄÖÜß ]%"; //allow letters, numbers & space
+		$legal_chars = "%[^0-9a-zA-ZäöüÄÖÜß. ]%"; //allow letters, numbers & space
 		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
 		return $new_value;
 	}	

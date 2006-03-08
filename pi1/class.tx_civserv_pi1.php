@@ -1512,7 +1512,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 	  OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_form.starttime) AND (tx_civserv_form.endtime=0))
 						 	  OR (tx_civserv_form.starttime=0 AND tx_civserv_form.endtime=0) )',
 						'',
-						'name');	//ORDER BY
+						'tx_civserv_service_sv_form_mm.sorting');	//ORDER BY
+						#'name');	//ORDER BY
 
 		//Query for associated organisation units
 		$res_orga = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
@@ -1523,7 +1524,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'AND tx_civserv_service.uid = ' . $uid . '
 		 				 AND tx_civserv_organisation.hidden=0 AND NOT tx_civserv_organisation.deleted',
 						'',
-						'name');	//ORDER BY
+						'tx_civserv_service_sv_organisation_mm.sorting');	//ORDER BY
+						#'name');	//ORDER BY
 
 		//Query for associated employees
 		$res_employees = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -1563,7 +1565,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 								  ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > similar.starttime) AND (similar.endtime=0)) OR
 								  (similar.starttime=0 AND similar.endtime=0) )',
 						'',
-						'similar.sv_name');	//ORDER BY
+						'mm.sorting');	//ORDER BY
+						#'similar.sv_name');	//ORDER BY
 
 		//Retrieve all uid's of transaction forms from transaction configuration table
 		$res_transactions = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -2287,6 +2290,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Assign template labels
 		$smartyOrganisation->assign('organisation_label',$this->pi_getLL('tx_civserv_pi1_organisation.organisation','Organisation'));
+		$smartyOrganisation->assign('sub_org_label',$this->pi_getLL('tx_civserv_pi1_organisation.sub_org_label','You can also visit us here:'));
 		$smartyOrganisation->assign('postal_address_label',$this->pi_getLL('tx_civserv_pi1_organisation.postal_address','Postal address'));
 		$smartyOrganisation->assign('building_address_label',$this->pi_getLL('tx_civserv_pi1_organisation.building_address','Building address'));
 		$smartyOrganisation->assign('phone_label',$this->pi_getLL('tx_civserv_pi1_organisation.phone','Phone'));

@@ -106,7 +106,7 @@
 	<!--{/if}-->
 	<!--{if $sub_organisations != ""}-->
 		<div id="linklist">
-		<strong><br /><br /><br />(das muss zweisprachig werden)...oder besuchen Sie uns hier:</strong><br /><br />
+		<strong><br /><br /><br />{$sub_org_label}</strong><br /><br />
 			<ul class="level1">
 				<!--{foreach from=$sub_organisations item=organisation }-->
 					<li><a href="{$organisation.link}">{$organisation.name}</a></li>
