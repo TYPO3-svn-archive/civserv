@@ -2165,7 +2165,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$sub_organisations[$row_count_sub_orgs]['name'] = $row['or_name'];
 			$row_count_sub_orgs++;
 		}
-		$smartyOrganisation->assign('sub_organisations',$sub_organisations);//!!!!
+		#debug($this->conf, 'conf');
+		if($this->conf['showSubOrganisations'])$smartyOrganisation->assign('sub_organisations',$sub_organisations);//!!!!
 
 		$organisation_buildings= array();
 		$orga_bl_count=0;
