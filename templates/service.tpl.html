@@ -56,25 +56,27 @@
 
 	<!--{if ($descr_short  != "" OR $descr_long != "")}-->
 		<h2>{$description_label}</h2>
-
-		<!--{if $image != ""}-->
-			<table align="right" width="50px" class="right">
-				<tr>
-					<td>
-						{$image}
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<!--{if $image_text != ""}-->
-							<strong>{$image_text}</strong><br />
-						<!--{/if}-->
-						<small></small>
-					</td>
-				</tr>
-			</table>
-		<!--{/if}-->
-
+	<!--{/if}-->
+	
+	<!--{if $image != ""}-->
+		<table align="right" width="50px" class="right">
+			<tr>
+				<td>
+					{$image}
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<!--{if $image_text != ""}-->
+						<strong>{$image_text}</strong><br />
+					<!--{/if}-->
+					<small></small>
+				</td>
+			</tr>
+		</table>
+	<!--{/if}-->
+	
+	<!--{if ($descr_short  != "" OR $descr_long != "")}-->
 		<div class="content">
 			{$descr_short}
 			{$descr_long}

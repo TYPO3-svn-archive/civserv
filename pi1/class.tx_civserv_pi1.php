@@ -424,7 +424,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$GLOBALS['TSFE']->page['title'] = $this->getServiceListHeading($this->piVars[mode],$this->piVars[id]);
 		if($this->piVars[char]>''){
 			//ToDo Language support!!!! pi_getll(....)
-			$GLOBALS['TSFE']->page['title'] .= " Buchstabe ".$this->piVars[char];
+			$GLOBALS['TSFE']->page['title'] .=': '.$this->pi_getLL('tx_civserv_pi1_service_list.abc_letter','Letter').' '.$this->piVars[char];
 		}
 		
 		if ($searchBox) {
@@ -773,7 +773,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$query = $this->makeEmployeeListQuery($this->piVars[char]);
 		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		$row_counter = 0;
+		$em_org_kombis=array(); //store all kombinations of an employee and his/her employing organisational unit here
+		$kills=array(); //will be used to eleminate dublicates from the above list
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
+				$employees[$row_counter]['em_uid']=$row['emp_uid'];
 				if($row['em_address']==2){
 					$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi1_organisation.address_female', 'Ms.');
 				}elseif($row['em_address']==1){
@@ -801,10 +804,21 @@ class tx_civserv_pi1 extends tslib_pibase {
 					 '',
 					 '');
 					while ($orga_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($orga_res) ) {
-						$employees[$row_counter]['orga_name'] = $orga_row[organisation];
+						$test_string=$employees[$row_counter]['em_uid'].'_'.$orga_row[organisation];
+						//only elminate dublicates if there is no data_sec (an employee with several positions within the same 
+						//organisational unit might still have different opening hours for each of them
+						if($employees[$row_counter]['data_sec']==0 && in_array($test_string, $em_org_kombis)){
+							$kills[]=$row_counter;
+						}else{
+							$employees[$row_counter]['orga_name'] = $orga_row[organisation];
+							$em_org_kombis[]=$employees[$row_counter]['em_uid'].'_'.$employees[$row_counter]['orga_name'];
+						}
 					}
 					$employees[$row_counter]['em_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $row['emp_uid'],pos_id => $row['pos_uid']),1,1));
 					$row_counter++;
+		}
+		foreach($kills as $kill){
+			unset($employees[$kill]);
 		}
 
 
@@ -824,7 +838,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyEmployeeList->assign('heading',$this->pi_getLL('tx_civserv_pi1_employee_list.employee_list.heading','Employees'));
 		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_employee_list.available_employees','Here you find the following employees'));
 		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true,'',' | '));
+		
+		
 		$smartyEmployeeList->assign('employees',$employees);
+		
 
 		if ($abcBar) {
 			$query = $this->makeEmployeeListQuery(all,false);
@@ -2165,7 +2182,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$sub_organisations[$row_count_sub_orgs]['name'] = $row['or_name'];
 			$row_count_sub_orgs++;
 		}
-		#debug($this->conf, 'conf');
 		if($this->conf['showSubOrganisations'])$smartyOrganisation->assign('sub_organisations',$sub_organisations);//!!!!
 
 		$organisation_buildings= array();
