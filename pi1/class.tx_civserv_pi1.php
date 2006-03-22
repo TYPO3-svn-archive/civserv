@@ -1748,8 +1748,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 		} else {
 			$fees = trim($model_service[ms_fees]);
 		}
-		$smartyService->assign('fees',$this->formatStr($this->local_cObj->stdWrap($fees,$this->conf['sv_fees_stdWrap.'])));
-
+		#debug(strip_tags($fees), 'fees stripped');
+		if(strip_tags($fees) > '' && strip_tags($documents) != '&nbsp;'){
+			$smartyService->assign('fees',$this->formatStr($this->local_cObj->stdWrap($fees,$this->conf['sv_fees_stdWrap.'])));
+		}
 		//Documents
 		if ($service_common[sv_documents] != "") {
 			$documents = trim($service_common[sv_documents]);
@@ -1757,8 +1759,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 		} else {
 			$documents = trim($model_service[ms_documents]);
 		}
-		$smartyService->assign('documents',$this->formatStr($this->local_cObj->stdWrap($documents,$this->conf['sv_documents_general_stdWrap.'])));
-
+		#debug(strip_tags($documents), 'documents stripped');
+		if(strip_tags($documents) > '' && strip_tags($documents) != '&nbsp;'){
+			$smartyService->assign('documents',$this->formatStr($this->local_cObj->stdWrap($documents,$this->conf['sv_documents_general_stdWrap.'])));
+		}
 		//Legal local
 		$legal_local = $this->pi_getEditIcon($service_common[sv_legal_local],'sv_legal_local',$this->pi_getLL('tx_civserv_pi1_service.legal_local','Legal foundation (local)'),$service_common,'tx_civserv_service');
 		$smartyService->assign('legal_local',$this->formatStr($this->local_cObj->stdWrap($legal_local,$this->conf['sv_legel_local_general_stdWrap.'])));

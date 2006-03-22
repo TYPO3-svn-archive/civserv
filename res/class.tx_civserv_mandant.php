@@ -75,7 +75,6 @@ class tx_civserv_mandant{
 		
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('pid, uid','pages',' deleted=0 AND hidden=0 AND uid = '.$GLOBALS['TYPO3_DB']->quoteStr($node,'pages'),'','','',''); 
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-		//debug($row[uid]);
 		// save the path in this array
 		$path = array(); 
 		// only continue if this $node isn't the root node (that's the node with no parent) 
@@ -88,7 +87,6 @@ class tx_civserv_mandant{
 			$var=$this->get_path($path[0],$valid_uids);
 			if($var != NULL)$path = array_merge(array($var), $path);
 		}
-		//debug($path);
 		return $path[0]; 		
 	} 
 	
@@ -135,7 +133,6 @@ class tx_civserv_mandant{
 		if ($mandant > 0) {
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_community_name','tx_civserv_conf_mandant','cm_community_id = '.$GLOBALS['TYPO3_DB']->quoteStr($mandant,'tx_civserv_conf_mandant'),'','','',''); 
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-			debug($row['cm_community_name'], '$row-cm_community_name');
 			return $row['cm_community_name'];
 		} else return "";
 	}
@@ -228,7 +225,6 @@ class tx_civserv_mandant{
 		}
 		$params['items']=$allowed_regions;
 		if ($empty_entry) $params['items']=array_merge(Array(""),$params['items']);
-		debug($params, '$params in limit_region_items nachher');
 	}
 
 	
@@ -280,7 +276,7 @@ class tx_civserv_mandant{
 				//get rid of the 'children' --> recursive!!!!
 				
 				$forbidden_uids=array();
-				debug($source_array['row']['uid'], 'source_array_uid');
+				#debug($source_array['row']['uid'], 'source_array_uid');
 				if(substr($source_array['row']['uid'],0,3)!='NEW'){//or else the following select will crash!
 					$forbidden_uids[]=$source_array['row']['uid'];
 					//the following two lines are equivalent to each other:
