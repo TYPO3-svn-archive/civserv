@@ -423,9 +423,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$smartyServiceList->assign('abcbar',$this->makeAbcBar($query));
 		}
 		$smartyServiceList->assign('heading',$this->getServiceListHeading($this->piVars[mode],$this->piVars[id]));
-		//test bk: get the title clean
 		
-		//Aua!! das hier überschreibt den Titel von den Organisationen (Detail-Ansicht)
+		//if the title is set here it will overwrite the value we want in the organisationDetail-View
 		#$GLOBALS['TSFE']->page['title'] = $this->getServiceListHeading($this->piVars[mode],$this->piVars[id]);
 		
 		if($this->piVars[char]>''){
