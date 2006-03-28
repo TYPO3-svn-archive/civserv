@@ -458,9 +458,9 @@ function init() {
 			// do nothing
 		} else {
 			if ($this->letter != "other" and $this->letter != "search") {
-				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_employee_position_room.select_positions_text').''.$this->letter.':</h3>';
+				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_employee_position_room.select_building_text').''.$this->letter.':</h3>';
 			} else {
-				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_employee_position_room.select_positions_text_no_abc').':</h3>';
+				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_employee_position_room.select_building_text_no_abc').':</h3>';
 			}
 			$this->content.='<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
 				<tr class="bgColor">
@@ -540,7 +540,7 @@ function init() {
 		
 		if ($this->letter != "other" and $this->letter != "search") {
 			// Gets all categories which aren't hidden or deleted out of the database.
-			$query_string='pid = '.intval($this->building_pid).' AND upper(left(bl_name,1))=\''.$this->letter.'\' AND deleted=0 AND hidden=0';
+			#$query_string='pid = '.intval($this->building_pid).' AND upper(left(bl_name,1))=\''.$this->letter.'\' AND deleted=0 AND hidden=0';
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',																	// SELECT ...
 				'tx_civserv_building',																// FROM ...

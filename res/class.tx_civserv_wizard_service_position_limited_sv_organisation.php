@@ -314,7 +314,7 @@ function init() {
 			<form name="serviceform" action="" method="post">
 
 			<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_position_limited_sv_organisation.select_letter_text').':</h3>
-			<table border="1" cellpadding="0" cellspacing="0" id="typo3-tree">
+			<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
 				<tr class="bgColor">
 					<td nowrap="nowrap">
 		';

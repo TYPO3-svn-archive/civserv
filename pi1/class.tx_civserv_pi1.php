@@ -1678,7 +1678,19 @@ tx_civserv_employee.em_address,
 
 		//Query for associated employees
 		$res_employees = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'tx_civserv_employee.uid as emp_uid, tx_civserv_position.uid as pos_uid, tx_civserv_service.uid as sv_uid, tx_civserv_service_sv_position_mm.sp_descr as description, em_title as title, em_name as name, em_firstname as firstname, em_telephone, ep_telephone , em_email, ep_email, em_datasec as datasec',
+						'tx_civserv_employee.uid as emp_uid, 
+						 tx_civserv_position.uid as pos_uid, 
+						 tx_civserv_service.uid as sv_uid, 
+						 tx_civserv_service_sv_position_mm.sp_descr as description, 
+						 em_address as address, 
+						 em_title as title, 
+						 em_name as name, 
+						 em_firstname as firstname, 
+						 em_telephone, 
+						 ep_telephone, 
+						 em_email, 
+						 ep_email, 
+						 em_datasec as datasec',
 						'tx_civserv_service, tx_civserv_service_sv_position_mm, tx_civserv_position, tx_civserv_employee, tx_civserv_employee_em_position_mm',
 						'tx_civserv_service.uid = ' . $uid . '
 						 AND tx_civserv_service.deleted=0 AND tx_civserv_service.hidden=0
@@ -1769,6 +1781,7 @@ tx_civserv_employee.em_address,
 			//$service_employees[$i]['description'] = $this->formatStr($this->local_cObj->stdWrap($service_employees[$i]['description'],$this->conf['ep_sv_description_stdWrap.']));
 			$service_employees[$i]['description'] = nl2br($service_employees[$i]['description']);
 		}
+		debug($service_employees, 'employees mit oder ohne anrede?');
 		$smartyService->assign('employees',$service_employees);
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($res_transactions) > 0) {
