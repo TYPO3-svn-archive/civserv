@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2004 ProService (osiris@ercis.de)
+*  (c) 2004 ProService (osiris@ercis.de)		ORG!!!!
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is

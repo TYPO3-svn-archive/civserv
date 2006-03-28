@@ -16,8 +16,10 @@
 	<!--{if $abcbar != ""}-->		
 		{$abcbar}	
 	<!--{/if}-->
-		
-	<h2>{$subheading}:</h2>	
+	
+	<!--{if $subheading != ""}-->			
+	<h2>{$subheading}:</h2>
+	<!--{/if}-->
 		<div class="list">		
 			<ul>			
 			<!--{foreach from=$services item=service }-->				

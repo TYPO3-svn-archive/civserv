@@ -126,6 +126,12 @@ page.10 {
 	marks.HOMEPAGE = USER
 	marks.HOMEPAGE.userFunc = tx_civserv_pi1->getHomepage
 	
+	marks.LISTPAGE = USER
+	marks.LISTPAGE.userFunc = tx_civserv_pi1->getListPage
+	
+	marks.ACTPAGE = USER
+	marks.ACTPAGE.userFunc = tx_civserv_pi1->getActualPage
+	
 	marks.CHOICE_LINK < temp.choicelink
 	
 	/*

@@ -29,10 +29,14 @@ plugin.tx_civserv_pi1 {
 	folder_organisations = {$folder_organisations}
 	folder_employees = {$folder_employees}
 	folder_global_images = {$folder_global_images}
+	
 	german_flag = {$german_flag}
 	english_flag = {$english_flag}
+
 	
 	recursive = {$recursive}
+	
+	menuItems_01 = {$menuItems_01}
 
 	items_per_page = {$services_per_page}
 	services_per_page = {$services_per_page}
@@ -59,6 +63,13 @@ plugin.tx_civserv_pi1 {
 	searchAtEmployeeList = {$searchAtEmployeeList}
 	searchAtOrganisationList = {$searchAtOrganisationList}
 
+
+	pagesSubtitleContainsOrganisationUid = {$pagesSubtitleContainsOrganisationUid}
+	abcSpacer={$abcSpacer}
+	continueAbcBarFromOrganisationList={$continueAbcBarFromOrganisationList}
+	continueAbcBarFromServiceList={$continueAbcBarFromServiceList}
+	includeNameInHeading={$includeNameInHeading}
+	displayOrganisationCode={$displayOrganisationCode}
 
 	abcBarAtServiceList = {$abcBarAtServiceList}
 	abcBarAtCircumstance = {$abcBarAtCircumstance}
@@ -87,6 +98,7 @@ plugin.tx_civserv_pi1 {
 	otherEmployees = {$otherEmployees}
 	relatedTopics = {$relatedTopics}
 	showSubOrganisations = {$showSubOrganisations}
+
 
 	general_stdWrap.parseFunc.nonTypoTagStdWrap.encapsLines { 
 		encapsTagList = div, p, ul, ol, li

@@ -133,8 +133,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// Start or resume session
 		session_name($this->extKey);
 		session_start();
-		session_destroy();
-
+		#session_destroy();
+		
 		// create and instanciate smarty object
 		$tx_smarty = t3lib_div::makeInstanceClassName('tx_smarty');
 		$smartyObject = new $tx_smarty($this->extKey);
@@ -183,6 +183,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$_SESSION['employee_search'] = $community_data[0]['cm_employeesearch'];
 					$_SESSION['alternative_language_folder_uid'] = $community_data[0]['cm_alternative_language_folder_uid'];
 					$_SESSION['alternative_page_uid'] = $community_data[0]['cm_alternative_page_uid'];
+					$_SESSION['stored_pagelink'] = ''; //for the breadcrumb_navi!!!
 					break;
 				default:
 					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi1_error.community_id_twice','The current system seems to be misconfigured. The given community-id exists at least twice in the configuration table.');
@@ -206,7 +207,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$this->piVars[community_id] = $_SESSION['community_id'];
 			switch($this->piVars[mode])	{
 				case 'service_list':
-					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_service_list.service_list','Service list');
+					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_service_list.overview','Service list');
 					$template = $this->conf['tpl_service_list'];
 					$accurate = $this->serviceList($smartyObject,$this->conf['abcBarAtServiceList'],$this->conf['searchAtServiceList'],$this->conf['topAtServiceList']);
 					break;
@@ -230,7 +231,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					break;
 					
 				case 'organisation_list':
-					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_organisation_list.organisation_list','Organisation A - Z');
+					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_menuarray.organisation_list','Organisation A - Z');
 					$template = $this->conf['tpl_organisation_list'];
 					$accurate = $this->organisation_list($smartyObject,$this->conf['abcBarAtOrganisationList'],$this->conf['searchAtOrganisationList'],$this->conf['topAtOrganisationList']);
 					break;						
@@ -271,14 +272,16 @@ class tx_civserv_pi1 extends tslib_pibase {
 					break;
 
 				case 'organisation':
-					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_service_list.organisation','Organisation');
+					#$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_service_list.organisation','Organisation');
 					$template = $this->conf['tpl_service_list'];
-					$accurate = $this->organisationDetail($smartyObject) && $this->serviceList($smartyObject,$this->conf['abcBarAtOrganisation'],$this->conf['searchAtOrganisation'],$this->conf['topAtOrganisation']);
+					// test bk: continue the abcBar from the OrganisationList!!!
+					$accurate = $this->organisationDetail($smartyObject, $this->conf['continueAbcBarFromOrganisationList']) && $this->serviceList($smartyObject,$this->conf['abcBarAtOrganisation'],$this->conf['searchAtOrganisation'],$this->conf['topAtOrganisation']);
 					break;
 
 				case 'service':
 					$template = $this->conf['tpl_service'];
-					$accurate = $this->serviceDetail($smartyObject,$this->conf['searchAtService']);
+					// test bk: continue the abcBar from the ServiceList!!!
+					$accurate = $this->serviceDetail($smartyObject,$this->conf['searchAtService'], $this->conf['topAtService'],$this->conf['continueAbcBarFromServiceList']);
 					break;
 
 				case 'employee':
@@ -414,17 +417,19 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$this->internal['res_count'] = $row_count;
 		$this->internal['results_at_a_time']= $this->conf['services_per_page'];
 		$this->internal['maxPages'] = $this->conf['max_pages_in_pagebar'];
-
 		$smartyServiceList->assign('services',$services);
 		if ($abcBar) {
 			$query = $this->makeServiceListQuery(all,false);
 			$smartyServiceList->assign('abcbar',$this->makeAbcBar($query));
 		}
 		$smartyServiceList->assign('heading',$this->getServiceListHeading($this->piVars[mode],$this->piVars[id]));
-		$GLOBALS['TSFE']->page['title'] = $this->getServiceListHeading($this->piVars[mode],$this->piVars[id]);
+		//test bk: get the title clean
+		
+		//Aua!! das hier überschreibt den Titel von den Organisationen (Detail-Ansicht)
+		#$GLOBALS['TSFE']->page['title'] = $this->getServiceListHeading($this->piVars[mode],$this->piVars[id]);
+		
 		if($this->piVars[char]>''){
-			//ToDo Language support!!!! pi_getll(....)
-			$GLOBALS['TSFE']->page['title'] .=': '.$this->pi_getLL('tx_civserv_pi1_service_list.abc_letter','Letter').' '.$this->piVars[char];
+			 $GLOBALS['TSFE']->page['title'] .=': '.$this->pi_getLL('tx_civserv_pi1_service_list.abc_letter','Letter').' '.$this->piVars[char];
 		}
 		
 		if ($searchBox) {
@@ -437,9 +442,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 				return false;
 			}
 		}
-
-		$smartyServiceList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_service_list.available_services','Here you find the following services'));
-		$smartyServiceList->assign('pagebar',$this->pi_list_browseresults(true,'',' | '));
+		//test bk: the service_list template is being used by several modes, change the subheading in accordance with the modes!!!
+		if($this->piVars[mode]=='organisation')$smartyServiceList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_service_list.available_services','Here you find the following services'));
+		$smartyServiceList->assign('pagebar',$this->pi_list_browseresults(true,'', ' '.$this->conf['abcSpacer'].' '));
 
 		return true;
 	}
@@ -513,7 +518,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 							 AND tx_civserv_external_service.pid IN (' . $this->community[pidlist] . ')';
 				$query .= 'UNION ALL ';
 			}
-			
+
 			// manipulate pidlist in order to discriminate between services in the common language and services in an alternative language:
 			if($GLOBALS["TSFE"]->id == $this->community['alternative_page_uid']){
 				$this->community[pidlist]=$this->community['alternative_language_folder_uid'];
@@ -524,7 +529,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$this->community[pidlist]=implode(",",array_flip($toggled));
 			}
 
-			
+
 
 			// services by realnames
 			$query .=	'SELECT ' . ($count?'count(*) ':'tx_civserv_service.uid, sv_name AS name, sv_name AS realname ') . '
@@ -572,8 +577,23 @@ class tx_civserv_pi1 extends tslib_pibase {
 	function getServiceListHeading($mode,$uid) {
 		switch ($mode) {
 			case 'service_list' :
+				// test bk: we don't need this for münster
 				$heading = $this->pi_getLL('tx_civserv_pi1_service_list.service_list','Service list');
-				break;
+				#$heading = $this->pi_getLL('tx_civserv_pi1_service_list.overview','Overview');
+				if(!$this->conf['includeNameInHeading']){
+					// test bk: premature return instruction to prevent that anything is added to the heading
+					return $heading;
+				}else{
+					break;
+				}
+			case 'service' :// test bk: make it fitting for ms layout, useless: fct getservicelistheading never called from serviceDetail!!!
+				$heading = $this->pi_getLL('tx_civserv_pi1_service_list.overview','Overview');
+				if(!$this->conf['includeNameInHeading']){
+					// test bk: premature return instruction to prevent that anything is added to the heading
+					return $heading;
+				}else{
+					break;
+				}
 			case 'circumstance' :
 				$heading = $this->pi_getLL('tx_civserv_pi1_service_list.circumstance','Circumstance');
 				$field = 'nv_name';
@@ -586,8 +606,16 @@ class tx_civserv_pi1 extends tslib_pibase {
 				break;
 			case 'organisation' :
 				$heading = $this->pi_getLL('tx_civserv_pi1_service_list.organisation','Organisation');
-				$field = 'or_name';
-				$table = 'tx_civserv_organisation';
+				// test bk: make it fitting for ms layout
+				#$heading = $this->pi_getLL('tx_civserv_pi1_organisation_list.organisation_list.heading','Organisation');
+				if($this->conf['includeNameInHeading']){
+					$field = 'or_name';
+					$table = 'tx_civserv_organisation';
+					break;
+				}else{
+					// test bk: premature return instruction to prevent that anything is added to the heading
+					return $heading;
+				}
 				break;
 		}
 		if ($mode != 'service_list') {
@@ -605,7 +633,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		} else {
 			$heading .= ': ' . $this->pi_getLL('tx_civserv_pi1_service_list.overview','Overview');
 		}
-
 		return $heading;
 	}
 
@@ -651,7 +678,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	[type]		$topList: ...
 	 * @return	[type]		...
 	 */
-	function organisation_list(&$smartyOrganisationList,$abcBar=false,$searchBox=false,$topList=false){
+	function organisation_list(&$smartyOrganisationList, $abcBar=false,$searchBox=false,$topList=false){
 		$query = $this->makeOrganisationListQuery($this->piVars[char]);
 		$res_organisation = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		$row_counter = 0;
@@ -681,12 +708,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		$smartyOrganisationList->assign('heading',$this->pi_getLL('tx_civserv_pi1_organisation_list.organisation_list.heading','Organisation'));
 		$smartyOrganisationList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_organisation_list.available_organisations','Here you find the following organisations'));
-		$smartyOrganisationList->assign('pagebar',$this->pi_list_browseresults(true,'',' | '));
+		$smartyOrganisationList->assign('pagebar',$this->pi_list_browseresults(true,'', ' '.$this->conf['abcSpacer'].' '));
 		$smartyOrganisationList->assign('organisations',$organisations);
 
 		if ($abcBar) {
 			$query = $this->makeOrganisationListQuery(all,false);
-			$smartyOrganisationList->assign('abcbar',$this->makeAbcBar($query));
+			$smartyOrganisationList->assign('abcbar', $this->makeAbcBar($query));
 		}
 		
 		if ($searchBox) {
@@ -769,6 +796,76 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	[type]		$topList: ...
 	 * @return	[type]		...
 	 */
+	 /*
+	function employee_list(&$smartyEmployeeList,$abcBar=false,$searchBox=false,$topList=false){
+		$query = $this->makeEmployeeListQuery($this->piVars[char]);
+		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+		$row_counter = 0;
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
+				$employees[$row_counter]['em_name'] = $row['em_name'];
+				$employees[$row_counter]['em_firstname'] = $row['em_firstname'];
+				$employees[$row_counter]['em_datasec'] = $row['em_datasec'];
+
+				//select the organisation assigned to the employee
+				$orga_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'tx_civserv_position.uid as pos_uid, tx_civserv_organisation.uid as or_uid, tx_civserv_employee.uid as emp_uid, or_name as organisation',
+					'tx_civserv_employee, tx_civserv_position, tx_civserv_organisation, tx_civserv_employee_em_position_mm, tx_civserv_position_po_organisation_mm',
+					'tx_civserv_employee.uid = ' . $row['emp_uid'] . ' AND tx_civserv_position.uid = '.$row['pos_uid'] .'
+					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
+					 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
+					 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
+					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
+					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
+					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
+					 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
+					 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign',
+					 '',
+					 '',
+					 '');
+					while ($orga_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($orga_res) ) {
+						$employees[$row_counter]['orga_name'] = $orga_row[organisation];
+					}
+					$employees[$row_counter]['em_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $row['emp_uid'],pos_id => $row['pos_uid']),1,1));
+					$row_counter++;
+		}
+
+
+		// Retrieve the employee count
+		$row_count = 0;
+		$query = $this->makeEmployeeListQuery($this->piVars[char],false,true);
+		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			#$row_count += $row['anzahl'];
+			$row_count += $row['count(*)'];
+		}
+
+		$this->internal['res_count'] = $row_count;
+		$this->internal['results_at_a_time']= $this->conf['employee_per_page'];
+		$this->internal['maxPages'] = $this->conf['max_pages_in_pagebar'];
+
+		$smartyEmployeeList->assign('heading',$this->pi_getLL('tx_civserv_pi1_employee_list.employee_list.heading','Employees'));
+		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_employee_list.available_employees','Here you find the following employees'));
+		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true,'', ' '.$this->conf['abcSpacer'].' '));
+		$smartyEmployeeList->assign('employees',$employees);
+
+		if ($abcBar) {
+			$query = $this->makeEmployeeListQuery(all,false);
+			$smartyEmployeeList->assign('abcbar',$this->makeAbcBar($query));
+		}
+
+		return true;
+	}
+	*/
+	
+	/**
+	 * Generates a list of all employees
+	 *
+	 * @param	[type]		$$smartyEmployeeList: ...
+	 * @param	[type]		$abcBar: ...
+	 * @param	[type]		$searchBox: ...
+	 * @param	[type]		$topList: ...
+	 * @return	[type]		...
+	 */
 	function employee_list(&$smartyEmployeeList,$abcBar=false,$searchBox=false,$topList=false){
 		$query = $this->makeEmployeeListQuery($this->piVars[char]);
 		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
@@ -838,8 +935,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyEmployeeList->assign('heading',$this->pi_getLL('tx_civserv_pi1_employee_list.employee_list.heading','Employees'));
 		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_employee_list.available_employees','Here you find the following employees'));
 		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true,'',' | '));
-		
-		
 		$smartyEmployeeList->assign('employees',$employees);
 		
 
@@ -850,6 +945,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		return true;
 	}
+	
+	
 	
 	/**
 	 * Generates a database query for the function employee_list. The returned query depends on the given parameter (like described below)
@@ -878,14 +975,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 						tx_civserv_employee.hidden=0';
 			} else {
 				$query = 'Select 
-						tx_civserv_employee.em_address, 
+tx_civserv_employee.em_address, 
 						tx_civserv_employee.em_title, 
 						tx_civserv_employee.em_name as name, 
 						tx_civserv_employee.em_firstname, 
 						tx_civserv_employee.em_datasec,
 						tx_civserv_employee.uid as emp_uid, 
 						tx_civserv_position.uid as pos_uid 
-					from 
+				from 
 						tx_civserv_employee, 
 						tx_civserv_position, 
 						tx_civserv_employee_em_position_mm 
@@ -898,7 +995,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						tx_civserv_employee.hidden=0';
 			}
 
-			$orderby =	$this->piVars[sort]?'em_name DESC':'em_name ASC';
+			$orderby =	$this->piVars[sort]?'name DESC':'name ASC';
 
 			if (!$count) {
 			$query .= ' ORDER BY ' . $orderby . ' ';
@@ -1005,11 +1102,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 		} else {
 			$heading .= $this->pi_getLL('tx_civserv_pi1_form_list.overview','Overview');
 		}
+		
+		// test bk: ??? Münster???
 		$GLOBALS['TSFE']->page['title'] = $heading;
 		$smartyFormList->assign('heading',$heading);
 		$smartyFormList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_form_list.available_forms','Here you find the following forms'));
 		$smartyFormList->assign('assigned_services',$this->pi_getLL('tx_civserv_pi1_form_list.assigned_services','The following services are assigned with this form'));
-		$smartyFormList->assign('pagebar',$this->pi_list_browseresults(true,'',' | '));
+		$smartyFormList->assign('pagebar',$this->pi_list_browseresults(true,'', ' '.$this->conf['abcSpacer'].' '));
 
 		if ($searchBox) {
 			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
@@ -1035,7 +1134,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime)
 					 	 OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime = 0))
 					 	 OR (tx_civserv_service.starttime = 0 AND tx_civserv_service.endtime = 0))
-					 	 AND tx_civserv_organisation.hidden=0 AND NOT tx_civserv_organisation.deleted
+					 	 AND tx_civserv_organisation.hidden=0 AND tx_civserv_organisation.deleted=0
 					 	 AND tx_civserv_service.uid = tx_civserv_service_sv_form_mm.uid_local
 					 	 AND tx_civserv_form.uid = tx_civserv_service_sv_form_mm.uid_foreign
 					 	 AND tx_civserv_service.uid = tx_civserv_service_sv_organisation_mm.uid_local
@@ -1051,7 +1150,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}
 			$smartyFormList->assign('organisations',$organisations);
 		}
-
 		return true;
 	}
 
@@ -1073,7 +1171,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 			//change proposed by kreis warendorf to eliminate duplicates
 			$select = 'count(DISTINCT tx_civserv_form.uid)';
 		} else {
-			$select = 'tx_civserv_form.uid, tx_civserv_form.fo_name AS name, tx_civserv_form.fo_descr AS descr, tx_civserv_form.fo_external_checkbox AS checkbox, tx_civserv_form.fo_url AS url, tx_civserv_form.fo_formular_file AS file';
+			$select = 	'tx_civserv_form.uid, 
+						 tx_civserv_form.fo_name AS name, 
+						 tx_civserv_form.fo_descr AS descr, 
+						 tx_civserv_form.fo_external_checkbox AS checkbox, 
+						 tx_civserv_form.fo_url AS url, 
+						 tx_civserv_form.fo_formular_file AS file';
 		}
 
 		$from  =	'tx_civserv_form, tx_civserv_service, tx_civserv_service_sv_form_mm';
@@ -1089,7 +1192,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				 	 AND tx_civserv_form.uid = tx_civserv_service_sv_form_mm.uid_foreign';
 		if ($organisation_id != 0) {
 			$from  .=	', tx_civserv_organisation, tx_civserv_service_sv_organisation_mm';
-			$where .=	' AND tx_civserv_organisation.hidden=0 AND NOT tx_civserv_organisation.deleted
+			$where .=	' AND tx_civserv_organisation.hidden=0 AND tx_civserv_organisation.deleted=0
 					 	 AND tx_civserv_service.uid = tx_civserv_service_sv_organisation_mm.uid_local
 					 	 AND tx_civserv_organisation.uid = tx_civserv_service_sv_organisation_mm.uid_foreign
 						 AND tx_civserv_organisation.uid = ' . $organisation_id;
@@ -1109,8 +1212,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$from  .=	', tx_civserv_external_service';
 				$where .=	' ' .
 							'AND tx_civserv_external_service.es_external_service = tx_civserv_service.uid
-							 AND NOT tx_civserv_external_service.deleted
-							 AND NOT tx_civserv_external_service.hidden
+							 AND tx_civserv_external_service.deleted=0
+							 AND tx_civserv_external_service.hidden=0
 							 AND tx_civserv_external_service.pid IN (' . $this->community[pidlist] . ')';
 				$query .= 'UNION ALL ';
 			}
@@ -1151,8 +1254,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$sword = preg_split('/[\s,.\"]+/',$searchString);		//Split search string into multiple keywords and store them in an array
 
 		//Set initial where clauses
-		$querypart_where = 'pid IN (' . $this->community[pidlist] . ')';
-		$querypart_where2 = 'sw.uid = tx_civserv_service_sv_searchword_mm.uid_foreign
+		$querypart_where = ' pid IN (' . $this->community[pidlist] . ')';
+		$querypart_where2 = ' sw.uid = tx_civserv_service_sv_searchword_mm.uid_foreign
 							 AND tx_civserv_service_sv_searchword_mm.uid_local = sv.uid';
 		$querypart_where3 = '';
 		$querypart_where4 = '';
@@ -1168,11 +1271,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 											  OR sv_synonym2 LIKE "%' . $sword[$i] . '%"
 											  OR sv_synonym3 LIKE "%' . $sword[$i] . '%"';
 						$querypart_where2 .= ' AND (sw.sw_search_word LIKE "%' . $sword[$i] . '%" ';
-						$querypart_where3 .= 'ms_name LIKE "%' . $sword[$i] . '%"
+						$querypart_where3 .= ' ms_name LIKE "%' . $sword[$i] . '%"
 											  OR ms_synonym1 LIKE "%' . $sword[$i] . '%"
 											  OR ms_synonym2 LIKE "%' . $sword[$i] . '%"
 											  OR ms_synonym3 LIKE "%' . $sword[$i] . '%"';
-						$querypart_where4 .= 'sw_search_word LIKE "%' . $sword[$i] . '%" ';
+						$querypart_where4 .= ' sw_search_word LIKE "%' . $sword[$i] . '%" ';
 				} else {
 					$querypart_where .= ' OR sv_name LIKE "%' . $sword[$i] . '%"
 										  OR sv_synonym1 LIKE "%' . $sword[$i] . '%"
@@ -1353,9 +1456,16 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	string		A query which gets all items.
 	 * @return	string		HTML-Code for abc-bar.
 	 */
-	function makeAbcBar($query) {
+	 
+	//test bk: add local_mode 
+	function makeAbcBar($query, $local_mode="") {
+		$correctMode=$this->piVars['mode'];
 		// getting all accouring initial from the DB
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+		//test bk: swapp mode to organisation_list for correct abcbar in orga-Detail
+		if($local_mode != ""){
+			$this->piVars['mode']=$local_mode;
+		}
 
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
@@ -1372,20 +1482,24 @@ class tx_civserv_pi1 extends tslib_pibase {
 		for($i = 0; $i < sizeof($alphabet); $i++)	{
 			$actual = (strtoupper($this->piVars[char])==$alphabet[$i]);
 			if($occuringInitials && in_array($alphabet[$i],$occuringInitials))	{
-				$abcBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . '%s | ',
+				$abcBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . '%s '.$this->conf['abcSpacer'].' ',
 						$actual?'<strong>':'',
 						$actual?'</strong>':'');
 			}
 			else	{
-				$abcBar .= $alphabet[$i] . ' | ';
+				$abcBar .= $alphabet[$i].' '.$this->conf['abcSpacer'].' ';
 			}
 		}
+
 		// adding the link 'A-Z'
 		$actual = ($this->piVars[char] <= '');
 		$abcBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars('A-Z',array(char => '',pointer => 0),1,0) . '%s' . "\n",
 						$actual?'<strong>':'',
 						$actual?'</strong>':'');
 		$abcBar .= "</p>\n";
+
+		$this->piVars['mode']=$correctMode;
+
 		return $abcBar;
 	}
 
@@ -1442,6 +1556,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 								'name',
 								'');
 		}
+		// test bk: add organisational code
+		if($this->conf['displayOrganisationCode']){
+			$orderby='or1.or_code, or1.sorting';
+		}else{
+			$orderby='or1.sorting, or2.sorting';
+		}
 		if ($mode == 'organisation_tree') {
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 								'or1.uid as uid, or1.or_code as code, or1.or_name as name',
@@ -1450,7 +1570,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 								 AND or1.uid = ormm.uid_local AND or2.uid = ormm.uid_foreign
 								 AND or2.uid = ' . $uid ,
 								'',
-								'or1.sorting, or2.sorting',
+								$orderby,
 								'');
 		}
 		//Check if query returned any results
@@ -1469,7 +1589,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 						$link_mode = 'organisation';
 						break;
 				}
-				$add_content .= '    <li>&nbsp;<a href="' . htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => $link_mode,id => $row['uid']),1,1)) . '">'.$row["code"].' '.$row["name"].'</a>';
+				// test bk: add organisational code
+				if($this->conf['displayOrganisationCode'] && !($mode=='usergroup_tree' || $mode=='circumstance_tree')){
+					$add_content .= '    <li>&nbsp;<a href="' . htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => $link_mode,id => $row['uid']),1,1)) . '">'.$row["code"].' '.$row["name"].'</a>';
+				}else{
+					$add_content .= '    <li>&nbsp;<a href="' . htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => $link_mode,id => $row['uid']),1,1)) . '">'.$row["name"].'</a>';
+				}
 				$this->makeTree($uid,$add_content,$mode);
 				$add_content .= "</li>\n";
 			}
@@ -1502,7 +1627,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	boolean		If true, a list with the top <i>plugin.tx_civserv_pi1.topCount</i> services is generated
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
-	function serviceDetail(&$smartyService,$searchBox=false,$topList=false) {
+	function serviceDetail(&$smartyService,$searchBox=false,$topList=false, $continueAbcBarFromServiceList=false) {
+		//test bk: repeat the heading from the list:
+		$smartyService->assign('heading',$this->pi_getLL('tx_civserv_pi1_service_list.overview','Overview' ));
+		if($continueAbcBarFromServiceList){
+			$query = $this->makeServiceListQuery(all,false);
+			$smartyService->assign('abcbarServiceList_continued', $this->makeAbcBar($query, 'service_list'));
+		}
+		
 		$uid = $this->piVars[id];
 		$community_id = $this->community['id'];
 		$employee = $this->community['employee_search'];
@@ -1532,6 +1664,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_service_sv_form_mm.sorting');	//ORDER BY
 						#'name');	//ORDER BY
 
+
 		//Query for associated organisation units
 		$res_orga = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 						'tx_civserv_organisation.uid as uid, or_name as name',
@@ -1539,14 +1672,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_service_sv_organisation_mm',
 						'tx_civserv_organisation',
 						'AND tx_civserv_service.uid = ' . $uid . '
-		 				 AND tx_civserv_organisation.hidden=0 AND NOT tx_civserv_organisation.deleted',
+		 				 AND tx_civserv_organisation.hidden=0 AND tx_civserv_organisation.deleted=0',
 						'',
 						'tx_civserv_service_sv_organisation_mm.sorting');	//ORDER BY
 						#'name');	//ORDER BY
 
 		//Query for associated employees
 		$res_employees = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'tx_civserv_employee.uid as emp_uid, tx_civserv_position.uid as pos_uid, tx_civserv_service.uid as sv_uid, tx_civserv_service_sv_position_mm.sp_descr as description, em_address as address, em_title as title, em_name as name, em_firstname as firstname, em_telephone, ep_telephone , em_email, ep_email, em_datasec as datasec',
+						'tx_civserv_employee.uid as emp_uid, tx_civserv_position.uid as pos_uid, tx_civserv_service.uid as sv_uid, tx_civserv_service_sv_position_mm.sp_descr as description, em_title as title, em_name as name, em_firstname as firstname, em_telephone, ep_telephone , em_email, ep_email, em_datasec as datasec',
 						'tx_civserv_service, tx_civserv_service_sv_position_mm, tx_civserv_position, tx_civserv_employee, tx_civserv_employee_em_position_mm',
 						'tx_civserv_service.uid = ' . $uid . '
 						 AND tx_civserv_service.deleted=0 AND tx_civserv_service.hidden=0
@@ -1628,6 +1761,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}elseif($service_employees[$i]['address']==1){
 				$service_employees[$i]['address_long'] = $this->pi_getLL('tx_civserv_pi1_organisation.address_male', 'Mr.');
 			}
+
 			// use typolink, because of the possibility to use encrypted email-adresses for spam-protection
 			$service_employees[$i]['email_code'] = $this->cObj->typoLink($service_employees[$i]['ep_email']?$service_employees[$i]['ep_email']:$service_employees[$i]['em_email'],array(parameter => $service_employees[$i]['ep_email']?$service_employees[$i]['ep_email']:$service_employees[$i]['em_email'],ATagParams => 'class="email"'));	// use typolink, because of the possibility to use encrypted email-adresses for spam-protection
 			$service_employees[$i]['email_form_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'set_email_form',id => $service_employees[$i]['emp_uid'],sv_id => $service_employees[$i]['sv_uid'],pos_id => $service_employees[$i]['pos_uid']),1,1));
@@ -1748,10 +1882,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 		} else {
 			$fees = trim($model_service[ms_fees]);
 		}
-		#debug(strip_tags($fees), 'fees stripped');
+		//test bk: support htmlarea in not desplaying empty labels; todo: transmit this to other sections!!!
 		if(strip_tags($fees) > '' && strip_tags($documents) != '&nbsp;'){
 			$smartyService->assign('fees',$this->formatStr($this->local_cObj->stdWrap($fees,$this->conf['sv_fees_stdWrap.'])));
 		}
+
 		//Documents
 		if ($service_common[sv_documents] != "") {
 			$documents = trim($service_common[sv_documents]);
@@ -1759,10 +1894,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 		} else {
 			$documents = trim($model_service[ms_documents]);
 		}
-		#debug(strip_tags($documents), 'documents stripped');
 		if(strip_tags($documents) > '' && strip_tags($documents) != '&nbsp;'){
 			$smartyService->assign('documents',$this->formatStr($this->local_cObj->stdWrap($documents,$this->conf['sv_documents_general_stdWrap.'])));
 		}
+
 		//Legal local
 		$legal_local = $this->pi_getEditIcon($service_common[sv_legal_local],'sv_legal_local',$this->pi_getLL('tx_civserv_pi1_service.legal_local','Legal foundation (local)'),$service_common,'tx_civserv_service');
 		$smartyService->assign('legal_local',$this->formatStr($this->local_cObj->stdWrap($legal_local,$this->conf['sv_legel_local_general_stdWrap.'])));
@@ -1880,7 +2015,16 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Standard query for employee details
 		$res_common = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'uid, em_address, em_title, em_name, em_firstname, em_telephone, em_fax, em_email, em_image, em_datasec',
+						'uid, 
+						 em_address, 
+						 em_title, 
+						 em_name, 
+						 em_firstname, 
+						 em_telephone, 
+						 em_fax, 
+						 em_email, 
+						 em_image, 
+						 em_datasec',
 						'tx_civserv_employee',
 						'deleted=0 AND hidden=0 AND uid='.$uid.' AND em_datasec=1',
 						'',
@@ -1895,7 +2039,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Query for employee office hours
 		$res_emp_hours = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-					'oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_freestyle, oh_weekday',
+					'oh_start_morning, 
+					 oh_end_morning, 
+					 oh_start_afternoon, 
+					 oh_end_afternoon, 
+					 oh_freestyle, 
+					 oh_weekday',
 					'tx_civserv_employee',
 					'tx_civserv_employee_em_hours_mm',
 					'tx_civserv_officehours',
@@ -1943,6 +2092,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 					'',
 					'oh_weekday',
 					'');
+			
+			
+			//test bk: single out one building for the organisation / employee
+			//todo!
+
 
 			//Query for organisation, building, floor and room (depending on position of employee)
 			$res_position = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -1975,10 +2129,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//Assign employee-position working hours
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_pos_hours) )
-		{
+		{	
+			/*
 			if($row[oh_weekday] == 10){ //monday to friday
 				unset($emp_pos_hours);
 			}
+			*/
 			$emp_pos_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
 			$emp_pos_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
 			$emp_pos_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
@@ -1992,10 +2148,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//Assign employee-organisation working hours
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_org_hours) )
-		{
+		{	
+			/*
 			if($row[oh_weekday] == 10){ //monday to friday
 				unset($emp_org_hours);
 			}
+			*/
 			$emp_org_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
 			$emp_org_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
 			$emp_org_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
@@ -2044,9 +2202,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_hours) )
 		{
+			/*
 			if($row[oh_weekday] == 10){ //"monday to friday" only one item to be displayed instead of four or five
 				unset($emp_hours);
 			}
+			*/
 			$emp_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
 			$emp_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
 			$emp_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
@@ -2080,13 +2240,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 		} else if (intval($employee_rows[em_address]) == 1) {
 			$smartyEmployee->assign('image_employee_label',$this->pi_getLL('tx_civserv_pi1_employee_male.image','Image of employee'));
 		}
-		
 
 		if ($searchBox) {
 			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
 			$smartyTop15->assign('searchbox', $this->pi_list_searchBox('',true));
 		}
-		//baustelle
 		$GLOBALS['TSFE']->page['title']=$this->pi_getLL('tx_civserv_pi1_employee.employee_plural','Employees');
 		return true;
 	}
@@ -2098,12 +2256,19 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	object		Smarty object, the template key/value-pairs should be assigned to
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
-	function organisationDetail(&$smartyOrganisation) {
+	 //test bk: add continueAbcBarFromOrganisationList
+	function organisationDetail(&$smartyOrganisation,$continueAbcBarFromOrganisationList=false) {
+		// test bk: add mode to parameterlist in function makeABcbar
+		if($continueAbcBarFromOrganisationList){
+			$query = $this->makeOrganisationListQuery(all,false);
+			$smartyOrganisation->assign('abcbarOrganisationList_continued', $this->makeAbcBar($query, 'organisation_list'));
+		}
 		$uid = $this->piVars[id];
 
 		//Standard query for organisation details
+		// test bk: include or_show_supervisor
 		$res_common = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'uid, or_name,or_telephone,or_fax,or_email,or_image,or_infopage,or_addinfo,or_show_supervisor',
+						'uid, or_name,or_telephone,or_fax,or_email,or_image,or_infopage,or_addinfo, or_addlocation,or_show_supervisor',
 						'tx_civserv_organisation',
 						'deleted=0 AND hidden=0 AND uid='.$uid,
 						'',
@@ -2139,7 +2304,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'uid',	//GROUP BY
 						'');
 
-		//Query for building and postal address
+		//Query for building and postal address (there shouldn't be more than one building assigned to each organisation)
+		// test bk: include bl_name
 		$res_building = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 						'bl_mail_street, bl_mail_pob, bl_mail_postcode, bl_mail_city, bl_name, bl_building_street, bl_building_postcode, bl_building_city, bl_pubtrans_stop, bl_pubtrans_url',
 						'tx_civserv_organisation',
@@ -2167,6 +2333,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		$organisation_rows = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_common);
 		
+		// test bk: 
 		// query for sub_organisations, 
 		// they will be exposed somewhere in the organisation_detail page
 		$res_sub_org = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -2174,11 +2341,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_organisation, tx_civserv_organisation_or_structure_mm',
 						'tx_civserv_organisation_or_structure_mm.uid_local = tx_civserv_organisation.uid and
 						 tx_civserv_organisation_or_structure_mm.uid_foreign = '.$organisation_rows['uid'].' and
-						 !tx_civserv_organisation.deleted and
-						 !tx_civserv_organisation.hidden',
+						 tx_civserv_organisation.deleted=0 and
+						 tx_civserv_organisation.hidden=0',
 						'',
 						'tx_civserv_organisation.sorting', //Order by
-						'');
+						'');				
 
 		$row_count_sub_orgs = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_sub_org))	{
@@ -2187,7 +2354,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$row_count_sub_orgs++;
 		}
 		if($this->conf['showSubOrganisations'])$smartyOrganisation->assign('sub_organisations',$sub_organisations);//!!!!
-
+		
+		//test bk: make $organisation_buildings into an array!!!!
 		$organisation_buildings= array();
 		$orga_bl_count=0;
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_building)){
@@ -2197,7 +2365,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		$pidListAll = $this->community['pidlist'];				//Get pidlist for current mandant
 		$pidListAll = t3lib_div::intExplode(',',$pidListAll);	//Parse pidlist and store int values in array
-
+		
 		$smartyOrganisation->assign('infopage',$this->cObj->typoLink_URL(array(parameter => $organisation_rows['or_infopage'])));
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($res_pos_supervisor) != 0) {
@@ -2208,6 +2376,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$pos_id = '';
 		}
 		
+		//test bk:
 		//if there is more than one building assigned to the organisation, try to single out the one where the supervisor 'lives'
 		//in order to display that building to the citizens as a point of conctact....
 		if($pos_id > '' && $orga_bl_count > 1){
@@ -2230,12 +2399,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 						tx_civserv_building_bl_floor_mm',
 					'tx_civserv_organisation_or_building_mm.uid_local = tx_civserv_organisation.uid AND
 						tx_civserv_organisation_or_building_mm.uid_foreign = tx_civserv_building.uid AND
-						!tx_civserv_organisation.deleted AND 
-						!tx_civserv_organisation.hidden AND 
-						!tx_civserv_building.deleted AND 
-						!tx_civserv_building.hidden AND 
-						!tx_civserv_employee_em_position_mm.deleted AND 
-						!tx_civserv_employee_em_position_mm.hidden AND 
+						tx_civserv_organisation.deleted=0 AND 
+						tx_civserv_organisation.hidden=0 AND 
+						tx_civserv_building.deleted=0 AND 
+						tx_civserv_building.hidden=0 AND 
+						tx_civserv_employee_em_position_mm.deleted=0 AND 
+						tx_civserv_employee_em_position_mm.hidden=0 AND 
 						tx_civserv_organisation.or_supervisor = '.$organisation_supervisor['uid'].' AND
 						tx_civserv_employee_em_position_mm.uid_foreign = '.$pos_id.' AND
 						tx_civserv_employee_em_position_mm.ep_room = tx_civserv_room.uid AND
@@ -2249,14 +2418,17 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$orga_bl_count=1;
 			}
 		}
+		
+		
 
 		//Assign organisation office hours
 		$row_counter = 0;
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_hour) )
-		{
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_hour) ){	
+			/*
 			if($row[oh_weekday] == 10){ //monday to friday
 				unset($organisation_hours);
 			}
+			*/
 			$organisation_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
 			$organisation_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
 			$organisation_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
@@ -2272,6 +2444,15 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$imageCode = $this->getImageCode($organisation_rows[or_image],$imagepath,$this->conf['organisation-image.'],$this->pi_getLL('tx_civserv_pi1_organisation.image','Image of organisation'));
 
 		//Assign standard data
+		// test bk: include or_addinfo
+		// test bk: include or_title 
+		
+		// test bk: münster
+		$GLOBALS['TSFE']->page['title']=$organisation_rows[or_name];
+		$or_title=$organisation_rows[or_name];
+		if($organisation_rows[or_addlocation]>'')$or_title.=' ('.$organisation_rows[or_addlocation].')';
+		//test bk: münster
+		$smartyOrganisation->assign('or_title',$or_title);
 		$smartyOrganisation->assign('or_name',$organisation_rows[or_name]);
 		$smartyOrganisation->assign('or_addinfo',$organisation_rows[or_addinfo]);
 		$smartyOrganisation->assign('phone',$organisation_rows[or_telephone]);
@@ -2281,6 +2462,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyOrganisation->assign('image',$imageCode);
 
 		//Assign employee data
+		// test bk: do not show the organisationSupervisor at all - depending on a flag in the organisation-table
 		if ($organisation_rows[or_show_supervisor]) {
 			$smartyOrganisation->assign('su_title',$organisation_supervisor[em_title]);
 			$smartyOrganisation->assign('su_firstname',$organisation_supervisor[em_firstname]);
@@ -2295,6 +2477,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 
 		//Assign addresses
+		// test bk: include bl_name
 		$smartyOrganisation->assign('bl_available',$bl_available=$orga_bl_count==1? 1:0);
 		$smartyOrganisation->assign('building_name',$organisation_buildings[0][bl_name]);
 		$smartyOrganisation->assign('building_street',$organisation_buildings[0][bl_building_street]);
@@ -2306,8 +2489,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyOrganisation->assign('mail_city',$organisation_buildings[0][bl_mail_city]);
 
 		//Assign public transport information
-		$smartyOrganisation->assign('pubtrans_stop',$organisation_building[bl_pubtrans_stop]);
-		$smartyOrganisation->assign('pubtrans_link',$this->cObj->typoLink_URL(array(parameter => $organisation_building[bl_pubtrans_url])));
+		$smartyOrganisation->assign('pubtrans_stop',$organisation_buildings[0][bl_pubtrans_stop]);
+		$smartyOrganisation->assign('pubtrans_link',$this->cObj->typoLink_URL(array(parameter => $organisation_buildings[0][bl_pubtrans_url])));
 
 		//Assign template labels
 		$smartyOrganisation->assign('organisation_label',$this->pi_getLL('tx_civserv_pi1_organisation.organisation','Organisation'));
@@ -2761,7 +2944,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		if (!empty($emp_id) && !empty($pos_id) && !empty($sv_id)) {	//Email form is called from service detail page
 			$querypart_select = ', ep_email';
 			$querypart_from = ', tx_civserv_service, tx_civserv_service_sv_position_mm, tx_civserv_position, tx_civserv_employee_em_position_mm';
-			$querypart_where = 'AND tx_civserv_service.uid = ' . $sv_id . ' AND tx_civserv_employee.uid = ' . $emp_id . ' AND tx_civserv_position.uid = ' . $pos_id . '
+			$querypart_where = ' AND tx_civserv_service.uid = ' . $sv_id . ' AND tx_civserv_employee.uid = ' . $emp_id . ' AND tx_civserv_position.uid = ' . $pos_id . '
 								AND tx_civserv_service.deleted=0 AND tx_civserv_service.hidden=0
 								AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
 								AND tx_civserv_employee_em_position_mm.deleted=0 AND tx_civserv_employee_em_position_mm.hidden=0
@@ -2775,13 +2958,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 
 		if (!empty($emp_id) && empty($pos_id) && empty($sv_id)) {  //Email form is called from organisation detail page (supervisor email)
-			$querypart_where = 'AND tx_civserv_employee.uid = ' . $emp_id;
+			$querypart_where = ' AND tx_civserv_employee.uid = ' . $emp_id;
 		}
 
 		if ((!empty($pos_id) && !empty($emp_id)) && empty($sv_id)) {  //Email form is called from organisation detail page (supervisor email)
 			$querypart_select = ', ep_email';
 			$querypart_from = ', tx_civserv_position, tx_civserv_employee_em_position_mm';
-			$querypart_where = 'AND tx_civserv_employee.uid = ' . $emp_id . ' AND tx_civserv_position.uid = ' . $pos_id . '
+			$querypart_where = ' AND tx_civserv_employee.uid = ' . $emp_id . ' AND tx_civserv_position.uid = ' . $pos_id . '
 								AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
 								AND tx_civserv_employee_em_position_mm.deleted=0 AND tx_civserv_employee_em_position_mm.hidden=0
 								AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
@@ -2791,7 +2974,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res_employee = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'em_email, em_datasec as datasec' . $querypart_select,
 						'tx_civserv_employee' . $querypart_from,
-						'tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0 ' . $querypart_where,
+						'tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0' . $querypart_where,
 						'',
 						'',
 						'');
@@ -2860,7 +3043,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 							'tx_civserv_form',
 							'AND tx_civserv_form.uid = ' . $debit_form_uid . '
 							 AND tx_civserv_service.deleted=0 AND tx_civserv_service.hidden=0
-							 AND tx_civserv_form.deleted=0 AND tx_civserv_form.deleted=0
+							 AND tx_civserv_form.deleted=0 AND tx_civserv_form.hidden=0
 							 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime)
 							 	  OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime=0))
 							 	  OR (tx_civserv_service.starttime=0 AND tx_civserv_service.endtime=0) )
@@ -3316,7 +3499,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// Start or resume session
 		session_name($this->extKey);
 		session_start();
-		session_destroy();
+		#session_destroy();
 		// Save community id in session, to ensure that the id is also saved when vititing sites without the civserv extension (e.g. fulltext search)
 		if ($_SESSION['community_id'] <= '') {
 			$_SESSION['community_id'] = $this->piVars[community_id];
@@ -3325,51 +3508,52 @@ class tx_civserv_pi1 extends tslib_pibase {
 		if ($this->piVars[community_id] <= '') {
 			$this->piVars[community_id] = $_SESSION['community_id'];
 		}
-
+		
+		//test bk: Münster, name them so you can sort them!
 		if ($conf['menuServiceList']) {
-			$menuArray[] = array(
+			$menuArray['menuServiceList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.service_list','Services A - Z'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'service_list'),1,1,$pageid),
 								'ITEM_STATE' => ($this->piVars[mode]=='service_list')?'ACT':'NO');
 		}
 		if ($conf['menuCircumstanceTree']) {
-			$menuArray[] = array(
+			$menuArray['menuCircumstanceTree'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.circumstance_tree','Circumstances'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'circumstance_tree'),1,1,$pageid),
 								'ITEM_STATE' => (($this->piVars[mode]=='circumstance_tree') || ($this->piVars[mode]=='circumstance'))?'ACT':'NO');
 		}
 		if ($conf['menuUsergroupTree']) {
-			$menuArray[] = array(
+			$menuArray['menuUsergroupTree'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.usergroup_tree','Usergroups'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'usergroup_tree'),1,1,$pageid),
 								'ITEM_STATE' => (($this->piVars[mode]=='usergroup_tree') || ($this->piVars[mode]=='usergroup'))?'ACT':'NO');
 		}
 		if ($conf['menuOrganisationTree']) {
-			$menuArray[] = array(
+			$menuArray['menuOrganisationTree'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.organisation_tree','Organisation'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'organisation_tree'),1,1,$pageid),
 								'ITEM_STATE' => (($this->piVars[mode]=='organisation_tree') || ($this->piVars[mode]=='organisation'))?'ACT':'NO');
 		}
 		if ($conf['menuOrganisationList']) {
-			$menuArray[] = array(
+			$menuArray['menuOrganisationList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.organisation_list','Organisation A - Z'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'organisation_list'),1,1,$pageid),
-								'ITEM_STATE' => ($this->piVars[mode]=='organisation_list')?'ACT':'NO');
+								'ITEM_STATE' => (($this->piVars[mode]=='organisation_list') || ($this->piVars[mode]=='organisation'))?'ACT':'NO');
 		}
 		if ($conf['menuEmployeeList']) {
-			$menuArray[] = array(
+			$menuArray['menuEmployeeList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.employee_list','Employees A - Z'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'employee_list'),1,1,$pageid),
 								'ITEM_STATE' => ($this->piVars[mode]=='employee_list')?'ACT':'NO');
 		}
 		if ($conf['menuFormList']) {
-			$menuArray[] = array(
+			$menuArray['menuFormList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.form_list','Forms'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'form_list'),1,1,$pageid),
 								'ITEM_STATE' => ($this->piVars[mode]=='form_list')?'ACT':'NO');
 		}
 		if ($conf['menuTop15']) {
-			$menuArray[] = array(
+			$menuArray['menuTop15'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.top15','Top 15'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'top15'),0,1,$pageid),
 								'ITEM_STATE' => ($this->piVars[mode]=='top15')?'ACT':'NO');
@@ -3377,7 +3561,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		// get full text search id from TSconfig
 		if ($conf['fulltext_search_id'] > '') {
-			$menuArray[] = array(
+			$menuArray['menuFulltextSearch'] = array(
 							'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.fulltext_search','Fulltext Search'),
 							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(),0,1,$conf['fulltext_search_id']),
 							'ITEM_STATE' => ($GLOBALS['TSFE']->id==$conf['fulltext_search_id'])?'ACT':'NO');
@@ -3388,6 +3572,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 							'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.alternative_language','Deutsche Inhalte'),
 							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'service_list'),0,1,$conf['alternative_page_id']),
 							'ITEM_STATE' => ($GLOBALS['TSFE']->id==$conf['alternative_page_id'])?'ACT':'NO');
+		}
+		
+		
+		//test bk: münster: andere reihenfolge
+		if ($conf['menuItems_01'] > '' && $conf[$conf['menuItems_01']]) {
+			$first = $menuArray[$conf['menuItems_01']];
+			unset($menuArray[$conf['menuItems_01']]);
+			array_unshift ($menuArray, $first);
 		}
 		return $menuArray;
 	}
@@ -3487,7 +3679,70 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		return  str_replace("http://", "", t3lib_div::getIndpEnv(TYPO3_SITE_URL).parent::pi_getPageLink($pageid));
 	}
-}
+
+
+	/**
+	 * Returns link to actual page or to the page which lists organisation, services....
+	 * - useful for breadcrumbs...
+	 * Normaly used from a template userfunction.
+	 *
+	 * @param	string		content
+	 * @param	array		configuration array
+	 * @return	string		The link
+	 */
+	function getListPage($content, $conf) {
+		//we want to keep the md5-transformation on the paramenterlist, so we use
+		//pi_linkTP_keepPIvars_url instead of pi_linkTP_keepPIvars (which would deliver us the whole link with <a href="...">...</a>)
+		//plus: pi_linkTP_keepPIvars_url allows to reset the mode :-))
+		$this->pi_loadLL(); //or else the pi_getLL won't work!
+		if ($conf['pageid'] > '') {
+			$pageid = $conf['pageid'];
+		} else {
+			$pageid = $GLOBALS['TSFE']->id;
+		}
+		
+		$linkText=$GLOBALS['TSFE']->page['title']; //default
+		if($this->piVars[mode]=="organisation"){
+			$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => 'organisation_list'),1,1,$pageid);
+			$linkText=$this->pi_getLL('tx_civserv_pi1_menuarray.organisation_list','Organisation A - Z'); //this sometimes does not work!!!
+		}elseif($this->piVars[mode]=="service"){
+			$_SESSION['stored_pagelink']=$this->getActualPage($content, $conf);
+			$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => 'service_list'),1,1,$pageid);
+			$linkText=$this->pi_getLL('tx_civserv_pi1_service_list.overview','Services A - Z');
+		}elseif($this->piVars[mode]=="employee"){
+			return $_SESSION['stored_pagelink'];
+		}else{
+			return '';
+		}
+		$pageLink = t3lib_div::getIndpEnv(TYPO3_SITE_URL).$pageLink;
+		$pageLink = '<span class="brot"></span><a href="'.$pageLink.'">'.$linkText.'</a>';
+		return $pageLink;
+	}
+	
+	function getActualPage($content, $conf) {
+		$this->pi_loadLL(); //or else the pi_getLL won't work!
+		if ($conf['pageid'] > '') {
+			$pageid = $conf['pageid'];
+		} else {
+			$pageid = $GLOBALS['TSFE']->id;
+		}
+		$linkText=$GLOBALS['TSFE']->page['title'];
+		if($this->piVars[mode]=='service'){
+			$textArr=explode(":", $linkText);
+			if(count($textArr)>1)unset($textArr[0]);
+			$linkText= implode(":", $textArr);//default
+			$linkText.=':'.strlen($linkText);
+		}
+		//return link-to-actual-page
+		//second parameter is for cache and it also does the md5-thing about the parameterlist, if cache is not set the parameters are rendered in the human-readable way
+		//third parameter ist for the elemination of all piVars. must not be set in this case or else link won't work! (id of service goes missing)
+		$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => $this->piVars[mode]),1,0,$pageid);
+		$pageLink = t3lib_div::getIndpEnv(TYPO3_SITE_URL).$pageLink;
+		$pageLink = '<span class="brot"></span><a href="'.$pageLink.'">'.$linkText.'</a>';
+		return $pageLink;
+	}
+	
+}//class end
 
 
 

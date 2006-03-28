@@ -777,13 +777,14 @@ CREATE TABLE tx_civserv_conf_mandant (
 	cm_alternative_language_folder_uid int(11) unsigned DEFAULT '0' NOT NULL,
     cm_model_service_temp_uid int(11) unsigned DEFAULT '0' NOT NULL,
     cm_external_service_folder_uid int(11) unsigned DEFAULT '0' NOT NULL,
+	cm_building_folder_uid int(11) unsigned DEFAULT '0' NOT NULL,
     cm_page_uid int(11) unsigned DEFAULT '0' NOT NULL,
     cm_search_uid int(11) unsigned DEFAULT '0' NOT NULL,
 	cm_alternative_page_uid int(11) unsigned DEFAULT '0' NOT NULL,
     cm_community_type int(11) unsigned DEFAULT '0' NOT NULL,
     cm_target_email tinytext NOT NULL,
 	cm_employeesearch tinyint(3) unsigned DEFAULT '0' NOT NULL,
-    
+	cm_page_subtitle_contains_organisation_uid tinyint(3) unsigned DEFAULT '0' NOT NULL,
     PRIMARY KEY (uid)
 );
 

@@ -85,6 +85,14 @@ class tx_civserv_wizard_service_position extends t3lib_SCbase {
 	var $pArr;			// contains parts of the $bparams
 	var $PItemName;
 	var $searchitem;
+	
+		// in very big administrations it is necessary to reduce the number-of-positions-to-choose-from further (than by limit_items on a mandant-scope)
+		// in order to limit the number-of-positions-to-choose-from on an organisation-scope it is possible to make them depend on the service folders the actual editor (be_user) has in his page-tree
+		// it works as follows: the service-folder-page 'knows' to which organisational unit it belongs, via its subtitle (this has to be done by the global administrator: manually)
+	var $webmounts;						//the actual be_user's webmounts	
+	var $visible_positions; 			//the positions the actual be_user is allowed to see in accordance with his webmounts
+	var $visible_organisations;			//the organisations tied to the webmounts via the subtitle field
+	var $limit_be_user;					//true or false
 
 	/**
 	 * Initializes the wizard by getting values out of the p-array.
@@ -94,12 +102,21 @@ class tx_civserv_wizard_service_position extends t3lib_SCbase {
 	 */
 function init() {
 		global $LANG;		// Has to be in every function which uses localization data.
+		global $WEBMOUNTS;	// Variable from Typo3-Core init.php
+		$this->visible_positions=array();
+		$this->visible_organisations=array();
+			//todo: read the following from conf_mandant!!!
+		$this->limit_be_user=false;			
+			//make webmounts available to helper-functions
+		$this->webmounts=$WEBMOUNTS;	
+
 
 			// Gets parameters out of the p-array.
 		$this->P = t3lib_div::_GP('P');
 
 			// Find "mode"
 		$this->mode='db';
+		
 
 			// Is $P set? if not, read from URL. This is needed because otherwise
 			// the p-array will be lost and no data could be written back to the
@@ -398,45 +415,116 @@ function init() {
 	 */
 	function getPositions($letter)	{
 		global $LANG;
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+		global $BE_USER;
+		#$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$this->searchitem = $this->make_clean($this->searchitem);
+		
+		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
+		$mandant = $mandant_obj->get_mandant($this->service_pid);
+		
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'cm_page_subtitle_contains_organisation_uid as limit_be_user',		// SELECT ...
+			'tx_civserv_conf_mandant',							// FROM ...
+			'cm_community_id = '.$mandant,						// WHERE...
+			'', 												// GROUP BY...
+			'',   												// ORDER BY...
+			'' 													// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+		);
+		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+		$this->limit_be_user = $row['limit_be_user'];
+		
+		
 
+		
+		if($this->limit_be_user && !$BE_USER->user['admin']){
+				//get me the organisation_uids (contained in pages.subtitle)
+			$res_temp1=$GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'subtitle',			 			// SELECT ...
+				'pages',						// FROM ...
+				'uid in('.implode(',',$this->webmounts).') AND doktype=254 AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+				'', 							// GROUP BY...
+				'',   							// ORDER BY...
+				'' 								// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+			);
+			while($row1 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_temp1)){
+				if(intval($row1['subtitle']) > 0){
+					$this->visible_organisations[]=intval($row1['subtitle']);
+				}
+			}
+				//get me the positions per organisation
+			$res_temp2 = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+					'tx_civserv_position.uid',						// SELECT
+					'tx_civserv_position',							// FROM local
+					'tx_civserv_position_po_organisation_mm',		// FROM mm
+					'tx_civserv_organisation',						// FROM foreign
+					'AND tx_civserv_organisation.uid in('.implode(',',$this->visible_organisations).')
+					 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0	
+					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0', // WHERE...
+					'', 											// GROUP BY...
+					'',   											// ORDER BY...
+					'' 												// LIMIT...
+			);
+			while($row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_temp2)){
+				$this->visible_positions[]=$row2['uid'];
+			}
+		}
+		
+			//assemble bits and pieces for the requests		
+		$select_fields='tx_civserv_employee.em_name, tx_civserv_employee.em_firstname, tx_civserv_position.uid, tx_civserv_position.pid, tx_civserv_position.po_name';
+		$local_table='tx_civserv_employee';
+		$mm_table='tx_civserv_employee_em_position_mm';
+		$foreign_table='tx_civserv_position';
+		$where='AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0	
+				AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0';
+		$limited_visibility=' AND tx_civserv_position.uid in ('.implode(',', $this->visible_positions).')';				
+		if($this->limit_be_user && !$BE_USER->user['admin']){
+			$where=$limited_visibility;
+		}
 
 		if ($letter != "other" and $letter != "search") {
 				// Gets all positions with the selected letter at the
 				// beginning out of the database. Checks also if positions aren't hidden or
 				// deleted.
-			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'*',			 							// SELECT ...
-				'tx_civserv_position',						// FROM ...
-				'upper(left(po_name,1))=\''.$letter.'\' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-				'', 										// GROUP BY...
-				'po_name',   								// ORDER BY...
-				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-				);
-			} 
+			$where .= ' AND upper(left(po_name,1))=\''.$letter.'\'';
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				$select_fields,		// SELECT
+				$local_table,		// FROM local
+				$mm_table,			// FROM mm
+				$foreign_table,		// FROM foreign
+				$where,				// WHERE
+				'', 				// GROUP BY...
+				'po_name',   		// ORDER BY...
+				'' 					// LIMIT...
+			);		
+		} 
 		if ($letter == "other") {
 				// Gets all positions which don't begin with a letter
 				// out of the database. Checks also if positions aren't hidden or
 				// deleted.
-			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'*',			 							// SELECT ...
-				'tx_civserv_position',						// FROM ...
-				'!(upper(left(po_name,1))=\'A\') AND !(upper(left(po_name,1))=\'B\') AND !(upper(left(po_name,1))=\'C\') AND !(upper(left(po_name,1))=\'D\') AND !(upper(left(po_name,1))=\'E\') AND !(upper(left(po_name,1))=\'F\') AND !(upper(left(po_name,1))=\'G\') AND !(upper(left(po_name,1))=\'H\') AND !(upper(left(po_name,1))=\'I\') AND !(upper(left(po_name,1))=\'J\') AND !(upper(left(po_name,1))=\'K\') AND !(upper(left(po_name,1))=\'L\') AND !(upper(left(po_name,1))=\'M\') AND !(upper(left(po_name,1))=\'N\') AND !(upper(left(po_name,1))=\'O\') AND !(upper(left(po_name,1))=\'P\') AND !(upper(left(po_name,1))=\'Q\') AND !(upper(left(po_name,1))=\'R\') AND !(upper(left(po_name,1))=\'S\') AND !(upper(left(po_name,1))=\'T\') AND !(upper(left(po_name,1))=\'U\') AND !(upper(left(po_name,1))=\'V\') AND !(upper(left(po_name,1))=\'W\') AND !(upper(left(po_name,1))=\'X\') AND !(upper(left(po_name,1))=\'Y\') AND !(upper(left(po_name,1))=\'Z\') AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-				'', 										// GROUP BY...
-				'po_name',   								// ORDER BY...
-				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+			$where .= ' AND !(upper(left(po_name,1))=\'A\') AND !(upper(left(po_name,1))=\'B\') AND !(upper(left(po_name,1))=\'C\') AND !(upper(left(po_name,1))=\'D\') AND !(upper(left(po_name,1))=\'E\') AND !(upper(left(po_name,1))=\'F\') AND !(upper(left(po_name,1))=\'G\') AND !(upper(left(po_name,1))=\'H\') AND !(upper(left(po_name,1))=\'I\') AND !(upper(left(po_name,1))=\'J\') AND !(upper(left(po_name,1))=\'K\') AND !(upper(left(po_name,1))=\'L\') AND !(upper(left(po_name,1))=\'M\') AND !(upper(left(po_name,1))=\'N\') AND !(upper(left(po_name,1))=\'O\') AND !(upper(left(po_name,1))=\'P\') AND !(upper(left(po_name,1))=\'Q\') AND !(upper(left(po_name,1))=\'R\') AND !(upper(left(po_name,1))=\'S\') AND !(upper(left(po_name,1))=\'T\') AND !(upper(left(po_name,1))=\'U\') AND !(upper(left(po_name,1))=\'V\') AND !(upper(left(po_name,1))=\'W\') AND !(upper(left(po_name,1))=\'X\') AND !(upper(left(po_name,1))=\'Y\') AND !(upper(left(po_name,1))=\'Z\')';
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				$select_fields,		// SELECT
+				$local_table,		// FROM local
+				$mm_table,			// FROM mm
+				$foreign_table,		// FROM foreign
+				$where,				// WHERE
+				'', 				// GROUP BY...
+				'po_name',   		// ORDER BY...
+				'' 					// LIMIT...
 				);
 			}
 		if ($letter == "search" AND $this->searchitem != "") {
-				$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'*',			 							// SELECT ...
-				'tx_civserv_position',						// FROM ...
-				'po_name like \'%'.$this->searchitem.'%\' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-				'', 										// GROUP BY...
-				'po_name',   								// ORDER BY...
-				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+				$where .= ' AND po_name like \'%'.$this->searchitem.'%\'';
+				$this->res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+					$select_fields,		// SELECT
+					$local_table,		// FROM local
+					$mm_table,			// FROM mm
+					$foreign_table,		// FROM foreign
+					$where,				// WHERE				
+					'', 				// GROUP BY...
+					'po_name',   		// ORDER BY...
+					'' 					// LIMIT...
 				);
 			} 
 		$menuItems=array();
@@ -444,18 +532,16 @@ function init() {
 			// Removes all positions from other mandants so that only
 			// the positions of the actual mandant are displayed in the
 			// selectorbox.
-		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
-		$mandant = $mandant_obj->get_mandant($this->service_pid);
 		if ($this->res) {
 			while ($positions = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
-					// Checks if the uid is already selected.
 				if ($mandant_obj->get_mandant($positions['pid'])==$mandant){
+					// Checks if the uid is already selected.
 					if ($this->position_selected($positions[uid])) {
 						$selVal = 'selected="selected"';
 					} else {
 						$selVal = '';
 					}
-						$menuItems[]='<option label="'.htmlspecialchars($positions[po_name]).'" value="'.htmlspecialchars($positions[uid]).'"'.$selVal.'>'.htmlspecialchars($positions[po_name]).'</option>';
+						$menuItems[]='<option label="'.htmlspecialchars($positions[po_name]).' ('.htmlspecialchars($positions[em_name]).', '.htmlspecialchars($positions[em_firstname]).')" value="'.htmlspecialchars($positions[uid]).'"'.$selVal.'>'.htmlspecialchars($positions[po_name]).' ('.htmlspecialchars($positions[em_name]).', '.htmlspecialchars($positions[em_firstname]).')</option>';
 				}
 			}
 		}
@@ -487,8 +573,7 @@ function init() {
 	/**
 	 * Cleans up User input in Search field.
 	 *
-	  */
-	 	
+	*/
 	function make_clean($value) {
 		$legal_chars = "%[^0-9a-zA-Z‰ˆ¸ƒ÷‹ﬂ. ]%"; //allow letters, numbers & space
 		$new_value = preg_replace($legal_chars,"",$value); //replace with ""

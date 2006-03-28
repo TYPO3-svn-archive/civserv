@@ -104,9 +104,6 @@ if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
 		    $current_id=$url_query['id'];
 		}
 		
-		
-		//change b.k.: if the mandant-admin wants to see all hidden services in a list, he does so in user->tasks modul and
-		//therefore the page_id is not available, but the webmounts-array can be used instead to identify the mandant
 		if ($current_id == null){
 			//debug($GLOBALS, "globals");
 			//debug($GLOBALS['WEBMOUNTS'], "webmounts");
@@ -551,7 +548,29 @@ $TCA["tx_civserv_service"] = Array (
 							'type' => 'popup',
 					        'title' => 'LLL:EXT:civserv/res/locallang_wizard.php:tx_civserv_wizard_service_position.title',
        						'script' => 'EXT:civserv/res/class.tx_civserv_wizard_service_position.php',
-							'icon' => 'list.gif',
+							'icon' => 'EXT:civserv/list_position_framed.gif',
+							'JSopenParams' => 'height=350,width=600,status=0,menubar=0,resizable=1,location=0',
+					),
+					'serviceform_em_name' => Array(
+							'type' => 'popup',
+					        'title' => 'LLL:EXT:civserv/res/locallang_wizard.php:tx_civserv_wizard_service_position_em_name.title',
+       						'script' => 'EXT:civserv/res/class.tx_civserv_wizard_service_position_em_name.php',
+							'icon' => 'EXT:civserv/list_employee_framed.gif',
+							'JSopenParams' => 'height=350,width=600,status=0,menubar=0,resizable=1,location=0',
+					),
+					'serviceform_limited_sv_organisation' => Array(
+							'type' => 'popup',
+					        'title' => 'LLL:EXT:civserv/res/locallang_wizard.php:tx_civserv_wizard_service_position_limited_sv_organisation.title',
+       						'script' => 'EXT:civserv/res/class.tx_civserv_wizard_service_position_limited_sv_organisation.php',
+							'icon' => 'EXT:civserv/list_organisation_framed.gif',
+							'description' => 'LLL:EXT:civserv/res/locallang_wizard.php:tx_civserv_wizard_service_position_limited_sv_organisation.title',
+							'JSopenParams' => 'height=350,width=600,status=0,menubar=0,resizable=1,location=0',
+					),
+					'serviceform_information' => Array(
+							'type' => 'popup',
+					        'title' => 'LLL:EXT:civserv/res/locallang_wizard.php:tx_civserv_wizard_service_position_information.title',
+       						'script' => 'EXT:civserv/res/class.tx_civserv_wizard_service_position_information.php',
+							'icon' => 'icon_note.gif',
 							'JSopenParams' => 'height=350,width=600,status=0,menubar=0,resizable=1,location=0',
 					),
 				),
@@ -582,23 +601,6 @@ $TCA["tx_civserv_service"] = Array (
 				),
 			)
 		),
-		/* 
-		// don't like the wizard? switch back to old times by uncommenting this and putting the above into comments 
-		"sv_organisation" => Array (
-			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_organisation",
-			"config" => Array (
-				"type" => "select",
-				"foreign_table" => "tx_civserv_organisation",
-				"foreign_table_where" => "ORDER BY tx_civserv_organisation.or_name",
-				"itemsProcFunc" => "tx_civserv_mandant->limit_items",
-				"size" => 5,
-				"minitems" => 0,
-				"maxitems" => 50,
-				"MM" => "tx_civserv_service_sv_organisation_mm",
-			)
-		),
-		*/
 		"sv_navigation" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_navigation",
@@ -621,7 +623,6 @@ $TCA["tx_civserv_service"] = Array (
 				"type" => "select",
 				"foreign_table" => "tx_civserv_region",
 				"foreign_table_where" => "ORDER BY tx_civserv_region.re_name",
-				"itemsProcFunc" => "tx_civserv_mandant->limit_region_items",
 				"size" => 5,
 				"minitems" => 0,
 				"maxitems" => 50,
@@ -1174,7 +1175,7 @@ $TCA["tx_civserv_building"] = Array (
 				"type" => "input",
 				"size" => "30",
 				"max" => "255",
-				#"eval" => "required",
+				"eval" => "required",
 			)
 		),
 		"bl_mail_pob" => Array (
@@ -1697,7 +1698,7 @@ $TCA["tx_civserv_employee"] = Array (
 				"allowed" => "tx_civserv_position",
 				"show_thumbs" => 0,
 				"minitems" => 0,
-				"maxitems" => 50,
+				"maxitems" => 1000,
 				"MM" => "tx_civserv_employee_em_position_mm",
                 "wizards" => Array(
 					"_PADDING" => 2,
@@ -1852,7 +1853,6 @@ $TCA["tx_civserv_organisation"] = Array (
 			"displayCond" => "FIELD:or_supervisor:REQ:true",
 			"config" => Array (
 				"type" => "check",
-				"default" => "1"
 			)
 		),
 		"or_hours" => Array (
@@ -2004,7 +2004,7 @@ $TCA["tx_civserv_organisation"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, or_number, or_code, or_name, or_synonym1, or_synonym2, or_synonym3, or_supervisor, or_show_supervisor, or_hours, or_telephone, or_fax, or_email, or_image, or_infopage, or_addinfo, or_addlocation;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], or_structure, or_building")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, or_number, or_code, or_name, or_synonym1, or_synonym2, or_synonym3, or_supervisor, or_show_supervisor, or_hours, or_telephone, or_fax, or_email, or_image, or_infopage, or_addlocation, or_addinfo;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], or_structure, or_building")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")
@@ -2641,9 +2641,31 @@ $TCA["tx_civserv_employee_em_position_mm"] = Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_room",
 			"config" => Array (
-				"type" => "select",
-				"itemsProcFunc" => "tx_civserv_oepupdate->ep_room2",
+				"type" => "group",
+				"internal_type" => "db",
+				"size" => 1,
+				"allowed" => "tx_civserv_room",
+				"show_thumbs" => 0,
+				"minitems" => 0,
+				"maxitems" => 1,
+				//"MM" => "tx_civserv_employee_em_position_mm",
+				
+				//"type" => "select",
+				//"items" => Array("", 0),
+				//"itemsProcFunc" => "tx_civserv_oepupdate->ep_room2",
 				//"noTableWrapping" => 1,
+				
+				"wizards" => Array(
+					"_PADDING" => 2,
+					"_VERTICAL" => 1,
+					'similarservices' => Array(
+							'type' => 'popup',
+					        'title' => 'LLL:EXT:civserv/res/locallang_wizard.php:tx_civserv_wizard_employee_position_room.title',
+       						'script' => 'EXT:civserv/res/class.tx_civserv_wizard_employee_position_room.php',
+							'icon' => 'list.gif',
+							'JSopenParams' => 'height=350,width=600,status=0,menubar=0,resizable=1,location=0',
+					),
+				),
 			),
 		),
 		"ep_telephone" => Array (
@@ -3338,6 +3360,16 @@ $TCA["tx_civserv_conf_mandant"] = Array (
 				"eval" => "required",
 			)
 		),
+		"cm_building_folder_uid" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_conf_mandant.cm_building_folder_uid",
+			"config" => Array (
+				"type" => "input",
+				"size" => "30",
+				"max" => "255",
+				"eval" => "required",
+			)
+		),
 		"cm_page_uid" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_conf_mandant.cm_page_uid",
@@ -3397,10 +3429,17 @@ $TCA["tx_civserv_conf_mandant"] = Array (
 			"config" => Array (
 				"type" => "check",
 			)
-		),		
+		),
+		"cm_page_subtitle_contains_organisation_uid" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_conf_mandant.cm_subtitle_contains_organisation",
+			"config" => Array (
+				"type" => "check",
+			)
+		),			
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, cm_community_name, cm_community_id, cm_uid, cm_circumstance_uid, cm_usergroup_uid, cm_organisation_uid, cm_service_folder_uid, cm_alternative_language_folder_uid, cm_external_service_folder_uid, cm_model_service_temp_uid, cm_page_uid, cm_search_uid, cm_alternative_page_uid, cm_target_email, cm_employeesearch, cm_community_type")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, cm_community_name, cm_community_id, cm_uid, cm_circumstance_uid, cm_usergroup_uid, cm_organisation_uid, cm_service_folder_uid, cm_alternative_language_folder_uid, cm_external_service_folder_uid, cm_building_folder_uid, cm_model_service_temp_uid, cm_page_uid, cm_alternative_page_uid, cm_search_uid, cm_target_email, cm_employeesearch, cm_page_subtitle_contains_organisation_uid, cm_community_type")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")
