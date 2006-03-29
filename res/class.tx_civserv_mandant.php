@@ -56,8 +56,6 @@ class tx_civserv_mandant{
 	*/
 	function main(&$params, &$pObj) {
 		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
-		#debug($pObj, '$pObj in main');
-		#debug($params, '$params in main');
 		if ($pid > 0) $mandant = $this->get_mandant($pid);
 		$params['items'][0] = Array ($mandant, $mandant);
 	}
@@ -217,15 +215,12 @@ class tx_civserv_mandant{
 			$banned_regions[]=$row['uid_foreign'];
 		}
 		for($i=0; $i<count($params['items']); $i++){
-			#debug($params['items'][$i][0], 'region_name');
-			#debug($params['items'][$i][1], 'region_id');
 			if(!in_array($params['items'][$i][1], $banned_regions)){
 				$allowed_regions[]=$params['items'][$i];
 			}
 		}
 		$params['items']=$allowed_regions;
 		if ($empty_entry) $params['items']=array_merge(Array(""),$params['items']);
-		debug($params, 'params!');
 	}
 
 	
@@ -268,16 +263,10 @@ class tx_civserv_mandant{
 		//additional queries by b.kohorst: get rid of 'children' or else endless loops can be constructed in the BE (which will kill the webserver!)
 		//affected are all tables which contain hierarchical references to themselves (i.e. organisations, usergroups and circumstances
 		$critical = $this->get_critical_table($table);
-		//debug($critical, 'rückgabewert der fkt get_critical_table');
 		if(is_array($critical)){//either false or array
 			if (isset($source_array['field']) && $source_array['field']==$critical['field']){	//either or_structure or nav_structure	
-				#debug($source_array, 'source_array');
-				#debug($target_array,'target_array vor löschen');
-				
 				//get rid of the 'children' --> recursive!!!!
-				
 				$forbidden_uids=array();
-				#debug($source_array['row']['uid'], 'source_array_uid');
 				if(substr($source_array['row']['uid'],0,3)!='NEW'){//or else the following select will crash!
 					$forbidden_uids[]=$source_array['row']['uid'];
 					//the following two lines are equivalent to each other:
@@ -286,12 +275,10 @@ class tx_civserv_mandant{
 					
 					$this->get_forbidden($res, &$forbidden_uids, $source_array['config']['MM']);
 				}
-				//debug($forbidden_uids, 'forbidden_uids');
 				
 				$kill_pos=array();
 				$length = count($target_array);
 				for ($j = 0; $j < $length; $j++){
-					//debug($target_array[$j][1], $source_array['row']['uid']);
 					if ($target_array[$j][1] == $source_array['row']['uid']) {
 						$kill_pos[] = $j;
 					}
@@ -301,13 +288,11 @@ class tx_civserv_mandant{
 						}
 					}
 				}
-				//debug($pos,'Posititon');
 				if (count($kill_pos)>0){
 					foreach($kill_pos as $pos){
 						unset($target_array[$pos]);
 					}
 				} 
-				//debug ($target_array,'target_array nach löschen');
 			}	//field
 		}	//table
 		return $target_array;
@@ -330,7 +315,6 @@ class tx_civserv_mandant{
 			array_push($valid_nav, $value[1]);
 		}
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) { 	
-			//debug($source_array);
 			if (in_array($row['uid'],$valid_nav))
 				array_push($target_array,array($row['nv_name'], $row['uid']));
 			}	
