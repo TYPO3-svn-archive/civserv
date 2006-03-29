@@ -1781,7 +1781,6 @@ tx_civserv_employee.em_address,
 			//$service_employees[$i]['description'] = $this->formatStr($this->local_cObj->stdWrap($service_employees[$i]['description'],$this->conf['ep_sv_description_stdWrap.']));
 			$service_employees[$i]['description'] = nl2br($service_employees[$i]['description']);
 		}
-		debug($service_employees, 'employees mit oder ohne anrede?');
 		$smartyService->assign('employees',$service_employees);
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($res_transactions) > 0) {

@@ -225,6 +225,7 @@ class tx_civserv_mandant{
 		}
 		$params['items']=$allowed_regions;
 		if ($empty_entry) $params['items']=array_merge(Array(""),$params['items']);
+		debug($params, 'params!');
 	}
 
 	
