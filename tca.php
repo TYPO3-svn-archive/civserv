@@ -1176,7 +1176,6 @@ $TCA["tx_civserv_building"] = Array (
 				"type" => "input",
 				"size" => "30",
 				"max" => "255",
-				"eval" => "required",
 			)
 		),
 		"bl_mail_pob" => Array (

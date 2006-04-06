@@ -38,6 +38,9 @@ english_flag = typo3conf/ext/civserv/templates/images/bgs/gb.gif
 # Empty community_id
 community_id = 
 
+# default mode
+mode = service_list
+
 # How deep to dig for pids under each entry
 recursive = 10
 

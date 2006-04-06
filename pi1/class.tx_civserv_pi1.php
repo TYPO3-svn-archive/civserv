@@ -1852,7 +1852,10 @@ tx_civserv_employee.em_address,
 		} else {
 			$descr_short = trim($model_service[ms_descr_short]);
 		}
-		$smartyService->assign('descr_short',$this->formatStr($this->local_cObj->stdWrap($descr_short,$this->conf['sv_descr_short_stdWrap.'])));
+		$descr_short = $this->formatStr($this->local_cObj->stdWrap($descr_short,$this->conf['sv_descr_short_stdWrap.']));
+		if(trim(str_replace('&nbsp;', '', strip_tags($descr_short))) > ''){
+			$smartyService->assign('descr_short', descr_short);
+		}
 
 		//Long description
 		$descr_long_ms = '';
@@ -1862,7 +1865,10 @@ tx_civserv_employee.em_address,
 		$descr_long = trim($service_common[sv_descr_long]);
 		$descr_long = $this->pi_getEditIcon($descr_long,'sv_descr_long',$this->pi_getLL('tx_civserv_pi1_service.description_long','Long description'),$service_common,'tx_civserv_service');
 		$descr_long = $descr_long_ms . $descr_long;
-		$smartyService->assign('descr_long',$this->formatStr($this->local_cObj->stdWrap($descr_long,$this->conf['sv_descr_long_stdWrap.'])));
+		$descr_long = $this->formatStr($this->local_cObj->stdWrap($descr_long,$this->conf['sv_descr_long_stdWrap.']));
+		if(trim(str_replace('&nbsp;', '', strip_tags($descr_long))) > ''){
+			$smartyService->assign('descr_long',$descr_long);
+		}
 
 		//Image text
 		if ($service_common[sv_image_text] != "") {
@@ -1893,9 +1899,10 @@ tx_civserv_employee.em_address,
 		} else {
 			$fees = trim($model_service[ms_fees]);
 		}
-		//test bk: support htmlarea in not desplaying empty labels; todo: transmit this to other sections!!!
-		if(strip_tags($fees) > '' && strip_tags($documents) != '&nbsp;'){
-			$smartyService->assign('fees',$this->formatStr($this->local_cObj->stdWrap($fees,$this->conf['sv_fees_stdWrap.'])));
+		$fees=$this->formatStr($this->local_cObj->stdWrap($fees,$this->conf['sv_fees_stdWrap.']));
+		//test bk: support htmlarea in NOT desplaying labels for empty sections;
+		if(trim(str_replace('&nbsp;', '', strip_tags($fees))) > ''){
+			$smartyService->assign('fees', $fees);
 		}
 
 		//Documents
@@ -1905,14 +1912,19 @@ tx_civserv_employee.em_address,
 		} else {
 			$documents = trim($model_service[ms_documents]);
 		}
-		if(strip_tags($documents) > '' && strip_tags($documents) != '&nbsp;'){
-			$smartyService->assign('documents',$this->formatStr($this->local_cObj->stdWrap($documents,$this->conf['sv_documents_general_stdWrap.'])));
+		$documents=$this->formatStr($this->local_cObj->stdWrap($documents,$this->conf['sv_documents_general_stdWrap.']));
+		if(trim(str_replace('&nbsp;', '', strip_tags($documents))) > ''){
+			$smartyService->assign('documents', $documents);
 		}
 
 		//Legal local
 		$legal_local = $this->pi_getEditIcon($service_common[sv_legal_local],'sv_legal_local',$this->pi_getLL('tx_civserv_pi1_service.legal_local','Legal foundation (local)'),$service_common,'tx_civserv_service');
-		$smartyService->assign('legal_local',$this->formatStr($this->local_cObj->stdWrap($legal_local,$this->conf['sv_legel_local_general_stdWrap.'])));
-
+		$legal_local = $this->formatStr($this->local_cObj->stdWrap($legal_local,$this->conf['sv_legel_local_general_stdWrap.']));
+		if(trim(str_replace('&nbsp;', '', strip_tags($legal_local))) > ''){
+			$smartyService->assign('legal_local', $legal_local);
+		}
+		
+		
 		//Legal global
 		if ($service_common[sv_legal_global] != "") {
 			$legal_global = trim($service_common[sv_legal_global]);
@@ -1920,7 +1932,10 @@ tx_civserv_employee.em_address,
 		} else {
 			$legal_global = trim($model_service[ms_legal_global]);
 		}
-		$smartyService->assign('legal_global',$this->formatStr($this->local_cObj->stdWrap($legal_global,$this->conf['sv_legal_global_general_stdWrap.'])));
+		$legal_global=$this->formatStr($this->local_cObj->stdWrap($legal_global,$this->conf['sv_legal_global_general_stdWrap.'])); 
+		if(trim(str_replace('&nbsp;', '', strip_tags($legal_global))) > ''){
+			$smartyService->assign('legal_global', $legal_global);
+		}
 
 		//Similar services
 		if ($this->conf['relatedTopics']) {

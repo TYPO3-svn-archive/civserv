@@ -107,7 +107,7 @@ plugin.tx_civserv_pi1 {
 	}
 
 	# Default mode in the service list, including the keyword search
-	_DEFAULT_PI_VARS.mode = service_list
+	_DEFAULT_PI_VARS.mode = {$mode}
 	
 	_DEFAULT_PI_VARS.community_id = {$community_id}
 
