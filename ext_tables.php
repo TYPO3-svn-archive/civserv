@@ -383,7 +383,7 @@ $TCA["tx_civserv_organisation"] = Array (
 			"fe_group" => "fe_group",
 		),
 		"dynamicConfigFile" => t3lib_extMgm::extPath($_EXTKEY)."tca.php",
-		"iconfile" => t3lib_extMgm::extRelPath($_EXTKEY)."icon_organisation.gif",
+		"iconfile" => t3lib_extMgm::extRelPath($_EXTKEY)."icon_tx_civserv_organisation.gif",
 	),
 	"feInterface" => Array (
 		"fe_admin_fieldList" => "hidden, fe_group, or_number, or_code, or_name, or_hours, or_telephone, or_fax, or_email, or_image, or_infopage, or_addinfo, or_addlocation, or_structure, or_building",

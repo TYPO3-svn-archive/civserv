@@ -242,39 +242,23 @@ class tx_civserv_mandant{
 		if(array_key_exists("",$params['items'])){
 			$empty_entry=1;
 		} $empty_entry=0;
-		debug($params, 'params!');
 		$allowed_buildings=array();
 		$allowed_bl_uids=array();
-		#if ($pid > 0) $mandant_uid = $this->get_mandant_uid($pid);
-		#debug($mandant_uid, 'Mandanten-Uid');
-		debug($params[row][uid], 'UID der Organisation');
-		
-		$res_buildings = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', ' tx_civserv_organisation_or_building_mm', 'uid_local='.$params[row][uid],'','','','');
-		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_buildings)){
-			$allowed_bl_uids[]=$row['uid_foreign'];
-		}
-		debug($allowed_bl_uids, '$allowed_bl_uids');
-		
-		
-		for($i=0; $i<count($params['items']); $i++){
-			debug($params['items'][$i][1], 'params_items_$i_1');
-			if(in_array($params['items'][$i][1], $allowed_bl_uids)){
-				$allowed_buildings[]=$params['items'][$i];
+		debug($params['row']['uid'], 'the bloody uid!!!');
+		if(substr($params['row']['uid'],0,3)!='NEW'){ //or else the following select will crash!!
+			$res_buildings = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', ' tx_civserv_organisation_or_building_mm', 'uid_local='.$params[row][uid],'','','','');
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_buildings)){
+				$allowed_bl_uids[]=$row['uid_foreign'];
+			}
+			for($i=0; $i<count($params['items']); $i++){
+				if(in_array($params['items'][$i][1], $allowed_bl_uids)){
+					$allowed_buildings[]=$params['items'][$i];
+				}
 			}
 		}
-		
-		
 		$params['items']=$allowed_buildings;
 		if ($empty_entry) $params['items']=array_merge(Array(""),$params['items']);
 	}
-
-
-
-
-
-
-
-
 
 	
 	/*
