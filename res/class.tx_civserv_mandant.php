@@ -244,7 +244,6 @@ class tx_civserv_mandant{
 		} $empty_entry=0;
 		$allowed_buildings=array();
 		$allowed_bl_uids=array();
-		debug($params['row']['uid'], 'the bloody uid!!!');
 		if(substr($params['row']['uid'],0,3)!='NEW'){ //or else the following select will crash!!
 			$res_buildings = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', ' tx_civserv_organisation_or_building_mm', 'uid_local='.$params[row][uid],'','','','');
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_buildings)){

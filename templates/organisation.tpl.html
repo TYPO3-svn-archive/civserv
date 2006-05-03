@@ -16,12 +16,12 @@
 					{$building.bl_name_to_show}<br />
 				<!--{/if}-->
 				{$building.bl_building_street}<br/>
-				{$building.bl_building_postcode}&nbsp;{$building.bl_building_city}<br /><br />
+				{$building.bl_building_postcode}&nbsp;{$building.bl_building_city}<br />
 			<!--{/if}-->
-			<!--{if $pubtrans_stop != ""}-->
-				<strong>{$pub_trans_info_label}:</strong>
-				<!--{if $pubtrans_link != ""}-->
-					{$pub_trans_stop_label}:&nbsp;<a href="{$building.bl_pubtrans_link}">{$building.bl_pubtrans_stop}</a><br /><br />
+			<!--{if $building.bl_pubtrans_stop != ""}-->
+				{$pub_trans_info_label}:
+				<!--{if $building.bl_pubtrans_link != ""}-->
+					{$pub_trans_stop_label}:&nbsp;<a href="{$building.bl_pubtrans_link}" target="_blank">{$building.bl_pubtrans_stop}</a><br /><br />
 				<!--{else}-->
 					{$pub_trans_stop_label}:&nbsp;{$building.bl_pubtrans_stop}<br /><br />
 				<!--{/if}-->

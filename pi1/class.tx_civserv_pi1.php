@@ -1045,11 +1045,7 @@ tx_civserv_employee.em_address,
 			$forms[$actual_category][$form_row_counter]['name'] = $this->pi_getEditIcon($form_row[name],'fo_name',$this->pi_getLL('tx_civserv_pi1_form_list.name','form name'),$form_row,'tx_civserv_form');
 			$forms[$actual_category][$form_row_counter]['descr'] = $this->formatStr($this->local_cObj->stdWrap($this->pi_getEditIcon(trim($form_row[descr]),'fo_descr',$this->pi_getLL('tx_civserv_pi1_form_list.description','form description'),$form_row,'tx_civserv_form'),$this->conf['fo_name_stdWrap.']));
 			if ($form_row[checkbox] == 1) {
-				debug($form_row[url], 'url aus db');
-				//Attention: change here:
-				#$forms[$actual_category][$form_row_counter]['url'] = $this->cObj->typoLink($forms[$actual_category][$form_row_counter]['name'], array(parameter => $form_row[url]));
 				$forms[$actual_category][$form_row_counter]['url'] = $this->cObj->typoLink_URL(array(parameter => $form_row[url]));
-				debug($forms[$actual_category][$form_row_counter]['url'], 'url typolinked');
 			} else {
 				$forms[$actual_category][$form_row_counter]['url'] = $folder_forms . $form_row[file];
 			}
@@ -2424,19 +2420,7 @@ tx_civserv_employee.em_address,
 		$orga_bl_count=0;
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_building)){
 			$organisation_buildings[$orga_bl_count]=$row;
-			$organisation_buildings[$orga_bl_count]['pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
-			/*
-			$organisation_buildings[$orga_bl_count]['mail_street'] = $row['bl_mail_street'];
-			$organisation_buildings[$orga_bl_count]['mail_pob'] = $row['bl_mail_pob'];
-			$organisation_buildings[$orga_bl_count]['mail_postcode'] = $row['bl_mail_postcode'];
-			$organisation_buildings[$orga_bl_count]['mail_city'] = $row['bl_mail_city'];
-			$organisation_buildings[$orga_bl_count]['name'] = $row['bl_name'];
-			$organisation_buildings[$orga_bl_count]['building_street'] = $row['bl_building_street'];
-			$organisation_buildings[$orga_bl_count]['building_postcode'] = $row['bl_building_postcode'];
-			$organisation_buildings[$orga_bl_count]['building_city'] = $row['bl_building_city'];
-			$organisation_buildings[$orga_bl_count]['pubtrans_stop'] = $row['bl_pubtrans_stop'];
-			$organisation_buildings[$orga_bl_count]['pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
-			*/
+			$organisation_buildings[$orga_bl_count]['bl_pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
 			$orga_bl_count++;
 		}
 
@@ -2483,12 +2467,12 @@ tx_civserv_employee.em_address,
 					'');
 			if($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_bl_supervisor)){ //there must not be more than 1 buildings in which the organisation-supervisor resides!
 				$organisation_buildings[0] = $row;
-				$organisation_buildings[0]['pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
+				$organisation_buildings[0]['bl_pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
 				$organisation_buildings = array_slice ($organisation_buildings, 0, 1); 
 			}
 		}
 		
-		//exception (controlled by conf['selectBuildingsToShow']
+		//EXCEPTION (controlled by conf['selectBuildingsToShow']
 		//sometimes more than one building has to be published in FE
 		//in this case check if any particular buildings have been selected and than reset the buildings for the organisation
 		if($orga_bl_count > 1 && $this->conf['selectBuildingsToShow']){
@@ -2507,25 +2491,25 @@ tx_civserv_employee.em_address,
 			$organisation_buildings_temp=array();
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_building_temp)){
 				$organisation_buildings_temp[$orga_bl_count_temp]=$row;
-				$organisation_buildings_temp[$orga_bl_count_temp]['pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
-				/*
-				$organisation_buildings_temp[$orga_bl_count_temp]['mail_street'] = $row['bl_mail_street'];
-				$organisation_buildings_temp[$orga_bl_count_temp]['mail_pob'] = $row['bl_mail_pob'];
-				$organisation_buildings_temp[$orga_bl_count_temp]['mail_postcode'] = $row['bl_mail_postcode'];
-				$organisation_buildings_temp[$orga_bl_count_temp]['mail_city'] = $row['bl_mail_city'];
-				$organisation_buildings_temp[$orga_bl_count_temp]['name'] = $row['bl_name'];
-				$organisation_buildings_temp[$orga_bl_count_temp]['building_street'] = $row['bl_building_street'];
-				$organisation_buildings_temp[$orga_bl_count_temp]['building_postcode'] = $row['bl_building_postcode'];
-				$organisation_buildings_temp[$orga_bl_count_temp]['building_city'] = $row['bl_building_city'];
-				$organisation_buildings_temp[$orga_bl_count_temp]['pubtrans_stop'] = $row['bl_pubtrans_stop'];
-				$organisation_buildings_temp[$orga_bl_count_temp]['pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
-				*/
+				$organisation_buildings_temp[$orga_bl_count_temp]['bl_pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
 				$orga_bl_count_temp++;
 			}
 			if($orga_bl_count_temp > 0){
 				$organisation_buildings = array();  //have to reset this!!!
 				$organisation_buildings = $organisation_buildings_temp;
+				if($orga_bl_count_temp > 1){
+					//eleminate pubtrans etc.... 
+					//evtl. you'll have to eleminate even more information referring to an individual building 
+					//and therefore not valid in case of more than one building.....
+					/*
+					foreach($organisation_buildings as $building){
+						$building[bl_pubtrans_stop]="";
+						$buidling[bl_pubtrans_url]="";
+					}
+					*/
+				}
 			}else{
+				//stick to the one building identified by the default procedure
 				$organisation_buildings = array_slice ($organisation_buildings, 0, 1);   
 			}
 		}
@@ -2556,11 +2540,10 @@ tx_civserv_employee.em_address,
 		// test bk: include or_addinfo
 		// test bk: include or_title 
 		
-		// test bk: münster
 		$GLOBALS['TSFE']->page['title']=$organisation_rows[or_name];
+		// test bk: münster - generate or_title from or_name (is only displayed in münster)
 		$or_title=$organisation_rows[or_name];
 		if($organisation_rows[or_addlocation]>'')$or_title.=' ('.$organisation_rows[or_addlocation].')';
-		//test bk: münster
 		$smartyOrganisation->assign('or_title',$or_title);
 		$smartyOrganisation->assign('or_name',$organisation_rows[or_name]);
 		$smartyOrganisation->assign('or_addinfo',$organisation_rows[or_addinfo]);
@@ -2588,23 +2571,8 @@ tx_civserv_employee.em_address,
 		//Assign addresses
 		// test bk: include bl_name
 		$smartyOrganisation->assign('bl_available',$bl_available=$orga_bl_count>0? 1:0);
+		debug($organisation_buildings, 'die Gebäude: ');
 		$smartyOrganisation->assign('buildings',$organisation_buildings);
-		/*
-		$smartyOrganisation->assign('building_name',$organisation_buildings[0][bl_name]);
-		$smartyOrganisation->assign('building_street',$organisation_buildings[0][bl_building_street]);
-		$smartyOrganisation->assign('building_postcode',$organisation_buildings[0][bl_building_postcode]);
-		$smartyOrganisation->assign('building_city',$organisation_buildings[0][bl_building_city]);
-		$smartyOrganisation->assign('mail_street',$organisation_buildings[0][bl_mail_street]);
-		$smartyOrganisation->assign('mail_pob',$organisation_buildings[0][bl_mail_pob]);
-		$smartyOrganisation->assign('mail_postcode',$organisation_buildings[0][bl_mail_postcode]);
-		$smartyOrganisation->assign('mail_city',$organisation_buildings[0][bl_mail_city]);
-		*/
-
-		/*
-		//Assign public transport information
-		$smartyOrganisation->assign('pubtrans_stop',$organisation_buildings[0][bl_pubtrans_stop]);
-		$smartyOrganisation->assign('pubtrans_link',$this->cObj->typoLink_URL(array(parameter => $organisation_buildings[0][bl_pubtrans_url])));
-		*/
 		
 		//Assign template labels
 		$smartyOrganisation->assign('organisation_label',$this->pi_getLL('tx_civserv_pi1_organisation.organisation','Organisation'));
