@@ -223,6 +223,59 @@ class tx_civserv_mandant{
 		if ($empty_entry) $params['items']=array_merge(Array(""),$params['items']);
 	}
 
+
+
+
+	/*
+	* in systems where the organisation and building data are imported from external database, there are 
+	* sometimes to many buildings related to a given organisation.
+	* we want to enable the editors to chose from these buildings the ones that are to be published in FE 
+	*
+	*
+	* @param	string		$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API
+	* @param	string		$pObj is a reference to the calling object
+	* @return	void
+	* @see manipulate_array, additional_remove
+	*/
+	function limit_building_items(&$params, &$pObj){
+		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
+		if(array_key_exists("",$params['items'])){
+			$empty_entry=1;
+		} $empty_entry=0;
+		debug($params, 'params!');
+		$allowed_buildings=array();
+		$allowed_bl_uids=array();
+		#if ($pid > 0) $mandant_uid = $this->get_mandant_uid($pid);
+		#debug($mandant_uid, 'Mandanten-Uid');
+		debug($params[row][uid], 'UID der Organisation');
+		
+		$res_buildings = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', ' tx_civserv_organisation_or_building_mm', 'uid_local='.$params[row][uid],'','','','');
+		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_buildings)){
+			$allowed_bl_uids[]=$row['uid_foreign'];
+		}
+		debug($allowed_bl_uids, '$allowed_bl_uids');
+		
+		
+		for($i=0; $i<count($params['items']); $i++){
+			debug($params['items'][$i][1], 'params_items_$i_1');
+			if(in_array($params['items'][$i][1], $allowed_bl_uids)){
+				$allowed_buildings[]=$params['items'][$i];
+			}
+		}
+		
+		
+		$params['items']=$allowed_buildings;
+		if ($empty_entry) $params['items']=array_merge(Array(""),$params['items']);
+	}
+
+
+
+
+
+
+
+
+
 	
 	/*
 	* This function executes the limiting functionality to an element array for a given mandant

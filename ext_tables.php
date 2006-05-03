@@ -371,7 +371,7 @@ $TCA["tx_civserv_employee"] = Array (
 
 $TCA["tx_civserv_organisation"] = Array (
 	"ctrl" => Array (
-		"title" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_organisation",
+		"title" => "LLL:EXT:civserv/locallang_db.php:",
 		"label" => "or_name",
 		"tstamp" => "tstamp",
 		"crdate" => "crdate",
@@ -383,7 +383,7 @@ $TCA["tx_civserv_organisation"] = Array (
 			"fe_group" => "fe_group",
 		),
 		"dynamicConfigFile" => t3lib_extMgm::extPath($_EXTKEY)."tca.php",
-		"iconfile" => t3lib_extMgm::extRelPath($_EXTKEY)."icon_tx_civserv_organisation.gif",
+		"iconfile" => t3lib_extMgm::extRelPath($_EXTKEY)."icon_organisation.gif",
 	),
 	"feInterface" => Array (
 		"fe_admin_fieldList" => "hidden, fe_group, or_number, or_code, or_name, or_hours, or_telephone, or_fax, or_email, or_image, or_infopage, or_addinfo, or_addlocation, or_structure, or_building",
@@ -486,6 +486,29 @@ $TCA["tx_civserv_navigation"] = Array (
 	)
 );
 
+
+$TCA["tx_civserv_category"] = Array (
+	"ctrl" => Array (
+		"title" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_category",
+		"label" => "ca_name",
+		"tstamp" => "tstamp",
+		"crdate" => "crdate",
+		"cruser_id" => "cruser_id",
+		"sortby" => "sorting",
+		#"default_sortby" => "ORDER BY ca_name",
+		"delete" => "deleted",
+		"enablecolumns" => Array (
+			"disabled" => "hidden",
+			"fe_group" => "fe_group",
+		),
+		"dynamicConfigFile" => t3lib_extMgm::extPath($_EXTKEY)."tca.php",
+		"iconfile" => t3lib_extMgm::extRelPath($_EXTKEY)."icon_tx_civserv_category.gif",
+	),
+	"feInterface" => Array (
+		"fe_admin_fieldList" => "hidden, fe_group, ca_name",
+	)
+);
+
 /*
 $TCA["tx_civserv_building_bl_floor_mm"] = Array (
 	"ctrl" => Array (
@@ -567,7 +590,7 @@ t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_floor','EXT:civserv/CSH/locallang_
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_form','EXT:civserv/CSH/locallang_csh_form.php');
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_model_service','EXT:civserv/CSH/locallang_csh_model_service.php');
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_navigation','EXT:civserv/CSH/locallang_csh_navigation.php');
-t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_organisation','EXT:civserv/CSH/locallang_csh_organisation.php');
+t3lib_extMgm::addLLrefForTCAdescr('','EXT:civserv/CSH/locallang_csh_organisation.php');
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_search_word','EXT:civserv/CSH/locallang_csh_search_word.php');
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_service_sv_position_mm','EXT:civserv/CSH/locallang_csh_service_sv_position_mm.php');
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_service','EXT:civserv/CSH/locallang_csh_service.php');

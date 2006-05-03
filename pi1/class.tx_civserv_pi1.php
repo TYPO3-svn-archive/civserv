@@ -1,6 +1,6 @@
 <?php
 /***************************************************************
-*  Copyright notice
+*  Copyright notice MS-TEST
 *
 *  (c) 2004 ProService (osiris@ercis.de)
 *  All rights reserved
@@ -245,7 +245,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 				case 'form_list':
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_form_list.form_list','Forms');
 					$template = $this->conf['tpl_form_list'];
-					$accurate = $this->formList($smartyObject,$this->piVars[id],$this->piVars[id]?$this->conf['abcBarAtFormList_orga']:$this->conf['abcBarAtFormList_all'],$this->conf['searchAtFormList'],$this->conf['topAtFormList'],$this->conf['orgaList']);
+					#$accurate = $this->formList($smartyObject,$this->piVars[id],$this->piVars[id]?$this->conf['abcBarAtFormList_orga']:$this->conf['abcBarAtFormList_all'],$this->conf['searchAtFormList'],$this->conf['topAtFormList'],$this->conf['orgaList']);
+					$accurate = $this->formList($smartyObject,$this->piVars[id],$this->piVars[id]?$this->conf['abcBarAtFormList_orga']:$this->conf['abcBarAtFormList_all'],$this->conf['orderFormsByCategory'],$this->conf['searchAtFormList'],$this->conf['topAtFormList'],$this->conf['orgaList']);
 					break;
 
 				case 'top15':
@@ -604,7 +605,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$table = 'tx_civserv_navigation';
 				break;
 			case 'organisation' :
-				$heading = $this->pi_getLL('tx_civserv_pi1_service_list.organisation','Organisation');
+				// baustelle!
+				$heading = $this->pi_getLL('tx_civserv_pi1_organisation_list.organisation_list','Organisation');
 				// test bk: make it fitting for ms layout
 				#$heading = $this->pi_getLL('tx_civserv_pi1_organisation_list.organisation_list.heading','Organisation');
 				if($this->conf['includeNameInHeading']){
@@ -1025,22 +1027,31 @@ tx_civserv_employee.em_address,
 	 * @param	boolean		If true, a list with all organisations is generated
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
-	function formList(&$smartyFormList,$organisation_id=0,$abcBar=false,$searchBox=false,$topList=false,$orgaList=false) {
+	function formList(&$smartyFormList,$organisation_id=0,$abcBar=false,$orderByCategory=false,$searchBox=false,$topList=false,$orgaList=false) {
 		//Set path to forms of services
 		$folder_forms = $this->conf['folder_services'];
 		$folder_forms .= $this->community['id'] . '/forms/';
 
-		$query = $this->makeFormListQuery($this->piVars[char],$organisation_id);
+		$query = $this->makeFormListQuery($this->piVars[char],$organisation_id,$orderByCategory);
 		$forms_res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 
 		$form_row_counter = 0;
+		$actual_category=0;
 		while ($form_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($forms_res) ) {
-			$forms[$form_row_counter]['name'] = $this->pi_getEditIcon($form_row[name],'fo_name',$this->pi_getLL('tx_civserv_pi1_form_list.name','form name'),$form_row,'tx_civserv_form');
-			$forms[$form_row_counter]['descr'] = $this->formatStr($this->local_cObj->stdWrap($this->pi_getEditIcon(trim($form_row[descr]),'fo_descr',$this->pi_getLL('tx_civserv_pi1_form_list.description','form description'),$form_row,'tx_civserv_form'),$this->conf['fo_name_stdWrap.']));
+			//cast value of actual_category into string!
+			if($form_row[cat] != "".$actual_category){
+				$actual_category =$form_row[cat];
+			}
+			$forms[$actual_category][$form_row_counter]['name'] = $this->pi_getEditIcon($form_row[name],'fo_name',$this->pi_getLL('tx_civserv_pi1_form_list.name','form name'),$form_row,'tx_civserv_form');
+			$forms[$actual_category][$form_row_counter]['descr'] = $this->formatStr($this->local_cObj->stdWrap($this->pi_getEditIcon(trim($form_row[descr]),'fo_descr',$this->pi_getLL('tx_civserv_pi1_form_list.description','form description'),$form_row,'tx_civserv_form'),$this->conf['fo_name_stdWrap.']));
 			if ($form_row[checkbox] == 1) {
-				$forms[$form_row_counter]['url'] = $this->cObj->typoLink_URL(array(parameter => $form_row[url]));
+				debug($form_row[url], 'url aus db');
+				//Attention: change here:
+				#$forms[$actual_category][$form_row_counter]['url'] = $this->cObj->typoLink($forms[$actual_category][$form_row_counter]['name'], array(parameter => $form_row[url]));
+				$forms[$actual_category][$form_row_counter]['url'] = $this->cObj->typoLink_URL(array(parameter => $form_row[url]));
+				debug($forms[$actual_category][$form_row_counter]['url'], 'url typolinked');
 			} else {
-				$forms[$form_row_counter]['url'] = $folder_forms . $form_row[file];
+				$forms[$actual_category][$form_row_counter]['url'] = $folder_forms . $form_row[file];
 			}
 
 			// select the services assigned to the form
@@ -1057,8 +1068,8 @@ tx_civserv_employee.em_address,
 
 			$service_row_counter = 0;
 			while ($service_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($services_res)) {
-				$forms[$form_row_counter]['services'][$service_row_counter]['name'] = $service_row[name];
-				$forms[$form_row_counter]['services'][$service_row_counter]['link'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $service_row['uid']),$this->conf['cache_services'],1));
+				$forms[$actual_category][$form_row_counter]['services'][$service_row_counter]['name'] = $service_row[name];
+				$forms[$actual_category][$form_row_counter]['services'][$service_row_counter]['link'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $service_row['uid']),$this->conf['cache_services'],1));
 				$service_row_counter++;
 			}
 			$form_row_counter++;
@@ -1066,7 +1077,8 @@ tx_civserv_employee.em_address,
 
 		// getting the form count
 		$row_count = 0;
-		$query = $this->makeFormListQuery($this->piVars[char],$organisation_id,false,true);
+		//count is incompatible with orderbyCategory....
+		$query = $this->makeFormListQuery($this->piVars[char],$organisation_id,0,false,true);
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			//$row_count += $row['count(*)'];
@@ -1078,9 +1090,8 @@ tx_civserv_employee.em_address,
 		$this->internal['results_at_a_time'] = $this->conf['forms_per_page'];
 		$this->internal['maxPages'] = $this->conf['max_pages_in_pagebar'];
 		$smartyFormList->assign('form_list',$forms);
-
 		if ($abcBar) {
-			$query = $this->makeFormListQuery(all,$organisation_id,false);
+			$query = $this->makeFormListQuery(all,$organisation_id,orderByCategory,false);
 			$smartyFormList->assign('abcbar',$this->makeAbcBar($query));
 		}
 
@@ -1164,7 +1175,7 @@ tx_civserv_employee.em_address,
 	 * @param	boolean		If true, the services are only counted.
 	 * @return	string		The database query.
 	 */
-	function makeFormListQuery($char=all,$organisation_id=0,$limit=true,$count=false) {
+	function makeFormListQuery($char=all,$organisation_id=0,$orderByCategory=0,$limit=true,$count=false) {
 		if ($count) {
 			//$select = 'count(*)';
 			//change proposed by kreis warendorf to eliminate duplicates
@@ -1196,12 +1207,19 @@ tx_civserv_employee.em_address,
 					 	 AND tx_civserv_organisation.uid = tx_civserv_service_sv_organisation_mm.uid_foreign
 						 AND tx_civserv_organisation.uid = ' . $organisation_id;
 		}
+		if ($orderByCategory && $count==false) {
+			$select	.= ', tx_civserv_category.ca_name AS cat';
+			$from	.=	', tx_civserv_category, tx_civserv_form_fo_category_mm';
+			$where	.=	' AND tx_civserv_category.uid =  tx_civserv_form_fo_category_mm.uid_foreign AND tx_civserv_form.uid = tx_civserv_form_fo_category_mm.uid_local';
+		}
 
 		if ($char != all) {
 			$regexp = $this->buildRegexp($char);
 		}
 
 		$orderby = $this->piVars[sort]?'name DESC':'name ASC';
+		$orderby = $orderByCategory && $count==false?'cat,'.$orderby:$orderby;
+		
 
 		// The first time the loop is executed, the part of the query for selecting the services which are located directly at the community is build.
 		// The second time the loop is executed, the part of the query for selecting the services located at another community is build.
@@ -1852,10 +1870,7 @@ tx_civserv_employee.em_address,
 		} else {
 			$descr_short = trim($model_service[ms_descr_short]);
 		}
-		$descr_short = $this->formatStr($this->local_cObj->stdWrap($descr_short,$this->conf['sv_descr_short_stdWrap.']));
-		if(trim(str_replace('&nbsp;', '', strip_tags($descr_short))) > ''){
-			$smartyService->assign('descr_short', descr_short);
-		}
+		$smartyService->assign('descr_short',$this->formatStr($this->local_cObj->stdWrap($descr_short,$this->conf['sv_descr_short_stdWrap.'])));
 
 		//Long description
 		$descr_long_ms = '';
@@ -1865,10 +1880,7 @@ tx_civserv_employee.em_address,
 		$descr_long = trim($service_common[sv_descr_long]);
 		$descr_long = $this->pi_getEditIcon($descr_long,'sv_descr_long',$this->pi_getLL('tx_civserv_pi1_service.description_long','Long description'),$service_common,'tx_civserv_service');
 		$descr_long = $descr_long_ms . $descr_long;
-		$descr_long = $this->formatStr($this->local_cObj->stdWrap($descr_long,$this->conf['sv_descr_long_stdWrap.']));
-		if(trim(str_replace('&nbsp;', '', strip_tags($descr_long))) > ''){
-			$smartyService->assign('descr_long',$descr_long);
-		}
+		$smartyService->assign('descr_long',$this->formatStr($this->local_cObj->stdWrap($descr_long,$this->conf['sv_descr_long_stdWrap.'])));
 
 		//Image text
 		if ($service_common[sv_image_text] != "") {
@@ -1899,10 +1911,9 @@ tx_civserv_employee.em_address,
 		} else {
 			$fees = trim($model_service[ms_fees]);
 		}
-		$fees=$this->formatStr($this->local_cObj->stdWrap($fees,$this->conf['sv_fees_stdWrap.']));
-		//test bk: support htmlarea in NOT desplaying labels for empty sections;
-		if(trim(str_replace('&nbsp;', '', strip_tags($fees))) > ''){
-			$smartyService->assign('fees', $fees);
+		//test bk: support htmlarea in not desplaying empty labels; todo: transmit this to other sections!!!
+		if(strip_tags($fees) > '' && strip_tags($documents) != '&nbsp;'){
+			$smartyService->assign('fees',$this->formatStr($this->local_cObj->stdWrap($fees,$this->conf['sv_fees_stdWrap.'])));
 		}
 
 		//Documents
@@ -1912,19 +1923,14 @@ tx_civserv_employee.em_address,
 		} else {
 			$documents = trim($model_service[ms_documents]);
 		}
-		$documents=$this->formatStr($this->local_cObj->stdWrap($documents,$this->conf['sv_documents_general_stdWrap.']));
-		if(trim(str_replace('&nbsp;', '', strip_tags($documents))) > ''){
-			$smartyService->assign('documents', $documents);
+		if(strip_tags($documents) > '' && strip_tags($documents) != '&nbsp;'){
+			$smartyService->assign('documents',$this->formatStr($this->local_cObj->stdWrap($documents,$this->conf['sv_documents_general_stdWrap.'])));
 		}
 
 		//Legal local
 		$legal_local = $this->pi_getEditIcon($service_common[sv_legal_local],'sv_legal_local',$this->pi_getLL('tx_civserv_pi1_service.legal_local','Legal foundation (local)'),$service_common,'tx_civserv_service');
-		$legal_local = $this->formatStr($this->local_cObj->stdWrap($legal_local,$this->conf['sv_legel_local_general_stdWrap.']));
-		if(trim(str_replace('&nbsp;', '', strip_tags($legal_local))) > ''){
-			$smartyService->assign('legal_local', $legal_local);
-		}
-		
-		
+		$smartyService->assign('legal_local',$this->formatStr($this->local_cObj->stdWrap($legal_local,$this->conf['sv_legel_local_general_stdWrap.'])));
+
 		//Legal global
 		if ($service_common[sv_legal_global] != "") {
 			$legal_global = trim($service_common[sv_legal_global]);
@@ -1932,10 +1938,7 @@ tx_civserv_employee.em_address,
 		} else {
 			$legal_global = trim($model_service[ms_legal_global]);
 		}
-		$legal_global=$this->formatStr($this->local_cObj->stdWrap($legal_global,$this->conf['sv_legal_global_general_stdWrap.'])); 
-		if(trim(str_replace('&nbsp;', '', strip_tags($legal_global))) > ''){
-			$smartyService->assign('legal_global', $legal_global);
-		}
+		$smartyService->assign('legal_global',$this->formatStr($this->local_cObj->stdWrap($legal_global,$this->conf['sv_legal_global_general_stdWrap.'])));
 
 		//Similar services
 		if ($this->conf['relatedTopics']) {
@@ -2330,10 +2333,21 @@ tx_civserv_employee.em_address,
 						'uid',	//GROUP BY
 						'');
 
-		//Query for building and postal address (there shouldn't be more than one building assigned to each organisation)
+		//Query for building(s) and postal address (there shouldn't be more than one building assigned to each organisation)
 		// test bk: include bl_name
+		$select_building='bl_mail_street, 
+						 bl_mail_pob, 
+						 bl_mail_postcode, 
+						 bl_mail_city, 
+						 bl_name, 
+						 bl_name_to_show,
+						 bl_building_street, 
+						 bl_building_postcode, 
+						 bl_building_city, 
+						 bl_pubtrans_stop, 
+						 bl_pubtrans_url';
 		$res_building = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-						'bl_mail_street, bl_mail_pob, bl_mail_postcode, bl_mail_city, bl_name, bl_building_street, bl_building_postcode, bl_building_city, bl_pubtrans_stop, bl_pubtrans_url',
+						$select_building,
 						'tx_civserv_organisation',
 						'tx_civserv_organisation_or_building_mm',
 						'tx_civserv_building',
@@ -2362,6 +2376,7 @@ tx_civserv_employee.em_address,
 		// test bk: 
 		// query for sub_organisations, 
 		// they will be exposed somewhere in the organisation_detail page
+		$sub_organisations=array();
 		$res_sub_org = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'uid, or_name',
 						'tx_civserv_organisation, tx_civserv_organisation_or_structure_mm',
@@ -2379,13 +2394,49 @@ tx_civserv_employee.em_address,
 			$sub_organisations[$row_count_sub_orgs]['name'] = $row['or_name'];
 			$row_count_sub_orgs++;
 		}
-		if($this->conf['showSubOrganisations'])$smartyOrganisation->assign('sub_organisations',$sub_organisations);//!!!!
+		if($this->conf['showSubOrganisations'] && $row_count_sub_orgs>0)$smartyOrganisation->assign('sub_organisations',$sub_organisations);//!!!!
+		
+		// test bk: 
+		// query for super_organisation, 
+		// they will be exposed somewhere in the organisation_detail page
+		$super_organisation=array();
+		$res_super_org = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'uid, or_name',
+						'tx_civserv_organisation, tx_civserv_organisation_or_structure_mm',
+						'tx_civserv_organisation_or_structure_mm.uid_local = '.$organisation_rows['uid'].' and
+						 tx_civserv_organisation_or_structure_mm.uid_foreign = tx_civserv_organisation.uid and
+						 tx_civserv_organisation.uid!='.$this->community['organisation_uid'].' AND
+						 tx_civserv_organisation.deleted=0 and
+						 tx_civserv_organisation.hidden=0',
+						'',
+						'tx_civserv_organisation.sorting', //Order by
+						'');				
+
+		if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_super_org))	{
+			$super_organisation['link'] =  htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'organisation',id => $row['uid']),1,1));
+			$super_organisation['name'] = $row['or_name'];
+		}
+		if($this->conf['showSuperOrganisation'] && count($super_organisation)>0)$smartyOrganisation->assign('super_organisation',$super_organisation);//!!!!
+		
 		
 		//test bk: make $organisation_buildings into an array!!!!
 		$organisation_buildings= array();
 		$orga_bl_count=0;
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_building)){
-			$organisation_buildings[] = $row;
+			$organisation_buildings[$orga_bl_count]=$row;
+			$organisation_buildings[$orga_bl_count]['pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
+			/*
+			$organisation_buildings[$orga_bl_count]['mail_street'] = $row['bl_mail_street'];
+			$organisation_buildings[$orga_bl_count]['mail_pob'] = $row['bl_mail_pob'];
+			$organisation_buildings[$orga_bl_count]['mail_postcode'] = $row['bl_mail_postcode'];
+			$organisation_buildings[$orga_bl_count]['mail_city'] = $row['bl_mail_city'];
+			$organisation_buildings[$orga_bl_count]['name'] = $row['bl_name'];
+			$organisation_buildings[$orga_bl_count]['building_street'] = $row['bl_building_street'];
+			$organisation_buildings[$orga_bl_count]['building_postcode'] = $row['bl_building_postcode'];
+			$organisation_buildings[$orga_bl_count]['building_city'] = $row['bl_building_city'];
+			$organisation_buildings[$orga_bl_count]['pubtrans_stop'] = $row['bl_pubtrans_stop'];
+			$organisation_buildings[$orga_bl_count]['pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
+			*/
 			$orga_bl_count++;
 		}
 
@@ -2404,19 +2455,10 @@ tx_civserv_employee.em_address,
 		
 		//test bk:
 		//if there is more than one building assigned to the organisation, try to single out the one where the supervisor 'lives'
-		//in order to display that building to the citizens as a point of conctact....
-		if($pos_id > '' && $orga_bl_count > 1){
+		//this is the default behaviour with more than one buildings, for the exception see below
+		if($pos_id > '' && $orga_bl_count > 1 ){
 			$res_bl_supervisor = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'bl_mail_street, 
-						 bl_mail_pob, 
-						 bl_mail_postcode, 
-						 bl_mail_city, 
-						 bl_name, 
-						 bl_building_street, 
-						 bl_building_postcode, 
-						 bl_building_city, 
-						 bl_pubtrans_stop, 
-						 bl_pubtrans_url',
+					$select_building,
 					'tx_civserv_organisation, 
 						tx_civserv_organisation_or_building_mm, 
 						tx_civserv_building,
@@ -2441,12 +2483,53 @@ tx_civserv_employee.em_address,
 					'');
 			if($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_bl_supervisor)){ //there must not be more than 1 buildings in which the organisation-supervisor resides!
 				$organisation_buildings[0] = $row;
-				$orga_bl_count=1;
+				$organisation_buildings[0]['pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
+				$organisation_buildings = array_slice ($organisation_buildings, 0, 1); 
 			}
 		}
 		
+		//exception (controlled by conf['selectBuildingsToShow']
+		//sometimes more than one building has to be published in FE
+		//in this case check if any particular buildings have been selected and than reset the buildings for the organisation
+		if($orga_bl_count > 1 && $this->conf['selectBuildingsToShow']){
+			$res_building_temp = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+						$select_building,
+						'tx_civserv_organisation',
+						'tx_civserv_organisation_or_building_to_show_mm', //!!!
+						'tx_civserv_building',
+						'AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
+						 AND tx_civserv_building.deleted=0 AND tx_civserv_building.hidden=0
+						 AND tx_civserv_organisation.uid = ' . $uid,
+						'',
+						'',
+						'');
+			$orga_bl_count_temp=0;
+			$organisation_buildings_temp=array();
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_building_temp)){
+				$organisation_buildings_temp[$orga_bl_count_temp]=$row;
+				$organisation_buildings_temp[$orga_bl_count_temp]['pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
+				/*
+				$organisation_buildings_temp[$orga_bl_count_temp]['mail_street'] = $row['bl_mail_street'];
+				$organisation_buildings_temp[$orga_bl_count_temp]['mail_pob'] = $row['bl_mail_pob'];
+				$organisation_buildings_temp[$orga_bl_count_temp]['mail_postcode'] = $row['bl_mail_postcode'];
+				$organisation_buildings_temp[$orga_bl_count_temp]['mail_city'] = $row['bl_mail_city'];
+				$organisation_buildings_temp[$orga_bl_count_temp]['name'] = $row['bl_name'];
+				$organisation_buildings_temp[$orga_bl_count_temp]['building_street'] = $row['bl_building_street'];
+				$organisation_buildings_temp[$orga_bl_count_temp]['building_postcode'] = $row['bl_building_postcode'];
+				$organisation_buildings_temp[$orga_bl_count_temp]['building_city'] = $row['bl_building_city'];
+				$organisation_buildings_temp[$orga_bl_count_temp]['pubtrans_stop'] = $row['bl_pubtrans_stop'];
+				$organisation_buildings_temp[$orga_bl_count_temp]['pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
+				*/
+				$orga_bl_count_temp++;
+			}
+			if($orga_bl_count_temp > 0){
+				$organisation_buildings = array();  //have to reset this!!!
+				$organisation_buildings = $organisation_buildings_temp;
+			}else{
+				$organisation_buildings = array_slice ($organisation_buildings, 0, 1);   
+			}
+		}
 		
-
 		//Assign organisation office hours
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_hour) ){	
@@ -2481,11 +2564,11 @@ tx_civserv_employee.em_address,
 		$smartyOrganisation->assign('or_title',$or_title);
 		$smartyOrganisation->assign('or_name',$organisation_rows[or_name]);
 		$smartyOrganisation->assign('or_addinfo',$organisation_rows[or_addinfo]);
-		$smartyOrganisation->assign('phone',$organisation_rows[or_telephone]);
-		$smartyOrganisation->assign('fax',$organisation_rows[or_fax]);
-		$smartyOrganisation->assign('email_code',$this->cObj->typoLink($organisation_rows[or_email],array(parameter => $organisation_rows[or_email],ATagParams => 'class="email"'))); 	// use typolink, because of the possibility to use encrypted email-adresses for spam-protection
-		$smartyOrganisation->assign('email_form_url',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'set_email_form',org_id => $organisation_rows[uid]),1,1)));
-		$smartyOrganisation->assign('image',$imageCode);
+		$smartyOrganisation->assign('or_phone',$organisation_rows[or_telephone]);
+		$smartyOrganisation->assign('or_fax',$organisation_rows[or_fax]);
+		$smartyOrganisation->assign('or_email_code',$this->cObj->typoLink($organisation_rows[or_email],array(parameter => $organisation_rows[or_email],ATagParams => 'class="email"'))); 	// use typolink, because of the possibility to use encrypted email-adresses for spam-protection
+		$smartyOrganisation->assign('or_email_form_url',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'set_email_form',org_id => $organisation_rows[uid]),1,1)));
+		$smartyOrganisation->assign('or_image',$imageCode);
 
 		//Assign employee data
 		// test bk: do not show the organisationSupervisor at all - depending on a flag in the organisation-table
@@ -2504,7 +2587,9 @@ tx_civserv_employee.em_address,
 
 		//Assign addresses
 		// test bk: include bl_name
-		$smartyOrganisation->assign('bl_available',$bl_available=$orga_bl_count==1? 1:0);
+		$smartyOrganisation->assign('bl_available',$bl_available=$orga_bl_count>0? 1:0);
+		$smartyOrganisation->assign('buildings',$organisation_buildings);
+		/*
 		$smartyOrganisation->assign('building_name',$organisation_buildings[0][bl_name]);
 		$smartyOrganisation->assign('building_street',$organisation_buildings[0][bl_building_street]);
 		$smartyOrganisation->assign('building_postcode',$organisation_buildings[0][bl_building_postcode]);
@@ -2513,14 +2598,18 @@ tx_civserv_employee.em_address,
 		$smartyOrganisation->assign('mail_pob',$organisation_buildings[0][bl_mail_pob]);
 		$smartyOrganisation->assign('mail_postcode',$organisation_buildings[0][bl_mail_postcode]);
 		$smartyOrganisation->assign('mail_city',$organisation_buildings[0][bl_mail_city]);
+		*/
 
+		/*
 		//Assign public transport information
 		$smartyOrganisation->assign('pubtrans_stop',$organisation_buildings[0][bl_pubtrans_stop]);
 		$smartyOrganisation->assign('pubtrans_link',$this->cObj->typoLink_URL(array(parameter => $organisation_buildings[0][bl_pubtrans_url])));
-
+		*/
+		
 		//Assign template labels
 		$smartyOrganisation->assign('organisation_label',$this->pi_getLL('tx_civserv_pi1_organisation.organisation','Organisation'));
 		$smartyOrganisation->assign('sub_org_label',$this->pi_getLL('tx_civserv_pi1_organisation.sub_org_label','You can also visit us here:'));
+		$smartyOrganisation->assign('super_org_label',$this->pi_getLL('tx_civserv_pi1_organisation.super_org_label','next higher organisation level:'));
 		$smartyOrganisation->assign('postal_address_label',$this->pi_getLL('tx_civserv_pi1_organisation.postal_address','Postal address'));
 		$smartyOrganisation->assign('building_address_label',$this->pi_getLL('tx_civserv_pi1_organisation.building_address','Building address'));
 		$smartyOrganisation->assign('phone_label',$this->pi_getLL('tx_civserv_pi1_organisation.phone','Phone'));
@@ -3757,7 +3846,8 @@ tx_civserv_employee.em_address,
 			$textArr=explode(":", $linkText);
 			if(count($textArr)>1)unset($textArr[0]);
 			$linkText= implode(":", $textArr);//default
-			$linkText.=':'.strlen($linkText);
+			//wieviele Zeichen hat der String???
+			#$linkText.=':'.strlen($linkText);
 		}
 		//return link-to-actual-page
 		//second parameter is for cache and it also does the md5-thing about the parameterlist, if cache is not set the parameters are rendered in the human-readable way

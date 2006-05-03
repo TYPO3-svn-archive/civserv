@@ -296,7 +296,17 @@ CREATE TABLE tx_civserv_model_service (
 	KEY parent (pid)
 );
 
-
+#
+# Table structure for table 'tx_civserv_form_fo_category_mm'
+#
+CREATE TABLE tx_civserv_form_fo_category_mm (
+	uid_local int(11) unsigned DEFAULT '0' NOT NULL,
+  	uid_foreign int(11) unsigned DEFAULT '0' NOT NULL,
+  	tablenames varchar(30) DEFAULT '' NOT NULL,
+  	sorting int(11) unsigned DEFAULT '0' NOT NULL,
+  	KEY uid_local (uid_local),
+  	KEY uid_foreign (uid_foreign)
+);
 
 #
 # Table structure for table 'tx_civserv_form'
@@ -314,8 +324,10 @@ CREATE TABLE tx_civserv_form (
 	endtime int(11) unsigned DEFAULT '0' NOT NULL,
 	fe_group int(11) DEFAULT '0' NOT NULL,
 	fo_number tinytext NOT NULL,
+	fo_orga_code tinytext NOT NULL,
 	fo_name tinytext NOT NULL,
 	fo_descr text NOT NULL,
+	fo_category int(11) unsigned DEFAULT '0' NOT NULL,
 	fo_external_checkbox int(11) unsigned DEFAULT '0' NOT NULL,
 	fo_url tinytext NOT NULL,
 	fo_formular_file blob NOT NULL,
@@ -368,6 +380,7 @@ CREATE TABLE tx_civserv_building (
 	fe_group int(11) DEFAULT '0' NOT NULL,
 	bl_number tinytext NOT NULL,
 	bl_name tinytext NOT NULL,
+	bl_name_to_show tinytext NOT NULL,
 	bl_descr text NOT NULL,
 	bl_mail_street tinytext NOT NULL,
 	bl_mail_pob tinytext NOT NULL,
@@ -573,6 +586,20 @@ CREATE TABLE tx_civserv_organisation_or_building_mm (
 );
 
 
+#
+# Table structure for table 'tx_civserv_organisation_or_building_mm'
+# 
+#
+CREATE TABLE tx_civserv_organisation_or_building_to_show_mm (
+  uid_local int(11) unsigned DEFAULT '0' NOT NULL,
+  uid_foreign int(11) unsigned DEFAULT '0' NOT NULL,
+  tablenames varchar(30) DEFAULT '' NOT NULL,
+  sorting int(11) unsigned DEFAULT '0' NOT NULL,
+  KEY uid_local (uid_local),
+  KEY uid_foreign (uid_foreign)
+);
+
+
 
 #
 # Table structure for table 'tx_civserv_organisation'
@@ -604,6 +631,7 @@ CREATE TABLE tx_civserv_organisation (
 	or_addinfo text NOT NULL,
 	or_addlocation tinytext NOT NULL,
 	or_structure int(11) unsigned DEFAULT '0' NOT NULL,
+	or_building_to_show int(11) unsigned DEFAULT '0' NOT NULL,
 	or_building int(11) unsigned DEFAULT '0' NOT NULL,
 	or_exid int(11) unsigned DEFAULT '0' NOT NULL,
 	
@@ -735,6 +763,25 @@ CREATE TABLE tx_civserv_navigation (
 	nv_name tinytext NOT NULL,
 	nv_structure int(11) unsigned DEFAULT '0' NOT NULL,
 	
+	PRIMARY KEY (uid),
+	KEY parent (pid)
+);
+
+
+#
+# Table structure for table 'tx_civserv_category'
+#
+CREATE TABLE tx_civserv_category (
+	uid int(11) unsigned DEFAULT '0' NOT NULL auto_increment,
+	pid int(11) unsigned DEFAULT '0' NOT NULL,
+	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
+	crdate int(11) unsigned DEFAULT '0' NOT NULL,
+	cruser_id int(11) unsigned DEFAULT '0' NOT NULL,
+	sorting int(11) unsigned DEFAULT '0' NOT NULL,
+	deleted tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	hidden tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	fe_group int(11) DEFAULT '0' NOT NULL,
+	ca_name tinytext NOT NULL,
 	PRIMARY KEY (uid),
 	KEY parent (pid)
 );

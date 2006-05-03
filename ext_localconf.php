@@ -95,6 +95,9 @@ t3lib_extMgm::addUserTSConfig('
 	options.saveDocNew.tx_civserv_navigation=1
 ');
 t3lib_extMgm::addUserTSConfig('
+	options.saveDocNew.tx_civserv_category=1
+');
+t3lib_extMgm::addUserTSConfig('
 	options.saveDocNew.tx_civserv_weekday=1
 ');
 t3lib_extMgm::addUserTSConfig('

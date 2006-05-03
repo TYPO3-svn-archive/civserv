@@ -38,9 +38,6 @@ english_flag = typo3conf/ext/civserv/templates/images/bgs/gb.gif
 # Empty community_id
 community_id = 
 
-# default mode
-mode = service_list
-
 # How deep to dig for pids under each entry
 recursive = 10
 
@@ -119,6 +116,9 @@ abcBarAtEmployeeList = 1
 abcBarAtOrganisationList = 1
 
 
+# Defines whether the form_list will be sorted according to categories
+orderFormsByCategory = 0
+
 # Defines at which sites the Top-services will be shown 
 topAtServiceList = 1
 topAtCircumstanceTree = 1
@@ -148,6 +148,10 @@ relatedTopics = 1
 
 # Show SubOrganisations in the Organisation-Detail-View
 showSubOrganisations = 1
+showSuperOrganisation = 1
+
+# determine if one or more of the organisation's buildings are to be shown in FE
+selectBuildingsToShow = 0
 
 
 

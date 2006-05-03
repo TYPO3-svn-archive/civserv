@@ -989,6 +989,15 @@ $TCA["tx_civserv_form"] = Array (
 				"max" => "255",
 			)
 		),
+		"fo_orga_code" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_form.fo_orga_code",
+			"config" => Array (
+				"type" => "input",
+				"size" => "30",
+				"max" => "255",
+			)
+		),
 		"fo_name" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_form.fo_name",
@@ -1017,6 +1026,20 @@ $TCA["tx_civserv_form"] = Array (
 						"script" => "wizard_rte.php",
 					),
 				),
+			)
+		),
+		"fo_category" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_form.fo_category",
+			"config" => Array (
+				"type" => "select",
+				"foreign_table" => "tx_civserv_category",
+				"foreign_table_where" => "ORDER BY tx_civserv_category.ca_name",
+				"itemsProcFunc" => "tx_civserv_mandant->limit_items",
+				"size" => 5,
+				"minitems" => 0,
+				"maxitems" => 50,
+				"MM" => "tx_civserv_form_fo_category_mm",
 			)
 		),
 		"fo_external_checkbox" => Array (
@@ -1048,6 +1071,19 @@ $TCA["tx_civserv_form"] = Array (
 				)
 			)
 		),
+		/*
+		"fo_url" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_form.fo_url",
+			"displayCond" => "FIELD:fo_external_checkbox:REQ:true",
+			"config" => Array (
+				"type" => "input",
+				"size" => "15",
+				"max" => "255",
+				"eval" => "trim"
+			)
+		),
+		*/
 		"fo_formular_file" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_form.fo_formular_file",
@@ -1091,7 +1127,7 @@ $TCA["tx_civserv_form"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, fo_number, fo_name, fo_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], fo_external_checkbox, fo_url, fo_formular_file, fo_created_date, fo_status")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, fo_number, fo_orga_code, fo_name, fo_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], fo_category, fo_external_checkbox, fo_url, fo_formular_file, fo_created_date, fo_status")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "starttime, endtime, fe_group")
@@ -1150,6 +1186,15 @@ $TCA["tx_civserv_building"] = Array (
 				"max" => "255",
 			)
 		),
+		"bl_name_to_show" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_building.bl_name_to_show",
+			"config" => Array (
+				"type" => "input",
+				"size" => "30",
+				"max" => "255",
+			)
+		),
 		"bl_name" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_building.bl_name",
@@ -1176,6 +1221,7 @@ $TCA["tx_civserv_building"] = Array (
 				"type" => "input",
 				"size" => "30",
 				"max" => "255",
+				#"eval" => "required",
 			)
 		),
 		"bl_mail_pob" => Array (
@@ -1335,7 +1381,7 @@ $TCA["tx_civserv_building"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, bl_number, bl_name, bl_descr, bl_mail_street, bl_mail_pob, bl_mail_postcode, bl_mail_city, bl_building_street, bl_building_postcode, bl_building_city, bl_pubtrans_stop, bl_pubtrans_url, bl_image, bl_telephone, bl_fax, bl_email, bl_floor")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, bl_number, bl_name_to_show, bl_name, bl_descr, bl_mail_street, bl_mail_pob, bl_mail_postcode, bl_mail_city, bl_building_street, bl_building_postcode, bl_building_city, bl_pubtrans_stop, bl_pubtrans_url, bl_image, bl_telephone, bl_fax, bl_email, bl_floor")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")
@@ -1988,6 +2034,20 @@ $TCA["tx_civserv_organisation"] = Array (
 				),
 			)
 		),
+		"or_building_to_show" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_organisation.or_building_to_show",
+			"config" => Array (
+				"type" => "select",
+				"foreign_table" => "tx_civserv_building",
+				"foreign_table_where" => "ORDER BY tx_civserv_building.bl_name",
+				"itemsProcFunc" => "tx_civserv_mandant->limit_building_items",
+				"size" => 5,
+				"minitems" => 0,
+				"maxitems" => 50,
+				"MM" => "tx_civserv_organisation_or_building_to_show_mm",
+			)
+		),
 		"or_building" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_organisation.or_building",
@@ -1998,13 +2058,13 @@ $TCA["tx_civserv_organisation"] = Array (
 				"itemsProcFunc" => "tx_civserv_mandant->limit_items",
 				"size" => 5,
 				"minitems" => 1,
-				"maxitems" => 50,
+				"maxitems" => 100,
 				"MM" => "tx_civserv_organisation_or_building_mm",
 			)
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, or_number, or_code, or_name, or_synonym1, or_synonym2, or_synonym3, or_supervisor, or_show_supervisor, or_hours, or_telephone, or_fax, or_email, or_image, or_infopage, or_addlocation, or_addinfo;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], or_structure, or_building")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, or_number, or_code, or_name, or_synonym1, or_synonym2, or_synonym3, or_supervisor, or_show_supervisor, or_hours, or_telephone, or_fax, or_email, or_image, or_infopage, or_addlocation, or_addinfo;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], or_structure, or_building_to_show, or_building")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")
@@ -2473,6 +2533,65 @@ $TCA["tx_civserv_navigation"] = Array (
 		"1" => Array("showitem" => "fe_group")
 	)
 );
+
+
+/**
+ * The definition of the backend-mask and logic for the table tx_civserv_navigation (contenttype navigation)
+ * All labels are defined in civserv/locallang_db.php
+ *
+ * itemsProcFunc: tx_civserv_mandant->limit_items (to display only data in selectorfields that is affected for the actual mandant)
+ *
+ * further information see below and Typo3 Core API, ext_tables.php, ext_tables.sql, ext_localconf.php
+ */
+$TCA["tx_civserv_category"] = Array (
+	"ctrl" => $TCA["tx_civserv_category"]["ctrl"],
+	"interface" => Array (
+		"showRecordFieldList" => "hidden,fe_group,ca_name"
+	),
+	"feInterface" => $TCA["tx_civserv_category"]["feInterface"],
+	"columns" => Array (
+		"hidden" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:lang/locallang_general.php:LGL.hidden",
+			"config" => Array (
+				"type" => "check",
+				"default" => "0"
+			)
+		),
+		"fe_group" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:lang/locallang_general.php:LGL.fe_group",
+			"config" => Array (
+				"type" => "select",
+				"items" => Array (
+					Array("", 0),
+					Array("LLL:EXT:lang/locallang_general.php:LGL.hide_at_login", -1),
+					Array("LLL:EXT:lang/locallang_general.php:LGL.any_login", -2),
+					Array("LLL:EXT:lang/locallang_general.php:LGL.usergroups", "--div--")
+				),
+				"foreign_table" => "fe_groups"
+			)
+		),
+		"ca_name" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_cateogory.ca_name",
+			"config" => Array (
+				"type" => "input",
+				"size" => "30",
+				"max" => "255",
+				"eval" => "required",
+			)
+		),
+	),
+	"types" => Array (
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, ca_name")
+	),
+	"palettes" => Array (
+		"1" => Array("showitem" => "fe_group")
+	)
+);
+
+
 
 
 /**
