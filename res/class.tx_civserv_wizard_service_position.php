@@ -108,8 +108,7 @@ function init() {
 			//todo: read the following from conf_mandant!!!
 		$this->limit_be_user=false;			
 			//make webmounts available to helper-functions
-		$this->webmounts=$WEBMOUNTS;	
-
+		$this->webmounts=$WEBMOUNTS;
 
 			// Gets parameters out of the p-array.
 		$this->P = t3lib_div::_GP('P');
@@ -434,15 +433,17 @@ function init() {
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 		$this->limit_be_user = $row['limit_be_user'];
 		
-		
-
-		
 		if($this->limit_be_user && !$BE_USER->user['admin']){
 				//get me the organisation_uids (contained in pages.subtitle)
+				// todo: make this a rekursive function!!!!
 			$res_temp1=$GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'subtitle',			 			// SELECT ...
 				'pages',						// FROM ...
-				'uid in('.implode(',',$this->webmounts).') AND doktype=254 AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+				'uid in('.implode(',',$this->webmounts).') 
+				 or pid in('.implode(',',$this->webmounts).') 
+				 AND doktype=254 
+				 AND perms_group > 0
+				 AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
 				'', 							// GROUP BY...
 				'',   							// ORDER BY...
 				'' 								// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
@@ -452,6 +453,7 @@ function init() {
 					$this->visible_organisations[]=intval($row1['subtitle']);
 				}
 			}
+			
 				//get me the positions per organisation
 			$res_temp2 = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 					'tx_civserv_position.uid',						// SELECT
