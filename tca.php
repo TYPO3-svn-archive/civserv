@@ -998,6 +998,15 @@ $TCA["tx_civserv_form"] = Array (
 				"max" => "255",
 			)
 		),
+		"fo_codename" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_form.fo_codename",
+			"config" => Array (
+				"type" => "input",
+				"size" => "30",
+				"max" => "255",
+			)
+		),
 		"fo_name" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_form.fo_name",
@@ -1127,7 +1136,7 @@ $TCA["tx_civserv_form"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, fo_number, fo_orga_code, fo_name, fo_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], fo_category, fo_external_checkbox, fo_url, fo_formular_file, fo_created_date, fo_status")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, fo_number, fo_orga_code, fo_codename, fo_name, fo_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], fo_category, fo_external_checkbox, fo_url, fo_formular_file, fo_created_date, fo_status")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "starttime, endtime, fe_group")
@@ -1489,6 +1498,16 @@ $TCA["tx_civserv_room"] = Array (
 			"config" => Array (
 				"type" => "select",
                 "itemsProcFunc" => "tx_civserv_floorbuild->main",
+			)
+		),
+		"rbf_label" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_room.ro_label",
+			"config" => Array (
+				"type" => "input",
+				"size" => "30",
+				"max" => "255",
+				"eval" => "readonly",
 			)
 		),
 	),
@@ -2264,19 +2283,19 @@ $TCA["tx_civserv_officehours"] = Array (
 				"type" => "select",
 				"items" => Array (
 					//Array("", ""),
-					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_101", 101),
-					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_102", 102),
-					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_103", 103),
-					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_201", 201),
-					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_202", 202),
-					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_203", 203),
-					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_204", 204),
-					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_205", 205),
-					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_206", 206),
-					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_207", 207),
-					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_301", 301),
-					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_302", 302),
-					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_401", 401),
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_101", 101),	// monday to friday
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_102", 102),	// monday to thursday
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_103", 103),	// monday to wednesday
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_201", 201),	// monday
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_202", 202),	// tuesday
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_203", 203),	// wednesday
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_204", 204),	// thursday
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_205", 205),	// friday
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_206", 206),	// saturday
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_207", 207),	// sunday
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_301", 301),	// on bank holidays
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_302", 302),	// saturdays and sundays
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_401", 401),	// additionally
 				),
 				//"eval" => "required,time",
 			)
@@ -2765,6 +2784,8 @@ $TCA["tx_civserv_employee_em_position_mm"] = Array (
 				"type" => "group",
 				"internal_type" => "db",
 				"size" => 1,
+				"itemListStyle" => "width:50em", 
+				"selectedListStyle" => "width:50em",
 				"allowed" => "tx_civserv_room",
 				"show_thumbs" => 0,
 				"minitems" => 0,

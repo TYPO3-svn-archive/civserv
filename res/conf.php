@@ -40,7 +40,13 @@
 
 	// DO NOT REMOVE OR CHANGE THESE 3 LINES:
 define('TYPO3_MOD_PATH', '../typo3conf/ext/civserv/res/');
-define('PATH_t3lib', '../../../../typo3/t3lib/');
+
+if(is_dir ('../../../../t3lib/')) { //TYPO3version >= 4.0
+	define('PATH_t3lib', '../../../../t3lib/');
+}else{
+	define('PATH_t3lib', '../../../../typo3/t3lib/'); //TYPO3version >= 3.8.1
+}
+
 $BACK_PATH='../../../../typo3/';
 $MCONF['name']='web_txcivservwizards';
 

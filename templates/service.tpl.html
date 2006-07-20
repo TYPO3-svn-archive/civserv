@@ -46,7 +46,7 @@
 	<h1>{$service_label}:&nbsp;{$name}</h1>
 
 	<!--{if $external_service_label != ""}-->
-		<p>{$external_service_label}</p>
+		<p><strong>{$external_service_label}</strong></p>
 	<!--{/if}-->
 	
 	<!--{if $ext_link != ""}-->
@@ -107,7 +107,7 @@
 		<h2>{$forms_label}</h2>
 		<ul>
 			<!--{foreach from=$forms item=form}-->
-				<li><a href="{$form.url}">{$form.name}</a></li>
+				<li><a href="{$form.url}" target="_blank"><strong>{$form.name}</strong></a></li>		
 			<!--{/foreach}-->
 		</ul>
 		<p><a href="#centrecontent" class="topofpage" title="{$link_to_top}">{$top}</a></p><br />

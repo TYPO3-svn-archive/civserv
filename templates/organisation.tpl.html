@@ -23,12 +23,12 @@
 				<!--{if $building.bl_pubtrans_link != ""}-->
 					{$pub_trans_stop_label}:&nbsp;<a href="{$building.bl_pubtrans_link}" target="_blank">{$building.bl_pubtrans_stop}</a><br /><br />
 				<!--{else}-->
-					{$pub_trans_stop_label}:&nbsp;{$building.bl_pubtrans_stop}<br /><br />
+					{$pub_trans_stop_label}:&nbsp;{$building.bl_pubtrans_stop}<br />
 				<!--{/if}-->
 			<!--{/if}-->
 		<!--{/foreach}-->
 		<!--{if $building.bl_mail_street != "" OR $building.bl_mail_pob != "" OR $building.bl_mail_postcode != "" OR $building.bl_mail_city != ""}-->
-				<strong>{$postal_address_label}:</strong><br />
+				<br /><strong>{$postal_address_label}:</strong><br />
 				<!--{if $mail_street != ""}-->
 				{$building.bl_mail_street}<br />
 				<!--{/if}-->

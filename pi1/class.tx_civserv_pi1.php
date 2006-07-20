@@ -150,14 +150,17 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// get the community name and the pidlist for this community from the
 		// database and store it in the session
 		if ((($this->piVars[community_id] <= '') && ($_SESSION['community_id'] <= '')) || ($this->piVars[community_id] == 'choose')) {
+		#if(1==2){
 			$template = $this->conf['tpl_community_choice'];
 			$accurate = $this->chooseCommunity($smartyObject);
 			$choose = true;
 	 	} elseif (($this->piVars[community_id] != $_SESSION['community_id']) || ($_SESSION['community_name'] <= '')) {
+		#}elseif(1==1){
+			
 			if ($this->piVars[community_id] > '') {
-				$community_id = $this->piVars[community_id];
+				$community_id = intval($this->piVars[community_id]);
 			} else {
-				$community_id = $_SESSION['community_id'];
+				$community_id = intval($_SESSION['community_id']);
 			}
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',
@@ -404,6 +407,15 @@ class tx_civserv_pi1 extends tslib_pibase {
 			} else {
 				$services[$row_counter]['name'] = $row['name'] . ' (= ' . $row['realname'] . ')';
 			}
+			
+			//test: highlight_external services in list view!! (works only if function makeServiceListQuery returns pid-value!)
+			$mandant = t3lib_div::makeInstanceClassName('tx_civserv_mandant');
+			$mandantInst = new $mandant();
+			$service_community_id= $mandantInst->get_mandant($row['pid']);
+			$service_community_name = $mandantInst->get_mandant_name($row['pid']);
+			if($this->community['id'] != $service_community_id){
+				$services[$row_counter]['name'] .= " <i> - ".$service_community_name."</i>";
+			}
 			$row_counter++;
 		}
 
@@ -529,10 +541,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$this->community[pidlist]=implode(",",array_flip($toggled));
 			}
 
-
-
+			// test: highlight_external services -> select pid as well
 			// services by realnames
-			$query .=	'SELECT ' . ($count?'count(*) ':'tx_civserv_service.uid, sv_name AS name, sv_name AS realname ') . '
+			$query .=	'SELECT ' . ($count?'count(*) ':'tx_civserv_service.uid, tx_civserv_service.pid, sv_name AS name, sv_name AS realname ') . '
 						 FROM ' . str_replace('###NAVIGATION_MM_TABLE###',$navigation_mm_table,$from) . '
 						 WHERE ' . str_replace('###SERVICE_TABLE###',$service_table,str_replace('###NAVIGATION_MM_TABLE###',$navigation_mm_table,$where)) . ' ' .
 							(($i==1)?'AND tx_civserv_service.pid IN (' . $this->community[pidlist] . ') ':'') .
@@ -540,7 +551,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			// services by synonyms
 			for ($synonymNr = 1; $synonymNr <= 3; $synonymNr++) {
 				$query .=	'UNION ALL
-							 SELECT ' . ($count?'count(*) ':'tx_civserv_service.uid, sv_synonym' . $synonymNr . ' AS name, sv_name AS realname ') . '
+							 SELECT ' . ($count?'count(*) ':'tx_civserv_service.uid, tx_civserv_service.pid, sv_synonym' . $synonymNr . ' AS name, sv_name AS realname ') . '
 							 FROM ' . str_replace('###NAVIGATION_MM_TABLE###',$navigation_mm_table,$from) . '
 							 WHERE ' . str_replace('###SERVICE_TABLE###',$service_table,str_replace('###NAVIGATION_MM_TABLE###',$navigation_mm_table,$where)) . ' ' .
 								(($i==1)?'AND tx_civserv_service.pid IN (' . $this->community[pidlist] . ') ':'') .
@@ -735,128 +746,58 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 
 	function makeOrganisationListQuery($char=all,$limit=true,$count=false) {
-			if ($char != all) {
-				$regexp = $this->buildRegexp($char);
-			}
-			if ($count){
-				$query = 'Select count(*) 
-					from 
-						tx_civserv_organisation 
-					where 
-						tx_civserv_organisation.pid IN (' . $this->community[pidlist] . ') AND 
-						tx_civserv_organisation.deleted=0 AND
-						tx_civserv_organisation.hidden=0';
-			} else {
-				$query = 'Select 
-						tx_civserv_organisation.uid as or_uid,
-						tx_civserv_organisation.or_name as name,
-						tx_civserv_organisation.or_name as realname
-					from 
-						tx_civserv_organisation
-					where 
-						tx_civserv_organisation.pid IN (' . $this->community[pidlist] . ') '
-					    . ($regexp?'AND or_name REGEXP "' . $regexp . '"':'') . 'AND 
-						tx_civserv_organisation.deleted=0 AND
-						tx_civserv_organisation.hidden=0';
-			}
-			for ($synonymNr = 1; $synonymNr <= 3; $synonymNr++) {
+		if ($char != all) {
+			$regexp = $this->buildRegexp($char);
+		}
+		if ($count){
+			$query = 'Select count(*) 
+				from 
+					tx_civserv_organisation 
+				where 
+					tx_civserv_organisation.pid IN (' . $this->community[pidlist] . ') AND 
+					tx_civserv_organisation.deleted=0 AND
+					tx_civserv_organisation.hidden=0 '.
+					($regexp?'AND or_name REGEXP "' . $regexp . '"':'') . ' ';		
+		} else {
+			$query = 'Select 
+					tx_civserv_organisation.uid as or_uid,
+					tx_civserv_organisation.or_name as name,
+					tx_civserv_organisation.or_name as realname
+				from 
+					tx_civserv_organisation
+				where 
+					tx_civserv_organisation.pid IN (' . $this->community[pidlist] . ') '
+					. ($regexp?'AND or_name REGEXP "' . $regexp . '"':'') . 'AND 
+					tx_civserv_organisation.deleted=0 AND
+					tx_civserv_organisation.hidden=0';
+		}
+		for ($synonymNr = 1; $synonymNr <= 3; $synonymNr++) {
 			$query .=	' UNION ALL
 						 SELECT ' . ($count?'count(*) ':'tx_civserv_organisation.uid as or_uid, or_synonym' . $synonymNr . ' AS name, or_name AS realname ') . '
 							 FROM tx_civserv_organisation
 							 WHERE 	tx_civserv_organisation.pid IN (' . $this->community[pidlist] . ') '
 								. ($regexp?'AND or_synonym' . $synonymNr . ' REGEXP "' . $regexp . '"':'') .
 								'AND or_synonym' . $synonymNr . ' != "" ' . ' ';
-			}
+		}
 
-			$orderby =	$this->piVars[sort]?'name DESC':'name ASC';
+		$orderby =	$this->piVars[sort]?'name DESC':'name ASC';
 			
-			if (!$count) {
+		if (!$count) {
 			$query .= ' ORDER BY ' . $orderby . ' ';
 
-				if ($limit) {
-					if ($this->piVars[pointer] > '') {
-						$start = $this->conf['organisation_per_page'] * $this->piVars[pointer];
-					} else {
-						$start = 0;
-					}
-					$max = $this->conf['organisation_per_page'];
-					$query .= 'LIMIT ' . $start . ',' . $max;
-					}
-	
+			if ($limit) {
+				if ($this->piVars[pointer] > '') {
+					$start = $this->conf['organisation_per_page'] * $this->piVars[pointer];
+				} else {
+					$start = 0;
+				}
+				$max = $this->conf['organisation_per_page'];
+				$query .= 'LIMIT ' . $start . ',' . $max;
 			}
-			return $query;
 		}
-
-
-	/**
-	 * Generates a list of all employees
-	 *
-	 * @param	[type]		$$smartyEmployeeList: ...
-	 * @param	[type]		$abcBar: ...
-	 * @param	[type]		$searchBox: ...
-	 * @param	[type]		$topList: ...
-	 * @return	[type]		...
-	 */
-	 /*
-	function employee_list(&$smartyEmployeeList,$abcBar=false,$searchBox=false,$topList=false){
-		$query = $this->makeEmployeeListQuery($this->piVars[char]);
-		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
-		$row_counter = 0;
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
-				$employees[$row_counter]['em_name'] = $row['em_name'];
-				$employees[$row_counter]['em_firstname'] = $row['em_firstname'];
-				$employees[$row_counter]['em_datasec'] = $row['em_datasec'];
-
-				//select the organisation assigned to the employee
-				$orga_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_civserv_position.uid as pos_uid, tx_civserv_organisation.uid as or_uid, tx_civserv_employee.uid as emp_uid, or_name as organisation',
-					'tx_civserv_employee, tx_civserv_position, tx_civserv_organisation, tx_civserv_employee_em_position_mm, tx_civserv_position_po_organisation_mm',
-					'tx_civserv_employee.uid = ' . $row['emp_uid'] . ' AND tx_civserv_position.uid = '.$row['pos_uid'] .'
-					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
-					 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
-					 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
-					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
-					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
-					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
-					 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
-					 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign',
-					 '',
-					 '',
-					 '');
-					while ($orga_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($orga_res) ) {
-						$employees[$row_counter]['orga_name'] = $orga_row[organisation];
-					}
-					$employees[$row_counter]['em_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $row['emp_uid'],pos_id => $row['pos_uid']),1,1));
-					$row_counter++;
-		}
-
-
-		// Retrieve the employee count
-		$row_count = 0;
-		$query = $this->makeEmployeeListQuery($this->piVars[char],false,true);
-		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			#$row_count += $row['anzahl'];
-			$row_count += $row['count(*)'];
-		}
-
-		$this->internal['res_count'] = $row_count;
-		$this->internal['results_at_a_time']= $this->conf['employee_per_page'];
-		$this->internal['maxPages'] = $this->conf['max_pages_in_pagebar'];
-
-		$smartyEmployeeList->assign('heading',$this->pi_getLL('tx_civserv_pi1_employee_list.employee_list.heading','Employees'));
-		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_employee_list.available_employees','Here you find the following employees'));
-		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true,'', ' '.$this->conf['abcSpacer'].' '));
-		$smartyEmployeeList->assign('employees',$employees);
-
-		if ($abcBar) {
-			$query = $this->makeEmployeeListQuery(all,false);
-			$smartyEmployeeList->assign('abcbar',$this->makeAbcBar($query));
-		}
-
-		return true;
+		return $query;
 	}
-	*/
+
 	
 	/**
 	 * Generates a list of all employees
@@ -922,10 +863,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		// Retrieve the employee count
 		$row_count = 0;
+		// Baustelle
 		$query = $this->makeEmployeeListQuery($this->piVars[char],false,true);
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			#$row_count += $row['anzahl'];
 			$row_count += $row['count(*)'];
 		}
 
@@ -973,7 +914,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
 						tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
 						tx_civserv_employee.deleted=0 AND
-						tx_civserv_employee.hidden=0';
+						tx_civserv_employee.hidden=0 '.
+						($regexp?'AND em_name REGEXP "' . $regexp . '"':'') . ' ';
 			} else {
 				$query = 'Select 
 tx_civserv_employee.em_address, 
@@ -1087,7 +1029,8 @@ tx_civserv_employee.em_address,
 		$this->internal['maxPages'] = $this->conf['max_pages_in_pagebar'];
 		$smartyFormList->assign('form_list',$forms);
 		if ($abcBar) {
-			$query = $this->makeFormListQuery(all,$organisation_id,orderByCategory,false);
+			//function makeFormListQuery($char=all,$organisation_id=0,$orderByCategory=0,$limit=true,$count=false) {
+			$query = $this->makeFormListQuery(all,$organisation_id,$orderByCategory,false);
 			$smartyFormList->assign('abcbar',$this->makeAbcBar($query));
 		}
 
@@ -1512,7 +1455,6 @@ tx_civserv_employee.em_address,
 		$abcBar .= "</p>\n";
 
 		$this->piVars['mode']=$correctMode;
-
 		return $abcBar;
 	}
 
@@ -1641,12 +1583,12 @@ tx_civserv_employee.em_address,
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
 	function serviceDetail(&$smartyService,$searchBox=false,$topList=false, $continueAbcBarFromServiceList=false) {
-		//test bk: repeat the heading from the list:
-		$smartyService->assign('heading',$this->pi_getLL('tx_civserv_pi1_service_list.overview','Overview' ));
-		if($continueAbcBarFromServiceList){
-			$query = $this->makeServiceListQuery(all,false);
-			$smartyService->assign('abcbarServiceList_continued', $this->makeAbcBar($query, 'service_list'));
-		}
+	
+		// first the basics:
+		// service_pidlist is needed for identifying the Employees: in case of an external service the employes have 
+		// to be retrieved from the pidlist of the community providing the service. 
+		// that is an excemption to the rule that all data is fetched from within $this->community_pidlist
+		$service_pidlist="";
 		
 		$uid = $this->piVars[id];
 		$community_id = $this->community['id'];
@@ -1658,9 +1600,38 @@ tx_civserv_employee.em_address,
 		//Set path to forms of services
 		$folder_forms = $this->conf['folder_services'];
 		$folder_forms .= $this->community['id'] . '/forms/';
-
-		//Query for standard service details
+				//Query for standard service details
 		$res_common = $this->queryService(intval($uid));
+
+	
+		$service_common = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_common);
+
+
+		//Check if service is an external service!!!
+		if (!array_key_exists($service_common['pid'],array_flip(explode(',',$this->community[pidlist])))) {
+			$mandant = t3lib_div::makeInstanceClassName('tx_civserv_mandant');
+			$mandantInst = new $mandant();
+			$service_community = $mandantInst->get_mandant($service_common['pid']);
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+											'cm_community_name,
+											 cm_uid',
+											'tx_civserv_conf_mandant',
+											'cm_community_id = ' . $service_community);
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+			$smartyService->assign('external_service_label',$this->pi_getLL('tx_civserv_pi1_service.external_service','This service is provided and advised by') . ': ' . $row['cm_community_name']);
+			$service_pidlist= $this->pi_getPidList($row['cm_uid'],$this->conf['recursive']);
+		} else {
+			$service_community = $this->community[id];
+			$service_pidlist= $this->community[pidlist];
+		}
+	
+		//test bk: repeat the heading from the list:
+		$smartyService->assign('heading',$this->pi_getLL('tx_civserv_pi1_service_list.overview','Overview' ));
+		if($continueAbcBarFromServiceList){
+			$query = $this->makeServiceListQuery(all,false);
+			$smartyService->assign('abcbarServiceList_continued', $this->makeAbcBar($query, 'service_list'));
+		}
+
 
 		//Query for associated forms
 		$res_forms = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
@@ -1689,7 +1660,9 @@ tx_civserv_employee.em_address,
 						'',
 						'tx_civserv_service_sv_organisation_mm.sorting');	//ORDER BY
 						#'name');	//ORDER BY
-
+		
+		
+		
 		//Query for associated employees
 		$res_employees = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'tx_civserv_employee.uid as emp_uid, 
@@ -1715,7 +1688,7 @@ tx_civserv_employee.em_address,
 						 AND tx_civserv_service_sv_position_mm.uid_foreign = tx_civserv_position.uid
 						 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 						 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid 
-						 AND tx_civserv_employee.pid IN (' . $this->community[pidlist] . ')',
+						 AND tx_civserv_employee.pid IN (' . $service_pidlist . ')', // in case of external service this is the pidlist of the community providing the service!!
 						'',
 						'tx_civserv_service_sv_position_mm.sorting, tx_civserv_employee_em_position_mm.sorting');	//ORDER BY
 
@@ -1753,24 +1726,10 @@ tx_civserv_employee.em_address,
 			$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi1_service.error_valid','Service does not exist or is not available.');
 			return false;
 		}
-
-		$service_common = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_common);
+		
+		
 		$service_employees = $this->sql_fetch_array_r($res_employees);
 
-		//Check if service is an external service
-		if (!array_key_exists($service_common['pid'],array_flip(explode(',',$this->community[pidlist])))) {
-			$mandant = t3lib_div::makeInstanceClassName('tx_civserv_mandant');
-			$mandantInst = new $mandant();
-			$service_community = $mandantInst->get_mandant($service_common['pid']);
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-											'cm_community_name',
-											'tx_civserv_conf_mandant',
-											'cm_community_id = ' . $service_community);
-			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-			$smartyService->assign('external_service_label',$this->pi_getLL('tx_civserv_pi1_service.external_service','This service is provided and advised by') . ': ' . $row['cm_community_name']);
-		} else {
-			$service_community = $this->community[id];
-		}
 
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_similar))	{
@@ -2551,7 +2510,6 @@ tx_civserv_employee.em_address,
 		//Assign addresses
 		// test bk: include bl_name
 		$smartyOrganisation->assign('bl_available',$bl_available=$orga_bl_count>0? 1:0);
-		debug($organisation_buildings, 'die Gebäude: ');
 		$smartyOrganisation->assign('buildings',$organisation_buildings);
 		
 		//Assign template labels

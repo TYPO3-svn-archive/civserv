@@ -59,17 +59,40 @@ class tx_civserv_service_maintenance {
 		$seperator = '### ###';
 		if ($params['table']=='tx_civserv_service')	{
 			//get all services configured to be passed on to other communities
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('mandant.cm_external_service_folder_uid, service.uid AS service, service.sv_name', // Field list for SELECT
-				'tx_civserv_service service, tx_civserv_service_sv_region_mm sr, tx_civserv_region region, tx_civserv_conf_mandant_cm_region_mm mandant_region, tx_civserv_conf_mandant mandant', // Tablename, local table
-				'sr.uid_local = service.uid AND sr.uid_foreign = region.uid AND  service.deleted=0 AND  !service.hidden AND mandant_region.uid_foreign = region.uid AND mandant_region.uid_local = mandant.uid AND mandant.cm_external_service_folder_uid > 0', // Optional additional WHERE clauses
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			   'mandant.cm_external_service_folder_uid, 
+				service.uid AS service, 
+				service.pid AS pid,
+				service.sv_name', // Field list for SELECT
+			   'tx_civserv_service service, 
+				tx_civserv_service_sv_region_mm sr, 
+				tx_civserv_region region, 
+				tx_civserv_conf_mandant_cm_region_mm mandant_region, 
+				tx_civserv_conf_mandant mandant', // Tablename, local table
+			   'sr.uid_local = service.uid 
+			    AND sr.uid_foreign = region.uid 
+				AND  service.deleted=0 
+				AND  !service.hidden 
+				AND mandant_region.uid_foreign = region.uid 
+				AND mandant_region.uid_local = mandant.uid 
+				AND mandant.cm_external_service_folder_uid > 0', // Optional additional WHERE clauses
 				'', // Optional GROUP BY field(s), if none, supply blank string.
 				'', // Optional ORDER BY field(s), if none, supply blank string.
 				'' // Optional LIMIT value ([begin,]max), if none, supply blank string.
 			);
 			$new_services = array();		
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$new_services[]=$row['cm_external_service_folder_uid'].$seperator.$row['service'].$seperator.$row['sv_name'];
+				// test: highlight_external! show community for external services!
+				$mandant = t3lib_div::makeInstanceClassName('tx_civserv_mandant');
+				$mandantInst = new $mandant();
+				$service_community_name = $mandantInst->get_mandant_name($row['pid']);
+				$new_services[]=	$row['cm_external_service_folder_uid'].
+									$seperator.
+									$row['service'].
+									$seperator.
+									$row['sv_name']." (".$service_community_name.")";
 			}			
+			debug($new_services, 'new services');
 			
 			//get all already existing external services for all mandants
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('pid, es_external_service, es_name', // Field list for SELECT
@@ -81,7 +104,11 @@ class tx_civserv_service_maintenance {
 			);
 			$old_services = array();		
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$old_services[]=$row['pid'].$seperator.$row['es_external_service'].$seperator.$row['es_name'];
+				$old_services[]=	$row['pid'].
+									$seperator.
+									$row['es_external_service'].
+									$seperator.
+									$row['es_name'];
 			}
 			// insert the service as external service if the new service isn't available yet
 			$new_ones = array_diff($new_services, $old_services);

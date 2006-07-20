@@ -64,9 +64,24 @@
  
 class tx_civserv_commit {
 
-	var $tables = array('tx_civserv_service'=>'tx_civserv_service_sv_position_mm', 'tx_civserv_employee'=>'tx_civserv_employee_em_position_mm', 'tx_civserv_building'=>'tx_civserv_building_bl_floor_mm');
-	var $attributes = array('tx_civserv_service_sv_position_mm'=>'sv_position', 'tx_civserv_employee_em_position_mm'=>'em_position', 'tx_civserv_building_bl_floor_mm'=>'bl_floor');
-	var $fieldarry = array();
+	var $tables = array(
+		'tx_civserv_service'=>'tx_civserv_service_sv_position_mm', 
+		'tx_civserv_employee'=>'tx_civserv_employee_em_position_mm', 
+		'tx_civserv_building'=>'tx_civserv_building_bl_floor_mm');
+		
+	var $attributes = array(
+		'tx_civserv_service_sv_position_mm'=>'sv_position', 
+		'tx_civserv_employee_em_position_mm'=>'em_position', 
+		'tx_civserv_building_bl_floor_mm'=>'bl_floor');
+		
+	var $service_mm_tables =array(	'tx_civserv_service_sv_similar_services_mm',
+									'tx_civserv_service_sv_form_mm',
+									'tx_civserv_service_sv_searchword_mm',
+									'tx_civserv_service_sv_position_mm',
+									'tx_civserv_service_sv_organisation_mm',
+									'tx_civserv_service_sv_navigation_mm',
+									'tx_civserv_service_sv_region_mm');
+
 
 	/**
 	 * This function is central to guarantee the consistency within the DB.
@@ -102,8 +117,6 @@ class tx_civserv_commit {
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
 	function recheckModifyAccessList($table, $cmdmap, $pObj, &$res){
-		#ugly but desperate
-		//echo "<script type=\"text/javascript\">alert('funktion recheckModifyAccessList!');</script>";
 		//bei delete-command haut das den webserver aus den latschen, zuviele aufrufe.....? oder endlosschleife???
 		//debug($table, 'tx_civserv/commit.php - function recheckModifyAccessList ->table');
 		//debug($cmdmap['tx_civserv_model_service_temp'], 'tx_civserv/commit.php - function recheckModifyAccessList -> cmdmap[0]');
@@ -249,12 +262,16 @@ class tx_civserv_commit {
 	 */
 	function updateDB($params) {
 		global $GLOBALS, $BE_USER;
-		//debug($GLOBALS['GLOBALS']['TYPO3_CONF_VARS']);
-		//debug($params, '$params, fkt updateDB(), Klasse commit.php');
 		if ($params['table']=='tx_civserv_building')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_floorbuild.php']){
 				$update_obj = t3lib_div::makeInstance('tx_civserv_floorbuild');
 				$update_obj->update_pid($params);
+			}
+		}
+		if ($params['table']=='tx_civserv_room')	{
+			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_oepupdate.php']){
+				$update_obj = t3lib_div::makeInstance('tx_civserv_oepupdate');
+				$update_obj->update_label($params);
 			}
 		}
 		if ($params['table']=='tx_civserv_employee')	{

@@ -300,7 +300,7 @@ $TCA["tx_civserv_building"] = Array (
 $TCA["tx_civserv_room"] = Array (
 	"ctrl" => Array (
 		"title" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_room",
-		"label" => "ro_name",
+		"label" => "rbf_label",
 		"tstamp" => "tstamp",
 		"crdate" => "crdate",
 		"cruser_id" => "cruser_id",
@@ -582,6 +582,7 @@ $TCA["tx_civserv_service_sv_position_mm"] = Array (
 
 /**
 * The following lines are needed for implementing the context sensitive help (CSH) for all masks in the backend
+* They are also needed for display be_groups when configuring user_rights??
 */
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_building','EXT:civserv/CSH/locallang_csh_building.php');
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_employee_em_position_mm','EXT:civserv/CSH/locallang_csh_employee_em_position_mm.php');
@@ -590,7 +591,7 @@ t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_floor','EXT:civserv/CSH/locallang_
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_form','EXT:civserv/CSH/locallang_csh_form.php');
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_model_service','EXT:civserv/CSH/locallang_csh_model_service.php');
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_navigation','EXT:civserv/CSH/locallang_csh_navigation.php');
-t3lib_extMgm::addLLrefForTCAdescr('','EXT:civserv/CSH/locallang_csh_organisation.php');
+t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_organisation','EXT:civserv/CSH/locallang_csh_organisation.php');
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_search_word','EXT:civserv/CSH/locallang_csh_search_word.php');
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_service_sv_position_mm','EXT:civserv/CSH/locallang_csh_service_sv_position_mm.php');
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_service','EXT:civserv/CSH/locallang_csh_service.php');

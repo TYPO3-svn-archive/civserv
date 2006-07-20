@@ -56,6 +56,7 @@ CREATE TABLE tx_civserv_external_service (
 	fe_group int(11) DEFAULT '0' NOT NULL,
 	es_external_service int(11) unsigned DEFAULT '0' NOT NULL,
 	es_name tinytext NOT NULL,
+	#es_sv_community tinytext NOT NULL,
 	es_navigation int(11) unsigned DEFAULT '0' NOT NULL,
 
 	PRIMARY KEY (uid),
@@ -325,6 +326,7 @@ CREATE TABLE tx_civserv_form (
 	fe_group int(11) DEFAULT '0' NOT NULL,
 	fo_number tinytext NOT NULL,
 	fo_orga_code tinytext NOT NULL,
+	fo_codename tinytext NOT NULL,
 	fo_name tinytext NOT NULL,
 	fo_descr text NOT NULL,
 	fo_category int(11) unsigned DEFAULT '0' NOT NULL,
@@ -423,6 +425,7 @@ CREATE TABLE tx_civserv_room (
 	ro_telephone tinytext NOT NULL,
 	ro_fax tinytext NOT NULL,
 	rbf_building_bl_floor int(11) unsigned DEFAULT '0' NOT NULL,
+	rbf_label tinytext NOT NULL,
 	ro_exid int(11) unsigned DEFAULT '0' NOT NULL,
 	
 	PRIMARY KEY (uid),
@@ -587,7 +590,7 @@ CREATE TABLE tx_civserv_organisation_or_building_mm (
 
 
 #
-# Table structure for table 'tx_civserv_organisation_or_building_mm'
+# Table structure for table 'tx_civserv_organisation_or_building_to_show_mm'
 # 
 #
 CREATE TABLE tx_civserv_organisation_or_building_to_show_mm (
@@ -897,19 +900,3 @@ CREATE TABLE tx_civserv_model_service_temp (
 	PRIMARY KEY (uid),
 	KEY parent (pid)
 );
-
-
-#
-# in version 4.1.1 the structure for weekdays in officehours was changed:
-#
-update `tx_civserv_officehours`  set `oh_weekday` = 401 where `oh_weekday` = 11;
-update `tx_civserv_officehours`  set `oh_weekday` = 101 where `oh_weekday` = 10;
-update `tx_civserv_officehours`  set `oh_weekday` = 302 where `oh_weekday` = 9;
-update `tx_civserv_officehours`  set `oh_weekday` = 301 where `oh_weekday` = 8;
-update `tx_civserv_officehours`  set `oh_weekday` = 207 where `oh_weekday` = 7;
-update `tx_civserv_officehours`  set `oh_weekday` = 206 where `oh_weekday` = 6;
-update `tx_civserv_officehours`  set `oh_weekday` = 205 where `oh_weekday` = 5;
-update `tx_civserv_officehours`  set `oh_weekday` = 204 where `oh_weekday` = 4;
-update `tx_civserv_officehours`  set `oh_weekday` = 203 where `oh_weekday` = 3;
-update `tx_civserv_officehours`  set `oh_weekday` = 202 where `oh_weekday` = 2;
-update `tx_civserv_officehours`  set `oh_weekday` = 201 where `oh_weekday` = 1;
