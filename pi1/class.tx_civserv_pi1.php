@@ -941,7 +941,7 @@ tx_civserv_employee.em_address,
 			$orderby =	$this->piVars[sort]?'name DESC':'name ASC';
 
 			if (!$count) {
-			$query .= ' ORDER BY ' . $orderby . ' ';
+			$orderby =	$this->piVars[sort]?'name, em_firstname DESC':'name, em_firstname ASC';
 
 				if ($limit) {
 					if ($this->piVars[pointer] > '') {
