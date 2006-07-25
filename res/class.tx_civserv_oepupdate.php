@@ -89,30 +89,42 @@ class tx_civserv_oepupdate {
 	* @param	string		$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API
 	* @return	void
 	*/
-	function update_label($params){
-		// experimental: make function faster by including $params['uid'] in where-clause
+function update_label($params){
+		// experimental: make function faster by including $params['uid'] in where-clause - if available i.e. uid != 'NEW12345'
 		if (is_array($params) && ($params['table']== 'tx_civserv_employee' || $params['table']=='tx_civserv_employee_em_position_mm')) {	
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-				'tx_civserv_employee_em_position_mm.uid, tx_civserv_employee.em_name, tx_civserv_employee.em_firstname, tx_civserv_position.po_name ',
-				'tx_civserv_employee', 
-				'tx_civserv_employee_em_position_mm',
-				'tx_civserv_position', 
-				($params['table']=='tx_civserv_employee_em_position_mm')?'AND tx_civserv_employee_em_position_mm.uid='.$params['uid']:'AND tx_civserv_employee.uid='.$params['uid'], // where
-				 '', 
-				 '', 
-				 '');
+				'tx_civserv_employee_em_position_mm.uid, 
+				 tx_civserv_employee.em_name, 
+				 tx_civserv_employee.em_firstname, 
+				 tx_civserv_position.po_name ',		// SELECT
+				'tx_civserv_employee', 				// local table
+				'tx_civserv_employee_em_position_mm',	// mm table
+				'tx_civserv_position', 				// foreign table
+				(substr($params['uid'],0,3)!='NEW')?
+					($params['table']=='tx_civserv_employee_em_position_mm')?
+						'AND tx_civserv_employee_em_position_mm.uid='.$GLOBALS['TYPO3_DB']->quoteStr($params['uid'], 'tx_civserv_employee_em_position_mm') :
+						'AND tx_civserv_employee.uid='.$GLOBALS['TYPO3_DB']->quoteStr($params['uid'], 'tx_civserv_employee')			// where
+				: '',	
+				'', 
+				'', 
+				'');
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-					'tx_civserv_employee_em_position_mm', 
-					'uid = '.$GLOBALS['TYPO3_DB']->quoteStr($row['uid'], 'tx_civserv_employee_em_position_mm'), 
-					array ("ep_label" => $row['em_name'].', '.$row['em_firstname'].' ('.$row['po_name'].')')
+					'tx_civserv_employee_em_position_mm', 	// update table
+					'uid = '.$GLOBALS['TYPO3_DB']->quoteStr($row['uid'], 'tx_civserv_employee_em_position_mm'),  // where
+					array ("ep_label" => $row['em_name'].', '.$row['em_firstname'].' ('.$row['po_name'].')')	// set... (array)
 				);
 			}
 		}
-		// make nice labels for rooms! (so that editor can see in BE to which building a room (already selected in position_employee_form) belongs:
-		// to make it faster uncomment the last line of the where clause (and delete hyphen, comma from second last line)
-		# if (is_array($params) && ($params['table']== 'tx_civserv_room' || $params['table']=='tx_civserv_employee_em_position_mm')) {	
+		#if (is_array($params) && ($params['table']== 'tx_civserv_room' || $params['table']=='tx_civserv_employee_em_position_mm')) {	
 		if (is_array($params) && ($params['table']== 'tx_civserv_room')) {	
+			$where= 'tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid 
+				 AND tx_civserv_building_bl_floor_mm.uid_local = tx_civserv_building.uid 
+				 AND tx_civserv_building_bl_floor_mm.uid_foreign = tx_civserv_floor.uid 
+				 AND tx_civserv_building_bl_floor_mm.deleted=0 
+				 AND tx_civserv_building_bl_floor_mm.hidden=0 ';
+			$where.= (substr($params['uid'],0,3)!='NEW') ? 'AND tx_civserv_room.uid = '.$GLOBALS['TYPO3_DB']->quoteStr($params['uid'], 'tx_civserv_room') : '';
+		
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'tx_civserv_room.pid, 
 				 tx_civserv_room.uid uid, 
@@ -123,22 +135,17 @@ class tx_civserv_oepupdate {
 				 tx_civserv_building, 
 				 tx_civserv_floor, 
 				 tx_civserv_building_bl_floor_mm',				// FROM
-				'tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid 
-				 AND tx_civserv_building_bl_floor_mm.uid_local = tx_civserv_building.uid 
-				 AND tx_civserv_building_bl_floor_mm.uid_foreign = tx_civserv_floor.uid 
-				 AND tx_civserv_building_bl_floor_mm.deleted=0 
-				 AND tx_civserv_building_bl_floor_mm.hidden=0 ',
-				 #AND tx_civserv_room.uid = '.$params['uid'],	// WHERE
+				 $where,										// WHERE
 				'',												// GROUP_BY
 				'bl_name, fl_descr, ro_name', 					// ORDER BY
 				'' 												// LIMIT
 			);
+			
 			while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$GLOBALS['TYPO3_DB']->exec_UPDATEquery(		
 					'tx_civserv_room',
-					'uid = '.$data['uid'],  // where
+					'uid = '.$GLOBALS['TYPO3_DB']->quoteStr($data['uid'], 'tx_civserv_room'),  // where
 					array ("rbf_label" => $data['ro_name'].' ('.$data['bl_name'].', '.$data['fl_descr'].')')	// set... (array)
-					#array ("rbf_label" => '('.$data['bl_name'].', '.$data['fl_descr'].')')	// set... (array)
 				);
 			}
 		}
