@@ -876,7 +876,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		$smartyEmployeeList->assign('heading',$this->pi_getLL('tx_civserv_pi1_employee_list.employee_list.heading','Employees'));
 		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_employee_list.available_employees','Here you find the following employees'));
-		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true,'',' | '));
+		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true,'',' '.$this->conf['abcSpacer'].' '));
 		$smartyEmployeeList->assign('employees',$employees);
 		
 
@@ -3438,19 +3438,25 @@ tx_civserv_employee.em_address,
 			if ($a < 0) {
 				$a = 0;
 			}
-			for($i;$i<$max;$i++)  {
-				$links[]=sprintf('%s'.$this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page','Page',TRUE).' '.($a+1)),array('pointer'=>($a?$a:'')),1).'%s',
+			for($i=0;$i<$max;$i++)  {
+				// check that the starting point equivalent of $pR1) doesn't exceed the total $count
+				if($a*$results_at_a_time+1>$count){
+					$i=$max; //quit!!!
+				}else{	
+					$links[]=sprintf('%s'.$this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page','Page',TRUE).' '.($a+1)),array('pointer'=>($a?$a:'')),1).'%s',
 								($pointer==$a?'<span '.$this->pi_classParam('browsebox-SCell').'><strong>':''),
 								($pointer==$a?'</strong></span>':''));
+				}
 				$a++;
 			}
 		}
-		if ($pointer<ceil($count/$results_at_a_time)-1) {
+		// neither $pointer nor the number-link ($a) must exceed the result of the calculation below!
+		if ($pointer<ceil($count/$results_at_a_time)-1 && $a<=ceil($count/$results_at_a_time)-1) {
 			$links[]=$this->pi_linkTP_keepPIvars($this->pi_getLL('pi_list_browseresults_next','Next >',TRUE),array('pointer'=>$pointer+1),1);
 		}
 
-		$pR1 = $pointer*$results_at_a_time+1;
-		$pR2 = $pointer*$results_at_a_time+$results_at_a_time;
+		$pR1 = $pointer*$results_at_a_time+1; //start from this number
+		$pR2 = $pointer*$results_at_a_time+$results_at_a_time; //end with this number
 		$sBox = '
 
                 <!--
