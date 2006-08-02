@@ -102,7 +102,6 @@ includeNameInHeading=1
 # show the Organsiation-Codes in Organisation-Tree-View 
 displayOrganisationCode=0
 
-
 # convert typolinks into human readable service links - works only with appropriate rewrite rules!
 useCustomLinks_Services=0
 useCustomLinks_Organisations=0

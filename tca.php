@@ -1151,7 +1151,7 @@ $TCA["tx_civserv_form"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, fo_number, fo_orga_code, fo_codename, fo_name, fo_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], fo_category, fo_external_checkbox, fo_url, fo_formular_file, fo_created_date, fo_status")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, fo_number, fo_orga_code, fo_codename, fo_name, fo_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], fo_category, fo_external_checkbox, fo_url, fo_formular_file, fo_created_date, fo_status, fo_target")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "starttime, endtime, fe_group")
