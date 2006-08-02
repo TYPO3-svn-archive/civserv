@@ -498,9 +498,17 @@ $TCA["tx_civserv_service"] = Array (
 							'type' => 'popup',
 					        'title' => 'LLL:EXT:civserv/res/locallang_wizard.php:tx_civserv_wizard_service_form.title',
        						'script' => 'EXT:civserv/res/class.tx_civserv_wizard_service_form.php',
-							'icon' => 'list.gif',
+							'icon' => 'EXT:civserv/list_form_abc_framed.gif',
 							'JSopenParams' => 'height=350,width=600,status=0,menubar=0,resizable=1,location=0',
 					),
+					'serviceform_category' => Array(
+							'type' => 'popup',
+					        'title' => 'LLL:EXT:civserv/res/locallang_wizard.php:tx_civserv_wizard_service_form_category.title',
+       						'script' => 'EXT:civserv/res/class.tx_civserv_wizard_service_form_category.php',
+							'icon' => 'EXT:civserv/list_form_cat_framed.gif',
+							'JSopenParams' => 'height=350,width=600,status=0,menubar=0,resizable=1,location=0',
+					),
+
 				),
 			)
 		),
