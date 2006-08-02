@@ -1142,6 +1142,13 @@ $TCA["tx_civserv_form"] = Array (
 				),
 			)
 		),
+		"fo_target" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_form.fo_target",
+			"config" => Array (
+				"type" => "check",
+			)
+		),
 	),
 	"types" => Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, fo_number, fo_orga_code, fo_codename, fo_name, fo_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], fo_category, fo_external_checkbox, fo_url, fo_formular_file, fo_created_date, fo_status")

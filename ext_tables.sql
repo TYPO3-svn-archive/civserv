@@ -335,6 +335,7 @@ CREATE TABLE tx_civserv_form (
 	fo_formular_file blob NOT NULL,
 	fo_created_date int(11) DEFAULT '0' NOT NULL,
 	fo_status int(11) unsigned DEFAULT '0' NOT NULL,
+	fo_target int(11) unsigned DEFAULT '0' NOT NULL,
 	
 	PRIMARY KEY (uid),
 	KEY parent (pid)

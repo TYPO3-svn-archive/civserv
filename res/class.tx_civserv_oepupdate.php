@@ -123,7 +123,8 @@ function update_label($params){
 				 AND tx_civserv_building_bl_floor_mm.uid_foreign = tx_civserv_floor.uid 
 				 AND tx_civserv_building_bl_floor_mm.deleted=0 
 				 AND tx_civserv_building_bl_floor_mm.hidden=0 ';
-			$where.= (substr($params['uid'],0,3)!='NEW') ? 'AND tx_civserv_room.uid = '.$GLOBALS['TYPO3_DB']->quoteStr($params['uid'], 'tx_civserv_room') : '';
+			//make it faster by changing just the room in question: uncomment following line:	 
+			#$where.= (substr($params['uid'],0,3)!='NEW') ? 'AND tx_civserv_room.uid = '.$GLOBALS['TYPO3_DB']->quoteStr($params['uid'], 'tx_civserv_room') : '';
 		
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'tx_civserv_room.pid, 

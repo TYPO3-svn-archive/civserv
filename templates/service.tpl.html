@@ -106,9 +106,13 @@
 		<a name="forms" id="forms"></a>
 		<h2>{$forms_label}</h2>
 		<ul>
-			<!--{foreach from=$forms item=form}-->
-				<li><a href="{$form.url}" target="_blank"><strong>{$form.name}</strong></a></li>		
-			<!--{/foreach}-->
+		<!--{foreach from=$forms item=form}-->
+			<!--{if $form.target == 0}-->
+					<li><a href="{$form.url}" target="_blank"><strong>{$form.name}</strong></a></li>
+			<!--{else}-->
+					<li><a href="{$form.url}"><strong>{$form.name}</strong></a></li>
+			<!--{/if}-->
+		<!--{/foreach}-->
 		</ul>
 		<p><a href="#centrecontent" class="topofpage" title="{$link_to_top}">{$top}</a></p><br />
 	<!--{/if}-->

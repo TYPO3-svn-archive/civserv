@@ -1635,7 +1635,12 @@ tx_civserv_employee.em_address,
 
 		//Query for associated forms
 		$res_forms = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-						'tx_civserv_form.uid as uid, fo_name as name, fo_url as url, fo_formular_file as file, fo_external_checkbox as checkbox',
+						'tx_civserv_form.uid as uid, 
+						 fo_name as name, 
+						 fo_url as url, 
+						 fo_formular_file as file, 
+						 fo_external_checkbox as checkbox,
+						 fo_target as target',
 						'tx_civserv_service',
 						'tx_civserv_service_sv_form_mm',
 						'tx_civserv_form',
@@ -1773,6 +1778,7 @@ tx_civserv_employee.em_address,
 			} else {
 				$service_forms[$row_counter]['url'] = $folder_forms.$row[file];
 			}
+			$service_forms[$row_counter]['target'] = $row[target];
 			$row_counter++;
 		}
 		$smartyService->assign('forms',$service_forms);
