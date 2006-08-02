@@ -70,6 +70,9 @@ plugin.tx_civserv_pi1 {
 	continueAbcBarFromServiceList={$continueAbcBarFromServiceList}
 	includeNameInHeading={$includeNameInHeading}
 	displayOrganisationCode={$displayOrganisationCode}
+	useCustomLinks_Services={$useCustomLinks_Services}
+	useCustomLinks_Organisations={$useCustomLinks_Organisations}
+
 
 	abcBarAtServiceList = {$abcBarAtServiceList}
 	abcBarAtCircumstance = {$abcBarAtCircumstance}

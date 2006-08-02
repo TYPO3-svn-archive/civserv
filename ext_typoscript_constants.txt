@@ -103,6 +103,11 @@ includeNameInHeading=1
 displayOrganisationCode=0
 
 
+# convert typolinks into human readable service links - works only with appropriate rewrite rules!
+useCustomLinks_Services=0
+useCustomLinks_Organisations=0
+
+
 # Defines at which sites the abcBar will be shown
 abcBarAtServiceList = 1
 abcBarAtCircumstance = 0

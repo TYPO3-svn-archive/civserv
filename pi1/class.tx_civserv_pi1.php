@@ -401,7 +401,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 		
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
-			$services[$row_counter]['link'] =  htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $row['uid']),$this->conf['cache_services'],1));
+			// customLinks will only work if there is an according rewrite-rule in action!!!!
+			if(!$this->conf['useCustomLinks_Services']){
+				$services[$row_counter]['link'] =  htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $row['uid']),$this->conf['cache_services'],1));
+			}else{
+				$services[$row_counter]['link'] = strtolower($this->convert_plus_minus(urlencode($this->replace_umlauts($this->strip_extra($row['realname']."_".$row['uid']))))).".html";
+			}
 			if ($row['name'] == $row['realname']) {
 				$services[$row_counter]['name'] = $row['name'];
 			} else {
@@ -700,7 +705,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 			} else {
 				$organisations[$row_counter]['name'] = $row['name'] . ' (= ' . $row['realname'] . ')';
 			}
-			$organisations[$row_counter]['or_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'organisation',id => $row[or_uid]),1,1));
+			if(!$this->conf['useCustomLinks_Organisations']){
+				$organisations[$row_counter]['or_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'organisation',id => $row[or_uid]),1,1));
+			}else{
+				$organisations[$row_counter]['or_url'] = strtolower($this->convert_plus_minus(urlencode($this->replace_umlauts($this->strip_extra($row['realname']))))).".html";
+			}
 			$row_counter++;
 		}
 
@@ -3811,6 +3820,51 @@ tx_civserv_employee.em_address,
 		$pageLink = '<span class="brot"></span><a href="'.$pageLink.'">'.$linkText.'</a>';
 		return $pageLink;
 	}
+	
+	/******************************
+	 *
+	 * Functions for Custom-Links
+	 *
+	 *******************************/
+
+	
+	function replace_umlauts($string){
+		// Umlaute entfernen
+		$umlaute = Array("/ä/","/ö/","/ü/","/Ä/","/Ö/","/Ü/","/ß/", "/é/"); //hexadecimal-code für é à etc????
+		$replace = Array("ae","oe","ue","Ae","Oe","Ue","ss", "e");
+		$string = preg_replace($umlaute, $replace, $string);
+		
+		//eliminate:
+		$string=str_replace(".", "", $string);			// Bücherei Zweigstelle Wolbecker Str.
+		$string=str_replace(" - ", "-", $string);		// La Vie - Begegnungszentrum Gievenbeck
+		$string=str_replace("- ", "-", $string);		// Veterinär- und Lebensmittel...
+		$string=str_replace("-, ", " ", $string);		// Amt für Stadt-, Verkehrs- und Parkplatzplanung
+		$string=str_replace(",", "", $string);			// Ich, du, Müllers's Kuh
+		$string=str_replace(": ", " ", $string);		// Gesundheitsamt: Therapie und Hilfe sofort
+	
+		//make blanks:
+		$string=str_replace("+", " ", $string);			// Wohn + Stadtbau
+		$string=str_replace("&", " ", $string);			// Ich & Ich
+		$string=str_replace("/", " ", $string);			// Feuerwehr/Rettungsdienst
+		$string=str_replace("\\", " ", $string);		// Eins\Zwei\Drei
+		return $string;
+	}
+	
+	
+	function strip_extra($string){
+		// Mobilé (Zentrum für clevere Verkehrsnutzung) => Mobile.html
+		$string=trim(ereg_replace("\([^\)]*\)", "", $string));
+		return $string;
+	}
+	
+	function convert_plus_minus($string){
+		$string=str_replace("-+", "+", $string);
+		$string=str_replace("+-", "+", $string);
+		//make them nice to use:
+		$string=str_replace("+", "-", $string);
+		return $string;
+	}
+	
 	
 }//class end
 
