@@ -393,6 +393,7 @@ CREATE TABLE tx_civserv_building (
 	bl_building_city tinytext NOT NULL,
 	bl_pubtrans_stop tinytext NOT NULL,
 	bl_pubtrans_url tinytext NOT NULL,
+	bl_citymap_url tinytext NOT NULL,
 	bl_image blob NOT NULL,
 	bl_telephone tinytext NOT NULL,
 	bl_fax tinytext NOT NULL,

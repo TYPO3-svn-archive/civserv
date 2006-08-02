@@ -1318,6 +1318,27 @@ $TCA["tx_civserv_building"] = Array (
 				)
 			)
 		),
+		"bl_citymap_url" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_building.bl_citymap_url",
+			"config" => Array (
+				"type" => "input",
+				"size" => "15",
+				"max" => "255",
+				"checkbox" => "",
+				"eval" => "trim",
+				"wizards" => Array(
+					"_PADDING" => 2,
+					"link" => Array(
+						"type" => "popup",
+						"title" => "Link",
+						"icon" => "link_popup.gif",
+						"script" => "browse_links.php?mode=wizard",
+						"JSopenParams" => "height=300,width=500,status=0,menubar=0,scrollbars=1"
+					)
+				)
+			)
+		),
 		"bl_image" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_building.bl_image",
@@ -1390,7 +1411,7 @@ $TCA["tx_civserv_building"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, bl_number, bl_name_to_show, bl_name, bl_descr, bl_mail_street, bl_mail_pob, bl_mail_postcode, bl_mail_city, bl_building_street, bl_building_postcode, bl_building_city, bl_pubtrans_stop, bl_pubtrans_url, bl_image, bl_telephone, bl_fax, bl_email, bl_floor")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, bl_number, bl_name_to_show, bl_name, bl_descr, bl_mail_street, bl_mail_pob, bl_mail_postcode, bl_mail_city, bl_building_street, bl_building_postcode, bl_building_city, bl_pubtrans_stop, bl_pubtrans_url, bl_citymap_url, bl_image, bl_telephone, bl_fax, bl_email, bl_floor")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")

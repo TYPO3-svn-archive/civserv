@@ -26,14 +26,17 @@
 					{$pub_trans_stop_label}:&nbsp;{$building.bl_pubtrans_stop}<br />
 				<!--{/if}-->
 			<!--{/if}-->
+			<!--{if $building.bl_citymap_link != ""}-->
+				<a href="{$building.bl_citymap_link}" target="_blank">{$bl_citymap_label}</a><br /><br /> 
+			<!--{/if}-->
 		<!--{/foreach}-->
 		<!--{if $building.bl_mail_street != "" OR $building.bl_mail_pob != "" OR $building.bl_mail_postcode != "" OR $building.bl_mail_city != ""}-->
 				<br /><strong>{$postal_address_label}:</strong><br />
-				<!--{if $mail_street != ""}-->
+				<!--{if $building.mail_street != ""}-->
 				{$building.bl_mail_street}<br />
 				<!--{/if}-->
-				<!--{if $mail_pob != ""}-->
-				{$building.bl_postbox_label}&nbsp;{$building.bl_mail_pob}<br />
+				<!--{if $building.mail_pob != ""}-->
+				{$postbox_label}&nbsp;{$building.bl_mail_pob}<br />
 				<!--{/if}-->
 				{$building.bl_mail_postcode}&nbsp;{$building.bl_mail_city}<br /><br />
 			<!--{/if}-->

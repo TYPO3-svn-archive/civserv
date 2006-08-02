@@ -2084,7 +2084,18 @@ tx_civserv_employee.em_address,
 
 			//Query for organisation, building, floor and room (depending on position of employee)
 			$res_position = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_civserv_position.uid as pos_uid, tx_civserv_organisation.uid as or_uid, tx_civserv_employee.uid as emp_uid, po_name as position, bl_name as building, fl_descr as floor, ro_name as room, ep_telephone as phone, ep_fax as fax, ep_email as email, or_name as organisation',
+					'tx_civserv_position.uid as pos_uid, 
+					 tx_civserv_organisation.uid as or_uid, 
+					 tx_civserv_employee.uid as emp_uid, 
+					 po_name as position, 
+					 bl_name as building, 
+					 bl_name_to_show as building_to_show,
+					 fl_descr as floor, 
+					 ro_name as room, 
+					 ep_telephone as phone, 
+					 ep_fax as fax, 
+					 ep_email as email, 
+					 or_name as organisation',
 					'tx_civserv_employee, tx_civserv_position, tx_civserv_room, tx_civserv_floor, tx_civserv_organisation, tx_civserv_building, tx_civserv_employee_em_position_mm, tx_civserv_building_bl_floor_mm, tx_civserv_position_po_organisation_mm',
 					'tx_civserv_employee.uid='.$uid.' AND em_datasec=1 AND tx_civserv_position.uid = '.$pos_id.'
 					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
@@ -2107,6 +2118,9 @@ tx_civserv_employee.em_address,
 
 		//Assign employee position data
 		$employee_position = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_position);
+		if($employee_position['building_to_show'] > ''){
+			$employee_position['building'] = $employee_position['building_to_show'];
+		}
 		$employee_position['or_link'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'organisation', id => $employee_position['or_uid']),1,1));
 		$smartyEmployee->assign('position',$employee_position);
 
@@ -2237,7 +2251,15 @@ tx_civserv_employee.em_address,
 		//Standard query for organisation details
 		// test bk: include or_show_supervisor
 		$res_common = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'uid, or_name,or_telephone,or_fax,or_email,or_image,or_infopage,or_addinfo, or_addlocation,or_show_supervisor',
+						'uid, or_name,
+						 or_telephone,
+						 or_fax,
+						 or_email,
+						 or_image,
+						 or_infopage,
+						 or_addinfo, 
+						 or_addlocation,
+						 or_show_supervisor',
 						'tx_civserv_organisation',
 						'deleted=0 AND hidden=0 AND uid='.$uid,
 						'',
@@ -2285,7 +2307,8 @@ tx_civserv_employee.em_address,
 						 bl_building_postcode, 
 						 bl_building_city, 
 						 bl_pubtrans_stop, 
-						 bl_pubtrans_url';
+						 bl_pubtrans_url,
+						 bl_citymap_url';
 		$res_building = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 						$select_building,
 						'tx_civserv_organisation',
@@ -2363,8 +2386,18 @@ tx_civserv_employee.em_address,
 		$organisation_buildings= array();
 		$orga_bl_count=0;
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_building)){
+			//store whole building in array
 			$organisation_buildings[$orga_bl_count]=$row;
+			//modify some values:
+			//in case there are several buildings for the organisation, check if the mail_postcode is identical!
+			if($orga_bl_count==0){
+				$bl_mail_postcode=intval(trim($row['bl_mail_postcode']));
+			}elseif($orga_bl_count>=1){
+				$organisation_buildings[$orga_bl_count]['bl_mail_postcode']= $bl_mail_postcode==intval(trim($row['bl_mail_postcode']))?$row['bl_mail_postcode']:"";
+			}
+			//typofy the Link! this has to be done all over again below for the different cases (show building-of-or_supervisor, show building-selected-via-BE)
 			$organisation_buildings[$orga_bl_count]['bl_pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
+			$organisation_buildings[$orga_bl_count]['bl_citymap_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_citymap_url']));
 			$orga_bl_count++;
 		}
 
@@ -2412,6 +2445,7 @@ tx_civserv_employee.em_address,
 			if($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_bl_supervisor)){ //there must not be more than 1 buildings in which the organisation-supervisor resides!
 				$organisation_buildings[0] = $row;
 				$organisation_buildings[0]['bl_pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
+				$organisation_buildings[0]['bl_citymap_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_citymap_url']));
 				$organisation_buildings = array_slice ($organisation_buildings, 0, 1); 
 			}
 		}
@@ -2436,6 +2470,7 @@ tx_civserv_employee.em_address,
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_building_temp)){
 				$organisation_buildings_temp[$orga_bl_count_temp]=$row;
 				$organisation_buildings_temp[$orga_bl_count_temp]['bl_pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
+				$organisation_buildings_temp[$orga_bl_count_temp]['bl_citymap_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_citymap_url']));
 				$orga_bl_count_temp++;
 			}
 			if($orga_bl_count_temp > 0){
@@ -2540,6 +2575,7 @@ tx_civserv_employee.em_address,
 		$smartyOrganisation->assign('pub_trans_stop_label',$this->pi_getLL('tx_civserv_pi1_organisation.pub_trans_stop','Stop'));
 		$smartyOrganisation->assign('available_services_label',$this->pi_getLL('tx_civserv_pi1_organisation.available_services','Here you find the following services'));
 		$smartyOrganisation->assign('infopage_label',$this->pi_getLL('tx_civserv_pi1_organisation.infopage','Info Page'));
+		$smartyOrganisation->assign('bl_citymap_label',$this->pi_getLL('tx_civserv_pi1_organisation.citymap_label','City Map Link'));
 
 		return true;
 	}
