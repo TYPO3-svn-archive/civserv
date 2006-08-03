@@ -508,7 +508,6 @@ $TCA["tx_civserv_service"] = Array (
 							'icon' => 'EXT:civserv/list_form_cat_framed.gif',
 							'JSopenParams' => 'height=350,width=600,status=0,menubar=0,resizable=1,location=0',
 					),
-
 				),
 			)
 		),
@@ -1088,19 +1087,6 @@ $TCA["tx_civserv_form"] = Array (
 				)
 			)
 		),
-		/*
-		"fo_url" => Array (
-			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_form.fo_url",
-			"displayCond" => "FIELD:fo_external_checkbox:REQ:true",
-			"config" => Array (
-				"type" => "input",
-				"size" => "15",
-				"max" => "255",
-				"eval" => "trim"
-			)
-		),
-		*/
 		"fo_formular_file" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_form.fo_formular_file",
