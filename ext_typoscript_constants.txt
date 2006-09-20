@@ -85,7 +85,7 @@ searchAtEmployee = 0
 searchAtEmployeeList = 0
 searchAtOrganisationList = 0
 
-# for mandants with very many positions who which to limit the editors access further:
+# for mandants with very many positions who whish to limit the editors access further:
 pagesSubtitleContainsOrganisationUid = 0
 
 # Defines charcter between letters in abcBAr
