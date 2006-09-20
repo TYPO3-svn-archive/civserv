@@ -1,6 +1,7 @@
 # PlugIn specific definitions, for comments see constants-section
 plugin.tx_civserv_pi1 {
 	tpl_service_list = {$tpl_service_list}
+	tpl_online_sv_list = {$tpl_online_sv_list}
 	tpl_circumstance_tree = {$tpl_circumstance_tree}
 	tpl_usergroup_tree = {$tpl_usergroup_tree} 
 	tpl_organisation_list = {$tpl_organisation_list}
@@ -72,7 +73,7 @@ plugin.tx_civserv_pi1 {
 	displayOrganisationCode={$displayOrganisationCode}
 	useCustomLinks_Services={$useCustomLinks_Services}
 	useCustomLinks_Organisations={$useCustomLinks_Organisations}
-
+	
 
 	abcBarAtServiceList = {$abcBarAtServiceList}
 	abcBarAtCircumstance = {$abcBarAtCircumstance}
@@ -83,7 +84,7 @@ plugin.tx_civserv_pi1 {
 	abcBarAtEmployeeList = {$abcBarAtEmployeeList}
 	abcBarAtOrganisationList = {$abcBarAtOrganisationList}	
 	
-	orderFormsByCategory = {$orderFormsByCategory}
+	#orderFormsByCategory = {$orderFormsByCategory}
 
 	topAtServiceList = {$topAtServiceList}
 	topAtCircumstanceTree = {$topAtCircumstanceTree}

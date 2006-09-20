@@ -74,14 +74,21 @@ class tx_civserv_floorbuild {
 		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
 
 		// now the EXECUTING-QUERIES-Method is used to get the valid floor-building-combinations for this mandant
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('bl_name, fl_number, tx_civserv_building_bl_floor_mm.uid uid', // Field list for SELECT
-			'tx_civserv_building', // Tablename, local table
-			'tx_civserv_building_bl_floor_mm', // Tablename, relation table
-			'tx_civserv_floor', // Tablename, foreign table
-			'AND tx_civserv_building_bl_floor_mm.pid='.$pid.' AND tx_civserv_building.deleted=0 AND tx_civserv_building.hidden=0 AND tx_civserv_floor.deleted=0 AND tx_civserv_floor.hidden=0', // Optional additional WHERE clauses
-			'', // Optional GROUP BY field(s), if none, supply blank string.
-			'bl_name, fl_number', // Optional ORDER BY field(s), if none, supply blank string.
-			'' // Optional LIMIT value ([begin,]max), if none, supply blank string.
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+			'bl_name, 
+			 fl_number, 
+			 tx_civserv_building_bl_floor_mm.uid uid', 		// Field list for SELECT
+			'tx_civserv_building', 							// Tablename, local table
+			'tx_civserv_building_bl_floor_mm', 				// Tablename, relation table
+			'tx_civserv_floor', 							// Tablename, foreign table
+			'AND tx_civserv_building_bl_floor_mm.pid='.$pid.' 
+			 AND tx_civserv_building.deleted=0 
+			 AND tx_civserv_building.hidden=0 
+			 AND tx_civserv_floor.deleted=0 
+			 AND tx_civserv_floor.hidden=0', 				// Optional additional WHERE clauses
+			'', 											// Optional GROUP BY field(s), if none, supply blank string.
+			'bl_name, fl_number', 							// Optional ORDER BY field(s), if none, supply blank string.
+			'' 												// Optional LIMIT value ([begin,]max), if none, supply blank string.
 		);
 
 		//write the building-floor-combinations back in the params-Array (which is shown in the selectorbox)
@@ -100,7 +107,16 @@ class tx_civserv_floorbuild {
 	 */
 	function update_pid($params){
 		if (is_array($params) && $params['table']== 'tx_civserv_building') {
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('tx_civserv_building_bl_floor_mm.uid, tx_civserv_building.pid', 'tx_civserv_building', 'tx_civserv_building_bl_floor_mm', '', '', '', '', '');
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+					'tx_civserv_building_bl_floor_mm.uid, 
+					 tx_civserv_building.pid', 
+					'tx_civserv_building', 
+					'tx_civserv_building_bl_floor_mm', 
+					'', 
+					'', 
+					'', 
+					'', 
+					'');
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_building_bl_floor_mm', 'uid = '.$GLOBALS['TYPO3_DB']->quoteStr($row['uid'], 'tx_civserv_building_bl_floor_mm'), array ("pid" => $row['pid']));
 			}

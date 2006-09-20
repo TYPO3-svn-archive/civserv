@@ -1,4 +1,4 @@
- <?php
+<?php
 /***************************************************************
 * Copyright notice
 *
@@ -173,6 +173,16 @@ $TCA["tx_civserv_region"] = Array (
 $TCA["tx_civserv_service"] = Array (
 	"ctrl" => Array (
 		"title" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service",
+		
+		/* EXPERIMENTAL */
+		// see condition below
+// 		'versioning' => TRUE,
+// 		'versioningWS' => TRUE,
+		'versioning_followPages' => TRUE,
+		'origUid' => 't3_origuid',
+		'shadowColumnsForNewPlaceholders' => 'sys_language_uid,l18n_parent,starttime,endtime,fe_group',
+
+		
 		"label" => "sv_name",
 		"requestUpdate" => "sv_region_checkbox,sv_model_service",
 		"tstamp" => "tstamp",
@@ -194,6 +204,14 @@ $TCA["tx_civserv_service"] = Array (
 		"fe_admin_fieldList" => "hidden, starttime, endtime, fe_group, sv_name, sv_synonym1, sv_synonym2, sv_synonym3, sv_descr_short, sv_descr_long, sv_image, sv_image_text, sv_fees, sv_documents, sv_legal_local, sv_legal_global, sv_model_service, sv_similar_services, sv_service_version, sv_form, sv_searchword, sv_position, sv_organisation, sv_navigation, sv_region_checkbox, sv_region_link, sv_region_name",
 	)
 );
+
+// enable Workspace versioning only for TYPO3 v 4.0 and higher
+if (t3lib_div::int_from_ver(TYPO3_version) >= 4000000) {
+	$TCA['tx_civserv_service']['ctrl']['versioningWS'] = TRUE;
+} else {
+	$TCA['tx_civserv_service']['ctrl']['versioning'] = TRUE;
+}
+
 
 
 $TCA["tx_civserv_model_service"] = Array (
@@ -262,7 +280,7 @@ $TCA["tx_civserv_form"] = Array (
 		"iconfile" => t3lib_extMgm::extRelPath($_EXTKEY)."icon_tx_civserv_form.gif",
 	),
 	"feInterface" => Array (
-		"fe_admin_fieldList" => "hidden, starttime, endtime, fe_group, fo_number, fo_name, fo_descr, fo_external_checkbox, fo_url, fo_formular_file, fo_created_date, fo_status",
+		"fe_admin_fieldList" => "hidden, starttime, endtime, fe_group, fo_number, fo_name, fo_descr, fo_external_checkbox, fo_url, fo_formular_file, fo_created_date, fo_status,fo_target",
 	)
 );
 
@@ -582,7 +600,6 @@ $TCA["tx_civserv_service_sv_position_mm"] = Array (
 
 /**
 * The following lines are needed for implementing the context sensitive help (CSH) for all masks in the backend
-* They are also needed for display be_groups when configuring user_rights??
 */
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_building','EXT:civserv/CSH/locallang_csh_building.php');
 t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_employee_em_position_mm','EXT:civserv/CSH/locallang_csh_employee_em_position_mm.php');

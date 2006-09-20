@@ -105,17 +105,11 @@ if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
 		}
 		
 		if ($current_id == null){
-			//debug($GLOBALS, "globals");
-			//debug($GLOBALS['WEBMOUNTS'], "webmounts");
 			$current_id=$GLOBALS['WEBMOUNTS'][0];
 		}
-
-
 		if ($current_id > 0){
 			$mandant_obj=t3lib_div::makeInstance('tx_civserv_mandant');
-			//debug($current_id, "current_id");
 			$mandantID = $mandant_obj->get_mandant($current_id);
-			//debug($mandantID, "mandanten_id");
 			if ($mandantID) $upload_folder = "fileadmin/civserv/".$mandantID;
 			else $upload_folder = "fileadmin/civserv";
 		} else $upload_folder = "fileadmin/civserv";
@@ -160,7 +154,7 @@ $TCA["tx_civserv_service"] = Array (
 			"label" => "LLL:EXT:lang/locallang_general.php:LGL.hidden",
 			"config" => Array (
 				"type" => "check",
-				"default" => "1"
+				"default" => "0"
 			)
 		),
 		"starttime" => Array (
@@ -234,7 +228,7 @@ $TCA["tx_civserv_service"] = Array (
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_name",
 			"config" => Array (
 				"type" => "input",
-				"size" => "30",
+				"size" => "80",
 				"max" => "255",
 				"eval" => "trim, required",
 			)
@@ -244,7 +238,7 @@ $TCA["tx_civserv_service"] = Array (
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_synonym1",
 			"config" => Array (
 				"type" => "input",
-				"size" => "30",
+				"size" => "80",
 				"max" => "255",
 			)
 		),
@@ -253,7 +247,7 @@ $TCA["tx_civserv_service"] = Array (
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_synonym2",
 			"config" => Array (
 				"type" => "input",
-				"size" => "30",
+				"size" => "80",
 				"max" => "255",
 			)
 		),
@@ -262,7 +256,7 @@ $TCA["tx_civserv_service"] = Array (
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_synonym3",
 			"config" => Array (
 				"type" => "input",
-				"size" => "30",
+				"size" => "80",
 				"max" => "255",
 			)
 		),
@@ -457,10 +451,13 @@ $TCA["tx_civserv_service"] = Array (
 		"sv_similar_services" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_similar_services",
+			"displayCond" => "REC:NEW:false",
 			"config" => Array (
 				"type" => "group",
 				"internal_type" => "db",
 				"size" => 5,
+				"itemListStyle" => "width:50em", 
+				"selectedListStyle" => "width:50em",
 				"allowed" => "tx_civserv_service",
 				"show_thumbs" => 0,
 				"minitems" => 0,
@@ -482,10 +479,13 @@ $TCA["tx_civserv_service"] = Array (
 		"sv_form" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_form",
+			"displayCond" => "REC:NEW:false",
 			"config" => Array (
 				"type" => "group",
 				"internal_type" => "db",
 				"size" => 5,
+				"itemListStyle" => "width:50em", 
+				"selectedListStyle" => "width:50em",
 				"allowed" => "tx_civserv_form",
 				"show_thumbs" => 0,
 				"minitems" => 0,
@@ -514,6 +514,7 @@ $TCA["tx_civserv_service"] = Array (
 		"sv_searchword" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_searchword",
+			"displayCond" => "REC:NEW:false",
 			"config" => Array (
 				"type" => "group",
 				"internal_type" => "db",
@@ -539,6 +540,7 @@ $TCA["tx_civserv_service"] = Array (
 		"sv_position" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_position",
+			"displayCond" => "REC:NEW:false",
 			"config" => Array (
 				"type" => "group",
 				"internal_type" => "db",
@@ -586,6 +588,7 @@ $TCA["tx_civserv_service"] = Array (
 		"sv_organisation" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_organisation",
+			"displayCond" => "REC:NEW:false",
 			"config" => Array (
 				"type" => "group",
 				"internal_type" => "db",
@@ -611,6 +614,7 @@ $TCA["tx_civserv_service"] = Array (
 		"sv_navigation" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_navigation",
+			"displayCond" => "REC:NEW:false",
 			"config" => Array (
 				"type" => "select",
 				"foreign_table" => "tx_civserv_navigation",
@@ -933,7 +937,7 @@ $TCA["tx_civserv_model_service"] = Array (
 $TCA["tx_civserv_form"] = Array (
 	"ctrl" => $TCA["tx_civserv_form"]["ctrl"],
 	"interface" => Array (
-		"showRecordFieldList" => "hidden,starttime,endtime,fe_group,fo_number,fo_name,fo_descr,fo_external_checkbox, fo_url,fo_formular_file,fo_created_date,fo_status"
+		"showRecordFieldList" => "hidden,starttime,endtime,fe_group,fo_number,fo_name,fo_descr,fo_external_checkbox, fo_url,fo_formular_file,fo_created_date,fo_status,fo_target"
 	),
 	"feInterface" => $TCA["tx_civserv_form"]["feInterface"],
 	"columns" => Array (
@@ -1137,7 +1141,7 @@ $TCA["tx_civserv_form"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, fo_number, fo_orga_code, fo_codename, fo_name, fo_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], fo_category, fo_external_checkbox, fo_url, fo_formular_file, fo_created_date, fo_status, fo_target")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, fo_number, fo_orga_code, fo_codename, fo_name, fo_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], fo_category, fo_external_checkbox, fo_url, fo_formular_file, fo_created_date, fo_status,fo_target")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "starttime, endtime, fe_group")
@@ -2900,6 +2904,7 @@ $TCA["tx_civserv_service_sv_position_mm"] = Array (
 		"hidden" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:lang/locallang_general.php:LGL.hidden",
+			"displayCond" => "FIELD:pid:>:0",
 			"config" => Array (
 				"type" => "check",
 				"default" => "0"
@@ -2957,6 +2962,7 @@ $TCA["tx_civserv_service_sv_position_mm"] = Array (
 		"sp_descr" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service_sv_position_mm.sp_descr",
+			"displayCond" => "FIELD:pid:>:0",
 			"config" => Array (
 				"type" => "text",
 				"cols" => "30",

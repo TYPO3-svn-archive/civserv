@@ -65,15 +65,16 @@
 class tx_civserv_commit {
 
 	var $tables = array(
-		'tx_civserv_service'=>'tx_civserv_service_sv_position_mm', 
-		'tx_civserv_employee'=>'tx_civserv_employee_em_position_mm', 
-		'tx_civserv_building'=>'tx_civserv_building_bl_floor_mm');
-		
+					'tx_civserv_service'=>'tx_civserv_service_sv_position_mm', 
+					'tx_civserv_employee'=>'tx_civserv_employee_em_position_mm', 
+					'tx_civserv_building'=>'tx_civserv_building_bl_floor_mm');
+					
 	var $attributes = array(
-		'tx_civserv_service_sv_position_mm'=>'sv_position', 
-		'tx_civserv_employee_em_position_mm'=>'em_position', 
-		'tx_civserv_building_bl_floor_mm'=>'bl_floor');
-		
+					'tx_civserv_service_sv_position_mm'=>'sv_position', 
+					'tx_civserv_employee_em_position_mm'=>'em_position', 
+					'tx_civserv_building_bl_floor_mm'=>'bl_floor');
+					
+	#var $fieldarry = array();
 	var $service_mm_tables =array(	'tx_civserv_service_sv_similar_services_mm',
 									'tx_civserv_service_sv_form_mm',
 									'tx_civserv_service_sv_searchword_mm',
@@ -88,19 +89,48 @@ class tx_civserv_commit {
 	 * It is called through a hook within the class t3lib/class.t3lib_tcemain.php
 	 * and is set in the class ext_localconf.php per ['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc'][]
 	 *
+	 *
+	 * ATTENTION: this hook is called in a reliable way only in typo3 version <= 3.8.1 !!!
+	 * in typo3 4.0. the class.t3lib_tcemain.php has been refactured and the hook will _not_ be called under _one_ condition:
+	 * If exactly the same number of service_position_relations is substracted from and added to a service in one 
+	 * step (take one away and add another in the selection field in BE) the data_storing process via the Typo3 core ends with 
+	 * t3lib_tcemain->updateDB and t3lib_tcemain->clear_cache (which carries the 'clearCachePostProc'-hook, 
+	 * i.e. the function update_postAction) is not being entered again (it usually is).
+	 * Consequently neither $this->renewMMentries nor $this->updateDB are executed and the database gets filled with
+	 * redundant tx_civserv_service_sv_position_mm entries which have been saved to the end of the table by $this->saveMMentries.
+	 * Instead of the saved entries beeing renewed, the Typo3-core writes new entries for each of the service_position_relations selected in BE.
+	 * The result is chaos in tx_civserv_service_sv_position_mm. To avoid this a different hook is used for typo3 version >= 4.0
+	 * @see processDatamap_afterDatabaseOperations
+	 *
 	 * @param	array		$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API
 	 * @param	string		$pObj is a reference to the calling object
 	 * @return	void
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
 	function update_postAction(&$params, &$pObj){
-		//call the function renewMMentries($params), which writes back MM-entries that have been backuped through saveMMentries
-		if (isset($params['table'])){
-			if (array_key_exists($params['table'],$this->tables))
-				$this->renewMMentries($params);
+		// concerned tables: 
+		// tx_civserv_service_sv_position_mm
+		// tx_civserv_employee_em_position_mm (update-db generates the records!?)
+		// tx_civserv_officehours (update-db provides correct labels)
+		if (t3lib_div::int_from_ver(TYPO3_version) < 4000000) { 
+			//call the function renewMMentries($params), which writes back MM-entries that have been backuped through saveMMentries
+			if (isset($params['table'])){
+				if (array_key_exists($params['table'],$this->tables)){
+					$this->renewMMentries($params);
+				}	
+			}
 		}
-		//test: call updateDB after the MMentries have been renewed.... without effect as far as we can see....
-		$this->updateDB($params);
+		// do this anyway:
+		// office-hour-labels depend on it
+		// tx_civserv_employee_em_position records depend on it
+		// tx_civserv_employee_em_position labels depend on it!
+		// background info: it does make a difference whether updateDB is called 
+		// - through $this->update_postAction (t3lib_tcemain->clear_cache, clearCachePostProc-HOOK) or 
+		// - through $this->processDatamap_afterDatabaseOperations (t3lib_tcemain->process_datamap, processDatamap_afterDatabaseOperations-HOOK):
+		// if it is the cache-function calling this hook, the uids are numerical - as they are written into the db
+		// if it is the process-datamap-function calling the hook below the uids may be temporay strings like 'NEW123456'
+		// with the temporary string-uids the labels for new records cannot be updated, with the numerical uids they can of course!		
+		$this->updateDB($params, 'update_postAction');
 	}
 	
 	
@@ -117,15 +147,9 @@ class tx_civserv_commit {
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
 	function recheckModifyAccessList($table, $cmdmap, $pObj, &$res){
-		//bei delete-command haut das den webserver aus den latschen, zuviele aufrufe.....? oder endlosschleife???
-		//debug($table, 'tx_civserv/commit.php - function recheckModifyAccessList ->table');
-		//debug($cmdmap['tx_civserv_model_service_temp'], 'tx_civserv/commit.php - function recheckModifyAccessList -> cmdmap[0]');
-		//debug($pObj, 'tx_civserv/commit.php - function recheckModifyAccessList wurde aufgerufen pObj');
 		if (isset($cmdmap) && isset($cmdmap['tx_civserv_model_service_temp'])){
-			//debug($cmdmap['tx_civserv_model_service_temp'], "cmdmap['tx_civserv_model_service_temp'] in commit.php");
 			foreach($cmdmap['tx_civserv_model_service_temp'] as $id => $incomingCmdArray)	{
 				if (is_array($incomingCmdArray))	{
-					//debug($incomingCmdArray, 'incomingCmdArray');
 					reset($incomingCmdArray);
 					$command = key($incomingCmdArray);
 					if (!$pObj->admin && $command == 'delete') $res = 0;
@@ -133,6 +157,78 @@ class tx_civserv_commit {
 			}
 		}
 	}
+	
+	
+	
+	/**
+	 * Hook function, called through a hook within the class typo3/class.db_list.inc set in the class ext_localconf.php...
+	 * The Hook is for VERSIONING mainly, it is not part of typo3 4.0. (or typo3 < 4.0)! it has to be introduced MANUALLY into the sources!!!
+	 * This function manipulates the list of tx_civserv_service_sv_position_mm records displayed in BE below the list of service_records
+	 * Background-information: the tx_civserv_service_sv_position_mm are made persistent in O.S.I.R.I.S. and they carry special 
+	 * attributes which can be edited (if they relate to online services, see displaycond in tca.php for that issue)
+	 *
+	 * @table		string		$table is the tablename, where the modification will be performed
+	 * @pid			string		$pid gets manipulated! 'pid=888' gets turned into 'pid in (-1,888)'
+	 * @fieldList
+	 * @addWhere	string		$addWhere gets manipulated! from the offline sv-pos-records we want only those belonging to the actual servicefolder
+	 * @orderby		string		$orderby gets manipulated! the sv-pos-records must be odered by sp_label!
+	 * @return	void
+	 * @see t3lib/class.t3lib_tcemain.php
+	 */
+	function remakeQueryArray($table, $id, &$pid, $fieldList, &$addWhere, &$orderby){
+		//all workspace: LIVE and CUSTOM
+		if($table == 'tx_civserv_service_sv_position_mm'){
+			$orderby=' tx_civserv_service_sv_position_mm.sp_label'; 
+			$addWhere='AND deleted=0'; //have to add this explicitely for mm-tables!!!
+		}	
+		// in CUSTOM workspaces we want to see the records relating to the newest service-version as well as the
+		// records relating to the actual online services.
+		if($table == 'tx_civserv_service_sv_position_mm' && $GLOBALS['BE_USER']->workspace > 0){ //Custom workspace!!!
+			//list services available in the given folder (pid = 123)
+			$display_service_list=array();
+			$display_count=0;
+			$pidexploded=explode('=',$pid);
+			$onlinepid=$pidexploded[1]; // 123
+			// select the uids of the online-services and add them to the service-list
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_civserv_service','deleted=0 AND '.$pid,'','','',''); 
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
+			 	#debug($row, 'civserv/res/commit.php->remakeQueryArray, service_row!');
+				$display_service_list[$display_count]['uid']=$row['uid'];
+				$display_service_list[$display_count]['t3ver_id']=$row['t3ver_id'];
+				// select the uids of offline-versions of the same service
+				$res2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_civserv_service','deleted=0 AND t3ver_oid='.$row['uid'],'','','',''); 
+				while ($row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res2)){
+					//which one of the service-records is newer????
+					if(intval($row2['t3ver_id'])>intval($display_service_list[$display_count]['t3ver_id'])){
+						//overwrite the older ones in the display-list
+						$display_service_list[$display_count]['uid']=$row2['uid'];
+						$display_service_list[$display_count]['t3ver_id']=$row2['t3ver_id'];
+					}
+				}
+				$display_count++;
+			}
+			
+			#debug($display_service_list, '$display_service_list');
+			
+			if (count($display_service_list)>0){
+				$sv_uids=array();
+				foreach($display_service_list as $pair){
+					$sv_uids[]=$pair['uid'];
+				}
+				// we need the records associated with online records as well! (0 shouldn't be in the pid-list)
+				$pid='pid in (0, -1, '.$onlinepid.')'; 
+				$addWhere='AND uid_local in ('.implode(',',$sv_uids).')';
+				
+				// make civserv-updates:
+				// without call to update_position, the records appear as "no title" in BE!!
+				// would rather have to call it with table tx_civserv_service and according uid then!!!
+				$params=array('table' =>'tx_civserv_service_sv_position_mm');
+				//baustelle!!!!!
+				//$this->updateDB($params, 'remakeQueryArray');
+			}
+		}// CUSTOM WORKSPACE
+	}
+	
 
 	/**
 	 * This function writes back all MM-entries from the end of the table, which have been backuped through saveMMentries().
@@ -145,19 +241,21 @@ class tx_civserv_commit {
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
 	function renewMMentries($params){
+		#debug($params, 'tx_civserv_commit->renewMMentries, params');
 			//get all MM tables, which could be concerned by the typo3 MM-entrie problem
 		$mmTables = explode(',',$this->tables[$params['table']]);
 			//fetch all backuped entries from the end of the table
 		foreach($mmTables as $mmTable){
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$mmTable,'uid_local = '.($params['uid']+1000000000));
 			$oldEntries = array();
-				//for each entrie, delete the one from the beginning of the table
+				//for each entry, delete the one from the beginning of the table
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
 				$row['uid_local']=$row['uid_local']-1000000000;
 				$oldEntries[]=$row;
 				$del_result = $GLOBALS['TYPO3_DB']->exec_DELETEquery($mmTable,'uid_local = '.$row['uid_local'].' AND uid_foreign = '.$row['uid_foreign']);
 			}
-				//get the entries from the back and set their uid to the one deleted above, so the backup is completet and all extra attributes from our MM-tables are saved!
+				// get the entries from the back and set their uid to the one deleted above, 
+				// so the backup is completet and all extra attributes from our MM-tables are saved!
 			foreach($oldEntries as $row){
 				$row['uid']=$row['uid_temp'];
 				$uid_temp=$row['uid_temp'];
@@ -200,10 +298,149 @@ class tx_civserv_commit {
 	 */
 	function processDatamap_preProcessFieldArray($incomingFieldArray, $table, $id, $pObj){
 		//saves the current MM-entries
-		#if (array_key_exists($table,$this->tables) && (substr($id,0,3)!='NEW'))
-		if (array_key_exists($table,$this->tables))
+		if (array_key_exists($table,$this->tables) && (substr($id,0,3)!='NEW'))
 			$this->saveMMentries($incomingFieldArray, $table, $id);
 	}
+	
+	
+	/**
+	 * Hook function, called through a hook within the class t3lib/class.t3lib_tcemain.php
+	 * This hook is for VERSIONING only!!
+	 * It's meant to close gap between versioned and non-versioned records in tx_civserv: tx_civserv_service is the only table with versioning!
+	 * the hook takes care that database relations are transmitted from workspace version to the live version in the event of publishing of
+	 * any tx_civserv_service record from the workspace!
+	 * so far only implemented for the event of simple publishing (swap), not for 'swap_into_workspace'.....
+	 *
+	 * @see saveMMentries
+	 * @command		array		$command contains the parameters sent along to alt_doc.php from the contenttype, that is worked on. This requires a much more details description which you must seek in Inside TYPO3s documentation API
+	 * @table		string		&table is the actual table that belongs to the contenttype that is worked on
+	 * @id   		integer		&id is the uid of the contenttype that is worked on 
+	 * @value		array		$value contains the different action types that can be performed on the actual contentype (in case of versioning)
+	 * @pObj   		array		$pObj is a reference to the calling object, do not try to debug it! will cause endless loop. why ever.
+	 * @return	void
+	 * @see t3lib/class.t3lib_tcemain.php
+	 */
+	function processCmdmap_preProcess($command, &$table, $id, $value, &$pObj){
+		// $id contains uid of actual online service in LIVE version
+		// $value['swap_with'] contains uid of the offline-service in custom workspace, the one that ist beeing published
+		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
+		#debug($command, 'tx_civserv_commit->processCmdmap_preProcess, command');
+		if (array_key_exists($table,$this->tables) && $table =='tx_civserv_service' && $command == 'delete'){
+			// apparently 'deleted = 1' does not suffice to eleminate service-position records from the BE?
+			// the remake-query-array-hook below is needed to make sure they are not listed in BE!
+			$update_row=array('deleted' => '1');
+			$sub_result = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(' tx_civserv_service_sv_position_mm','uid_local = '.$id,$update_row);
+		}
+		if (array_key_exists($table,$this->tables) && $table =='tx_civserv_service' && $command == 'version'){
+			switch($value['action']){
+				case 'setStage':
+				break;
+				case 'swap':
+					$pid=0;
+					$res_pid=$GLOBALS['TYPO3_DB']->exec_SELECTquery('pid',$table,'uid = '.$id);
+					if($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_pid)){
+						// first of all get the pid of the service to be published because you want to update the pid field 
+						// in the _persistent_ relation-records - just as you update the uid_local to point to the LIVE 
+						// service-record
+						$pid=$row['pid'];
+					}
+					$update_fields = array("uid_local" => $id);
+					foreach($this->service_mm_tables as $sv_mm_table){
+						// second check if there are any mm-records relating to the offline version which is about to be published?
+						// fehler eingebaut!!!
+						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$sv_mm_table,'uid_local = '.$value['swapWith']);
+						if($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){ //count might have been nicer here...
+							if($sv_mm_table=='tx_civserv_service_sv_position_mm'){
+								// Special case: Service-Position-Relations which have been made persistent in O.S.I.R.I.S. and 
+								// they can carry additional information as i.e. Descriptions.
+								// For every change on a offline-version of a service-record the system creates new relation-records (which then 
+								// consist of just uid_local and uid_foreign)
+								// Therefore we collect the additional information carried by records relating to the actual online 
+								// services and add that additional information to the records relating to the offline service-version 
+								// which is beeing published 
+								// Then we swap the uids of the service versions and delete the records relating to the 'old' online-records.
+								$res_positions = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign,sp_descr',$sv_mm_table,'uid_local = '.$id);
+								while($row_positions = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_positions)){
+									$update_position_array = array("sp_descr" => $row_positions['sp_descr']);
+									$update_positions = $GLOBALS['TYPO3_DB']->exec_UPDATEquery($sv_mm_table, 'uid_local = '.$value['swapWith'].' AND uid_foreign = '.$row_positions['uid_foreign'], $update_position_array);
+								}
+								//fix the pid for all services_posistion_records relating to the service being puplished.
+								$update_positions = $GLOBALS['TYPO3_DB']->exec_UPDATEquery($sv_mm_table, 'uid_local = '.$value['swapWith'], array('pid' => $pid));
+							}
+							// delete the records relating to the actual online version of the service 
+							// (they might be more or less in number than the records relating to the offline version which is being published)
+							
+							// ATTENTION: this is very necessary for service-position-relations?! but does it collide with renewMMentries?
+							$del_result = $GLOBALS['TYPO3_DB']->exec_DELETEquery($sv_mm_table,'uid_local = '.$id);
+																	
+							// update tx_civserv_service_sv_position_mm set uid_local = $id (online!) where uid_local = $value['swap_with'] (offline!)
+							$sub_result = $GLOBALS['TYPO3_DB']->exec_UPDATEquery($sv_mm_table, 'uid_local = '.$value['swapWith'], $update_fields);
+						}
+					}
+				break;
+			}
+		}
+	}
+	
+	/**
+	 * Hook function, called through a hook within the class t3lib/class.t3lib_tcemain.php
+	 * This hook is for VERSIONING only!!
+	 * Does the cleaning up after publishing service through processCmdmap, kills all records from mm_table relating to versions of newly published service...
+	 *
+	 * @command		array		$command contains the parameters sent along to alt_doc.php from the contenttype, that is worked on. This requires a much more details description which you must seek in Inside TYPO3s documentation API
+	 * @table		string		&table is the actual table that belongs to the contenttype that is worked on
+	 * @id   		integer		&id is the uid of the contenttype that is worked on 
+	 * @value		array		$value contains the different action types that can be performed on the actual contentype (in case of versioning)
+	 * @pObj   		array		$pObj is a reference to the calling object, do not try to debug it! will cause endless loop. why ever.
+	 * @return	void
+	 * @see t3lib/class.t3lib_tcemain.php
+	 */
+	function processCmdmap_postProcess($command, &$table, $id, $value, &$pObj){
+		#debug($command, 'tx_civserv_commit->processCmdmap_postProcess, command');
+		#debug($id, 'tx_civserv_commit->processCmdmap_postProcess, id');
+		if (array_key_exists($table,$this->tables) && $table =='tx_civserv_service'){
+			//experimental:
+			if($value['action']=='swap'){
+				$del_versions = $GLOBALS['TYPO3_DB']->exec_DELETEquery($table,'pid=-1 AND t3ver_oid = '.$id);
+			}
+		}
+	}
+	
+	
+	/**
+	 * Hook function, called through a hook within the class t3lib/class.t3lib_tcemain.php
+	 * This hook was introduced because with typo3 4.0. and VERSIONING $this->update_postAction (called 
+	 * through 'clearCachePostProc'-hook in t3lib_tcemain->clear_cache) is not always executed when the 
+	 * service-postion relationsships have changed!!! For further explanation 
+	 * @see update_postAction
+	 *
+	 * ATTENTION: this will only work if the displayconds are set accordingly in tca.php!
+	 * ...
+	 *
+	 * @see saveMMentries
+	 * @command		array		$command contains the parameters sent along to alt_doc.php from the contenttype, that is worked on. This requires a much more details description which you must seek in Inside TYPO3s documentation API
+	 * @table		string		&table is the actual table that belongs to the contenttype that is worked on
+	 * @id   		integer		&id is the uid of the contenttype that is worked on 
+	 * @value		array		$value contains the different action types that can be performed on the actual contentype (in case of versioning)
+	 * @pObj   		array		$pObj is a reference to the calling object, do not try to debug it! will cause endless loop. why ever.
+	 * @return	void
+	 * @see t3lib/class.t3lib_tcemain.php
+	 */
+	function processDatamap_afterDatabaseOperations($status, $table, $id, $fieldArray, &$pObj){
+		if (t3lib_div::int_from_ver(TYPO3_version) >= 4000000) {
+			$params=array('table' => $table, 'uid' => $id);
+			if (isset($params['table'])){
+				if (array_key_exists($params['table'],$this->tables)){
+					$this->renewMMentries($params);
+				}
+			}
+			// do we need to call this function again??? yes we do! for exactly the case when the hook calling $this->update_postAction is not executed!!!
+			// can we check if $this->update_postAction has run before - so we avoid double execution of same functions?
+			$this->updateDB($params, 'processDatamap_afterDatabaseOperations');
+		}
+	}
+
+
 
 	/**
 	 * This function saves all concerned MM-entries that would be deleted through Typo3.
@@ -220,38 +457,46 @@ class tx_civserv_commit {
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
 	function saveMMentries($incomingFieldArray, $table, $id){
-		//debug($incomingFieldArray, 'saveMMentries, $incomingFieldArray');
-		//debug($table, 'saveMMentries, $table');
-		//debug($id, 'saveMMentries, $id');
-		//get all MM tables, which could be concerned by the typo3 MM-entrie problem
-		$mmTables = explode(',',$this->tables[$table]);
-		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
-		//$incomingFieldArray[sv_position];
-		//for all concerned MM-tables save the concerned entries at the end of the MM-tables and backup the origin uid in the field uid_temp
-		foreach($mmTables as $mmTable){
-			//only get this entries, which are selected in the actuall backendmask for the contenttype "service". So deleted ones are not listed here
-			$entries = explode(',',$incomingFieldArray[$this->attributes[$mmTable]]);
-			$foreign_uids=array();
-			foreach ($entries as $entry){
-				if (strlen($entry)>0){
-					$pos=strrpos($entry,'_')+1;
-					//debug($pos);
-					if ($pos>1)	$foreign_uids[]=substr($entry,$pos);
-					else $foreign_uids[]=$entry;
+		// versioningg-problem on tx_civserv_service_sv_position: when saving service in custom workspace (version_service_uid) 
+		// this function generates a new and superfluous saved_entry for the live_service_uid which 
+		// leads to double entries in the table.
+		#debug($id, 'civserv/res/commit.php->saveMMentries, $id!!!');
+		#debug($GLOBALS['BE_USER']->workspace, 'what workspace are we in?');
+		if ($GLOBALS['BE_USER']->workspace==0){ //only do this in the live workspace!!!
+			// get all MM tables, which could be concerned by the typo3 MM-entrie problem
+			$mmTables = explode(',',$this->tables[$table]);
+			$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
+			// for all concerned MM-tables save the concerned entries at the end of the MM-tables and backup the origin uid in the field uid_temp
+			foreach($mmTables as $mmTable){
+				//only get the entries, which are selected in the actual backendmask for the contenttype "service". So deleted ones are not listed here
+				$entries = explode(',',$incomingFieldArray[$this->attributes[$mmTable]]);
+				#debug($entries, 'civserv/res/commit.php->saveMMentries, entries of incommingfieldarray:');
+				$foreign_uids=array();
+				foreach ($entries as $entry){
+					if (strlen($entry)>0){
+						$pos=strrpos($entry,'_')+1;
+						if ($pos>1)	$foreign_uids[]=substr($entry,$pos);
+						else $foreign_uids[]=$entry;
+					}
+				}
+				#debug($foreign_uids, 'civserv/res/commit.php->saveMMentries, $foreign_uids');
+				
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$mmTable,'!deleted AND !hidden AND uid_local = '.$id); 
+					//copy each concerned entrie to the end of table
+				while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
+					#debug($row, 'civserv/res/commit.php->saveMMentries, sv_pos_row');
+					if (in_array($row['uid_foreign'],$foreign_uids)){
+						$row['uid_temp']=$row['uid'];
+						$row['uid_local'] = $row['uid_local']+1000000000;
+						unset($row['uid']);
+						$sub_result = $GLOBALS['TYPO3_DB']->exec_INSERTquery($mmTable,$row);
+					}				
 				}
 			}
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$mmTable,' deleted=0 AND hidden=0 AND uid_local = \''.$id.'\'');
-				//copy each concerned entrie to the end of table
-			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
-				if (in_array($row['uid_foreign'],$foreign_uids)){
-					$row['uid_temp']=$row['uid'];
-					$row['uid_local'] = $row['uid_local']+1000000000;
-					unset($row['uid']);
-					$sub_result = $GLOBALS['TYPO3_DB']->exec_INSERTquery($mmTable,$row);
-				}
-			}
-		}
+		} //only in LIVE workspace
 	}
+
+
 
 	/**
 	 * As a result of the given table specified by $params updateDB decides which table has to be updated
@@ -260,7 +505,7 @@ class tx_civserv_commit {
 	 * @param	string		$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API
 	 * @return	void
 	 */
-	function updateDB($params) {
+	function updateDB($params, $who) {
 		global $GLOBALS, $BE_USER;
 		if ($params['table']=='tx_civserv_building')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_floorbuild.php']){
@@ -292,6 +537,7 @@ class tx_civserv_commit {
 		}
 		if ($params['table']=='tx_civserv_service')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_service_maintenance.php']){
+				debug('$update-db table tx_civserv_service');
 				$update_obj = t3lib_div::makeInstance('tx_civserv_service_maintenance');
 				$update_obj->transfer_services($params);
 				$update_obj->update_position($params);

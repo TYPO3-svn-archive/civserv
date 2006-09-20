@@ -58,8 +58,7 @@ class tx_civserv_weekday_maintenance {
 		//debug($LANG);
 		
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
-
-		if ($params['table']=='tx_civserv_officehours')	{
+		if ($params['table']=='tx_civserv_officehours'  && substr($params['uid'],0,3)!='NEW')	{
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('oh_weekday','tx_civserv_officehours','uid = '.$params['uid'],'','','');
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_officehours','uid = '.$params['uid'],array("oh_descr"=>$LANG->getLL('tx_civserv_weekday_'.$row['oh_weekday'])));

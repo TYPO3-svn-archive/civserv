@@ -71,7 +71,14 @@ class tx_civserv_mandant{
 		// look up the parent of this node 
 		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
 		
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('pid, uid','pages',' deleted=0 AND hidden=0 AND uid = '.$GLOBALS['TYPO3_DB']->quoteStr($node,'pages'),'','','',''); 
+		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'pid, uid',
+			'pages',
+			' deleted=0 AND hidden=0 AND uid = '.$GLOBALS['TYPO3_DB']->quoteStr($node,'pages'),
+			'',
+			'',
+			'',
+			''); 
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 		// save the path in this array
 		$path = array(); 
@@ -118,15 +125,6 @@ class tx_civserv_mandant{
 	* @see get_path
 	*/
 	function get_mandant_name($pid){
-		/*
-		if ($pid > 0) $this->get_mandant($pid);
-		if ($master_uid == NULL) $master_uid = $pid;
-		if ($master_uid > 0) {
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_community_name','tx_civserv_conf_mandant','cm_uid = '.$GLOBALS['TYPO3_DB']->quoteStr($master_uid,'tx_civserv_conf_mandant'),'','','',''); 
-			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
-			return $row['cm_community_name'];
-		} else return "";
-		*/
 		if ($pid > 0) $mandant = $this->get_mandant($pid);
 		if ($mandant > 0) {
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_community_name','tx_civserv_conf_mandant','cm_community_id = '.$GLOBALS['TYPO3_DB']->quoteStr($mandant,'tx_civserv_conf_mandant'),'','','',''); 
@@ -202,7 +200,6 @@ class tx_civserv_mandant{
 	* @see manipulate_array, additional_remove
 	*/
 	function limit_region_items(&$params, &$pObj){
-	   #$pid = $params['row']['pid'];
 		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
 		if(array_key_exists("",$params['items'])){
 			$empty_entry=1;
@@ -277,7 +274,6 @@ class tx_civserv_mandant{
 			} 
 		}
 		$valid_pid = '('.substr($valid_pid,0,-2).')';
-		//$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid',$GLOBALS['TYPO3_DB']->quoteStr($table,$table),'pid = '.$GLOBALS['TYPO3_DB']->quoteStr($valid_pid,$table),'','','','');
 		$array_temp = array();
 		if (strlen($valid_pid)>2){
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid, pid',$GLOBALS['TYPO3_DB']->quoteStr($table,$table),'deleted=0 AND hidden=0 AND pid IN '.$valid_pid,'','','','');

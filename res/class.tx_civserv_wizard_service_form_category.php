@@ -102,7 +102,7 @@ function init() {
 
 			// Gets parameters out of the p-array.
 		$this->P = t3lib_div::_GP('P');
-		debug($this->P, 'tx_civserv_wizard_service_form_category->init: P');
+		#debug($this->P, 'tx_civserv_wizard_service_form_category->init: P');
 
 			// Find "mode"
 		$this->mode='db';
@@ -300,7 +300,6 @@ function init() {
 				// closes the popup wizard.
 			function save_and_quit()	{	//
 				options = returnOptions(\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\');
-				alert("was kommt an?"+options);
 				insertElements(\'tx_civserv_form\',\'db\',\'\',1,options);
 				return false;
 			}
@@ -491,7 +490,6 @@ function init() {
 			);
 
 		if ($this->searchitem != "" AND $mode == "search") {
-			debug($this->searchitem, 'search me');
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',			 							// SELECT ...
 				'tx_civserv_form',						// FROM ...
@@ -506,9 +504,7 @@ function init() {
 
 		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
 		$mandant = $mandant_obj->get_mandant($this->service_pid);
-		debug($mandant, 'der mandant');
 		while ($forms = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
-			debug($mandant_obj->get_mandant($forms['pid']), 'noch mal der mandant');
 			if ($mandant_obj->get_mandant($forms['pid'])==$mandant){
 				// Checks if the uid is already selected.
 				if ($this->form_selected($forms['uid'])) {

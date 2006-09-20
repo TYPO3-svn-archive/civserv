@@ -81,7 +81,7 @@ $LOCAL_LANG = Array (
             'tx_civserv_wizard_organisation_supervisor.warning_msg_1' => 'Please choose a supervisor!',
             'tx_civserv_wizard_organisation_supervisor.warning_msg_2' => 'Error - reference to main window is not set properly!',
 				// LOCAL_LANG for class.tx_civserv_wizard_service_form.php
-            'tx_civserv_wizard_service_form.title' => 'Select formulars by the first letter of their name',
+            'tx_civserv_wizard_service_form.title' => 'Select formulars',
             'tx_civserv_wizard_service_form.select_letter_text' => 'Select beginning letter of formular',
 			'tx_civserv_wizard_service_form.select_formulars_text' => 'Select formulars beginning with ',
 			'tx_civserv_wizard_service_form.select_formulars_text_no_abc' => 'Select formulars',
@@ -237,7 +237,7 @@ $LOCAL_LANG = Array (
             'tx_civserv_wizard_organisation_supervisor.warning_msg_1' => 'Bitte wählen Sie einen Leiter aus!',
             'tx_civserv_wizard_organisation_supervisor.warning_msg_2' => 'FEHLER - Referenz auf das Hauptfenster nicht richtig gesetzt!',
 				// LOCAL_LANG for class.tx_civserv_wizard_service_form.php
-            'tx_civserv_wizard_service_form.title' => 'Wählen Sie die Formulare nach dem Anfangsbuchstaben aus',
+            'tx_civserv_wizard_service_form.title' => 'Wählen Sie die Formulare',
             'tx_civserv_wizard_service_form.select_letter_text' => 'Anfangsbuchstaben der Formularbezeichnung wählen',
             'tx_civserv_wizard_service_form.select_formulars_text' => 'Formulare wählen mit Anfangsbuchstaben ',
 			'tx_civserv_wizard_service_form.select_formulars_text_no_abc' => 'Formulare wählen',

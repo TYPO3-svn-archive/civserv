@@ -54,67 +54,69 @@ class tx_civserv_service_maintenance {
 	* @return	void
 	*/
 	function transfer_services($params){
-		//$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
-		
-		$seperator = '### ###';
-		if ($params['table']=='tx_civserv_service')	{
-			//get all services configured to be passed on to other communities
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+		debug($params, 'tx_civserv_service_maintenance->transfer_services, $params');
+		$separator = '### ###';
+		if ($params['table']=='tx_civserv_service' && substr($params['uid'],0,3)!='NEW')	{
+			//get _all_ services configured to be passed on to other communities
+			//why all???
+			//test: check only if this service is configured to be passed on!!!
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			   'mandant.cm_external_service_folder_uid, 
-				service.uid AS service, 
-				service.pid AS pid,
-				service.sv_name', // Field list for SELECT
-			   'tx_civserv_service service, 
-				tx_civserv_service_sv_region_mm sr, 
-				tx_civserv_region region, 
-				tx_civserv_conf_mandant_cm_region_mm mandant_region, 
-				tx_civserv_conf_mandant mandant', // Tablename, local table
-			   'sr.uid_local = service.uid 
-			    AND sr.uid_foreign = region.uid 
-				AND  service.deleted=0 
-				AND  !service.hidden 
-				AND mandant_region.uid_foreign = region.uid 
-				AND mandant_region.uid_local = mandant.uid 
-				AND mandant.cm_external_service_folder_uid > 0', // Optional additional WHERE clauses
-				'', // Optional GROUP BY field(s), if none, supply blank string.
-				'', // Optional ORDER BY field(s), if none, supply blank string.
-				'' // Optional LIMIT value ([begin,]max), if none, supply blank string.
-			);
-			$new_services = array();		
+						'mandant.cm_external_service_folder_uid, 
+						 service.uid AS service, 
+						 service.pid,
+						 service.sv_name', 								// Field list for SELECT
+						'tx_civserv_service service, 
+						 tx_civserv_service_sv_region_mm sr, 
+						 tx_civserv_region region, 
+						 tx_civserv_conf_mandant_cm_region_mm mandant_region, 
+						 tx_civserv_conf_mandant mandant', 				// from
+						'sr.uid_local = service.uid AND 
+						 sr.uid_foreign = region.uid AND  
+						 service.deleted=0 AND  
+						 !service.hidden AND 
+						 mandant_region.uid_foreign = region.uid AND 
+						 mandant_region.uid_local = mandant.uid AND 
+						 mandant.cm_external_service_folder_uid > 0 AND
+						 service.uid='.$params['uid'],	// WHERE clauses
+						'', 											// Optional GROUP BY field(s), if none, supply blank string.
+						'', 											// Optional ORDER BY field(s), if none, supply blank string.
+						'' 												// Optional LIMIT value ([begin,]max), if none, supply blank string.
+				);
+			$new_services = array();
+			// test: highlight_external! show community for external services!
+			$mandant = t3lib_div::makeInstanceClassName('tx_civserv_mandant');
+			$mandantInst = new $mandant();
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				// test: highlight_external! show community for external services!
-				$mandant = t3lib_div::makeInstanceClassName('tx_civserv_mandant');
-				$mandantInst = new $mandant();
 				$service_community_name = $mandantInst->get_mandant_name($row['pid']);
+				#$service_community_name = "Rumpelstiltskin";
 				$new_services[]=	$row['cm_external_service_folder_uid'].
-									$seperator.
+									$separator.
 									$row['service'].
-									$seperator.
+									$separator.
 									$row['sv_name']." (".$service_community_name.")";
 			}			
-			debug($new_services, 'new services');
-			
 			//get all already existing external services for all mandants
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('pid, es_external_service, es_name', // Field list for SELECT
-				'tx_civserv_external_service  service', // Tablename, local table
-				'service.deleted=0', // Optional additional WHERE clauses
-				'', // Optional GROUP BY field(s), if none, supply blank string.
-				'', // Optional ORDER BY field(s), if none, supply blank string.
-				'' // Optional LIMIT value ([begin,]max), if none, supply blank string.
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('pid, es_external_service, es_name',	// Field list for SELECT
+				'tx_civserv_external_service  service', 										// Tablename, local table
+				'service.deleted=0', 															// Optional additional WHERE clauses
+				'', 																			// Optional GROUP BY field(s), if none, supply blank string.
+				'', 																			// Optional ORDER BY field(s), if none, supply blank string.
+				'' 																				// Optional LIMIT value ([begin,]max), if none, supply blank string.
 			);
 			$old_services = array();		
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$old_services[]=	$row['pid'].
-									$seperator.
+									$separator.
 									$row['es_external_service'].
-									$seperator.
+									$separator.
 									$row['es_name'];
 			}
 			// insert the service as external service if the new service isn't available yet
 			$new_ones = array_diff($new_services, $old_services);
 			$row = array();
 			foreach($new_ones as $value){
-				$new = explode($seperator,$value);
+				$new = explode($separator,$value);
 				$row['hidden']=1;
 				$row['es_external_service']=$new[1];
 				$row['es_name']=$new[2];
@@ -127,7 +129,7 @@ class tx_civserv_service_maintenance {
 			// old_services which are not in new_services
 			$old_ones = array_diff($old_services, $new_services);
 			foreach($old_ones as $value){
-				$old = explode($seperator,$value);
+				$old = explode($separator,$value);
 				$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_civserv_external_service','pid = '.$old[0].' AND es_external_service='.$old[1]); 
 			}
 		}
@@ -142,15 +144,51 @@ class tx_civserv_service_maintenance {
 	* @return	void
 	*/
 	function update_position(&$params){
-		if (is_array($params) && ($params['table']== 'tx_civserv_service' || $params['table']=='tx_civserv_service_sv_position_mm')) {	
+		debug($params, 'civserv/res/tx_civserv_service_maintenance->update_position: params');
+		$labels=array();
+		$i=0;
+		#if (is_array($params) && ($params['table']=='tx_civserv_service' || $params['table']=='tx_civserv_service_sv_position_mm')) {	
+		if (is_array($params) && ($params['table']=='tx_civserv_service' && substr($params['uid'],0,3)!='NEW')) {	
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-				'tx_civserv_service_sv_position_mm.uid, sv_name, po_name, tx_civserv_service.pid',
-				'tx_civserv_service', 
-				'tx_civserv_service_sv_position_mm',
-				'tx_civserv_position', 
-				 '', '', '', '');
+				'tx_civserv_service_sv_position_mm.uid as svpos_uid, 	
+				 tx_civserv_position.uid as pos_uid, 
+				 sv_name, 
+				 po_name, 
+				 tx_civserv_service.pid',				// select
+				'tx_civserv_service', 					// local
+				'tx_civserv_service_sv_position_mm',	// mm
+				'tx_civserv_position', 					// foreign
+				#'',									// where --> all records
+				' AND uid_local='.$params['uid'],		// where --> only this record!
+				'', 
+				'', 
+				'');
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_service_sv_position_mm', 'uid = '.intval($row['uid']), array ("sp_label" => $row['sv_name'].', '.$row['po_name'], "pid" => $row['pid']));
+				#$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_service_sv_position_mm', 'uid = '.intval($row['svpos_uid']), array ("sp_label" => $row['sv_name'].', '.$row['po_name'], "pid" => $row['pid']));
+				$labels[$i]['svpos_uid']=$row['svpos_uid'];
+				$labels[$i]['pos_uid']=$row['pos_uid'];
+				$labels[$i]['sv_name']=$row['sv_name'];
+				$labels[$i]['po_name']=$row['po_name'];
+				$labels[$i]['pid']=$row['pid'];
+				$labels[$i]['names']=array('unbekannt');
+				$em_count=0;
+				$res2 = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+						'tx_civserv_employee.em_name',			// select
+						'tx_civserv_employee', 					// local
+						'tx_civserv_employee_em_position_mm',	// mm
+						'tx_civserv_position', 					// foreign	
+						' AND tx_civserv_position.uid='.$row['pos_uid'], 	// where
+						'', 
+						'', 
+						'');
+				while ($row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res2)) {
+					$labels[$i]['names'][$em_count]=$row2['em_name'];
+					$em_count++;
+				}
+				$i++;
+			}
+			foreach($labels as $label){
+				$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_service_sv_position_mm', 'uid = '.intval($label['svpos_uid']), array ("sp_label" => $label['sv_name'].', '.$label['po_name'].' ('.implode(',',$label['names']).')', "pid" => $label['pid']));
 			}
 		}
 	}

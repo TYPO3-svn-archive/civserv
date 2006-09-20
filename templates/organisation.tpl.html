@@ -21,25 +21,25 @@
 			<!--{if $building.bl_pubtrans_stop != ""}-->
 				{$pub_trans_info_label}:
 				<!--{if $building.bl_pubtrans_link != ""}-->
-					{$pub_trans_stop_label}:&nbsp;<a href="{$building.bl_pubtrans_link}" target="_blank">{$building.bl_pubtrans_stop}</a><br /><br />
+					{$pub_trans_stop_label}:&nbsp;<a href="{$building.bl_pubtrans_link}" target="_blank">{$building.bl_pubtrans_stop}</a><br />
 				<!--{else}-->
 					{$pub_trans_stop_label}:&nbsp;{$building.bl_pubtrans_stop}<br />
 				<!--{/if}-->
-			<!--{/if}-->
+			<!--{/if}-->		
 			<!--{if $building.bl_citymap_link != ""}-->
 				<a href="{$building.bl_citymap_link}" target="_blank">{$bl_citymap_label}</a><br /><br /> 
 			<!--{/if}-->
 		<!--{/foreach}-->
 		<!--{if $building.bl_mail_street != "" OR $building.bl_mail_pob != "" OR $building.bl_mail_postcode != "" OR $building.bl_mail_city != ""}-->
-				<br /><strong>{$postal_address_label}:</strong><br />
-				<!--{if $building.mail_street != ""}-->
-				{$building.bl_mail_street}<br />
-				<!--{/if}-->
-				<!--{if $building.mail_pob != ""}-->
-				{$postbox_label}&nbsp;{$building.bl_mail_pob}<br />
-				<!--{/if}-->
-				{$building.bl_mail_postcode}&nbsp;{$building.bl_mail_city}<br /><br />
+			<strong>{$postal_address_label}:</strong><br />
+			<!--{if $building.bl_mail_street != ""}-->
+			{$building.bl_mail_street}<br />
 			<!--{/if}-->
+			<!--{if $building.bl_mail_pob != ""}-->
+			{$postbox_label}&nbsp;{$building.bl_mail_pob}<br />
+			<!--{/if}-->
+			{$building.bl_mail_postcode}&nbsp;{$building.bl_mail_city}<br /><br />
+		<!--{/if}-->
 	<!--{/if}-->
 	
 		
@@ -59,7 +59,7 @@
 	<!--{/if}-->	
 	<!--{if $or_infopage != ""}-->
 		<strong>{$infopage_label}:</strong>
-		<a href="{$infopage}" class="link">{$infopage}&nbsp;</a><br /><br />
+		<a href="{$or_infopage}" class="link">{$or_infopage}&nbsp;</a><br /><br />
 	<!--{/if}-->
 	<!--{if $su_name != ""}-->
 		<strong>{$supervisor_label}:</strong>

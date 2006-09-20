@@ -56,7 +56,6 @@ CREATE TABLE tx_civserv_external_service (
 	fe_group int(11) DEFAULT '0' NOT NULL,
 	es_external_service int(11) unsigned DEFAULT '0' NOT NULL,
 	es_name tinytext NOT NULL,
-	#es_sv_community tinytext NOT NULL,
 	es_navigation int(11) unsigned DEFAULT '0' NOT NULL,
 
 	PRIMARY KEY (uid),
@@ -149,7 +148,7 @@ CREATE TABLE tx_civserv_service_sv_searchword_mm (
 #
 CREATE TABLE tx_civserv_service_sv_position_mm (
 	uid int(11) unsigned DEFAULT '0' NOT NULL auto_increment,
-	pid int(11) unsigned DEFAULT '0' NOT NULL,
+	pid int(11) DEFAULT '0' NOT NULL,
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,
 	cruser_id int(11) unsigned DEFAULT '0' NOT NULL,
@@ -223,7 +222,18 @@ CREATE TABLE tx_civserv_ext_service_esv_navigation_mm (
 #
 CREATE TABLE tx_civserv_service (
 	uid int(11) unsigned DEFAULT '0' NOT NULL auto_increment,
-	pid int(11) unsigned DEFAULT '0' NOT NULL,
+	pid int(11) DEFAULT '0' NOT NULL,
+	
+	t3ver_oid int(11) DEFAULT '0' NOT NULL,
+	t3ver_id int(11) DEFAULT '0' NOT NULL,
+	t3ver_wsid int(11) DEFAULT '0' NOT NULL,
+	t3ver_label varchar(30) DEFAULT '' NOT NULL,
+	t3ver_state tinyint(4) DEFAULT '0' NOT NULL,
+	t3ver_stage tinyint(4) DEFAULT '0' NOT NULL,
+	t3ver_count int(11) DEFAULT '0' NOT NULL,
+	t3ver_tstamp int(11) DEFAULT '0' NOT NULL,
+	t3_origuid int(11) DEFAULT '0' NOT NULL,
+	
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,
 	cruser_id int(11) unsigned DEFAULT '0' NOT NULL,
@@ -336,7 +346,6 @@ CREATE TABLE tx_civserv_form (
 	fo_created_date int(11) DEFAULT '0' NOT NULL,
 	fo_status int(11) unsigned DEFAULT '0' NOT NULL,
 	fo_target int(11) unsigned DEFAULT '0' NOT NULL,
-	
 	PRIMARY KEY (uid),
 	KEY parent (pid)
 );
@@ -393,7 +402,7 @@ CREATE TABLE tx_civserv_building (
 	bl_building_postcode tinytext NOT NULL,
 	bl_building_city tinytext NOT NULL,
 	bl_pubtrans_stop tinytext NOT NULL,
-	bl_pubtrans_url tinytext NOT NULL,
+	bl_pubtrans_url tinytext NOT NULL,	
 	bl_citymap_url tinytext NOT NULL,
 	bl_image blob NOT NULL,
 	bl_telephone tinytext NOT NULL,
@@ -592,7 +601,7 @@ CREATE TABLE tx_civserv_organisation_or_building_mm (
 
 
 #
-# Table structure for table 'tx_civserv_organisation_or_building_to_show_mm'
+# Table structure for table 'tx_civserv_organisation_or_building_mm'
 # 
 #
 CREATE TABLE tx_civserv_organisation_or_building_to_show_mm (
@@ -902,3 +911,19 @@ CREATE TABLE tx_civserv_model_service_temp (
 	PRIMARY KEY (uid),
 	KEY parent (pid)
 );
+
+
+#
+# in version 4.1.1 the structure for weekdays in officehours was changed:
+#
+update `tx_civserv_officehours`  set `oh_weekday` = 401 where `oh_weekday` = 11;
+update `tx_civserv_officehours`  set `oh_weekday` = 101 where `oh_weekday` = 10;
+update `tx_civserv_officehours`  set `oh_weekday` = 302 where `oh_weekday` = 9;
+update `tx_civserv_officehours`  set `oh_weekday` = 301 where `oh_weekday` = 8;
+update `tx_civserv_officehours`  set `oh_weekday` = 207 where `oh_weekday` = 7;
+update `tx_civserv_officehours`  set `oh_weekday` = 206 where `oh_weekday` = 6;
+update `tx_civserv_officehours`  set `oh_weekday` = 205 where `oh_weekday` = 5;
+update `tx_civserv_officehours`  set `oh_weekday` = 204 where `oh_weekday` = 4;
+update `tx_civserv_officehours`  set `oh_weekday` = 203 where `oh_weekday` = 3;
+update `tx_civserv_officehours`  set `oh_weekday` = 202 where `oh_weekday` = 2;
+update `tx_civserv_officehours`  set `oh_weekday` = 201 where `oh_weekday` = 1;

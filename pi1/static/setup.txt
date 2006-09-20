@@ -21,6 +21,7 @@ leftmenu {
 		menuEmployeeList = {$menuEmployeeList}
 		menuFormList = {$menuFormList}
 		menuTop15 = {$menuTop15}
+		menuOnlineServices = {$menuOnlineServices}
 		userFunc = tx_civserv_pi1->makeMenuArray
 	}
 	stdWrap.wrap = <div id="leftmenu"> | </div>
@@ -74,7 +75,7 @@ page.config {
 	#	RewriteRule   ^[^/]*\.html$  index.php
 	simulateStaticDocuments = true
 	simulateStaticDocuments_pEnc = md5
-	simulateStaticDocuments_pEnc_onlyP = tx_civserv_pi1[mode],tx_civserv_pi1[community_id],tx_civserv_pi1[id],tx_civserv_pi1[pointer],tx_civserv_pi1[char],tx_civserv_pi1[sort],tx_civserv_pi1[pos_id],tx_civserv_pi1[sv_id],tx_civserv_pi1[sword],cHash
+	simulateStaticDocuments_pEnc_onlyP = tx_civserv_pi1[mode],tx_civserv_pi1[community_id],tx_civserv_pi1[id],tx_civserv_pi1[pointer],tx_civserv_pi1[char],tx_civserv_pi1[sort],tx_civserv_pi1[pos_id],tx_civserv_pi1[sv_id],tx_civserv_pi1[sword],cHash,tx_parkingzones_pi1[char],tx_parkingzones_pi1[mode],tx_parkingzones_pi1[pointer]
 	# XHTML
 	inlineStyle2TempFile = 1
 }

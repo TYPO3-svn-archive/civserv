@@ -64,7 +64,7 @@ require_once ('conf.php');
 require_once ($BACK_PATH.'init.php');
 require_once ($BACK_PATH.'template.php');
 require_once (PATH_t3lib.'class.t3lib_scbase.php');
-#require_once (PATH_tslib.'class.tslib_pibase.php');
+#require_once (PATH_tslib.'class.tslib_pibase.php'); //not available in typo3 4.0???
 
 require_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_mandant.php']);
 
@@ -469,11 +469,21 @@ function init() {
 		}
 
 		$liste=implode(',',$pidList);
+		
+		$where="";
+		if (t3lib_extMgm::isLoaded('version')) {
+				$where='pid in('.$liste.') AND deleted=0 AND hidden=0 AND pid >0 AND t3ver_state!=1';
+		}else{
+				$where='pid in('.$liste.') AND deleted=0 AND hidden=0 AND pid >0';
+		}
+		
+		
+		#debug($where, 'tx_civserv_wizard_service_similar_services.php->getServices: where-clause');
 
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'*',			 							// SELECT ...
 			'tx_civserv_service',						// FROM ...
-			'pid in('.$liste.') AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+			$where,	// AND title LIKE "%blabla%"', // WHERE...
 			'', 										// GROUP BY...
 			'sv_name',   								// ORDER BY...
 			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)

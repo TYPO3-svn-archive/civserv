@@ -60,8 +60,6 @@ class tx_civserv_oepupdate {
 	* @return	void
 	*/
 	function update_pid($params){
-		//debug($params, 'jetzt update_pid!' );
-		
 		if (is_array($params) && ($params['table']== 'tx_civserv_employee' || $params['table']=='tx_civserv_employee_em_position_mm')) {		
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 			'tx_civserv_employee_em_position_mm.uid, tx_civserv_employee.pid',	//SELECT
@@ -75,9 +73,14 @@ class tx_civserv_oepupdate {
 			
 			$liste="";
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_employee_em_position_mm', 'uid = '.$GLOBALS['TYPO3_DB']->quoteStr($row['uid'], 'tx_civserv_employee_em_position_mm'), array ("pid" => $row['pid']));
+				$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+					'tx_civserv_employee_em_position_mm', 
+					'uid = '.$GLOBALS['TYPO3_DB']->quoteStr($row['uid'], 
+					'tx_civserv_employee_em_position_mm'), array ("pid" => $row['pid'])
+					);
 				$liste.=$row['uid'].", ";
 			}
+			
 		}
 	}
 	
@@ -89,7 +92,7 @@ class tx_civserv_oepupdate {
 	* @param	string		$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API
 	* @return	void
 	*/
-function update_label($params){
+	function update_label($params){
 		// experimental: make function faster by including $params['uid'] in where-clause - if available i.e. uid != 'NEW12345'
 		if (is_array($params) && ($params['table']== 'tx_civserv_employee' || $params['table']=='tx_civserv_employee_em_position_mm')) {	
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
@@ -206,18 +209,28 @@ function update_label($params){
 		if ($pid > 0) $uidAdministration = $admin->get_mandant($pid);
 		
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_civserv_room.pid, tx_civserv_room.uid uid, tx_civserv_room.ro_name ro_name, tx_civserv_building.bl_name bl_name, tx_civserv_floor.fl_descr fl_descr',	// SELECT
-			'tx_civserv_room, tx_civserv_building, tx_civserv_floor, tx_civserv_building_bl_floor_mm',	// FROM
-			'tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid AND tx_civserv_building_bl_floor_mm.uid_local = tx_civserv_building.uid AND tx_civserv_building_bl_floor_mm.uid_foreign = tx_civserv_floor.uid AND tx_civserv_building_bl_floor_mm.deleted=0 AND tx_civserv_building_bl_floor_mm.hidden=0',	// WHERE
-			'',	// GROUP_BY
-			'bl_name, fl_descr, ro_name', // ORDER BY
-			'' // LIMIT
+				'tx_civserv_room.pid, 
+				 tx_civserv_room.uid uid, 
+				 tx_civserv_room.ro_name ro_name, 
+				 tx_civserv_building.bl_name bl_name, 
+				 tx_civserv_floor.fl_descr fl_descr',	// SELECT
+				'tx_civserv_room, 
+				 tx_civserv_building, 
+				 tx_civserv_floor, 
+				 tx_civserv_building_bl_floor_mm',	// FROM
+				'tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid 
+				 AND tx_civserv_building_bl_floor_mm.uid_local = tx_civserv_building.uid 
+				 AND tx_civserv_building_bl_floor_mm.uid_foreign = tx_civserv_floor.uid 
+				 AND tx_civserv_building_bl_floor_mm.deleted=0 
+				 AND tx_civserv_building_bl_floor_mm.hidden=0',	// WHERE
+				'',	// GROUP_BY
+				'bl_name, fl_descr, ro_name', // ORDER BY
+				'' // LIMIT
 		);
 		
 		while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			if ($admin->get_mandant($data['pid'])==$uidAdministration)		
 				$params['items'][++ $i] = Array ($data['ro_name'].' ('.$data['bl_name'].', '.$data['fl_descr'].')', $data['uid']);
-		
 		}
 	}
 }

@@ -385,7 +385,16 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 		global $LANG,$BE_USER;
 
 		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
-		$community_id = $mandant_obj->get_mandant($BE_USER->user["db_mountpoints"]);
+		#test b.k. make it possible for BE_user to have several mountpoints (so long as one of them can be identified with a community)
+		$community_id=0;
+		$possibleMPs=explode(",", $BE_USER->user["db_mountpoints"]);
+		debug($possibleMPs, '$possibleMPs');
+		foreach($possibleMPs as $mp){
+			$community_id=$mandant_obj->get_mandant($mp);
+			if($community_id>0){
+				break;
+			}
+		}
 
 			//which approver am i? show only model services, which are currently not revised
 		$resp_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(

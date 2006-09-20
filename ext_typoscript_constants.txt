@@ -1,5 +1,6 @@
 # Template path definition
 tpl_service_list = typo3conf/ext/civserv/templates/service_list.tpl.html
+tpl_online_sv_list = typo3conf/ext/civserv/templates/online_sv_list.tpl.html
 tpl_circumstance_tree = typo3conf/ext/civserv/templates/circumstance_tree.tpl.html
 tpl_usergroup_tree = typo3conf/ext/civserv/templates/usergroup_tree.tpl.html
 tpl_organisation_tree = typo3conf/ext/civserv/templates/organisation_tree.tpl.html
@@ -121,7 +122,7 @@ abcBarAtOrganisationList = 1
 
 
 # Defines whether the form_list will be sorted according to categories
-orderFormsByCategory = 0
+# orderFormsByCategory = 0
 
 # Defines at which sites the Top-services will be shown 
 topAtServiceList = 1
@@ -168,6 +169,7 @@ menuOrganisationTree = 1
 menuFormList = 1
 menuTop15 = 1
 menuEmployeeList = 0
+menuOnlineServices = 0
 
 # Enable/disable RTE conversion
 content.RTE_compliant = 1

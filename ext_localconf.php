@@ -134,6 +134,7 @@ t3lib_extMgm::addUserTSConfig('
 /**
  * Definition of own class files. To-Do: include file which again includes class-files
 */
+$TYPO3_CONF_VARS["BE"]['XCLASS']['typo3/class.browse_links.php'] = t3lib_extMgm::extPath($_EXTKEY).'class.ux_browseLinks.php';
 $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_floorbuild.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_floorbuild.php';
 $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_oepupdate.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_oepupdate.php';
 $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_mandant.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_mandant.php';
@@ -141,9 +142,14 @@ $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_ms_main
 $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_commit.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_commit.php';
 $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_service_maintenance.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_service_maintenance.php';
 $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_weekday_maintenance.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_weekday_maintenance.php';
-$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc'][] = 'tx_civserv_commit->update_postAction';
+$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc'][] = 'tx_civserv_commit->update_postAction'; //call user function
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:civserv/res/class.tx_civserv_commit.php:&tx_civserv_commit';
+$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'EXT:civserv/res/class.tx_civserv_commit.php:&tx_civserv_commit';
+// these will only work if hook has been introduced to sources Typo3 4.0. manually!
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['checkModifyAccessList'][] = 'EXT:civserv/res/class.tx_civserv_commit.php:&tx_civserv_commit';
+$TYPO3_CONF_VARS['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'][] = 'EXT:civserv/res/class.tx_civserv_commit.php:&tx_civserv_commit';
+
+
 
 /**
 * Extending TypoScript from static template uid=43 to set up userdefined tag (virtual civil services aka Virtuelle Verwaltung):

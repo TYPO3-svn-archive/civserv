@@ -104,8 +104,6 @@ class tx_civserv_ms_maintenance {
 		
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		if ($params['table']=='tx_civserv_model_service')	{
-			#ugly but desperate
-			#echo "<script type=\"text/javascript\">alert('funktion check_ms_name_changed!');</script>";
 
 			// Gets all data from the currently saved record...
 			// by the way: ms_stored_name is not editable from the BE
