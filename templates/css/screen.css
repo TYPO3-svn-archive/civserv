@@ -275,6 +275,7 @@ html #centrecontent {
 	text-align: right;
 }
 
+
 /*---------------- Rendering for Online Services --------------------------*/
 #onlineService{
 	/*what ever*/
@@ -297,7 +298,6 @@ html #centrecontent {
 	color: #005494;
 }
 /*---------------- Rendering for Online Services --------------------------*/
-
 
 
 /* ---------------------------------------------- */
@@ -362,6 +362,11 @@ table.right {
 	padding-bottom: 10px;
 	background-color: #ECE3D7;
 	padding-left: 10px;
+}
+
+.external_service{
+	font-size: 1.5em;
+	color: red;
 }
 
 /* ---------------------------------------------- */
