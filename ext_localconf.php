@@ -134,6 +134,7 @@ t3lib_extMgm::addUserTSConfig('
 /**
  * Definition of own class files. To-Do: include file which again includes class-files
 */
+$TYPO3_CONF_VARS["BE"]["XCLASS"]["typo3/class.db_list_extra.inc"] = t3lib_extMgm::extPath($_EXTKEY).'class.ux_db_list_extra.php'; 
 $TYPO3_CONF_VARS["BE"]['XCLASS']['typo3/class.browse_links.php'] = t3lib_extMgm::extPath($_EXTKEY).'class.ux_browseLinks.php';
 $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_floorbuild.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_floorbuild.php';
 $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_oepupdate.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_oepupdate.php';
