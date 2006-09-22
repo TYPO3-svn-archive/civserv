@@ -1172,13 +1172,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 						tx_civserv_employee, 
 						tx_civserv_position, 
 						tx_civserv_employee_em_position_mm 
-				where 
+					where 
 						tx_civserv_employee.pid IN (' . $this->community[pidlist] . ') '
 					    . ($regexp?'AND em_name REGEXP "' . $regexp . '"':'') . 'AND 
 						tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
 						tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
 						tx_civserv_employee.deleted=0 AND
-						tx_civserv_employee.hidden=0 '; //need extra blanc because limit-clause will be added!
+						tx_civserv_employee.hidden=0';
 			}
 
 			#$orderby =	$this->piVars[sort]?'name, em_firstname DESC':'name, em_firstname ASC';
@@ -1604,6 +1604,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 											  OR ms_synonym2 LIKE "%' . $sword[$i] . '%"
 											  OR ms_synonym3 LIKE "%' . $sword[$i] . '%"';
 						$querypart_where4 .= ' sw_search_word LIKE "%' . $sword[$i] . '%" ';
+						$querypart_where5 = ' AND (sv_name LIKE "%' . $sword[$i] . '%"
+											  OR sv_synonym1 LIKE "%' . $sword[$i] . '%"
+											  OR sv_synonym2 LIKE "%' . $sword[$i] . '%"
+											  OR sv_synonym3 LIKE "%' . $sword[$i] . '%"';	
 				} else {
 					$querypart_where .= ' OR sv_name LIKE "%' . $sword[$i] . '%"
 										  OR sv_synonym1 LIKE "%' . $sword[$i] . '%"
@@ -1615,6 +1619,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 										  OR ms_synonym2 LIKE "%' . $sword[$i] . '%"
 										  OR ms_synonym3 LIKE "%' . $sword[$i] . '%"';
 					$querypart_where4 .= ' OR sw_search_word LIKE "%' . $sword[$i] . '%" ';
+					$querypart_where5 .= ' OR sv_name LIKE "%' . $sword[$i] . '%"
+										  OR sv_synonym1 LIKE "%' . $sword[$i] . '%"
+										  OR sv_synonym2 LIKE "%' . $sword[$i] . '%"
+										  OR sv_synonym3 LIKE "%' . $sword[$i] . '%"';
 				}
 			}
 
@@ -1683,7 +1691,27 @@ class tx_civserv_pi1 extends tslib_pibase {
 														   (sv.starttime=0 AND sv.endtime=0) )
 													  AND sv.sv_model_service = ms.uid AND sv.pid IN (' . $this->community[pidlist] . ')
 													  AND (' . $querypart_where3 . ')
-
+					UNION
+					SELECT sv.uid as uid, sv.sv_name as name
+					FROM tx_civserv_service as sv, tx_civserv_external_service
+					WHERE sv.deleted=0 AND sv.hidden=0 AND
+  						  tx_civserv_external_service.hidden=0 AND tx_civserv_external_service.deleted=0 
+														AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN sv.starttime AND sv.endtime) OR
+														   ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > sv.starttime) AND (sv.endtime=0)) OR
+														   (sv.starttime=0 AND sv.endtime=0) ) 
+													   AND tx_civserv_external_service.pid  in (' . $this->community[pidlist] . ')
+													   AND tx_civserv_external_service.es_external_service = sv.uid ' . $querypart_where5 . ')
+					UNION
+					SELECT sv.uid as uid, sv.sv_name as name 
+					FROM tx_civserv_service as sv, tx_civserv_search_word as sw, tx_civserv_service_sv_searchword_mm, tx_civserv_external_service
+					WHERE sv.deleted=0 AND sv.hidden=0 AND sw.deleted=0 AND sw.hidden=0 AND
+						  tx_civserv_external_service.hidden=0 AND tx_civserv_external_service.deleted=0  
+													  AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN sv.starttime AND sv.endtime) OR
+														  ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > sv.starttime) AND (sv.endtime=0)) OR
+														  (sv.starttime=0 AND sv.endtime=0) )
+														  AND tx_civserv_external_service.pid IN (' . $this->community[pidlist] . ') 
+														  AND ' . $querypart_where2 . ')
+														  AND tx_civserv_external_service.es_external_service = sv.uid			
 					ORDER BY name');
 
 			$rowcount = $GLOBALS['TYPO3_DB']->sql_num_rows($res);
@@ -1996,6 +2024,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$mandant = t3lib_div::makeInstanceClassName('tx_civserv_mandant');
 			$mandantInst = new $mandant();
 			$service_community = $mandantInst->get_mandant($service_common['pid']);
+			$folder_forms = $this->conf['folder_services'];
+			$folder_forms .= $service_community . '/forms/';
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 											'cm_community_name,
 											 cm_uid',
@@ -4025,7 +4055,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$menuArray['menuOrganisationList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.organisation_list','Organisation A - Z'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'organisation_list'),1,1,$pageid),
-								'ITEM_STATE' => (($this->piVars[mode]=='organisation_list') || ($this->piVars[mode]=='organisation'))?'ACT':'NO');
+								'ITEM_STATE' => (($this->piVars[mode]=='organisation_list') || ($this->piVars[mode]=='organisation_list'))?'ACT':'NO');
 		}
 		if ($conf['menuEmployeeList']) {
 			$menuArray['menuEmployeeList'] = array(
