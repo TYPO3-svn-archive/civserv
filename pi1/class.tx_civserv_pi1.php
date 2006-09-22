@@ -1265,7 +1265,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}
 			if($form_row['typ']== 'e'){ // highlighting for all Forms donated by the County, bigger Community, etc....
 				// to do: get locallang......
-				$form_row['name'].=' (externes Formular)';
+				// not useful until we can name the donator!
+				// $form_row['name'].=' (externes Formular)';
 			}
 			$all_forms[]=$form_row;
 		}
@@ -1278,6 +1279,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		for($i=0; $i<count($all_forms); $i++){
 			if($cat_count > 0){ // mandant uses categories
 				// to do: get text from locallang properly!!!
+				// i.e. only if we want to have an extra categorie for unclassified forms (forms without a category)
 				#$all_forms[$i]['cat']=!$all_forms[$i]['cat']?'nix Zuordnung':$all_forms[$i]['cat'];
 			}else{ // not one category used at the mandant's
 				$all_forms[$i]['cat']='0';
