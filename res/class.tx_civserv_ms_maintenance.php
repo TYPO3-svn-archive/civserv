@@ -103,10 +103,10 @@ class tx_civserv_ms_maintenance {
 	function check_ms_name_changed($params) {
 		
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
-		if ($params['table']=='tx_civserv_model_service')	{
+		if ($params['table']=='tx_civserv_model_service'  && substr($params['uid'],0,3)!='NEW')	{ //the calling function updateDB also takes care that the uid is not a string!
 
 			// Gets all data from the currently saved record...
-			// by the way: ms_stored_name is not editable from the BE
+			// ms_stored_name is not editable from the BE
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',								// SELECT ...
 				'tx_civserv_model_service',			// FROM ...
@@ -261,7 +261,7 @@ class tx_civserv_ms_maintenance {
 		global $LANG;
 		$LANG->includeLLFile(t3lib_extMgm::extPath('civserv')."modmsworkflow/locallang.php");
 		//get all data from the original table, including datasets which carry the deleted flag, because we want to eleminate them from the copies also!
-		if ($params['table']=='tx_civserv_model_service')	{
+		if ($params['table']=='tx_civserv_model_service' && substr($params['uid'],0,3)!='NEW')	{ //the calling function updateDB also takes care that the uid is not a string!
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',									// Field list for SELECT
 				'tx_civserv_model_service',				// Tablename, local table

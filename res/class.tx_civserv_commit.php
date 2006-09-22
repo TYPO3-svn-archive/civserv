@@ -506,6 +506,7 @@ class tx_civserv_commit {
 	 * @return	void
 	 */
 	function updateDB($params, $who) {
+		#debug($params, 'commit->updateDB $params');
 		global $GLOBALS, $BE_USER;
 		if ($params['table']=='tx_civserv_building')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_floorbuild.php']){
@@ -537,7 +538,6 @@ class tx_civserv_commit {
 		}
 		if ($params['table']=='tx_civserv_service')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_service_maintenance.php']){
-				debug('$update-db table tx_civserv_service');
 				$update_obj = t3lib_div::makeInstance('tx_civserv_service_maintenance');
 				$update_obj->transfer_services($params);
 				$update_obj->update_position($params);
@@ -550,7 +550,7 @@ class tx_civserv_commit {
 				$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_model_service_temp', 'uid = '.$params['uid'], array ("ms_uid_editor" => $BE_USER->user["uid"],"ms_revised_approver_one" => 0, "ms_revised_approver_two" => 0));
 			}
 		}
-		if ($params['table']=='tx_civserv_model_service')	{
+		if ($params['table']=='tx_civserv_model_service' && substr($params['uid'],0,3)!='NEW')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_ms_maintenance.php']){
 				//debug($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS'], 'habe xclass!');
 				$update_obj = t3lib_div::makeInstance('tx_civserv_ms_maintenance');
