@@ -232,7 +232,7 @@ class tx_civserv_commit {
 
 	/**
 	 * This function writes back all MM-entries from the end of the table, which have been backuped through saveMMentries().
-	 * Actuall entries in the front of the table get deleted and replaced by the ones from the end. See
+	 * Actual entries in the front of the table get deleted and replaced by the ones from the end. See
 	 * Concerned tables: tx_civserv_service_sv_position_mm', tx_civserv_employee_em_position_mm, tx_civserv_building_bl_floor_mm
 	 *
 	 * @see rocessDatamap_preProcessFieldArray
@@ -347,7 +347,7 @@ class tx_civserv_commit {
 					$update_fields = array("uid_local" => $id);
 					foreach($this->service_mm_tables as $sv_mm_table){
 						// second check if there are any mm-records relating to the offline version which is about to be published?
-						// fehler eingebaut!!!
+						// fehler eingebaut!!! baustelle
 						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$sv_mm_table,'uid_local = '.$value['swapWith']);
 						if($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){ //count might have been nicer here...
 							if($sv_mm_table=='tx_civserv_service_sv_position_mm'){
@@ -434,7 +434,8 @@ class tx_civserv_commit {
 					$this->renewMMentries($params);
 				}
 			}
-			// do we need to call this function again??? yes we do! for exactly the case when the hook calling $this->update_postAction is not executed!!!
+			// do we need to call this function again??? yes we do! 
+			// we need to do it for exactly the case when the hook calling $this->update_postAction is not executed!!!
 			// can we check if $this->update_postAction has run before - so we avoid double execution of same functions?
 			$this->updateDB($params, 'processDatamap_afterDatabaseOperations');
 		}
