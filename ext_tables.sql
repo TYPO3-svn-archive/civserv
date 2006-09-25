@@ -509,7 +509,9 @@ CREATE TABLE tx_civserv_employee_em_position_mm (
 	ep_fax tinytext NOT NULL,
 	ep_mobile tinytext NOT NULL,
 	ep_email tinytext NOT NULL,
+	ep_datasec tinyint(3) unsigned DEFAULT '0' NOT NULL,
 	ep_label tinytext NOT NULL,
+	ep_em_exid tinytext NOT NULL,
 	uid_temp int(11) unsigned DEFAULT '0' NOT NULL,
 	
 	PRIMARY KEY (uid),
@@ -677,6 +679,7 @@ CREATE TABLE tx_civserv_officehours (
 	oh_weekday int(11) DEFAULT '0' NOT NULL,
 	oh_manual_checkbox int(11) unsigned DEFAULT '0' NOT NULL,
 	oh_freestyle varchar(255) DEFAULT '' NOT NULL,
+	oh_exid int(11) unsigned DEFAULT '0' NOT NULL,
 	
 	PRIMARY KEY (uid),
 	KEY parent (pid)
