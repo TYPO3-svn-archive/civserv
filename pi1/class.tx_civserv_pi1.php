@@ -2091,7 +2091,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_service_sv_organisation_mm.sorting');	//ORDER BY
 						#'name');	//ORDER BY
 
-		//Query for associated employees
+
+
+		// change b.k.: for the display of contact persons now only the newly introduced field ep_datasac of the employee-position relation is relevant.
+		// Query for associated employees
 		$res_employees = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'tx_civserv_employee.uid as emp_uid, 
 						 tx_civserv_position.uid as pos_uid, 
@@ -2105,7 +2108,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 ep_telephone, 
 						 em_email, 
 						 ep_email, 
-						 em_datasec as datasec',
+						 ep_datasec as datasec', // used to be em_datasec!!!
 						'tx_civserv_service, tx_civserv_service_sv_position_mm, tx_civserv_position, tx_civserv_employee, tx_civserv_employee_em_position_mm',
 						'tx_civserv_service.uid = ' . $uid . '
 						 AND tx_civserv_service.deleted=0 AND tx_civserv_service.hidden=0
