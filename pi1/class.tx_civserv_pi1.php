@@ -173,13 +173,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// If community-id is given in GET or POST variable, priority is POST,
 		// get the community name and the pidlist for this community from the
 		// database and store it in the session
-		if ((($this->piVars[community_id] <= '') && ($_SESSION['community_id'] <= '')) || ($this->piVars[community_id] == 'choose')) {
-		#if(1==2){
+		#if ((($this->piVars[community_id] <= '') && ($_SESSION['community_id'] <= '')) || ($this->piVars[community_id] == 'choose')) {
+		if(1==2){
 			$template = $this->conf['tpl_community_choice'];
 			$accurate = $this->chooseCommunity($smartyObject);
 			$choose = true;
-	 	} elseif (($this->piVars[community_id] != $_SESSION['community_id']) || ($_SESSION['community_name'] <= '')) {
-		#}elseif(1==1){
+	 	#} elseif (($this->piVars[community_id] != $_SESSION['community_id']) || ($_SESSION['community_name'] <= '')) {
+		}elseif(1==1){
 			if ($this->piVars[community_id] > '') {
 				$community_id = intval($this->piVars[community_id]);
 			} else {
@@ -429,6 +429,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		if (!$query) {
 			return false;
 		}
+		#debug($query, 'servicelist-query');
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		
 		$row_counter = 0;
@@ -2093,7 +2094,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 
 
-		// change b.k.: for the display of contact persons now only the newly introduced field ep_datasac of the employee-position relation is relevant.
+		// change b.k.: for the display of contact persons also the field ep_datasac of the employee-position relation is relevant.
 		// Query for associated employees
 		$res_employees = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'tx_civserv_employee.uid as emp_uid, 
@@ -2108,7 +2109,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 ep_telephone, 
 						 em_email, 
 						 ep_email, 
-						 ep_datasec as datasec', // used to be em_datasec!!!
+						 em_datasec as em_datasec,
+						 ep_datasec as ep_datasec', // additional
 						'tx_civserv_service, tx_civserv_service_sv_position_mm, tx_civserv_position, tx_civserv_employee, tx_civserv_employee_em_position_mm',
 						'tx_civserv_service.uid = ' . $uid . '
 						 AND tx_civserv_service.deleted=0 AND tx_civserv_service.hidden=0
@@ -2179,6 +2181,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 
 		$service_employees = $this->sql_fetch_array_r($res_employees);
+		
+		debug($service_employees, '$service_employees');
 
 
 		$row_counter = 0;
