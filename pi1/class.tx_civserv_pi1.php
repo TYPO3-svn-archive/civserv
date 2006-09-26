@@ -1179,7 +1179,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
 						tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
 						tx_civserv_employee.deleted=0 AND
-						tx_civserv_employee.hidden=0';
+						tx_civserv_employee.hidden=0 ';
 			}
 
 			#$orderby =	$this->piVars[sort]?'name, em_firstname DESC':'name, em_firstname ASC';
@@ -2043,12 +2043,18 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$service_pidlist= $this->community[pidlist];
 		}
 
-		
 		if ($this->versioningEnabled) {
 			// get workspaces Overlay
-			$GLOBALS['TSFE']->sys_page->versionOL('tx_civserv_service',$service_common);
+			// versionOL can't handle marker-field 'typ' 
+			$real_service_fields=array();
+			foreach($service_common as $key => $value){
+				if($key != 'typ'){
+					$real_service_fields[$key]=$value;
+				}
+			}
+			$GLOBALS['TSFE']->sys_page->versionOL('tx_civserv_service',$real_service_fields);
 			// fix pid for record from workspace
-			$GLOBALS['TSFE']->sys_page->fixVersioningPid('tx_civserv_service',$service_common);
+			$GLOBALS['TSFE']->sys_page->fixVersioningPid('tx_civserv_service',$real_service_fields);
 		}
 		
 		// versioning:
@@ -3486,7 +3492,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res_employee = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'em_email, em_datasec as datasec' . $querypart_select,
 						'tx_civserv_employee' . $querypart_from,
-						'tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0' . $querypart_where,
+						'tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0 '.$querypart_where,
 						'',
 						'',
 						'');
