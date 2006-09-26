@@ -2872,9 +2872,16 @@ $TCA["tx_civserv_employee_em_position_mm"] = Array (
 				"max" => "55",
 			)
 		),
+		"ep_datasec" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_employee_em_position_mm.ep_datasec",
+			"config" => Array (
+				"type" => "check",
+			)
+		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, ep_officehours, ep_room, ep_telephone, ep_fax, ep_mobile, ep_email")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, ep_officehours, ep_room, ep_telephone, ep_fax, ep_mobile, ep_email, ep_datasec")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")
