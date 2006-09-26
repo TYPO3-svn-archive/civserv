@@ -166,16 +166,17 @@
 		<a name="contactperson" id="contactperson"></a><h2>{$contact_label}</h2>
 		<!--{foreach from=$employees item=employee}-->
 			<p>
-			<!--{if $employee.datasec == "1"}-->
-				<a href="{$employee.employee_url}" title="{$employee_details}"><strong>{$employee.address_long}
-				<!--{if $employee.title > ''}-->{$employee.title}<!--{/if}-->	
-				{$employee.firstname}&nbsp;{$employee.name}</strong></a><br />
-			<!--{else}-->
-				<strong>{$employee.address_long}
-				<!--{if $employee.title > ''}-->{$employee.title}<!--{/if}-->	
-				{$employee.firstname}&nbsp;{$employee.name}</strong><br />
+			<!--{if $employee.ep_datasec == "1"}-->
+				<!--{if $employee.em_datasec == "1"}-->
+					<a href="{$employee.employee_url}" title="{$employee_details}"><strong>{$employee.address_long}
+					<!--{if $employee.title > ''}-->{$employee.title}<!--{/if}-->	
+					{$employee.firstname}&nbsp;{$employee.name}</strong></a><br />
+				<!--{else}-->
+					<strong>{$employee.address_long}
+					<!--{if $employee.title > ''}-->{$employee.title}<!--{/if}-->	
+					{$employee.firstname}&nbsp;{$employee.name}</strong><br />
+				<!--{/if}-->
 			<!--{/if}-->
-				
 			<!--{if $employee.email_code != ""}-->
 				{$email_label}: {$employee.email_code}<br />	
 			<!--{/if}-->		
