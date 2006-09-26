@@ -509,7 +509,7 @@ CREATE TABLE tx_civserv_employee_em_position_mm (
 	ep_fax tinytext NOT NULL,
 	ep_mobile tinytext NOT NULL,
 	ep_email tinytext NOT NULL,
-	ep_datasec tinyint(3) unsigned DEFAULT '0' NOT NULL,
+	ep_datasec tinyint(3) unsigned DEFAULT '1' NOT NULL,
 	ep_label tinytext NOT NULL,
 	ep_em_exid tinytext NOT NULL,
 	uid_temp int(11) unsigned DEFAULT '0' NOT NULL,
