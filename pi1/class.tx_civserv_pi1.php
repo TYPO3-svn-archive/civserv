@@ -173,13 +173,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// If community-id is given in GET or POST variable, priority is POST,
 		// get the community name and the pidlist for this community from the
 		// database and store it in the session
-		#if ((($this->piVars[community_id] <= '') && ($_SESSION['community_id'] <= '')) || ($this->piVars[community_id] == 'choose')) {
-		if(1==2){
+		if ((($this->piVars[community_id] <= '') && ($_SESSION['community_id'] <= '')) || ($this->piVars[community_id] == 'choose')) {
+		#if(1==2){
 			$template = $this->conf['tpl_community_choice'];
 			$accurate = $this->chooseCommunity($smartyObject);
 			$choose = true;
-	 	#} elseif (($this->piVars[community_id] != $_SESSION['community_id']) || ($_SESSION['community_name'] <= '')) {
-		}elseif(1==1){
+	 	} elseif (($this->piVars[community_id] != $_SESSION['community_id']) || ($_SESSION['community_name'] <= '')) {
+		#}elseif(1==1){
 			if ($this->piVars[community_id] > '') {
 				$community_id = intval($this->piVars[community_id]);
 			} else {
@@ -429,7 +429,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		if (!$query) {
 			return false;
 		}
-		#debug($query, 'servicelist-query');
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		
 		$row_counter = 0;
@@ -2187,9 +2186,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 
 		$service_employees = $this->sql_fetch_array_r($res_employees);
-		
-		debug($service_employees, '$service_employees');
-
 
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_similar))	{
