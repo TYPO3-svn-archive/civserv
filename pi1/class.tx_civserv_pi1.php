@@ -2018,7 +2018,26 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//Query for standard service details
 		$res_common = $this->queryService(intval($uid));
 		$service_common = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_common);
-		$service_common['typ']='i';
+		#$service_common['typ']='i';
+		
+		
+
+		if ($this->versioningEnabled) {
+			// get workspaces Overlay
+			// versionOL can't handle marker-field 'typ' 
+			$GLOBALS['TSFE']->sys_page->versionOL('tx_civserv_service',$service_common);
+			// fix pid for record from workspace
+			$GLOBALS['TSFE']->sys_page->fixVersioningPid('tx_civserv_service',$service_common);
+		}
+
+		// versioning:
+		if($service_common['_ORIG_pid']== -1 && $service_common['_ORIG_uid']>0){ // this means we are looking at the details of a version-record!!!
+			// for the display of associated emplopyee-, organisation-, etc. records we need the 
+			// uid of the record in the version-workspace !!!
+			$uid=$service_common['_ORIG_uid'];
+			$smartyService->assign('preview',1); //through this flag we can identification of workspace-records in preview
+		}
+		
 		
 		
 		//Check if service is an external service and swap the pid_list if it is! so you can show the right contact persons!!
@@ -2040,29 +2059,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		} else {
 			$service_community = $this->community[id];
 			$service_pidlist= $this->community[pidlist];
+			$service_common['typ']='i';
 		}
 
-		if ($this->versioningEnabled) {
-			// get workspaces Overlay
-			// versionOL can't handle marker-field 'typ' 
-			$real_service_fields=array();
-			foreach($service_common as $key => $value){
-				if($key != 'typ'){
-					$real_service_fields[$key]=$value;
-				}
-			}
-			$GLOBALS['TSFE']->sys_page->versionOL('tx_civserv_service',$real_service_fields);
-			// fix pid for record from workspace
-			$GLOBALS['TSFE']->sys_page->fixVersioningPid('tx_civserv_service',$real_service_fields);
-		}
-		
-		// versioning:
-		if($service_common['_ORIG_pid']== -1 && $service_common['_ORIG_uid']>0){ // this means we are looking at the details of a version-record!!!
-			// for the display of associated emplopyee-, organisation-, etc. records we need the 
-			// uid of the record in the version-workspace !!!
-			$uid=$service_common['_ORIG_uid'];
-			$smartyService->assign('preview',1); //through this flag we can identification of workspace-records in preview
-		}
 
 		//Query for associated forms
 		$res_forms = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(

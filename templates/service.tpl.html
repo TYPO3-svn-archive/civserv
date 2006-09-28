@@ -43,7 +43,12 @@
 <div id="centrecontent">
 
 	<!--TYPO3SEARCH_begin-->
-	<h1>{$service_label}:&nbsp;{$name}</h1>
+	
+	<!--{if $preview != ""}-->	
+		<h1 class="preview">{$service_label}:&nbsp;{$name}</h1>
+	<!--{else}-->
+		<h1>{$service_label}:&nbsp;{$name}</h1>
+	<!--{/if}-->
 
 	<!--{if $external_service_label != ""}-->
 		<p class="external_service">{$external_service_label}</p>

@@ -23,7 +23,11 @@
 		<div class="list">		
 			<ul>			
 			<!--{foreach from=$services item=service }-->				
-				<li><a href="{$service.link}">{$service.name}</a></li>			
+				<!--{if $service.preview == 1}-->	
+					<li class="preview"><a class="preview" href="{$service.link}">{$service.name}</a></li>
+				<!--{else}-->
+					<li><a href="{$service.link}">{$service.name}</a></li>
+				<!--{/if}-->				
 			<!--{/foreach}-->		
 			</ul>	
 	</div>	

@@ -207,7 +207,14 @@ class tx_civserv_mandant{
 		$allowed_regions=array();
 		if ($pid > 0) $mandant_uid = $this->get_mandant_uid($pid);
 		$banned_regions= array();
-		$res_regions = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_foreign', 'tx_civserv_conf_mandant_cm_region_mm', 'uid_local='.$mandant_uid,'','','','');
+		$res_regions = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'uid_foreign', 
+				'tx_civserv_conf_mandant_cm_region_mm', 
+				'uid_local='.$mandant_uid,
+				'',
+				'',
+				'',
+				'');
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_regions)){
 			$banned_regions[]=$row['uid_foreign'];
 		}
