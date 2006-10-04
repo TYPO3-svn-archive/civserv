@@ -74,7 +74,6 @@ class tx_civserv_commit {
 					'tx_civserv_employee_em_position_mm'=>'em_position', 
 					'tx_civserv_building_bl_floor_mm'=>'bl_floor');
 					
-	#var $fieldarry = array();
 	var $service_mm_tables =array(	'tx_civserv_service_sv_similar_services_mm',
 									'tx_civserv_service_sv_form_mm',
 									'tx_civserv_service_sv_searchword_mm',
@@ -162,7 +161,7 @@ class tx_civserv_commit {
 	
 	/**
 	 * Hook function, called through a hook within the class typo3/class.db_list.inc set in the class ext_localconf.php...
-	 * The Hook is for VERSIONING mainly, it is not part of typo3 4.0. (or typo3 < 4.0)! it has to be introduced MANUALLY into the sources!!!
+	 * The Hook is for VERSIONING mainly, it is not part of typo3 4.0.x (or typo3 < 4.0.x)! it has to be introduced MANUALLY into the sources!!!
 	 * This function manipulates the list of tx_civserv_service_sv_position_mm records displayed in BE below the list of service_records
 	 * Background-information: the tx_civserv_service_sv_position_mm are made persistent in O.S.I.R.I.S. and they carry special 
 	 * attributes which can be edited (if they relate to online services, see displaycond in tca.php for that issue)
@@ -179,7 +178,7 @@ class tx_civserv_commit {
 		//all workspace: LIVE and CUSTOM
 		if($table == 'tx_civserv_service_sv_position_mm'){
 			$orderby=' tx_civserv_service_sv_position_mm.sp_label'; 
-			$addWhere='AND deleted=0'; //have to add this explicitely for mm-tables!!!
+			$addWhere=' AND deleted=0'; //have to add this explicitely for mm-tables!!!
 		}	
 		// in CUSTOM workspaces we want to see the records relating to the newest service-version as well as the
 		// records relating to the actual online services.
@@ -189,7 +188,8 @@ class tx_civserv_commit {
 			$display_count=0;
 			$pidexploded=explode('=',$pid);
 			$onlinepid=$pidexploded[1]; // 123
-			// select the uids of the online-services and add them to the service-list
+			debug($onlinepid, 'pid');
+			// select the uids of the online-services (pid > 0) and add them to the service-list
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_civserv_service','deleted=0 AND '.$pid,'','','',''); 
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
 			 	#debug($row, 'civserv/res/commit.php->remakeQueryArray, service_row!');
