@@ -200,31 +200,37 @@ class tx_civserv_mandant{
 	* @see manipulate_array, additional_remove
 	*/
 	function limit_region_items(&$params, &$pObj){
+		debug($params, 'mandant->limit-regions');
 		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
+		debug($pid, 'gespeicherte current pid');
 		if(array_key_exists("",$params['items'])){
 			$empty_entry=1;
 		} $empty_entry=0;
 		$allowed_regions=array();
-		if ($pid > 0) $mandant_uid = $this->get_mandant_uid($pid);
-		$banned_regions= array();
-		$res_regions = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'uid_foreign', 
-				'tx_civserv_conf_mandant_cm_region_mm', 
-				'uid_local='.$mandant_uid,
-				'',
-				'',
-				'',
-				'');
-		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_regions)){
-			$banned_regions[]=$row['uid_foreign'];
-		}
-		for($i=0; $i<count($params['items']); $i++){
-			if(!in_array($params['items'][$i][1], $banned_regions)){
-				$allowed_regions[]=$params['items'][$i];
+		if ($pid > 0){ 
+			$mandant_uid = $this->get_mandant_uid($pid);
+			$banned_regions= array();
+			$res_regions = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'uid_foreign', 
+					'tx_civserv_conf_mandant_cm_region_mm', 
+					'uid_local='.$mandant_uid,
+					'',
+					'',
+					'',
+					'');
+			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_regions)){
+				$banned_regions[]=$row['uid_foreign'];
 			}
+			for($i=0; $i<count($params['items']); $i++){
+				if(!in_array($params['items'][$i][1], $banned_regions)){
+					$allowed_regions[]=$params['items'][$i];
+				}
+			}
+			$params['items']=$allowed_regions;
+			if ($empty_entry) $params['items']=array_merge(Array(""),$params['items']);
+		}else{ //pid <0 (means: its a version.....)
+			$params['items']=array();
 		}
-		$params['items']=$allowed_regions;
-		if ($empty_entry) $params['items']=array_merge(Array(""),$params['items']);
 	}
 
 
