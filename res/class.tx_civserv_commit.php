@@ -81,7 +81,7 @@ class tx_civserv_commit {
 									'tx_civserv_service_sv_organisation_mm',
 									'tx_civserv_service_sv_navigation_mm',
 									'tx_civserv_service_sv_region_mm');
-
+	
 
 	/**
 	 * This function is central to guarantee the consistency within the DB.
@@ -90,7 +90,8 @@ class tx_civserv_commit {
 	 *
 	 *
 	 * ATTENTION: this hook is called in a reliable way only in typo3 version <= 3.8.1 !!!
-	 * in typo3 4.0. the class.t3lib_tcemain.php has been refactured and the hook will _not_ be called under _one_ condition:
+	 * in typo3 4.x. the class.t3lib_tcemain.php has been refactured and the hook will _not_ be called 
+	 * under _one_ condition:
 	 * If exactly the same number of service_position_relations is substracted from and added to a service in one 
 	 * step (take one away and add another in the selection field in BE) the data_storing process via the Typo3 core ends with 
 	 * t3lib_tcemain->updateDB and t3lib_tcemain->clear_cache (which carries the 'clearCachePostProc'-hook, 
@@ -119,15 +120,15 @@ class tx_civserv_commit {
 				}	
 			}
 		}
-		// do this anyway:
+		// do this anyway (typo3_src < 4.0 AND typo3_src > 4.0:
 		// office-hour-labels depend on it
 		// tx_civserv_employee_em_position records depend on it
 		// tx_civserv_employee_em_position labels depend on it!
 		// background info: it does make a difference whether updateDB is called 
 		// - through $this->update_postAction (t3lib_tcemain->clear_cache, clearCachePostProc-HOOK) or 
 		// - through $this->processDatamap_afterDatabaseOperations (t3lib_tcemain->process_datamap, processDatamap_afterDatabaseOperations-HOOK):
-		// if it is the cache-function calling this hook, the uids are numerical - as they are written into the db
-		// if it is the process-datamap-function calling the hook below the uids may be temporay strings like 'NEW123456'
+		// if it is the typo3-core cache-function calling this hook, the uids are numerical - as they are written into the db
+		// if it is the typo3-core process-datamap-function calling the hook below the uids may be temporay strings like 'NEW123456'
 		// with the temporary string-uids the labels for new records cannot be updated, with the numerical uids they can of course!		
 		$this->updateDB($params, 'update_postAction');
 	}
@@ -178,7 +179,9 @@ class tx_civserv_commit {
 		//all workspace: LIVE and CUSTOM
 		if($table == 'tx_civserv_service_sv_position_mm'){
 			$orderby=' tx_civserv_service_sv_position_mm.sp_label'; 
-			$addWhere=' AND deleted=0'; //have to add this explicitely for mm-tables!!!
+			
+			$addWhere=' AND deleted=0'; //have to add this explicitely for mm-tables!!! 
+			//standard typo3: mm_tables have no 'deleted'-field and are never displayed at all
 		}	
 		// in CUSTOM workspaces we want to see the records relating to the newest service-version as well as the
 		// records relating to the actual online services.
@@ -188,11 +191,9 @@ class tx_civserv_commit {
 			$display_count=0;
 			$pidexploded=explode('=',$pid);
 			$onlinepid=$pidexploded[1]; // 123
-			debug($onlinepid, 'pid');
 			// select the uids of the online-services (pid > 0) and add them to the service-list
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_civserv_service','deleted=0 AND '.$pid,'','','',''); 
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
-			 	#debug($row, 'civserv/res/commit.php->remakeQueryArray, service_row!');
 				$display_service_list[$display_count]['uid']=$row['uid'];
 				$display_service_list[$display_count]['t3ver_id']=$row['t3ver_id'];
 				// select the uids of offline-versions of the same service
@@ -208,7 +209,6 @@ class tx_civserv_commit {
 				$display_count++;
 			}
 			
-			#debug($display_service_list, '$display_service_list');
 			
 			if (count($display_service_list)>0){
 				$sv_uids=array();
@@ -241,7 +241,6 @@ class tx_civserv_commit {
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
 	function renewMMentries($params){
-		#debug($params, 'tx_civserv_commit->renewMMentries, params');
 			//get all MM tables, which could be concerned by the typo3 MM-entrie problem
 		$mmTables = explode(',',$this->tables[$params['table']]);
 			//fetch all backuped entries from the end of the table
@@ -324,7 +323,6 @@ class tx_civserv_commit {
 		// $id contains uid of actual online service in LIVE version
 		// $value['swap_with'] contains uid of the offline-service in custom workspace, the one that ist beeing published
 		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
-		#debug($command, 'tx_civserv_commit->processCmdmap_preProcess, command');
 		if (array_key_exists($table,$this->tables) && $table =='tx_civserv_service' && $command == 'delete'){
 			// apparently 'deleted = 1' does not suffice to eleminate service-position records from the BE?
 			// the remake-query-array-hook below is needed to make sure they are not listed in BE!
@@ -396,8 +394,6 @@ class tx_civserv_commit {
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
 	function processCmdmap_postProcess($command, &$table, $id, $value, &$pObj){
-		#debug($command, 'tx_civserv_commit->processCmdmap_postProcess, command');
-		#debug($id, 'tx_civserv_commit->processCmdmap_postProcess, id');
 		if (array_key_exists($table,$this->tables) && $table =='tx_civserv_service'){
 			//experimental:
 			if($value['action']=='swap'){
@@ -461,8 +457,6 @@ class tx_civserv_commit {
 		// versioningg-problem on tx_civserv_service_sv_position: when saving service in custom workspace (version_service_uid) 
 		// this function generates a new and superfluous saved_entry for the live_service_uid which 
 		// leads to double entries in the table.
-		#debug($id, 'civserv/res/commit.php->saveMMentries, $id!!!');
-		#debug($GLOBALS['BE_USER']->workspace, 'what workspace are we in?');
 		if ($GLOBALS['BE_USER']->workspace==0){ //only do this in the live workspace!!!
 			// get all MM tables, which could be concerned by the typo3 MM-entrie problem
 			$mmTables = explode(',',$this->tables[$table]);
@@ -471,7 +465,6 @@ class tx_civserv_commit {
 			foreach($mmTables as $mmTable){
 				//only get the entries, which are selected in the actual backendmask for the contenttype "service". So deleted ones are not listed here
 				$entries = explode(',',$incomingFieldArray[$this->attributes[$mmTable]]);
-				#debug($entries, 'civserv/res/commit.php->saveMMentries, entries of incommingfieldarray:');
 				$foreign_uids=array();
 				foreach ($entries as $entry){
 					if (strlen($entry)>0){
@@ -480,12 +473,10 @@ class tx_civserv_commit {
 						else $foreign_uids[]=$entry;
 					}
 				}
-				#debug($foreign_uids, 'civserv/res/commit.php->saveMMentries, $foreign_uids');
 				
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$mmTable,'!deleted AND !hidden AND uid_local = '.$id); 
 					//copy each concerned entrie to the end of table
 				while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
-					#debug($row, 'civserv/res/commit.php->saveMMentries, sv_pos_row');
 					if (in_array($row['uid_foreign'],$foreign_uids)){
 						$row['uid_temp']=$row['uid'];
 						$row['uid_local'] = $row['uid_local']+1000000000;
@@ -507,7 +498,6 @@ class tx_civserv_commit {
 	 * @return	void
 	 */
 	function updateDB($params, $who) {
-		#debug($params, 'commit->updateDB $params');
 		global $GLOBALS, $BE_USER;
 		if ($params['table']=='tx_civserv_building')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_floorbuild.php']){
@@ -540,7 +530,8 @@ class tx_civserv_commit {
 		if ($params['table']=='tx_civserv_service')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_service_maintenance.php']){
 				$update_obj = t3lib_div::makeInstance('tx_civserv_service_maintenance');
-				$update_obj->transfer_services($params);
+				//fix me! 
+				if($who != "processDatamap_afterDatabaseOperations") $update_obj->transfer_services($params);
 				$update_obj->update_position($params);
 			}
 		}
@@ -553,7 +544,6 @@ class tx_civserv_commit {
 		}
 		if ($params['table']=='tx_civserv_model_service' && substr($params['uid'],0,3)!='NEW')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_ms_maintenance.php']){
-				//debug($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS'], 'habe xclass!');
 				$update_obj = t3lib_div::makeInstance('tx_civserv_ms_maintenance');
 				$update_obj->check_ms_name_changed($params);
 				$update_obj->transfer_ms($params);

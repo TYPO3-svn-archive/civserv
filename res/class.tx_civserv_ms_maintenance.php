@@ -130,7 +130,7 @@ class tx_civserv_ms_maintenance {
 
 			//...has the internal name of the model service been changed?
 			if ($model_service_names['ms_name']!=$model_service_names['ms_stored_name'])	{
-				debug($model_service_names, 'name geändert?');
+				#debug($model_service_names, 'name geändert?');
 				//update the name-fields in tx_model_service and tx_model_service_temp
 
 				//update tx_civserv_model_services
@@ -154,8 +154,8 @@ class tx_civserv_ms_maintenance {
 		}	// ...and stores it in $model_service_names.
 		$model_service_temp_names = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res_temp);
 		if ($model_service_temp_names['ms_name']!=$model_service_names['ms_name'])	{
-			debug($model_service_temp_names, 'temp_name');
-			debug($model_service_names, 'orig_name');
+			#debug($model_service_temp_names, 'temp_name');
+			#debug($model_service_names, 'orig_name');
 			$new_name=array('ms_name'=>$model_service_names['ms_name']);
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_model_service_temp', 'uid = '.$model_service_names['uid'], $new_name);
 		}

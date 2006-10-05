@@ -200,9 +200,7 @@ class tx_civserv_mandant{
 	* @see manipulate_array, additional_remove
 	*/
 	function limit_region_items(&$params, &$pObj){
-		debug($params, 'mandant->limit-regions');
 		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
-		debug($pid, 'gespeicherte current pid');
 		if(array_key_exists("",$params['items'])){
 			$empty_entry=1;
 		} $empty_entry=0;

@@ -43,7 +43,8 @@
 /**
 * [CLASS/FUNCTION INDEX of SCRIPT]
 */
-class tx_civserv_service_maintenance {
+
+class tx_civserv_service_maintenance{
 		
 	/**
 	* This function maintains the external services for a community which are passed on to it by an other community.
@@ -54,31 +55,40 @@ class tx_civserv_service_maintenance {
 	* @return	void
 	*/
 	function transfer_services($params){
+		global $LANG;
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
-		debug($params, 'tx_civserv_service_maintenance->transfer_services, $params');
+		$LANG->includeLLFile("EXT:civserv/res/locallang_region_workflow.php");
 		$separator = '### ###';
 		if ($params['table']=='tx_civserv_service' && substr($params['uid'],0,3)!='NEW')	{
-			//get _all_ services configured to be passed on to other communities
+			//ercis: get _all_ services configured to be passed on to other communities
 			//why all???
-			//test: check only if this service is configured to be passed on!!!
+			//test citeq: check only if _this_ service is configured to be passed on!!!
+			
+			// the query below collects the uids of the external-Service-Folders of all the communities 
+			// that have been selected in the region-field of the service
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'mandant.cm_external_service_folder_uid, 
+						 mandant.cm_community_name,
+						 mandant.cm_target_email,
 						 service.uid AS service, 
 						 service.pid,
-						 service.sv_name', 								// Field list for SELECT
+						 service.sv_name,
+						 pages.title as es_folder_name',
 						'tx_civserv_service service, 
 						 tx_civserv_service_sv_region_mm sr, 
 						 tx_civserv_region region, 
 						 tx_civserv_conf_mandant_cm_region_mm mandant_region, 
-						 tx_civserv_conf_mandant mandant', 				// from
-						'sr.uid_local = service.uid AND 
+						 tx_civserv_conf_mandant mandant,
+						 pages',
+						'sr.uid_local = service.uid AND 	
 						 sr.uid_foreign = region.uid AND  
 						 service.deleted=0 AND  
 						 !service.hidden AND 
 						 mandant_region.uid_foreign = region.uid AND 
 						 mandant_region.uid_local = mandant.uid AND 
-						 mandant.cm_external_service_folder_uid > 0 AND
-						 service.uid='.$params['uid'],	// WHERE clauses
+						 mandant.cm_external_service_folder_uid > 0 AND 
+						 pages.uid = mandant.cm_external_service_folder_uid', 	//all services!
+						 # AND service.uid='.$params['uid'],					//only the one service beeing saved at this moment
 						'', 											// Optional GROUP BY field(s), if none, supply blank string.
 						'', 											// Optional ORDER BY field(s), if none, supply blank string.
 						'' 												// Optional LIMIT value ([begin,]max), if none, supply blank string.
@@ -87,50 +97,153 @@ class tx_civserv_service_maintenance {
 			// test: highlight_external! show community for external services!
 			$mandant = t3lib_div::makeInstanceClassName('tx_civserv_mandant');
 			$mandantInst = new $mandant();
+			
+			// in the end I want to compare the array key of new_services and old_services.
+			// to make the unique I make a combination of service_uid and external_service_folder
+			$separator="_";
+			
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$service_community_name = $mandantInst->get_mandant_name($row['pid']);
-				#$service_community_name = "Rumpelstiltskin";
-				$new_services[]=	$row['cm_external_service_folder_uid'].
-									$separator.
-									$row['service'].
-									$separator.
-									$row['sv_name']." (".$service_community_name.")";
-			}			
-			//get all already existing external services for all mandants
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('pid, es_external_service, es_name',	// Field list for SELECT
-				'tx_civserv_external_service  service', 										// Tablename, local table
-				'service.deleted=0', 															// Optional additional WHERE clauses
+				$service_community=array();
+				$service_community['cm_uid'] = $mandantInst->get_mandant($row['pid']); //pid of the services where it originally resides
+				$res_service_community = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'*',
+					'tx_civserv_conf_mandant',
+					'cm_community_id='.$service_community['cm_uid'],
+					'',
+					'',
+					''
+				);
+				if($row_service_community = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_service_community)){
+					$service_community['name']=$row_service_community['cm_community_name'];
+					$service_community['previewpage']=$row_service_community['cm_page_uid'];
+					$service_community['cm_community_id']=$row_service_community['cm_community_id'];
+				}
+				$key=$row['service'].$separator.$row['cm_external_service_folder_uid'];
+				$new_services[$key]['es_folder_uid']=				$row['cm_external_service_folder_uid'];	
+				$new_services[$key]['es_original_uid']=				$row['service'];
+				$new_services[$key]['es_label']=					$row['sv_name']." (".$service_community['name'].")";
+				$new_services[$key]['es_name']=						$row['sv_name'];
+				$new_services[$key]['receiving_mandant_name']=		$row['cm_community_name'];
+				$new_services[$key]['receiving_mandant_email']=		$row['cm_target_email'];
+				$new_services[$key]['es_folder_name']=				$row['es_folder_name'];
+				$new_services[$key]['service_community_gkz']=		$service_community['cm_community_id'];
+				$new_services[$key]['service_community_name']=		$service_community['name'];
+				$new_services[$key]['service_community_previewpage']=$service_community['previewpage'];
+				$new_services[$key]['service_community_cm_uid']=$service_community['cm_uid'];
+			}// end while
+			//ercis: get _all_ already existing external services for _all_ mandants
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'service.pid, 
+				 service.es_external_service, 
+				 service.es_name,
+				 mandant.cm_community_name,
+				 mandant.cm_target_email,
+				 pages.title as folder_name',
+				'tx_civserv_external_service  service,
+				 tx_civserv_conf_mandant mandant,
+				 pages', 										
+				'service.deleted=0 AND
+				 mandant.cm_external_service_folder_uid = service.pid AND 
+				 pages.uid = service.pid', 															// Optional additional WHERE clauses
 				'', 																			// Optional GROUP BY field(s), if none, supply blank string.
 				'', 																			// Optional ORDER BY field(s), if none, supply blank string.
 				'' 																				// Optional LIMIT value ([begin,]max), if none, supply blank string.
 			);
-			$old_services = array();		
-			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$old_services[]=	$row['pid'].
-									$separator.
-									$row['es_external_service'].
-									$separator.
-									$row['es_name'];
+			$old_services = array();
+			while ($row_old_sv = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$key=$row_old_sv['es_external_service'].$separator.$row_old_sv['pid'];
+				$old_services[$key]['es_folder_uid']=	$row_old_sv['pid'];
+				$old_services[$key]['es_original_uid']=	$row_old_sv['es_external_service'];
+				$old_services[$key]['es_label']=		$row_old_sv['es_name'];
+				$old_services[$key]['es_name']=						substr($row_old_sv['es_name'],0,strpos($row_old_sv['es_name'],"("));
+				$old_services[$key]['receiving_mandant_name']=		$row_old_sv['cm_community_name'];
+				$old_services[$key]['receiving_mandant_email']=		$row_old_sv['cm_target_email'];
+				$old_services[$key]['es_folder_name']=				$row_old_sv['folder_name'];
+				$old_services[$key]['service_community_name']=		substr($row_old_sv['es_name'],strpos($row_old_sv['es_name'],"(")+1, strlen($row_old_sv['es_name'])-2);
 			}
-			// insert the service as external service if the new service isn't available yet
-			$new_ones = array_diff($new_services, $old_services);
-			$row = array();
-			foreach($new_ones as $value){
+			// now I have two arrays which I can compare!
+			// new_ones are the ones which are in new_services but not in old_services
+			// old_ones are the ones which are in old_services but not in new_services
+			
+			$new_ones=array();
+			foreach($new_services as $key => $values){
+				if (array_key_exists($key, $old_services)) {
+					//
+				}else{
+					$new_ones[$key]=$values;
+				}
+			}
+			#debug($new_ones, 'new_ones (are going to be inserted)');	
+			
+			$row_new_sv = array();
+			foreach($new_ones as $new_one){
 				$new = explode($separator,$value);
-				$row['hidden']=1;
-				$row['es_external_service']=$new[1];
-				$row['es_name']=$new[2];
-				$row['pid']=$new[0];
+				$row_new_sv['hidden']=1;
+				$row_new_sv['es_external_service']=$new_one['es_original_uid'];
+				$row_new_sv['es_name']=$new_one['es_label'];
+				$row_new_sv['pid']=$new_one['es_folder_uid'];
 				// new_services which are not in old_services are inserted
-				$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_civserv_external_service',$row);
+				$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_civserv_external_service',$row_new_sv);
+				
+				
+				//emails
+				$text = str_replace("###mandant_name###", $new_one['receiving_mandant_name'], $LANG->getLL("xyz.emailmessage.header"));
+				
+				$search = array(	"sv_name" => "###service_name###",	"sv_community" => "###service_community###",			"es_folder" => "###external_service_folder###",);
+				$replace = array(	"sv_name" => $new_one['es_name'],	"sv_community" => $new_one['service_community_name'],	"es_folder" => $new_one['es_folder_name']);
+				$text .= str_replace($search, $replace, $LANG->getLL("xyz.emailmessage.service_new"));
+				
+				$service_link='http://typo3vm.citeq.de/osiris_svnb/index.php?id='.$new_one['service_community_previewpage'].'&tx_civserv_pi1[community_id]='.$new_one['service_community_cm_uid'].'&tx_civserv_pi1[mode]=service&tx_civserv_pi1[id]='.$params['uid'].'&no_cache=1';
+				$text .= str_replace('###service_link###', $service_link, $LANG->getLL("xyz.emailmessage.service_link"));
+
+				$search = array(	"es_folder" => "###external_service_folder###",	"sv_community" => "###service_community###");
+				$replace = array(	"es_folder" => $new_one['es_folder_name'],		"sv_community" => $new_one['service_community_name']);
+				$text .= str_replace($search, $replace, $LANG->getLL("xyz.emailmessage.order"));
+
+				$fr_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cf_value','tx_civserv_configuration','cf_key = "email_from"','','','');
+				$from_res = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($fr_res);
+				$from = "From: ".$from_res['cf_value'];
+				
+				$subject = str_replace("###service_name###", $new_one['es_name'], $LANG->getLL("xyz.emailmessage.subject"));
+				$subject .= " (".$new_one['receiving_mandant_name'].")";		
+				if (t3lib_div::validEmail($to=$new_one['receiving_mandant_email'])){
+					#debug($text);
+					t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
+				}
 			}
 			
 			// delete an external service if an old service isn't any longer configurated for pass on
 			// old_services which are not in new_services
-			$old_ones = array_diff($old_services, $new_services);
-			foreach($old_ones as $value){
-				$old = explode($separator,$value);
-				$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_civserv_external_service','pid = '.$old[0].' AND es_external_service='.$old[1]); 
+
+			$old_ones=array();
+			foreach($old_services as $key => $values){
+				if (array_key_exists($key, $new_services)) {
+					//
+				}else{
+					$old_ones[$key]=$values;
+				}
+			}
+			#debug($old_ones, 'old_ones (are going to be deleted)');
+			foreach($old_ones as $old_one){
+				$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_civserv_external_service','pid = '.$old_one['es_folder_uid'].' AND es_external_service='.$old_one['es_original_uid']); 
+				
+				//emails
+				$text = str_replace("###mandant_name###", $old_one['receiving_mandant_name'], $LANG->getLL("xyz.emailmessage.header"));
+				
+				$search = array(	"sv_name" => "###service_name###",	"sv_community" => "###service_community###",			"es_folder" => "###external_service_folder###");
+				$replace = array(	"sv_name" => $old_one['es_name'],	"sv_community" => $old_one['service_community_name'],	"es_folder" => $old_one['es_folder_name']);
+				$text .= str_replace($search, $replace, $LANG->getLL("xyz.emailmessage.service_deleted"));
+		
+				$fr_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cf_value','tx_civserv_configuration','cf_key = "email_from"','','','');
+				$from_res = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($fr_res);
+				$from = "From: ".$from_res['cf_value'];
+				
+				$subject = str_replace("###service_name###", $old_one['es_name'], $LANG->getLL("xyz.emailmessage.subject"));
+				$subject .= " (".$old_one['receiving_mandant_name'].")";		
+				if (t3lib_div::validEmail($to=$old_one['receiving_mandant_email'])){
+					#debug($text);
+					t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
+				}
 			}
 		}
 	}
@@ -144,7 +257,6 @@ class tx_civserv_service_maintenance {
 	* @return	void
 	*/
 	function update_position(&$params){
-		debug($params, 'civserv/res/tx_civserv_service_maintenance->update_position: params');
 		$labels=array();
 		$i=0;
 		#if (is_array($params) && ($params['table']=='tx_civserv_service' || $params['table']=='tx_civserv_service_sv_position_mm')) {	
