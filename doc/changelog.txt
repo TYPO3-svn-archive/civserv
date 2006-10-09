@@ -7,3 +7,5 @@
 
 
 
+2006-10-09 [civserv version 4.1.3]
+- introduced categories that form-records can be related to. In FE the forms will appear according to their category (if any)
