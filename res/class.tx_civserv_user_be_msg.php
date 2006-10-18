@@ -18,34 +18,10 @@ class tx_civserv_user_be_msg {
                      margin: 5px 5px 5px 5px;
                      padding: 5px 5px 5px 5px;"
                      >
-				 <h2 style="color:red">'.$LANG->getLL("tx_civserv_user_be_msg.".$table.".".$field).'</h2>
-             </div>';
-	}
-	
-	function user_TCAform_sv_test($PA=array(), $fobj=array()) { //add array() bits to signator to enable calling this function with no parameters (happens through "displayCond" => "REC:NEW:true")
-		global $LANG;
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
-		$LANG->includeLLFile("EXT:civserv/res/locallang_user_be_msg.php");
-		
-		$table=$PA['table'];
-		$field=$PA['fieldConf']['dbField']; //dbField is a custom variable introduce in TCA to make the ll-fetching more flexible
-		debug($table, 'table');
-		debug($field, 'field');
-		debug($PA, '$PA');
-		debug($fobj, '$fobj'); 
-         return '
-            <div style="
-                     border: 2px dashed #666666;
-                     width : 90%;
-                     margin: 5px 5px 5px 5px;
-                     padding: 5px 5px 5px 5px;"
-                     >
-				 <h2 style="color:red">'.$LANG->getLL("tx_civserv_user_be_msg.".$table.".".$field).'</h2>
+				 <h2>'.$LANG->getLL("tx_civserv_user_be_msg.".$table.".".$field).'</h2>
              </div>';
 	}
 }
-
-//<h2 style="color:red">hasenschniepel</h2>
 
 //<h2 style="color:red">'.$LANG->getLL("tx_civserv_user_be_msg.tx_civserv_employee.em_position").'</h2>
 
