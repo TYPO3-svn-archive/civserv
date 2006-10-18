@@ -316,7 +316,7 @@ class tx_civserv_mandant{
 				  //$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', $GLOBALS['TYPO3_DB']->quoteStr($critical['mm'],$critical['mm']), 'uid_foreign = '.$source_array['row']['uid'],'','','',''); 
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', $GLOBALS['TYPO3_DB']->quoteStr($source_array['config']['MM'],$source_array['config']['MM']), 'uid_foreign = '.$source_array['row']['uid'],'','','',''); 
 					
-					$this->get_forbidden($res, &$forbidden_uids, $source_array['config']['MM']);
+					$this->get_forbidden($res, $forbidden_uids, $source_array['config']['MM']);
 				}
 				
 				$kill_pos=array();
@@ -379,7 +379,7 @@ class tx_civserv_mandant{
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
 				$forbidden_uids[]=$row['uid_local'];
 				$res2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', $GLOBALS['TYPO3_DB']->quoteStr($table,$table), 'uid_foreign = '.$row['uid_local'],'','','',''); 
-				$this->get_forbidden($res2, &$forbidden_uids, $table);
+				$this->get_forbidden($res2, $forbidden_uids, $table);
 			}
 		}
 	}

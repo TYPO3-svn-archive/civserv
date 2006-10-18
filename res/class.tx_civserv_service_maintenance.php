@@ -58,7 +58,6 @@ class tx_civserv_service_maintenance{
 		global $LANG;
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$LANG->includeLLFile("EXT:civserv/res/locallang_region_workflow.php");
-		$separator = '### ###';
 		if ($params['table']=='tx_civserv_service' && substr($params['uid'],0,3)!='NEW')	{
 			//ercis: get _all_ services configured to be passed on to other communities
 			//why all???
@@ -155,7 +154,7 @@ class tx_civserv_service_maintenance{
 				$old_services[$key]['es_folder_uid']=	$row_old_sv['pid'];
 				$old_services[$key]['es_original_uid']=	$row_old_sv['es_external_service'];
 				$old_services[$key]['es_label']=		$row_old_sv['es_name'];
-				$old_services[$key]['es_name']=						substr($row_old_sv['es_name'],0,strpos($row_old_sv['es_name'],"("));
+				$old_services[$key]['es_name']=			substr($row_old_sv['es_name'],0,strrpos($row_old_sv['es_name'],"(")); //does this work??
 				$old_services[$key]['receiving_mandant_name']=		$row_old_sv['cm_community_name'];
 				$old_services[$key]['receiving_mandant_email']=		$row_old_sv['cm_target_email'];
 				$old_services[$key]['es_folder_name']=				$row_old_sv['folder_name'];

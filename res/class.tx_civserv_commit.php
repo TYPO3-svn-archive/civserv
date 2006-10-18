@@ -60,7 +60,6 @@
  
  
 #require_once (PATH_t3lib."class.t3lib_tcemain.php");
-
  
 class tx_civserv_commit {
 
@@ -499,6 +498,7 @@ class tx_civserv_commit {
 	 */
 	function updateDB($params, $who) {
 		global $GLOBALS, $BE_USER;
+		if (TYPO3_DLOG)  t3lib_div::devLog('function updateDB called by '.$who, 'civserv');
 		if ($params['table']=='tx_civserv_building')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_floorbuild.php']){
 				$update_obj = t3lib_div::makeInstance('tx_civserv_floorbuild');
@@ -511,7 +511,7 @@ class tx_civserv_commit {
 				$update_obj->update_label($params);
 			}
 		}
-		if ($params['table']=='tx_civserv_employee')	{
+		if ($params['table']=='tx_civserv_employee' && substr($params['uid'],0,3)!='NEW')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_oepupdate.php']){
 				$update_obj = t3lib_div::makeInstance('tx_civserv_oepupdate');
 				$update_obj->update_pid($params);
