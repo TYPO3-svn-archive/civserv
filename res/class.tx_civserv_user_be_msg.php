@@ -1,19 +1,12 @@
-<?
+<?php
 class tx_civserv_user_be_msg {
 	function user_TCAform_test($PA=array(), $fobj=array()) { //add array() bits to signature to enable calls to this function with no parameters (happens through "displayCond" => "REC:NEW:true")
 		global $LANG;
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$LANG->includeLLFile("EXT:civserv/res/locallang_user_be_msg.php");
 		
-		debug($PA['row'], '$PA row');
-		debug($PA['row']['uid'], '$PA row uid');
-		
-		
-		
 		$table=$PA['table'];
 		$field=$PA['fieldConf']['dbField']; //dbField is a custom variable introduced in TCA to make the ll-fetching more flexible
-		debug($table, 'table');
-		debug($field, 'field');
 		
 		$pageid=0;
 		//debugging $GLOBALS told me, that I best get the actual page-id out of the returnURL:
@@ -25,7 +18,6 @@ class tx_civserv_user_be_msg {
 				$pageid=$query_parts[1];
 			}
 		}
-		debug($pageid, 'Seiten ID!!!');
 		
 		$info_img= '<img'.t3lib_iconWorks::skinImg($this->PH_backPath,'gfx/icon_note.gif','width="18" height="16"').' title="'.$GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.close',1).'" alt="" />';
 		
@@ -43,7 +35,6 @@ class tx_civserv_user_be_msg {
 				);
 			$sv_pos_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 			$sv_uid = $sv_pos_row['uid_local'];
-			debug($sv_uid, '$sv_uid');
 			
 			// get the name of the service in question
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -57,7 +48,6 @@ class tx_civserv_user_be_msg {
 			$sv_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 			$sv_uid = $sv_row['uid'];
 			$sv_name = $sv_row['sv_name'];
-			debug($sv_name, '$sv_name');
 			
 			$info_img= '<img'.t3lib_iconWorks::skinImg($this->PH_backPath,'gfx/icon_warning.gif','width="18" height="16"').' title="'.$GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.close',1).'" alt="" />';
 			

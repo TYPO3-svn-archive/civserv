@@ -96,7 +96,6 @@ class tx_civserv_oepupdate {
 		// experimental: make function faster by including $params['uid'] in where-clause - if available i.e. uid != 'NEW12345'
 		// ATTENTION: this only makes sense in combination with a displaycond on tx_civserv_employee in TCA!!!
 		if (is_array($params) && ($params['table']== 'tx_civserv_employee' || $params['table']=='tx_civserv_employee_em_position_mm')) {	
-			debug($params, 'oepupdate-> params');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 				'tx_civserv_employee_em_position_mm.uid, 
 				 tx_civserv_employee.em_name, 

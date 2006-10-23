@@ -123,7 +123,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function main($content,$conf)	{
 		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging
-		if (TYPO3_DLOG) debug('commit->updateDB habemos DLOG!!!');
 		if (TYPO3_DLOG)  t3lib_div::devLog('function main of FE class entered', 'civserv');
 
 		
