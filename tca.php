@@ -498,7 +498,6 @@ $TCA["tx_civserv_service"] = Array (
 				"readonly" => 1, //no effect
 			)
 		),
-
 		"sv_form" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_form",
@@ -534,6 +533,17 @@ $TCA["tx_civserv_service"] = Array (
 				),
 			)
 		),
+		"sv_searchword_PLACEHOLDER" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_searchword",
+			"dbField" => "sv_searchword", //custom info passed on to $PA in userFunc
+			"displayCond" => "REC:NEW:true",
+			"config" => Array (
+				"type" => "user",
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
+				"readonly" => 1, //no effect
+			)
+		),
 		"sv_searchword" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_searchword",
@@ -558,6 +568,17 @@ $TCA["tx_civserv_service"] = Array (
 							'JSopenParams' => 'height=350,width=600,status=0,menubar=0,resizable=1,location=0',
 					),
 				),
+			)
+		),
+		"sv_position_PLACEHOLDER" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_position",
+			"dbField" => "sv_position", //custom info passed on to $PA in userFunc
+			"displayCond" => "REC:NEW:true",
+			"config" => Array (
+				"type" => "user",
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
+				"readonly" => 1, //no effect
 			)
 		),
 		"sv_position" => Array (
@@ -608,6 +629,17 @@ $TCA["tx_civserv_service"] = Array (
 				),
 			)
 		),
+		"sv_organisation_PLACEHOLDER" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_organisation",
+			"dbField" => "sv_organisation", //custom info passed on to $PA in userFunc
+			"displayCond" => "REC:NEW:true",
+			"config" => Array (
+				"type" => "user",
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
+				"readonly" => 1, //no effect
+			)
+		),
 		"sv_organisation" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_organisation",
@@ -634,6 +666,17 @@ $TCA["tx_civserv_service"] = Array (
 				),
 			)
 		),
+		"sv_navigation_PLACEHOLDER" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_navigation",
+			"dbField" => "sv_navigation", //custom info passed on to $PA in userFunc
+			"displayCond" => "REC:NEW:true",
+			"config" => Array (
+				"type" => "user",
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
+				"readonly" => 1, //no effect
+			)
+		),
 		"sv_navigation" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_navigation",
@@ -649,13 +692,24 @@ $TCA["tx_civserv_service"] = Array (
 				"MM" => "tx_civserv_service_sv_navigation_mm",
 			)
 		),
+		"sv_region_PLACEHOLDER" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_region",
+			"dbField" => "sv_region", //custom info passed on to $PA in userFunc
+			"displayCond" => "REC:NEW:true",
+			"config" => Array (
+				"type" => "user",
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
+				"readonly" => 1, //no effect
+			)
+		),
 		"sv_region" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_region",
 			#"displayCond" => "REC:NEW:false",  //for LIVE workspace, see below!
 			#"displayCond" => "VERSION:IS:false", // for custom workspaces -but doesn't work?
 			#"displayCond" => "FIELD:pid:>:0",	// for custom workspaces -but doesn't work?
-			"displayCond" => "FIELD:sv_name:=:''", // pure desperation! But works :-(
+			"displayCond" => "FIELD:sv_name:=:''", // pure desperation! But works :-( The aim is never to display the region-select-box in custom workspaces!!!!!!
 			"config" => Array (
 				"type" => "select",
 				"foreign_table" => "tx_civserv_region",
@@ -669,7 +723,7 @@ $TCA["tx_civserv_service"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, sv_model_service,  sv_name, sv_synonym1, sv_synonym2, sv_synonym3, sv_region_checkbox, sv_region_link, sv_region_name, sv_descr_short;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_descr_long;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_image, sv_image_text, sv_fees;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_documents;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_legal_local;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_legal_global;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_similar_services_PLACEHOLDER, sv_similar_services, sv_service_version, sv_form_PLACEHOLDER, sv_form, sv_searchword, sv_position, sv_organisation, sv_navigation, sv_region")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, sv_model_service,  sv_name, sv_synonym1, sv_synonym2, sv_synonym3, sv_region_checkbox, sv_region_link, sv_region_name, sv_descr_short;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_descr_long;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_image, sv_image_text, sv_fees;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_documents;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_legal_local;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_legal_global;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_similar_services_PLACEHOLDER, sv_similar_services, sv_service_version, sv_form_PLACEHOLDER, sv_form, sv_searchword_PLACEHOLDER, sv_searchword, sv_position_PLACEHOLDER, sv_position, sv_organisation_PLACEHOLDER, sv_organisation, sv_navigation_PLACEHOLDER, sv_navigation, sv_region_PLACEHOLDER, sv_region")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "starttime, endtime, fe_group")
@@ -681,7 +735,7 @@ $TCA["tx_civserv_service"] = Array (
 
 #debug($GLOBALS['BE_USER']->user['workspace_id'], 'TCA be_user workspace_id');
 
-if($GLOBALS['BE_USER']->user['workspace_id']==0) {
+if($GLOBALS['BE_USER']->user['workspace_id']==0) { //LIVE-Workspace!!!!
 	$TCA['tx_civserv_service']['columns']['sv_region']['displayCond']="REC:NEW:false"; 
 }
 #debug($TCA['tx_civserv_service']['columns'], 'TCA tx_civserv_service->columns');
@@ -1422,9 +1476,21 @@ $TCA["tx_civserv_building"] = Array (
 				"size" => "48",
 			)
 		),
+		"bl_floor_PLACEHOLDER" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_building.bl_floor",
+			"dbField" => "bl_floor", //custom info passed on to $PA in userFunc
+			"displayCond" => "REC:NEW:true",
+			"config" => Array (
+				"type" => "user",
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
+				"readonly" => 1, //no effect
+			)
+		),
 		"bl_floor" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_building.bl_floor",
+			"displayCond" => "REC:NEW:false",
 			"config" => Array (
 				"type" => "select",
 				"foreign_table" => "tx_civserv_floor",
@@ -1453,7 +1519,7 @@ $TCA["tx_civserv_building"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, bl_number, bl_name_to_show, bl_name, bl_descr, bl_mail_street, bl_mail_pob, bl_mail_postcode, bl_mail_city, bl_building_street, bl_building_postcode, bl_building_city, bl_pubtrans_stop, bl_pubtrans_url, bl_citymap_url, bl_image, bl_telephone, bl_fax, bl_email, bl_floor")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, bl_number, bl_name_to_show, bl_name, bl_descr, bl_mail_street, bl_mail_pob, bl_mail_postcode, bl_mail_city, bl_building_street, bl_building_postcode, bl_building_city, bl_pubtrans_stop, bl_pubtrans_url, bl_citymap_url, bl_image, bl_telephone, bl_fax, bl_email, bl_floor_PLACEHOLDER, bl_floor")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")
@@ -3018,6 +3084,7 @@ $TCA["tx_civserv_service_sv_position_mm"] = Array (
 		"sp_descr_PLACEHOLDER" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service_sv_position_mm.sp_descr",
+			"displayCond" => "FIELD:pid:<=:0",
 			"dbField" => "sp_descr", //custom info passed on to $PA in userFunc
 			"config" => Array (
 				"type" => "user",
