@@ -192,6 +192,7 @@ class tx_civserv_service_maintenance{
 				$replace = array(	"sv_name" => $new_one['es_name'],	"sv_community" => $new_one['service_community_name'],	"es_folder" => $new_one['es_folder_name']);
 				$text .= str_replace($search, $replace, $LANG->getLL("xyz.emailmessage.service_new"));
 				
+				//fix me! hard coded!
 				$service_link='http://typo3vm.citeq.de/osiris_svnb/index.php?id='.$new_one['service_community_previewpage'].'&tx_civserv_pi1[community_id]='.$new_one['service_community_cm_uid'].'&tx_civserv_pi1[mode]=service&tx_civserv_pi1[id]='.$params['uid'].'&no_cache=1';
 				$text .= str_replace('###service_link###', $service_link, $LANG->getLL("xyz.emailmessage.service_link"));
 
@@ -207,7 +208,7 @@ class tx_civserv_service_maintenance{
 				$subject .= " (".$new_one['receiving_mandant_name'].")";		
 				if (t3lib_div::validEmail($to=$new_one['receiving_mandant_email'])){
 					#debug($text);
-					t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
+					#t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
 				}
 			}
 			
