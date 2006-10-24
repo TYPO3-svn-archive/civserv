@@ -388,7 +388,6 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 		#test b.k. make it possible for BE_user to have several mountpoints (so long as one of them can be identified with a community)
 		$community_id=0;
 		$possibleMPs=explode(",", $BE_USER->user["db_mountpoints"]);
-		debug($possibleMPs, '$possibleMPs');
 		foreach($possibleMPs as $mp){
 			$community_id=$mandant_obj->get_mandant($mp);
 			if($community_id>0){
