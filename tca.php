@@ -692,11 +692,22 @@ $TCA["tx_civserv_service"] = Array (
 				"MM" => "tx_civserv_service_sv_navigation_mm",
 			)
 		),
-		"sv_region_PLACEHOLDER" => Array (
+		"sv_region_PLACEHOLDER_live" => Array (
 			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_region",
-			"dbField" => "sv_region", //custom info passed on to $PA in userFunc
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_region_live",
+			"dbField" => "sv_region_live", //custom info passed on to $PA in userFunc, in this case its a fake field
 			"displayCond" => "REC:NEW:true",
+			"config" => Array (
+				"type" => "user",
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
+				"readonly" => 1, //no effect
+			)
+		),
+		"sv_region_PLACEHOLDER_ws" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_region_ws",
+			"dbField" => "sv_region_ws", //custom info passed on to $PA in userFunc, in this case its a fake field
+			"displayCond" => "FIELD:t3ver_wsid:>:0",
 			"config" => Array (
 				"type" => "user",
 				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
@@ -707,9 +718,8 @@ $TCA["tx_civserv_service"] = Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_region",
 			#"displayCond" => "REC:NEW:false",  //for LIVE workspace, see below!
-			#"displayCond" => "VERSION:IS:false", // for custom workspaces -but doesn't work?
-			#"displayCond" => "FIELD:pid:>:0",	// for custom workspaces -but doesn't work?
-			"displayCond" => "FIELD:sv_name:=:''", // pure desperation! But works :-( The aim is never to display the region-select-box in custom workspaces!!!!!!
+			#"displayCond" => "VERSION:IS:false", // for custom workspaces -but doesn't work? see below
+			"displayCond" => "FIELD:t3ver_wsid:=:0",	// do not show region field for versioned records!
 			"config" => Array (
 				"type" => "select",
 				"foreign_table" => "tx_civserv_region",
@@ -723,7 +733,7 @@ $TCA["tx_civserv_service"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, sv_model_service,  sv_name, sv_synonym1, sv_synonym2, sv_synonym3, sv_region_checkbox, sv_region_link, sv_region_name, sv_descr_short;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_descr_long;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_image, sv_image_text, sv_fees;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_documents;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_legal_local;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_legal_global;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_similar_services_PLACEHOLDER, sv_similar_services, sv_service_version, sv_form_PLACEHOLDER, sv_form, sv_searchword_PLACEHOLDER, sv_searchword, sv_position_PLACEHOLDER, sv_position, sv_organisation_PLACEHOLDER, sv_organisation, sv_navigation_PLACEHOLDER, sv_navigation, sv_region_PLACEHOLDER, sv_region")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, sv_model_service,  sv_name, sv_synonym1, sv_synonym2, sv_synonym3, sv_region_checkbox, sv_region_link, sv_region_name, sv_descr_short;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_descr_long;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_image, sv_image_text, sv_fees;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_documents;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_legal_local;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_legal_global;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_similar_services_PLACEHOLDER, sv_similar_services, sv_service_version, sv_form_PLACEHOLDER, sv_form, sv_searchword_PLACEHOLDER, sv_searchword, sv_position_PLACEHOLDER, sv_position, sv_organisation_PLACEHOLDER, sv_organisation, sv_navigation_PLACEHOLDER, sv_navigation, sv_region_PLACEHOLDER_live, sv_region_PLACEHOLDER_ws, sv_region")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "starttime, endtime, fe_group")
@@ -731,6 +741,7 @@ $TCA["tx_civserv_service"] = Array (
 );
 
 #debug($TCA['tx_civserv_service']['columns'], 'tx_civserv_service columns');
+#debug($TCA["tx_civserv_service"], 'tx_civserv_service');
 
 
 #debug($GLOBALS['BE_USER']->user['workspace_id'], 'TCA be_user workspace_id');
@@ -3084,7 +3095,7 @@ $TCA["tx_civserv_service_sv_position_mm"] = Array (
 		"sp_descr_PLACEHOLDER" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service_sv_position_mm.sp_descr",
-			"displayCond" => "FIELD:pid:<=:0",
+			#"displayCond" => "FIELD:pid:<=:0", // problem with rights for custom_ws-editors, they get no permission msg from core.
 			"dbField" => "sp_descr", //custom info passed on to $PA in userFunc
 			"config" => Array (
 				"type" => "user",
@@ -3095,7 +3106,7 @@ $TCA["tx_civserv_service_sv_position_mm"] = Array (
 		"sp_descr" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service_sv_position_mm.sp_descr",
-			"displayCond" => "FIELD:pid:>:0",
+			#"displayCond" => "FIELD:pid:>:0",
 			"config" => Array (
 				"type" => "text",
 				"cols" => "30",
