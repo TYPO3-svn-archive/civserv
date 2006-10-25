@@ -258,8 +258,14 @@ function init() {
 
 			// Displays a Cancel-Button at the end of the Page to exit the wizard without changing anything.
 		$this->content.='
-		<input type="button" name="cancel" value="'.$LANG->getLL('tx_civserv_wizard_modelservice.Cancel_Button').'" onclick="parent.close();">
-		</form>
+			<input type="button" name="cancel" value="'.$LANG->getLL('tx_civserv_wizard_modelservice.Cancel_Button').'" onclick="parent.close();">
+			</form>';
+		$this->content.='
+			<br/><br/>
+			<p style="padding:20px; font-weight:bold; font-size:2em">'.$LANG->getLL('tx_civserv_wizard_modelservice.save_header').'</p>
+			<p style="padding:20px; font-size:1.5em">'.$LANG->getLL('tx_civserv_wizard_modelservice.save_message').'</p>
+		';
+		$this->content.='
 		</body>
 		</html>
 		';

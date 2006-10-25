@@ -303,7 +303,7 @@ class tx_civserv_commit {
 	
 	/**
 	 * Hook function, called through a hook within the class t3lib/class.t3lib_tcemain.php
-	 * This hook is for VERSIONING only!!
+	 * This hook is for WS_VERSIONING only!!
 	 * It's meant to close gap between versioned and non-versioned records in tx_civserv: tx_civserv_service is the only table with versioning!
 	 * the hook takes care that database relations are transmitted from workspace version to the live version in the event of publishing of
 	 * any tx_civserv_service record from the workspace!
@@ -348,9 +348,9 @@ class tx_civserv_commit {
 						$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*',$sv_mm_table,'uid_local = '.$value['swapWith']);
 						if($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){ //count might have been nicer here...
 							if($sv_mm_table=='tx_civserv_service_sv_position_mm'){
-								// Special case: Service-Position-Relations which have been made persistent in O.S.I.R.I.S. and 
+								// Special case: Service-Position-Relations have been made persistent in O.S.I.R.I.S. and 
 								// they can carry additional information as i.e. Descriptions.
-								// For every change on a offline-version of a service-record the system creates new relation-records (which then 
+								// For every change on a offline-version of a service-record the core creates new relation-records (which 
 								// consist of just uid_local and uid_foreign)
 								// Therefore we collect the additional information carried by records relating to the actual online 
 								// services and add that additional information to the records relating to the offline service-version 

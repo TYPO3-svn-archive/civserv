@@ -200,6 +200,9 @@ class tx_civserv_mandant{
 	* @see manipulate_array, additional_remove
 	*/
 	function limit_region_items(&$params, &$pObj){
+		// ercis: retrieve PID from cachedTSconfig
+		// citeq: for limit_region_items we could also take it from
+		debug($params, 'mandant->limit-regions params');
 		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
 		if(array_key_exists("",$params['items'])){
 			$empty_entry=1;
@@ -224,6 +227,7 @@ class tx_civserv_mandant{
 					$allowed_regions[]=$params['items'][$i];
 				}
 			}
+			debug($allowed_regions, 'mandant->limit-regions allowed');
 			$params['items']=$allowed_regions;
 			if ($empty_entry) $params['items']=array_merge(Array(""),$params['items']);
 		}else{ //pid <0 (means: its a version.....)

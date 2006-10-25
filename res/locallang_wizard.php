@@ -66,6 +66,8 @@ $LOCAL_LANG = Array (
             'tx_civserv_wizard_modelservice.model_service_dummy' => 'Select model service',
             'tx_civserv_wizard_modelservice.OK_Button' => 'OK',
             'tx_civserv_wizard_modelservice.Cancel_Button' => 'Cancel',
+			'tx_civserv_wizard_modelservice.save_header' => '...after you have chosen a model service:',
+			'tx_civserv_wizard_modelservice.save_message' => 'Please remember to fill in the "Name" field of the service-record and then save the service-record after you have chosen a model-service!',
             'tx_civserv_wizard_modelservice.warning_msg_1' => 'Please choose a model service!',
             'tx_civserv_wizard_modelservice.warning_msg_2' => 'Error - reference to main window is not set properly!',
 				// LOCAL_LANG for class.tx_civserv_wizard_organisation_supervisor.php
@@ -222,6 +224,8 @@ $LOCAL_LANG = Array (
             'tx_civserv_wizard_modelservice.model_service_dummy' => 'Musteranliegen wählen',
             'tx_civserv_wizard_modelservice.OK_Button' => 'OK',
             'tx_civserv_wizard_modelservice.Cancel_Button' => 'Abbrechen',
+			'tx_civserv_wizard_modelservice.save_header' => '...nach Auswahl eines Musteranliegens:',
+			'tx_civserv_wizard_modelservice.save_message' => 'Bitte füllen Sie das Feld "Name" auf der Dienstleistungs-Eingabemaske und speichern Sie dann die Dienstleistung. Danach können Sie die Dienstleistung weiter editieren (Die Felder, die durch das Musteranliegen gefüllt werden sind nunmehr ausgeblendet).',
             'tx_civserv_wizard_modelservice.warning_msg_1' => 'Bitte wählen Sie ein Musteranliegen aus!',
             'tx_civserv_wizard_modelservice.warning_msg_2' => 'FEHLER - Referenz auf das Hauptfenster nicht richtig gesetzt!',
 				// LOCAL_LANG for class.tx_civserv_wizard_organisation_supervisor.php
