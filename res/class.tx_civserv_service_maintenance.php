@@ -62,6 +62,16 @@ class tx_civserv_service_maintenance{
 			//ercis: get _all_ services configured to be passed on to other communities
 			//why all???
 			//test citeq: check only if _this_ service is configured to be passed on!!!
+			$where='sr.uid_local = service.uid AND 	
+						 sr.uid_foreign = region.uid AND  
+						 service.deleted=0 AND  
+						 !service.hidden AND 
+						 mandant_region.uid_foreign = region.uid AND 
+						 mandant_region.uid_local = mandant.uid AND 
+						 mandant.cm_external_service_folder_uid > 0 AND 
+						 pages.uid = mandant.cm_external_service_folder_uid';	//all services! very time consuming!
+			$where.=' AND service.uid='.$params['uid'];			//only the one service beeing saved at this moment 
+			 
 			
 			// the query below collects the uids of the external-Service-Folders of all the communities 
 			// that have been selected in the region-field of the service
@@ -79,15 +89,7 @@ class tx_civserv_service_maintenance{
 						 tx_civserv_conf_mandant_cm_region_mm mandant_region, 
 						 tx_civserv_conf_mandant mandant,
 						 pages',
-						'sr.uid_local = service.uid AND 	
-						 sr.uid_foreign = region.uid AND  
-						 service.deleted=0 AND  
-						 !service.hidden AND 
-						 mandant_region.uid_foreign = region.uid AND 
-						 mandant_region.uid_local = mandant.uid AND 
-						 mandant.cm_external_service_folder_uid > 0 AND 
-						 pages.uid = mandant.cm_external_service_folder_uid', 	//all services!
-						 # AND service.uid='.$params['uid'],					//only the one service beeing saved at this moment
+						$where, 										// where-clause, see above
 						'', 											// Optional GROUP BY field(s), if none, supply blank string.
 						'', 											// Optional ORDER BY field(s), if none, supply blank string.
 						'' 												// Optional LIMIT value ([begin,]max), if none, supply blank string.
@@ -143,7 +145,7 @@ class tx_civserv_service_maintenance{
 				 pages', 										
 				'service.deleted=0 AND
 				 mandant.cm_external_service_folder_uid = service.pid AND 
-				 pages.uid = service.pid', 															// Optional additional WHERE clauses
+				 pages.uid = service.pid', 														// Optional additional WHERE clauses
 				'', 																			// Optional GROUP BY field(s), if none, supply blank string.
 				'', 																			// Optional ORDER BY field(s), if none, supply blank string.
 				'' 																				// Optional LIMIT value ([begin,]max), if none, supply blank string.
@@ -192,8 +194,7 @@ class tx_civserv_service_maintenance{
 				$replace = array(	"sv_name" => $new_one['es_name'],	"sv_community" => $new_one['service_community_name'],	"es_folder" => $new_one['es_folder_name']);
 				$text .= str_replace($search, $replace, $LANG->getLL("xyz.emailmessage.service_new"));
 				
-				//fix me! hard coded!
-				$service_link='http://typo3vm.citeq.de/osiris_svnb/index.php?id='.$new_one['service_community_previewpage'].'&tx_civserv_pi1[community_id]='.$new_one['service_community_cm_uid'].'&tx_civserv_pi1[mode]=service&tx_civserv_pi1[id]='.$params['uid'].'&no_cache=1';
+				$service_link=t3lib_div::getIndpEnv('TYPO3_SITE_URL').'/index.php?id='.$new_one['service_community_previewpage'].'&tx_civserv_pi1[community_id]='.$new_one['service_community_cm_uid'].'&tx_civserv_pi1[mode]=service&tx_civserv_pi1[id]='.$params['uid'].'&no_cache=1';
 				$text .= str_replace('###service_link###', $service_link, $LANG->getLL("xyz.emailmessage.service_link"));
 
 				$search = array(	"es_folder" => "###external_service_folder###",	"sv_community" => "###service_community###");
@@ -208,7 +209,7 @@ class tx_civserv_service_maintenance{
 				$subject .= " (".$new_one['receiving_mandant_name'].")";		
 				if (t3lib_div::validEmail($to=$new_one['receiving_mandant_email'])){
 					#debug($text);
-					#t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
+					t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
 				}
 			}
 			
