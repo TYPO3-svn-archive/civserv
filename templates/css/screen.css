@@ -235,6 +235,9 @@ html #centrecontent {
 	padding-right: 15px;
 }
 
+#centrecontent div.content p{
+	padding-left: 0px;
+}
 #centrecontent table {
 	margin-left: 0px;
 	font-size: 1em;
