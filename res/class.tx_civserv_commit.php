@@ -221,9 +221,9 @@ class tx_civserv_commit {
 				// make civserv-updates:
 				// without call to update_position, the records appear as "no title" in BE!!
 				// would rather have to call it with table tx_civserv_service and according uid then!!!
-				$params=array('table' =>'tx_civserv_service_sv_position_mm');
-				//baustelle!!!!!
-				//$this->updateDB($params, 'remakeQueryArray');
+				// $params=array('table' =>'tx_civserv_service_sv_position_mm');
+				// baustelle!!!!!
+				// $this->updateDB($params, 'remakeQueryArray');
 			}
 		}// CUSTOM WORKSPACE
 	}
@@ -303,7 +303,7 @@ class tx_civserv_commit {
 	
 	/**
 	 * Hook function, called through a hook within the class t3lib/class.t3lib_tcemain.php
-	 * This hook is for WS_VERSIONING only!!
+	 * This hook is for WS_VERSIONING only!! It starts to work when versioned record is being published.
 	 * It's meant to close gap between versioned and non-versioned records in tx_civserv: tx_civserv_service is the only table with versioning!
 	 * the hook takes care that database relations are transmitted from workspace version to the live version in the event of publishing of
 	 * any tx_civserv_service record from the workspace!
@@ -319,8 +319,10 @@ class tx_civserv_commit {
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
 	function processCmdmap_preProcess($command, &$table, $id, $value, &$pObj){
-		// $id contains uid of actual online service in LIVE version
-		// $value['swap_with'] contains uid of the offline-service in custom workspace, the one that ist beeing published
+		// $id						contains uid of actual online service in LIVE version
+		// $value['swap_with']		contains uid of the versioned offline-service in custom workspace, the one that ist beeing published
+		debug($table, 'commit->processCmdmap_preProcess table');
+		debug($command, 'command');
 		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
 		if (array_key_exists($table,$this->tables) && $table =='tx_civserv_service' && $command == 'delete'){
 			// apparently 'deleted = 1' does not suffice to eleminate service-position records from the BE?
@@ -329,10 +331,13 @@ class tx_civserv_commit {
 			$sub_result = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(' tx_civserv_service_sv_position_mm','uid_local = '.$id,$update_row);
 		}
 		if (array_key_exists($table,$this->tables) && $table =='tx_civserv_service' && $command == 'version'){
+			debug($table, 'tabelle');
+			debug($value, 'value');
 			switch($value['action']){
 				case 'setStage':
-				break;
+				break; //not cared for yet
 				case 'swap':
+					debug('starting now!');
 					$pid=0;
 					$res_pid=$GLOBALS['TYPO3_DB']->exec_SELECTquery('pid',$table,'uid = '.$id);
 					if($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_pid)){
@@ -374,7 +379,10 @@ class tx_civserv_commit {
 							$sub_result = $GLOBALS['TYPO3_DB']->exec_UPDATEquery($sv_mm_table, 'uid_local = '.$value['swapWith'], $update_fields);
 						}
 					}
-				break;
+					// call transfer_services, now! (Because now that the service is being published you got the correct pids and everything)
+					$params=array('table' =>'tx_civserv_service', 'uid' => $id);
+					$this->updateDB($params, 'processCmdmap_preProcess');
+				break; //end of case 'swap'
 			}
 		}
 	}
@@ -531,8 +539,8 @@ class tx_civserv_commit {
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_service_maintenance.php']){
 				$update_obj = t3lib_div::makeInstance('tx_civserv_service_maintenance');
 				//fix me! 
-				if($who != "processDatamap_afterDatabaseOperations") $update_obj->transfer_services($params);
-				$update_obj->update_position($params);
+				if($who == "processCmdmap_preProcess" || ($who == "update_postAction" && $GLOBALS['BE_USER']->workspace==0)) $update_obj->transfer_services($params);
+				if($who != "processCmdmap_preProcess") $update_obj->update_position($params); //in the event of publishing (processCmdmap_preProcess) we only want transfer_services to be executed!
 			}
 		}
 		if ($params['table']=='tx_civserv_model_service_temp')	{
