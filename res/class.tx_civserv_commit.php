@@ -174,7 +174,71 @@ class tx_civserv_commit {
 	 * @return	void
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
+	function makeQueryArray_post(&$queryParts, $cObj, $table, $id, $addWhere, $fieldList, $_params){
+		// this function ist called for every (?) single table in the whole DB whenever a folder in the pagetree is selected!
+		//all workspace: LIVE and CUSTOM
+		if($table == 'tx_civserv_service_sv_position_mm'){
+			debug($queryParts, '$queryParts am Anfang');
+			debug($table, '$table');
+			debug($id, '$id');
+			debug($addWhere, '$addWhere');
+			debug($fieldList, '$fieldList');
+			debug($_params, '$_params');
+			
+			$queryParts['ORDERBY']=' tx_civserv_service_sv_position_mm.sp_label'; 
+			$queryParts['WHERE'].=' AND deleted=0'; //have to add this explicitely for mm-tables!!! 
+			//standard typo3: mm_tables have no 'deleted'-field and are never displayed at all
+			
+			debug($queryParts, '$queryParts am Ende erstens');
+		}	
+		// in CUSTOM workspaces we want to see the records relating to the newest service-version as well as the
+		// records relating to the actual online services.
+		if($table == 'tx_civserv_service_sv_position_mm' && $GLOBALS['BE_USER']->workspace > 0){ //Custom workspace!!!
+			//list services available in the given folder 
+			//$queryParts['WHERE']	--> (pid = 123)
+			//$id					--> 123
+			$display_service_list=array();
+			$display_count=0;
+			$onlinepid=$id; // 123
+			// select the uids of the online-services (pid > 0) and add them to the service-list
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_civserv_service','deleted=0 AND '.$queryParts['WHERE'],'','','',''); 
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
+				$display_service_list[$display_count]['uid']=$row['uid'];
+				$display_service_list[$display_count]['t3ver_id']=$row['t3ver_id'];
+				// select the uids of offline-versions of the same service
+				$res2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*','tx_civserv_service','deleted=0 AND t3ver_oid='.$row['uid'],'','','',''); 
+				while ($row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res2)){
+					//which one of the service-records is newer????
+					if(intval($row2['t3ver_id'])>intval($display_service_list[$display_count]['t3ver_id'])){
+						//overwrite the older ones in the display-list
+						$display_service_list[$display_count]['uid']=$row2['uid'];
+						$display_service_list[$display_count]['t3ver_id']=$row2['t3ver_id'];
+					}
+				}
+				$display_count++;
+			}
+			if (count($display_service_list)>0){
+				$sv_uids=array();
+				foreach($display_service_list as $pair){
+					$sv_uids[]=$pair['uid'];
+				}
+				// we need the records associated with online records as well! (0 shouldn't be in the pid-list)
+				$queryParts['WHERE']='pid in (0, -1, '.$onlinepid.')'; 
+				$queryParts['WHERE'].=' AND uid_local in ('.implode(',',$sv_uids).')';
+			}
+			debug($queryParts, '$queryParts am Ende zweitens');
+		}// CUSTOM WORKSPACE
+	}
+	
 	function remakeQueryArray($table, $id, &$pid, $fieldList, &$addWhere, &$orderby){
+	
+		debug($table, '$table');
+		debug($id, '$id');
+		debug($pid, '$pid');
+		debug($fieldList, '$fieldList');
+		debug($addWhere, '$addWhere');
+		debug($orderby, '$orderby');
+	
 		//all workspace: LIVE and CUSTOM
 		if($table == 'tx_civserv_service_sv_position_mm'){
 			$orderby=' tx_civserv_service_sv_position_mm.sp_label'; 
@@ -221,12 +285,13 @@ class tx_civserv_commit {
 				// make civserv-updates:
 				// without call to update_position, the records appear as "no title" in BE!!
 				// would rather have to call it with table tx_civserv_service and according uid then!!!
-				// $params=array('table' =>'tx_civserv_service_sv_position_mm');
-				// baustelle!!!!!
-				// $this->updateDB($params, 'remakeQueryArray');
+				$params=array('table' =>'tx_civserv_service_sv_position_mm');
+				//baustelle!!!!!
+				//$this->updateDB($params, 'remakeQueryArray');
 			}
 		}// CUSTOM WORKSPACE
 	}
+
 	
 
 	/**
