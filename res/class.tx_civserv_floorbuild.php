@@ -77,8 +77,9 @@ class tx_civserv_floorbuild {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 			'bl_name, 
 			 fl_number, 
+			 fl_descr, 
 			 tx_civserv_building_bl_floor_mm.uid uid', 		// Field list for SELECT
-			'tx_civserv_building', 							// Tablename, local table
+			'tx_civserv_building', 						// Tablename, local table
 			'tx_civserv_building_bl_floor_mm', 				// Tablename, relation table
 			'tx_civserv_floor', 							// Tablename, foreign table
 			'AND tx_civserv_building_bl_floor_mm.pid='.$pid.' 
@@ -86,15 +87,15 @@ class tx_civserv_floorbuild {
 			 AND tx_civserv_building.hidden=0 
 			 AND tx_civserv_floor.deleted=0 
 			 AND tx_civserv_floor.hidden=0', 				// Optional additional WHERE clauses
-			'', 											// Optional GROUP BY field(s), if none, supply blank string.
-			'bl_name, fl_number', 							// Optional ORDER BY field(s), if none, supply blank string.
-			'' 												// Optional LIMIT value ([begin,]max), if none, supply blank string.
+			'', 										// Optional GROUP BY field(s), if none, supply blank string.
+			'bl_name, fl_number', 						// Optional ORDER BY field(s), if none, supply blank string.
+			'' 										// Optional LIMIT value ([begin,]max), if none, supply blank string.
 		);
 
 		//write the building-floor-combinations back in the params-Array (which is shown in the selectorbox)
 		while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			//debug($data);
-			$params['items'][++ $i] = Array ($data['bl_name'].', '.$data['fl_number'], $data['uid']);
+			$params['items'][++ $i] = Array ($data['bl_name'].', '.$data['fl_descr'], $data['uid']);
 		}
 	}
 
