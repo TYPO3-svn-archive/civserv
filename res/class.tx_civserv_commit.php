@@ -178,18 +178,18 @@ class tx_civserv_commit {
 		// this function ist called for every (?) single table in the whole DB whenever a folder in the pagetree is selected!
 		//all workspace: LIVE and CUSTOM
 		if($table == 'tx_civserv_service_sv_position_mm'){
-			debug($queryParts, '$queryParts am Anfang');
-			debug($table, '$table');
-			debug($id, '$id');
-			debug($addWhere, '$addWhere');
-			debug($fieldList, '$fieldList');
-			debug($_params, '$_params');
+			#debug($queryParts, '$queryParts am Anfang');
+			#debug($table, '$table');
+			#debug($id, '$id');
+			#debug($addWhere, '$addWhere');
+			#debug($fieldList, '$fieldList');
+			#debug($_params, '$_params');
 			
 			$queryParts['ORDERBY']=' tx_civserv_service_sv_position_mm.sp_label'; 
 			$queryParts['WHERE'].=' AND deleted=0'; //have to add this explicitely for mm-tables!!! 
 			//standard typo3: mm_tables have no 'deleted'-field and are never displayed at all
 			
-			debug($queryParts, '$queryParts am Ende erstens');
+			#debug($queryParts, '$queryParts am Ende erstens');
 		}	
 		// in CUSTOM workspaces we want to see the records relating to the newest service-version as well as the
 		// records relating to the actual online services.
@@ -230,14 +230,16 @@ class tx_civserv_commit {
 		}// CUSTOM WORKSPACE
 	}
 	
+	
+	/* this function has become obsolete by the proposal of Michael Stucki, see http://bugs.typo3.org/view.php?id=4361 */
 	function remakeQueryArray($table, $id, &$pid, $fieldList, &$addWhere, &$orderby){
 	
-		debug($table, '$table');
-		debug($id, '$id');
-		debug($pid, '$pid');
-		debug($fieldList, '$fieldList');
-		debug($addWhere, '$addWhere');
-		debug($orderby, '$orderby');
+		#debug($table, '$table');
+		#debug($id, '$id');
+		#debug($pid, '$pid');
+		#debug($fieldList, '$fieldList');
+		#debug($addWhere, '$addWhere');
+		#debug($orderby, '$orderby');
 	
 		//all workspace: LIVE and CUSTOM
 		if($table == 'tx_civserv_service_sv_position_mm'){
