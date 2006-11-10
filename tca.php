@@ -1896,7 +1896,7 @@ $TCA["tx_civserv_employee"] = Array (
 				"MM" => "tx_civserv_employee_em_hours_mm",
 			)
 		),
-		"em_position_PLACEHOLDER" => Array ( //must be called test or else won't work??? grrrrr....
+		"em_position_PLACEHOLDER" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_position",
 			"dbField" => "em_position", //custom info passed on to $PA in userFunc
@@ -3138,6 +3138,10 @@ $TCA["tx_civserv_service_sv_position_mm"] = Array (
 );
 
 #debug($TCA["tx_civserv_service_sv_position_mm"]['columns'], 'TCA tx_civserv_service_sv_position_mm->columns');
+
+if (t3lib_div::int_from_ver(TYPO3_version) < 4000000) {
+	$TCA['tx_civserv_service_sv_position_mm']['columns']['sp_descr_PLACEHOLDER']['displayCond']="FIELD:pid:<:-1"; //make sure its never displayed in typo3 version <= 3.8.1
+}
 
 
 /**
