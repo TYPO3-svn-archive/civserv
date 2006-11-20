@@ -977,6 +977,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
 			$smartyOrganisationList->assign('searchbox', $this->pi_list_searchBox('',true));
 		}
+		
+		if ($topList) {
+			if (!$this->calculate_top15($smartyOrganisationList,false,$this->conf['topCount'])) {
+				return false;
+			}
+		}
+		
 		return true;
 	}
 	
@@ -1129,7 +1136,18 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$query = $this->makeEmployeeListQuery(all,false);
 			$smartyEmployeeList->assign('abcbar',$this->makeAbcBar($query));
 		}
-
+		
+		if ($searchBox) {
+			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
+			$smartyEmployeeList->assign('searchbox', $this->pi_list_searchBox('',true));
+		}
+		
+		if ($topList) {
+			if (!$this->calculate_top15($smartyEmployeeList,false,$this->conf['topCount'])) {
+				return false;
+			}
+		}
+		
 		return true;
 	}
 	
