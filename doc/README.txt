@@ -7,13 +7,17 @@ After you have installed the extension via the extension manager, please follow 
 
 DEMO:
 You can have an example site with dummy-data: 
-use the 'ext_tables_static+adt.sql.ATTENTION' file if there is one in civserv/doc/ (import via command-line with the command 'mysql')
+A MySQL-Dump is available for typo3_src_3.8.1 or for typo3_src_4.0.2
+You can download it from:
+http://www4.citeq.de/osiris/doc/demo_site/ext_tables_static+adt_38x.sql.ATTENTION.tar.gz
+http://www4.citeq.de/osiris/doc/demo_site/ext_tables_static+adt_40x.sql.ATTENTION.tar.gz
 This db-dump will kill any existing site: It will completey replace all civserv-tables, the pages-, be_groups and be_users-tables in your database!
-The resources (DB-DUMP, fileadmin) for the demo_site are available in 
+The resources for the demo_site are also available:
 http://www4.citeq.de/osiris/doc/demo_site/1110000.tar.gz. 
-You have to un-tar the file in your Site to the path: fileadmin/civserv/1110000
+You have to un-tar the file in your Site to the path: fileadmin/civserv/
+
 After you have run the db-dump, the site will have the follwing be_users:
-adminn ('password')
+admin ('password')
 c00.chefeditor ('chef')
 c00.editor ('editor')
 
@@ -36,14 +40,15 @@ MANUELLES SETUP:
 Nach der Installation der Extension über den Extension Manager folgen Sie bitte der Setup-Anleitung im Manual um das Grundgerüst für ein virtuelles Rathaus mit Seitenbaum und Frontend-Ausgabe aufzubauen.
 
 DEMO:
-Sie können eine Demo-Site mit Testdaten installieren: 
-benutzen Sie dazu die Datei 'ext_tables_static+adt.sql.ATTENTION' wenn sie im Pfad civserv/doc vorhanden ist (Der SQL-Dump muss per Kommandozeile über den MySQL-Befehl 'mysql' eingespielt werden)
+Sie können eine Demo-Site mit Testdaten installieren, die MySQL-Dumps können Sie bei der citeq downloaden:
+http://www4.citeq.de/osiris/doc/demo_site/ext_tables_static+adt_38x.sql.ATTENTION.tar.gz
+http://www4.citeq.de/osiris/doc/demo_site/ext_tables_static+adt_40x.sql.ATTENTION.tar.gz
 Dieser Datenbank Dump überschreibt eine ggfs existierende Site: er ersetzt alle tx_civserv* Tabellen, sowie die Tabellen pages, be_groups und be_users aus Ihrer Datenbank!!!
 Die Ressourcen für die Demo_Site befinden sich in 
 http://www4.citeq.de/osiris/doc/demo_site/1110000.tar.gz. 
-Entpacken Sie diese Archiv in Ihrer Site im Pfad fileadmin/civserv/1110000
+Entpacken Sie diese Archiv in Ihrer Site im Pfad fileadmin/civserv/
 Nachdem Sie den Datenbank-Dump eingspielt haben, stehen Ihnen folgende BE_user zur Verfügung:
-adminn ('password')
+admin ('password')
 c00.chefeditor ('chef')
 c00.editor ('editor')
  
