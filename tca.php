@@ -3099,7 +3099,7 @@ $TCA["tx_civserv_service_sv_position_mm"] = Array (
 		"sp_descr_PLACEHOLDER" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service_sv_position_mm.sp_descr",
-			#"displayCond" => "FIELD:pid:<=:0", // problem with rights for custom_ws-editors, they get no permission msg from core.
+			"displayCond" => "FIELD:pid:<=:0", // problem with rights for custom_ws-editors, they get no permission msg from core.
 			"dbField" => "sp_descr", //custom info passed on to $PA in userFunc
 			"config" => Array (
 				"type" => "user",
@@ -3110,7 +3110,7 @@ $TCA["tx_civserv_service_sv_position_mm"] = Array (
 		"sp_descr" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service_sv_position_mm.sp_descr",
-			#"displayCond" => "FIELD:pid:>:0",
+			"displayCond" => "FIELD:pid:>:0",
 			"config" => Array (
 				"type" => "text",
 				"cols" => "30",
