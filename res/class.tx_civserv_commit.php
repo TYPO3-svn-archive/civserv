@@ -226,7 +226,7 @@ class tx_civserv_commit {
 				$queryParts['WHERE']='pid in (0, -1, '.$onlinepid.')'; 
 				$queryParts['WHERE'].=' AND uid_local in ('.implode(',',$sv_uids).')';
 			}
-			debug($queryParts, '$queryParts am Ende zweitens');
+			#debug($queryParts, '$queryParts am Ende zweitens');
 		}// CUSTOM WORKSPACE
 	}
 	
@@ -500,7 +500,7 @@ class tx_civserv_commit {
 		if (t3lib_div::int_from_ver(TYPO3_version) >= 4000000) {
 			$params=array('table' => $table, 'uid' => $id);
 			if (isset($params['table'])){
-				if (array_key_exists($params['table'],$this->tables)){
+				if (array_key_exists($params['table'],$this->tables) && substr($id,0,3)!='NEW'){
 					$this->renewMMentries($params);
 				}
 			}
@@ -630,7 +630,7 @@ class tx_civserv_commit {
 				$update_obj->update_labels($params);
 			}
 		}
-		if($params['table']=='tx_civserv_conf_mandant'){
+		if($params['table']=='tx_civserv_conf_mandant' && substr($params['uid'],0,3)!='NEW'){
 			$this->makeDirs($params);
 		}
 		if($params['table']=='tx_civserv_navigation'){
@@ -661,16 +661,17 @@ class tx_civserv_commit {
 		$base=dirname($_SERVER['SCRIPT_FILENAME']);
 		//eliminate /typo3
 		$base=substr($base,0,strrpos($base,'/'));
-		if (!file_exists($base.'/fileadmin/civserv/'.$community)){
-			mkdir($base.'/fileadmin/civserv/'.$community, 0775);
+		if(file_exists($base.'/fileadmin')){ // the typo3 imp_exp-tool starts from a different script_filename	
+			if (!file_exists($base.'/fileadmin/civserv/'.$community)){
+				mkdir($base.'/fileadmin/civserv/'.$community, 0775);
+			}
+			if (!file_exists($base.'/fileadmin/civserv/'.$community.'/images')){
+				mkdir($base.'/fileadmin/civserv/'.$community.'/images', 0775);
+			}
+			if (! file_exists($base.'/fileadmin/civserv/'.$community.'/forms')){
+				mkdir($base.'/fileadmin/civserv/'.$community.'/forms', 0775);
+			}
 		}
-		if (!file_exists($base.'/fileadmin/civserv/'.$community.'/images')){
-			mkdir($base.'/fileadmin/civserv/'.$community.'/images', 0775);
-		}
-		if (! file_exists($base.'/fileadmin/civserv/'.$community.'/forms')){
-			mkdir($base.'/fileadmin/civserv/'.$community.'/forms', 0775);
-		}
-
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'cf_value',			 							// SELECT ...
 			'tx_civserv_configuration',						// FROM ...
