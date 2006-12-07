@@ -209,6 +209,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$_SESSION['usergroup_uid'] = $community_data[0]['cm_usergroup_uid'];
 					$_SESSION['organisation_uid'] = $community_data[0]['cm_organisation_uid'];
 					$_SESSION['employee_search'] = $community_data[0]['cm_employeesearch'];
+					$_SESSION['page_uid'] = $community_data[0]['cm_page_uid']; //for the breadcrumb_navi!!!
 					$_SESSION['alternative_language_folder_uid'] = $community_data[0]['cm_alternative_language_folder_uid'];
 					$_SESSION['alternative_page_uid'] = $community_data[0]['cm_alternative_page_uid'];
 					$_SESSION['stored_pagelink'] = ''; //for the breadcrumb_navi!!!
@@ -230,6 +231,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$this->community['usergroup_uid'] = $_SESSION['usergroup_uid'];
 			$this->community['organisation_uid'] = $_SESSION['organisation_uid'];
 			$this->community['employee_search'] = $_SESSION['employee_search'];
+			$this->community['page_uid'] = $_SESSION['page_uid'];
 			$this->community['alternative_language_folder_uid'] = $_SESSION['alternative_language_folder_uid'];
 			$this->community['alternative_page_uid'] = $_SESSION['alternative_page_uid'];
 
@@ -4268,11 +4270,18 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}elseif($this->piVars[mode]=="employee"){
 			return $_SESSION['stored_pagelink'];
 		}elseif($this->piVars[mode]==""){  // bedeutet ich befinde mich auf einer Info-Seite
+			// bedeutet ich befinde mich auf Seite außerhalb des Seitenbaums des virtuellen Rathaus --> will keine osiris-breadcrumb
+			// oder auf einer Info-Seite --> will osiris-breadcrumb einblenden, Parent-Ordner der Infoseiten wird bei Mandanten konfiguration eingetragen!
 			 $breadcrumb = $_SESSION['info_sites']; //Zuständigkeiten A-Z
 			 $breadcrumb .=  $_SESSION['stored_pagelink']; //Dienstleistung
-			 return $breadcrumb;
+			 #return $breadcrumb;
+			 return '<span style="border:solid red 1px;">'.$breadcrumb.'</span>';
 		}else{
-			return '';
+			#return '';
+			return '<span style="border:solid blue 1px;">'.$this->piVars[mode].'</span>';
+		}
+		if(!$pageid == $_SESSION['page_uid'] && !$pageid == $_SESSION['alternative_page_uid']){
+			return ''; // only the pages of the virtual townhall (whoes FE always happens in the one and same page) want to have this user-breadcrumb
 		}
 		return $this->getCompletePageLink($pageLink, $linkText);
 	}
@@ -4295,6 +4304,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//second parameter is for cache and it also does the md5-thing about the parameterlist, if cache is not set the parameters are rendered in the human-readable way
 		//third parameter ist for the elemination of all piVars. must not be set in this case or else link won't work! (id of service goes missing)
 		$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => $this->piVars[mode]),1,0,$pageid);
+		if(!$pageid == $_SESSION['page_uid'] && !$pageid == $_SESSION['alternative_page_uid']){
+			return ''; //only the pages of the virtual townhall (whoes FE always happens in the one and same page) want to have this user-breadcrumb
+		}
 		return $this->getCompletePageLink($pageLink, $linkText);
 	}
 	
