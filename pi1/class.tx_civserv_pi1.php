@@ -175,13 +175,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// If community-id is given in GET or POST variable, priority is POST,
 		// get the community name and the pidlist for this community from the
 		// database and store it in the session
-		if ((($this->piVars[community_id] <= '') && ($_SESSION['community_id'] <= '')) || ($this->piVars[community_id] == 'choose')) {
-		#if(1==2){
+		#if ((($this->piVars[community_id] <= '') && ($_SESSION['community_id'] <= '')) || ($this->piVars[community_id] == 'choose')) {
+		if(1==2){
 			$template = $this->conf['tpl_community_choice'];
 			$accurate = $this->chooseCommunity($smartyObject);
 			$choose = true;
-	 	} elseif (($this->piVars[community_id] != $_SESSION['community_id']) || ($_SESSION['community_name'] <= '')) {
-		#}elseif(1==1){
+	 	#} elseif (($this->piVars[community_id] != $_SESSION['community_id']) || ($_SESSION['community_name'] <= '')) {
+		}elseif(1==1){
 			if ($this->piVars[community_id] > '') {
 				$community_id = intval($this->piVars[community_id]);
 			} else {
@@ -196,6 +196,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				'');
 			$community_data = $this->sql_fetch_array_r($res);
 			// Check if given community-id exists in the database
+			#debug($community_data, '$community_data');
 			switch (count($community_data)) {
 				case '0':
 					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi1_error.wrong_community_id','Wrong community-id. The entered community is either invalid, the community is not in the current system or the system is misconfigured.');
@@ -212,6 +213,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$_SESSION['page_uid'] = $community_data[0]['cm_page_uid']; //for the breadcrumb_navi!!!
 					$_SESSION['alternative_language_folder_uid'] = $community_data[0]['cm_alternative_language_folder_uid'];
 					$_SESSION['alternative_page_uid'] = $community_data[0]['cm_alternative_page_uid'];
+					$_SESSION['info_folder_uid'] = $community_data[0]['cm_info_folder_uid'];
 					$_SESSION['stored_pagelink'] = ''; //for the breadcrumb_navi!!!
 					$_SESSION['info_sites'] = ''; //for the breadcrumb navigation of information pages
 					$_SESSION['default_mode'] = $this->conf['_DEFAULT_PI_VARS.']['mode']; //Default Mode for the breadcrumb navigation
@@ -233,6 +235,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$this->community['employee_search'] = $_SESSION['employee_search'];
 			$this->community['page_uid'] = $_SESSION['page_uid'];
 			$this->community['alternative_language_folder_uid'] = $_SESSION['alternative_language_folder_uid'];
+			$this->community['info_folder_uid'] = $_SESSION['info_folder_uid'];
 			$this->community['alternative_page_uid'] = $_SESSION['alternative_page_uid'];
 
 			// Set piVars[community_id] because it could only be registered in the session and not in the URL
@@ -608,8 +611,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		$smartyServiceList->assign('heading',$this->getServiceListHeading($this->piVars[mode],$this->piVars[id]));
 		
-		//if the title is set here it will overwrite the value we want in the organisationDetail-View
-		#$GLOBALS['TSFE']->page['title'] = $this->getServiceListHeading($this->piVars[mode],$this->piVars[id]);
+		
+		// if the title is set here it will overwrite the value we want in the organisationDetail-View
+		// but we do need it for circumstance and user_groups!
+		$GLOBALS['TSFE']->page['title'] = $this->getServiceListHeading($this->piVars[mode],$this->piVars[id]);
 		
 		if($this->piVars[char]>''){
 			 $GLOBALS['TSFE']->page['title'] .=': '.$this->pi_getLL('tx_civserv_pi1_service_list.abc_letter','Letter').' '.$this->piVars[char];
@@ -4246,7 +4251,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	array		configuration array
 	 * @return	string		The link
 	 */
-	function getListPage($content, $conf) {
+	function getlistPage($content, $conf) {
 		//we want to keep the md5-transformation on the paramenterlist, so we use
 		//pi_linkTP_keepPIvars_url instead of pi_linkTP_keepPIvars (which would deliver us the whole link with <a href="...">...</a>)
 		//plus: pi_linkTP_keepPIvars_url allows to reset the mode :-))
@@ -4257,11 +4262,45 @@ class tx_civserv_pi1 extends tslib_pibase {
 		} else {
 			$pageid = $GLOBALS['TSFE']->id;
 		}
+		#debug($pageid, 'pageid getlistpage');
+
+		if($this->conf['recursive'] > 0){
+			$recursion=$this->conf['recursive'];
+		} else {
+			$recursion=20;
+		}
+		// $this->pi_getPidList($pageid, $recursion) does not work for pages inside info-folder (which are outside civserv_Plugin)
+		// try home-made getPidList-Funktion instead.
+		// identify it actual page is child of info_folder_uid
+		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'pid',			 							// SELECT ...
+			'pages',									// FROM ...
+			'uid = '.$pageid.' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+			'', 										// GROUP BY...
+			'',   										// ORDER BY...
+			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+			);
 		
+		$parent_list = $this->get_parent_list($this->res, $parent_list);
+		debug($parent_list, 'parent_list');
+
+		debug($this->piVars[mode], 'Aaaand the mode is: ');
+		
+		
+		debug($_SESSION['info_folder_uid'], 'info_folder_uid');
+		#debug($this->pi_getPidList($this->community['info_folder_uid'], $recursion), 'pidlist info_folder aus this->community');
+		#debug($this->pi_getPidList($_SESSION['info_folder_uid'], $recursion), 'pidlist info_folder aus session');
+
 		$linkText=$GLOBALS['TSFE']->page['title']; //default
 		if($this->piVars[mode]=="organisation"){
 			$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => 'organisation_list'),1,1,$pageid);
-			$linkText=$this->pi_getLL('tx_civserv_pi1_menuarray.organisation_list','Organisation A - Z'); //this sometimes does not work!!!
+			$linkText=$this->pi_getLL('tx_civserv_pi1_menuarray.organisation_list','Organisation A - Z'); 
+		}elseif($this->piVars[mode]=="circumstance"){
+			$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => 'circumstance_tree'),1,1,$pageid);
+			$linkText=$this->pi_getLL('tx_civserv_pi1_menuarray.circumstance_tree','Circumstances'); 
+		}elseif($this->piVars[mode]=="usergroup"){
+			$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => 'usergroup_tree'),1,1,$pageid);
+			$linkText=$this->pi_getLL('tx_civserv_pi1_menuarray.usergroup_tree','Usergroups'); 
 		}elseif($this->piVars[mode]=="service"){
 			$_SESSION['stored_pagelink']=$this->getActualPage($content, $conf);
 			$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => 'service_list'),1,1,$pageid);
@@ -4272,13 +4311,20 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}elseif($this->piVars[mode]==""){  // bedeutet ich befinde mich auf einer Info-Seite
 			// bedeutet ich befinde mich auf Seite außerhalb des Seitenbaums des virtuellen Rathaus --> will keine osiris-breadcrumb
 			// oder auf einer Info-Seite --> will osiris-breadcrumb einblenden, Parent-Ordner der Infoseiten wird bei Mandanten konfiguration eingetragen!
-			 $breadcrumb = $_SESSION['info_sites']; //Zuständigkeiten A-Z
-			 $breadcrumb .=  $_SESSION['stored_pagelink']; //Dienstleistung
-			 #return $breadcrumb;
-			 return '<span style="border:solid red 1px;">'.$breadcrumb.'</span>';
+			if(in_array($_SESSION['info_folder_uid'], $parent_list)){ 
+				debug('will add osiris home-made breadcrumb');
+				$breadcrumb = $_SESSION['info_sites']; //Zuständigkeiten A-Z
+				$breadcrumb .=  $_SESSION['stored_pagelink']; //Dienstleistung
+				return $breadcrumb;
+			 	#return '<span style="border:solid red 1px;">'.$breadcrumb.'</span>';
+			 }else{
+			 	debug('will _not_ add osiris home-made breadcrumb');
+			 	return '';
+			 }
 		}else{
-			#return '';
-			return '<span style="border:solid blue 1px;">'.$this->piVars[mode].'</span>';
+			// there is a mode - but none of the above-mentioned
+			return '';
+			#return '<span style="border:solid blue 1px;">'.$this->piVars[mode].'</span>';
 		}
 		if(!$pageid == $_SESSION['page_uid'] && !$pageid == $_SESSION['alternative_page_uid']){
 			return ''; // only the pages of the virtual townhall (whoes FE always happens in the one and same page) want to have this user-breadcrumb
@@ -4294,6 +4340,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$pageid = $GLOBALS['TSFE']->id;
 		}
 		$linkText=$GLOBALS['TSFE']->page['title'];
+		 // bei Organisationen brauchen wir einen anderen Linktext
+		 
+		 			//tx_civserv_pi1_organisation_list.organisation_list.heading
+
+		debug($GLOBALS, 'global');
 		if($this->piVars[mode]=='service'){
 			$textArr=explode(":", $linkText);
 			if(count($textArr)>1)unset($textArr[0]);
@@ -4360,6 +4411,26 @@ class tx_civserv_pi1 extends tslib_pibase {
 		return $string;
 	}
 	
+	//get all the parents!!!!
+	function get_Parent_list($result, $parent_list){
+		global $parent_list;
+		if($result){
+			while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
+			$parent_list[]=$row[0];
+			$res2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'pid',			 							// SELECT ...
+				'pages',									// FROM ...
+				'uid = '.$row[0].' AND deleted=0 AND hidden=0',// AND title LIKE "%blabla%"', // WHERE...
+				'', 										// GROUP BY...
+				'',   										// ORDER BY...
+				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+				);
+			$this->get_parent_list($res2, $liste);
+			}
+		}
+		return $parent_list;
+	}
+
 }//class end
 
 
