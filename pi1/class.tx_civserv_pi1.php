@@ -1208,13 +1208,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 						tx_civserv_employee.hidden=0 ';
 			}
 
-			#$orderby =	$this->piVars[sort]?'name, em_firstname DESC':'name, em_firstname ASC';
-			$orderby =	$this->piVars[sort]?'name DESC':'name ASC';
+			$orderby =	$this->piVars[sort]?'name, em_firstname DESC':'name, em_firstname ASC';
 
 
 			if (!$count) {
-			#$query .= ' ORDER BY ' . $orderby . ' ';
 			$orderby =	$this->piVars[sort]?'name, em_firstname DESC':'name, em_firstname ASC';
+			$query .= ' ORDER BY ' . $orderby . ' ';
 
 
 				if ($limit) {
