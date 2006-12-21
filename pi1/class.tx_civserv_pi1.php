@@ -196,7 +196,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 				'');
 			$community_data = $this->sql_fetch_array_r($res);
 			// Check if given community-id exists in the database
-			#debug($community_data, '$community_data');
 			switch (count($community_data)) {
 				case '0':
 					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi1_error.wrong_community_id','Wrong community-id. The entered community is either invalid, the community is not in the current system or the system is misconfigured.');
@@ -4261,7 +4260,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		} else {
 			$pageid = $GLOBALS['TSFE']->id;
 		}
-		#debug($pageid, 'pageid getlistpage');
 
 		if($this->conf['recursive'] > 0){
 			$recursion=$this->conf['recursive'];
@@ -4281,14 +4279,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			);
 		
 		$parent_list = $this->get_parent_list($this->res, $parent_list);
-		debug($parent_list, 'parent_list');
-
-		debug($this->piVars[mode], 'Aaaand the mode is: ');
-		
-		
-		debug($_SESSION['info_folder_uid'], 'info_folder_uid');
-		#debug($this->pi_getPidList($this->community['info_folder_uid'], $recursion), 'pidlist info_folder aus this->community');
-		#debug($this->pi_getPidList($_SESSION['info_folder_uid'], $recursion), 'pidlist info_folder aus session');
 
 		$linkText=$GLOBALS['TSFE']->page['title']; //default
 		if($this->piVars[mode]=="organisation"){
@@ -4303,21 +4293,19 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}elseif($this->piVars[mode]=="service"){
 			$_SESSION['stored_pagelink']=$this->getActualPage($content, $conf);
 			$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => 'service_list'),1,1,$pageid);
-			$linkText=$this->pi_getLL('tx_civserv_pi1_service_list.overview','Services A - Z');
+			$linkText=$this->pi_getLL('tx_civserv_pi1_service_list.service_list','Services A - Z');
 			$_SESSION['info_sites'] = $this->getCompletePageLink($pageLink, $linkText); //Variablen namen ändern?
 		}elseif($this->piVars[mode]=="employee"){
 			return $_SESSION['stored_pagelink'];
-		}elseif($this->piVars[mode]==""){  // bedeutet ich befinde mich auf einer Info-Seite
+		}elseif($this->piVars[mode]==""){
 			// bedeutet ich befinde mich auf Seite außerhalb des Seitenbaums des virtuellen Rathaus --> will keine osiris-breadcrumb
 			// oder auf einer Info-Seite --> will osiris-breadcrumb einblenden, Parent-Ordner der Infoseiten wird bei Mandanten konfiguration eingetragen!
 			if(in_array($_SESSION['info_folder_uid'], $parent_list)){ 
-				debug('will add osiris home-made breadcrumb');
 				$breadcrumb = $_SESSION['info_sites']; //Zuständigkeiten A-Z
 				$breadcrumb .=  $_SESSION['stored_pagelink']; //Dienstleistung
 				return $breadcrumb;
 			 	#return '<span style="border:solid red 1px;">'.$breadcrumb.'</span>';
 			 }else{
-			 	debug('will _not_ add osiris home-made breadcrumb');
 			 	return '';
 			 }
 		}else{
@@ -4328,8 +4316,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 		if(!$pageid == $_SESSION['page_uid'] && !$pageid == $_SESSION['alternative_page_uid']){
 			return ''; // only the pages of the virtual townhall (whoes FE always happens in the one and same page) want to have this user-breadcrumb
 		}
-		#return $this->getCompletePageLink($pageLink, $linkText);
-		return '<span style="border:solid green 1px;">'.$this->getCompletePageLink($pageLink, $linkText).'</span>';
+		return $this->getCompletePageLink($pageLink, $linkText);
+		#return '<span style="border:solid green 1px;">'.$this->getCompletePageLink($pageLink, $linkText).'</span>';
 	}
 	
 	function getActualPage($content, $conf) {
@@ -4344,7 +4332,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		 
 		 			//tx_civserv_pi1_organisation_list.organisation_list.heading
 
-		debug($GLOBALS, 'global');
+		#debug($GLOBALS, 'global');
 		if($this->piVars[mode]=='service'){
 			$textArr=explode(":", $linkText);
 			if(count($textArr)>1)unset($textArr[0]);
