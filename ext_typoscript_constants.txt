@@ -51,6 +51,7 @@ forms_per_page = 25
 employee_per_page = 20
 organisation_per_page = 100
 
+contact_email = 
 
 # Defines how many Pages with links are displyed below the lists
 max_pages_in_pagebar = 15

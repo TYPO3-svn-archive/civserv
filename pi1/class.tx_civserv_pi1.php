@@ -71,7 +71,7 @@
  *              SECTION: Functions for the email form:
  * 1967:     function setEmailForm(&$smartyEmailForm)
  * 2005:     function checkEmailForm(&$smartyEmailForm)
- * 2125:     function getEhoster_email()
+ * 2125:     function getEmailAddress()
  * 2189:     function makeEmailQuery($emp_id,$pos_id,$sv_id)
  *
  *              SECTION: Functions for the debit form:
@@ -175,13 +175,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// If community-id is given in GET or POST variable, priority is POST,
 		// get the community name and the pidlist for this community from the
 		// database and store it in the session
-		#if ((($this->piVars[community_id] <= '') && ($_SESSION['community_id'] <= '')) || ($this->piVars[community_id] == 'choose')) {
-		if(1==2){
+		if ((($this->piVars[community_id] <= '') && ($_SESSION['community_id'] <= '')) || ($this->piVars[community_id] == 'choose')) {
+		#if(1==2){
 			$template = $this->conf['tpl_community_choice'];
 			$accurate = $this->chooseCommunity($smartyObject);
 			$choose = true;
-	 	#} elseif (($this->piVars[community_id] != $_SESSION['community_id']) || ($_SESSION['community_name'] <= '')) {
-		}elseif(1==1){
+	 	} elseif (($this->piVars[community_id] != $_SESSION['community_id']) || ($_SESSION['community_name'] <= '')) {
+		#}elseif(1==1){
 			if ($this->piVars[community_id] > '') {
 				$community_id = intval($this->piVars[community_id]);
 			} else {
@@ -195,6 +195,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				'',
 				'');
 			$community_data = $this->sql_fetch_array_r($res);
+			
 			// Check if given community-id exists in the database
 			switch (count($community_data)) {
 				case '0':
@@ -3221,8 +3222,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function setEmailForm(&$smartyEmailForm) {
 		//Check if there is a valid email address in the database for the given combination of employee, service, position and organisation id
-		if ($this->getEhoster_email($smartyEmailForm) || $this->piVars[mode]=='set_contact_form') {
-			if($this->getEhoster_email($smartyEmailForm)){
+		if ($this->getEmailAddress($smartyEmailForm) || $this->piVars[mode]=='set_contact_form') {
+			if($this->getEmailAddress($smartyEmailForm)){
 				//Assign action url of email form with mode 'check_email_form'
 				$smartyEmailForm->assign('action_url',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'check_email_form'),0,0)));
 			}else{
@@ -3286,7 +3287,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$is_valid = true;
 
 		// Get Email-Adress or otherwise false
-		$email_address = $this->getEhoster_email($smartyEmailForm);
+		$email_address = $this->getEmailAddress($smartyEmailForm);
 
 		// Check if there is a valid email address in the database for the given combination of employee, service, position and organisation id
 		if ($email_address) {
@@ -3339,7 +3340,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 				   "\n" . $this->pi_getLL('tx_civserv_pi1_email_form.bodytext','Your text') . ': ' .
 				   "\n" . $bodytext;
 				//todo: check possibilities of header injection
-				$headers = !empty($email)?	"From: ".$email."\r\nReply-To: ".$email."\r\n":"From: ".$email_address."\r\nReply-To: ".$email_address."\r\n";
+				#$headers = !empty($email)?	"From: ".$email."\r\nReply-To: ".$email."\r\n":"From: ".$email_address."\r\nReply-To: ".$email_address."\r\n";
+				$headers = !empty($email)?	"From: ".$email."\r\nReply-To: ".$email."\r\n": !empty($this->conf['contact_email']) && t3lib_div::validEmail($this->conf['contact_email'])? "From: ".$this->conf['contact_email']."\r\n Reply-To: ".$this->conf['contact_email']."\r\n":"From: ".$email_address."\r\nReply-To: ".$email_address."\r\n";
+
 
 				t3lib_div::plainMailEncoded($email_address, $subject, $body, $headers);
 				$reply = $this->pi_getLL('tx_civserv_pi1_email_form.complete','Thank you! Your message has been sent successfully ');
@@ -3408,7 +3411,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 *
 	 * @return	string		The Email-Adress, if found. Otherwise false (and a error-message is assigned to the smartyObject).
 	 */
-	function getEhoster_email() {
+	function getEmailAddress() {
 		//Retrieve submitted id parameters
 		$org_id = intval($this->piVars[org_id]);
 		$emp_id = intval($this->piVars[id]);
@@ -3836,6 +3839,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	array		Array with results from database query
 	 */
 	function get_hoster_email()	{
+		// some mandants may have configured an individual hoster_email in their TS-Template
+		if(!empty($this->conf['contact_email']) && t3lib_div::validEmail($this->conf['contact_email'])){
+			return $this->conf['contact_email'];
+		}
+		
+		// default: take the email-adress given in tx_civserv_configuration
 		$hoster_email="";
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'cf_value',			 							// SELECT ...
@@ -4330,9 +4339,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$linkText=$GLOBALS['TSFE']->page['title'];
 		 // bei Organisationen brauchen wir einen anderen Linktext
 		 
-		 			//tx_civserv_pi1_organisation_list.organisation_list.heading
+		 //tx_civserv_pi1_organisation_list.organisation_list.heading
 
-		#debug($GLOBALS, 'global');
 		if($this->piVars[mode]=='service'){
 			$textArr=explode(":", $linkText);
 			if(count($textArr)>1)unset($textArr[0]);

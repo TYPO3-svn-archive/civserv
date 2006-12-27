@@ -216,6 +216,11 @@ if (t3lib_div::int_from_ver(TYPO3_version) >= 4000000) {
 	$TCA['tx_civserv_service']['ctrl']['versioning'] = TRUE;
 }
 
+if(t3lib_div::getThisUrl()==$TYPO3_CONF_VARS["BE"]['CUSTOM_CITEQ']['EXCLUDE_VS']){
+#if(t3lib_div::getThisUrl()=='www4.citeq.de/osiris/typo3/'){
+	$TCA['tx_civserv_service']['ctrl']['versioningWS'] = FALSE;
+	$TCA['tx_civserv_service']['ctrl']['versioning'] = FALSE;
+}
 
 
 $TCA["tx_civserv_model_service"] = Array (

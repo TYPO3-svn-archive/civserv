@@ -49,6 +49,8 @@ plugin.tx_civserv_pi1 {
 	service_count = {$service_count}
 	employee_per_page = {$employee_per_page}
 	organisation_per_page = {$organisation_per_page}
+	
+	contact_email = {$contact_email}
 
 	searchAtServiceList = {$searchAtServiceList}
 	searchAtCircumstanceTree = {$searchAtCircumstanceTree}

@@ -127,7 +127,7 @@ class tx_civserv_service_maintenance{
 			
 			$new_ones = array();
 			$new_ones = array_diff($new_services, $old_services);
-			debug($new_ones, 'new_ones aus array_diff');
+			#debug($new_ones, 'new_ones aus array_diff');
 			
 			foreach($new_ones as $value){
 				$new_one = array();
@@ -223,7 +223,7 @@ class tx_civserv_service_maintenance{
 			// old_services which are not in new_services
 			$old_ones = array();
 			$old_ones = array_diff($old_services, $new_services);
-			debug($old_ones, 'old_ones aus array_diff');
+			#debug($old_ones, 'old_ones aus array_diff');
 
 			foreach($old_ones as $value){
 				$old_one=array();

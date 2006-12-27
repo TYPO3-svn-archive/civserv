@@ -131,6 +131,10 @@ t3lib_extMgm::addUserTSConfig('
 ');
 
 
+$TYPO3_CONF_VARS["BE"]['CUSTOM_CITEQ']['EXCLUDE_VS']="www4.citeq.de/osiris/typo3/";
+
+
+
 /**
  * Definition of own class files. To-Do: include file which again includes class-files
 */

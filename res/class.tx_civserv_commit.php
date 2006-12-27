@@ -388,8 +388,8 @@ class tx_civserv_commit {
 	function processCmdmap_preProcess($command, &$table, $id, $value, &$pObj){
 		// $id						contains uid of actual online service in LIVE version
 		// $value['swap_with']		contains uid of the versioned offline-service in custom workspace, the one that ist beeing published
-		debug($table, 'commit->processCmdmap_preProcess table');
-		debug($command, 'command');
+		#debug($table, 'commit->processCmdmap_preProcess table');
+		#debug($command, 'command');
 		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
 		if (array_key_exists($table,$this->tables) && $table =='tx_civserv_service' && $command == 'delete'){
 			// apparently 'deleted = 1' does not suffice to eleminate service-position records from the BE?
@@ -398,13 +398,13 @@ class tx_civserv_commit {
 			$sub_result = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(' tx_civserv_service_sv_position_mm','uid_local = '.$id,$update_row);
 		}
 		if (array_key_exists($table,$this->tables) && $table =='tx_civserv_service' && $command == 'version'){
-			debug($table, 'tabelle');
-			debug($value, 'value');
+			#debug($table, 'tabelle');
+			#debug($value, 'value');
 			switch($value['action']){
 				case 'setStage':
 				break; //not cared for yet
 				case 'swap':
-					debug('starting now!');
+					#debug('starting now!');
 					$pid=0;
 					$res_pid=$GLOBALS['TYPO3_DB']->exec_SELECTquery('pid',$table,'uid = '.$id);
 					if($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_pid)){
