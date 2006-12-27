@@ -3841,7 +3841,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	function get_hoster_email()	{
 		// some mandants may have configured an individual hoster_email in their TS-Template
 		if(!empty($this->conf['contact_email']) && t3lib_div::validEmail($this->conf['contact_email'])){
-			return $this->conf['contact_email'];
+			#return $this->conf['contact_email'];
 		}
 		
 		// default: take the email-adress given in tx_civserv_configuration
