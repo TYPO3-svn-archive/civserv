@@ -1788,13 +1788,18 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
 	function calculate_top15(&$smartyTop15,$showCounts=1,$topN=15,$searchBox=false) {
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('sv.uid as uid,sv.sv_name as name,SUM(al.al_number) as number',	//WHERE
-														 'tx_civserv_accesslog as al,tx_civserv_service as sv',			//FROM
-														 'sv.deleted=0 AND sv.hidden=0 AND sv.uid = al.al_service_uid
-														  AND sv.pid IN (' . $this->community[pidlist] . ')',							//WHERE
-														 'al.al_service_uid',											//GROUP BY
-														 'number DESC',													//ORDER BY
-														 $topN); 														//LIMIT
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('sv.uid as uid,
+													   sv.sv_name as name,
+													   SUM(al.al_number) as number',	// SELECT
+													  'tx_civserv_accesslog as al,
+													   tx_civserv_service as sv',		// FROM
+													  'sv.deleted=0 
+													   AND sv.hidden=0 
+													   AND sv.uid = al.al_service_uid 
+													   AND sv.pid IN (' . $this->community[pidlist] . ')',		// WHERE
+														 'al.al_service_uid',									// GROUP BY
+														 'number DESC',											// ORDER BY
+														 $topN); 												// LIMIT
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$top15_data[$row_counter]['link'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $row['uid']),1,1));
