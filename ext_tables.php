@@ -89,6 +89,34 @@ if (TYPO3_MODE=='BE')	{
 }
 
 
+/**
+* Editors sometimes need to see more db_mountpoints and tables than they are granted by standard typo3 core.
+* We took the idea from Andre Spindlers 'Patch BE Settings'
+* Important: need to overwrite table definition of field db_mountpoints (varchar(40) => varchar(255)) or else, uids might get distorted / cut off!
+* overwriting of table definition is done in ext_tables.sql!!
+*/
+// Load TYPO3 Core Array (TCA) for be_groups
+t3lib_div::loadTCA("be_groups");
+// Set Max Listsize of Tables allowed to be modified to 50
+$TCA['be_groups']['columns']['tables_modify']['config']['maxitems'] = 50;
+// Set Max Listsize of Tables allowed to be selected/viewed to 50
+$TCA['be_groups']['columns']['tables_select']['config']['maxitems'] = 50;
+// Set Max Listsize of Modules to be accessed to 50
+#$TCA['be_groups']['columns']['groupMods']['config']['maxitems'] = 50;
+
+// Load TYPO3 Core Array (TCA) for be_users
+t3lib_div::loadTCA("be_users");
+// Set Max Listsize of Modules to be accessed to 50
+#$TCA['be_users']['columns']['userMods']['config']['maxitems'] = 50;
+// ...
+$TCA['be_users']['columns']['db_mountpoints']['config']['maxitems'] = 30;
+// ...
+$TCA['be_users']['columns']['db_mountpoints']['config']['autoSizeMax'] = 30;
+// ...
+$TCA['be_groups']['columns']['db_mountpoints']['config']['maxitems'] = 30;
+// ...
+$TCA['be_groups']['columns']['db_mountpoints']['config']['autoSizeMax'] = 30;
+
 
 /**
 * Definition of plug-in "Virtual civil services" aka "Virtuelle Verwaltung".
