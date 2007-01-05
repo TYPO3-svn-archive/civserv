@@ -876,7 +876,7 @@ CREATE TABLE tx_civserv_accesslog (
 
 #
 # Table structure for table 'tx_civserv_model_service_temp'
-# ms_searchword int(11) unsigned DEFAULT '0' NOT NULL,
+# 
 CREATE TABLE tx_civserv_model_service_temp (
 	uid int(11) unsigned DEFAULT '0' NOT NULL,
 	pid int(11) unsigned DEFAULT '0' NOT NULL,
@@ -916,6 +916,13 @@ CREATE TABLE tx_civserv_model_service_temp (
 	KEY parent (pid)
 );
 
+
+#
+# Overwrite table definition of fields in be_users so we can offer editors sufficient db_mountpoints
+#
+CREATE TABLE be_users (
+	db_mountpoints varchar(120) DEFAULT '' NOT NULL
+);
 
 #
 # in version 4.1.1 the structure for weekdays in officehours was changed:
