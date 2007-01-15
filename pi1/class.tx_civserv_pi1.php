@@ -4359,8 +4359,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 		if(!$pageid == $_SESSION['page_uid'] && !$pageid == $_SESSION['alternative_page_uid']){
 			return ''; //only the pages of the virtual townhall (whoes FE always happens in the one and same page) want to have this user-breadcrumb
 		}
-		#return $this->getCompletePageLink($pageLink, $linkText);
-		return '<span style="border:solid blue 1px;">'.$this->getCompletePageLink($pageLink, $linkText).'</span>';
+		return $this->getCompletePageLink($pageLink, $linkText);
+		#return '<span style="border:solid blue 1px;">'.$this->getCompletePageLink($pageLink, $linkText).'</span>';
 
 	}
 	
