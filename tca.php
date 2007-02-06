@@ -3548,7 +3548,7 @@ $TCA["tx_civserv_external_service"] = Array (
 );
 
 /**
- * The definition of the backend-mask and logic for the table tx_civserv_conf_mandant (contenttype mandant)
+ * The definition of the backend-mask and logic for the table tx_civserv_conf_mandant (content-type mandant)
  * All labels are defined in civserv/locallang_db.php
  *
  * Relations to other tables: tx_civserv_region, tx_civserv_conf_mandant_cm_region_mm
