@@ -5,7 +5,7 @@
 * @author    Karina Niehüser <niehueser@citeq.de>
 *
 * this class extends typo3 core class with layout/output function for TYPO3 Backend Scripts
-* overrides the standard adress of external urls in Rich Text Editor
+* overrides the standard address of external urls in Rich Text Editor
 *
 *
 */
