@@ -26,6 +26,7 @@ leftmenu {
 	}
 	stdWrap.wrap = <div id="leftmenu"> | </div>
 	1 = TMENU
+    1.noBlur = 1
 	1.wrap = <ul class="level1"> | </ul>
 	1.NO {
 		allWrap = <li> | </li>
