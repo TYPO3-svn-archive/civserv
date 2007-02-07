@@ -12,7 +12,7 @@
 * and no matter what rights the be_user has, we don't allow new versions of pages (which would 
 * turn out to be new versions of sysfolders storing civserv-records. that would make no sense)
 *
-* svn still testing
+* svn still testin damg
 */
 
 class ux_template extends template {    
