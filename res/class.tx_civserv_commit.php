@@ -403,7 +403,7 @@ class tx_civserv_commit {
 				case 'setStage':
 				break; //not cared for yet
 				case 'swap':
-					#debug('starting now!');
+					#debug('case swap starting now!');
 					$pid=0;
 					$res_pid=$GLOBALS['TYPO3_DB']->exec_SELECTquery('pid',$table,'uid = '.$id);
 					if($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_pid)){
