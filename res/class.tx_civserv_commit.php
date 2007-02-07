@@ -188,7 +188,6 @@ class tx_civserv_commit {
 			$queryParts['ORDERBY']=' tx_civserv_service_sv_position_mm.sp_label'; 
 			$queryParts['WHERE'].=' AND deleted=0'; //have to add this explicitely for mm-tables!!! 
 			//standard typo3: mm_tables have no 'deleted'-field and are never displayed at all
-			
 			#debug($queryParts, '$queryParts am Ende erstens');
 		}	
 		// in CUSTOM workspaces we want to see the records relating to the newest service-version as well as the
