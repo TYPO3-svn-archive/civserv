@@ -4377,27 +4377,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 *******************************/
 
 	
-	function replace_umlauts($string){
-		// Umlaute entfernen
-		$umlaute = Array("/ä/","/ö/","/ü/","/Ä/","/Ö/","/Ü/","/ß/", "/é/"); //hexadecimal-code für é à etc????
-		$replace = Array("ae","oe","ue","Ae","Oe","Ue","ss", "e");
-		$string = preg_replace($umlaute, $replace, $string);
-		
-		//eliminate:
-		$string=str_replace(".", "", $string);			// Bücherei Zweigstelle Wolbecker Str.
-		$string=str_replace(" - ", "-", $string);		// La Vie - Begegnungszentrum Gievenbeck
-		$string=str_replace("- ", "-", $string);		// Veterinär- und Lebensmittel...
-		$string=str_replace("-, ", " ", $string);		// Amt für Stadt-, Verkehrs- und Parkplatzplanung
-		$string=str_replace(",", "", $string);			// Ich, du, Müllers's Kuh
-		$string=str_replace(": ", " ", $string);		// Gesundheitsamt: Therapie und Hilfe sofort
-	
-		//make blanks:
-		$string=str_replace("+", " ", $string);			// Wohn + Stadtbau
-		$string=str_replace("&", " ", $string);			// Ich & Ich
-		$string=str_replace("/", " ", $string);			// Feuerwehr/Rettungsdienst
-		$string=str_replace("\\", " ", $string);		// Eins\Zwei\Drei
-		return $string;
-	}
+
 	
 	
 	function strip_extra($string){
