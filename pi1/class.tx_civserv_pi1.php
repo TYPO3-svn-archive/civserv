@@ -117,12 +117,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 
 	/**
-	 * @param	string		Content that is to be displayed within the plugin
-	 * @param	array		Configuration array
+	 * @param	string			Content that is to be displayed within the plugin
+	 * @param	array			Configuration array
 	 * @return	$content		Content that is to be displayed within the plugin
 	 */
 	function main($content,$conf)	{
-		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging
+		//$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging - only on test-sites!
 		if (TYPO3_DLOG)  t3lib_div::devLog('function main of FE class entered', 'civserv');
 
 		
@@ -156,7 +156,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		#session_destroy();
 		
 		if($this->previewMode){
-			// nice try but doesn't work, probable too late.
+			// nice try but doesn't work, probably too late.
 			// would have to manipulate this value before FE is rendered!!!
 			#$this->conf['_DEFAULT_PI_VARS.']['mode']='service_list';
 		}
@@ -289,7 +289,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$template = $this->conf['tpl_top15'];
 					$accurate = $this->calculate_top15($smartyObject,$this->conf['show_counts'],$this->conf['service_count'],$this->conf['searchAtTop15']);
 					break;
-				//baustelle	
+
 				case 'online_services':
 					$GLOBALS['TSFE']->page['title'] = "Online Services";
 					$template = $this->conf['tpl_online_sv_list']; //change this??
@@ -440,18 +440,17 @@ class tx_civserv_pi1 extends tslib_pibase {
 		
 		$row_counter = 0;
 		
-		// collect all new records and place them at the beginning of the array!
+		// WS-VERSIONING: collect all new records and place them at the beginning of the array!
 		// the new records have no name in live-space and therefore would be delegated 
 		// to the very end of the list through the order by clause in function makeServiceListQuery....
-		#$new_records=array();
 		$eleminated_rows=0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 			
-			// versioning:get the Preview from the Core!!!!
+			// WS-VERSIONING: get the Preview from the Core!!!!
 			// copied from tt_news
-			// it's the function versionOL() in /t3lib/class.t3lib_page.php which does 
+			// the function versionOL() in /t3lib/class.t3lib_page.php does 
 			// the rendering of the version records for preview.
-			// i.e. a new, not yet published record has the name ['PLACEHOLDER'] and is hidden in live-workspace , 
+			// i.e. a new, not yet published record has the name ['PLACEHOLDER'] and is hidden in live-workspace, 
 			// class.t3lib_page.php replaces the fields in question with content from its 
 			// version-workspace-equivalent for preview purposes!
 			// for it to work the result must also contain the records from live-workspace which carry the hidden-flag!!!
@@ -483,10 +482,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$services[$row_counter]['name'] = $row['name'] . ' (= ' . $row['realname'] . ')';
 				}
 				// mark the version records for the FE, could be done by colour in template as well!
-				if($row['_ORIG_pid']==-1 && $row['t3ver_state']==0){ //VERSION records
+				if($row['_ORIG_pid']==-1 && $row['t3ver_state']==0){ // VERSION records
 					$services[$row_counter]['name'].=" DRAFT: ".$row['uid'];
 					$services[$row_counter]['preview']=1;
-				}elseif($row['_ORIG_pid']==-1 && $row['t3ver_state']==-1){ //NEW records
+				}elseif($row['_ORIG_pid']==-1 && $row['t3ver_state']==-1){ // NEW records
 					$services[$row_counter]['name'].=" NEW: ".$row['uid'];
 					$services[$row_counter]['preview']=1;
 				}else{
@@ -522,7 +521,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					}
 				}
 				
-				//highlight_external services in list view!! (works only if function makeServiceListQuery returns pid-value!)
+				// highlight_external services in list view!! (works only if function makeServiceListQuery returns pid-value!)
 				$mandant = t3lib_div::makeInstanceClassName('tx_civserv_mandant');
 				$mandantInst = new $mandant();
 				$service_community_id= $mandantInst->get_mandant($row['pid']);
@@ -564,7 +563,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}
 			
 			// DON'T! or else multisort won't work! (must be something about keys and indexes??)
-			#natcasesort($sortarray);
+			# natcasesort($sortarray);
 			
 			// $services is sorted by $sortarray as in SQL "ordery by name"
 			// $sortarray itself gets sorted by multisort!!! 
@@ -621,7 +620,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		
 		if ($searchBox) {
-			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
+			//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1); //dropped this according to instructions from security review
 			$smartyServiceList->assign('searchbox', $this->pi_list_searchBox('',true));
 		}
 
@@ -669,13 +668,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$from  .=	', tx_civserv_navigation, ###NAVIGATION_MM_TABLE###';
 				$where .= 	'AND ###SERVICE_TABLE###.uid = ###NAVIGATION_MM_TABLE###.uid_local
 							 AND ###NAVIGATION_MM_TABLE###.uid_foreign = tx_civserv_navigation.uid
-							 AND tx_civserv_navigation.uid = ' . $this->piVars[id];
+							 AND tx_civserv_navigation.uid = ' . intval($this->piVars[id]);	//SQL-Injection!!!
 				break;
 			case 'organisation':
 				$from  .=	', tx_civserv_organisation, tx_civserv_service_sv_organisation_mm';
 				$where .= 	'AND tx_civserv_service.uid =  tx_civserv_service_sv_organisation_mm.uid_local
 							 AND tx_civserv_service_sv_organisation_mm.uid_foreign = tx_civserv_organisation.uid
-							 AND tx_civserv_organisation.uid = ' . $this->piVars[id];
+							 AND tx_civserv_organisation.uid = ' . intval($this->piVars[id]);	//SQL-Injection!!!
 				break;
 			// not yet implemented in the main() function
 			case 'employee_service_list':
@@ -684,7 +683,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 							 AND tx_civserv_service_sv_position_mm.uid_foreign = tx_civserv_position.uid
 							 AND tx_civserv_employee_em_position.ep_position = tx_civserv_position.uid
 							 AND tx_civserv_employee_em_position.ep_employee = tx_civserv_employee.uid
-							 AND tx_civserv_employee.uid = ' . $this->piVars[id];
+							 AND tx_civserv_employee.uid = ' . intval($this->piVars[id]);	//SQL-Injection!!!
 				break;
 			case 'online_services':
 				$from  .=	', tx_civserv_service_sv_form_mm, tx_civserv_form';
@@ -739,7 +738,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 
 			// services by realnames
-			if($this->previewMode){ //no aliases!
+			if($this->previewMode){ // no aliases! (see above, versionOL can't handle aliases)
 				$query .=	'SELECT ' . ($count?'count(*) ':'tx_civserv_service.uid, tx_civserv_service.pid, tx_civserv_service.hidden, tx_civserv_service.sv_name, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state');
 			}else{
 				$query .=	'SELECT ' . ($count?'count(*) ':'tx_civserv_service.uid, tx_civserv_service.pid, tx_civserv_service.hidden, sv_name AS name, sv_name AS realname, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state');
@@ -766,7 +765,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			if($char != all && $this->previewMode && $regexp){
 				// collect the orig-Ids from all the versions whoes name starts with the letter in question
 				$oid_list=array();
-				//to do: make this query better according to workspace documentation
+				//todo: make this query better according to workspace documentation
 				$res_temp=$GLOBALS['TYPO3_DB']->exec_SELECTquery(
 							't3ver_oid',
 							'tx_civserv_service',
@@ -856,7 +855,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$table = 'tx_civserv_navigation';
 				break;
 			case 'organisation' :
-				// baustelle!
 				$heading = $this->pi_getLL('tx_civserv_pi1_organisation_list.organisation_list','Organisation');
 				// test bk: make it fitting for ms layout
 				#$heading = $this->pi_getLL('tx_civserv_pi1_organisation_list.organisation_list.heading','Organisation');
@@ -904,7 +902,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyTree->assign('content',$content);
 
 		if ($searchBox) {
-			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
+			//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1); //dropped this according to instructions from security review
 			$smartyTree->assign('searchbox', $this->pi_list_searchBox('',true));
 		}
 
@@ -981,7 +979,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		
 		if ($searchBox) {
-			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
+			//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1); //dropped this according to instructions from security review
 			$smartyOrganisationList->assign('searchbox', $this->pi_list_searchBox('',true));
 		}
 		
@@ -1072,7 +1070,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$query = $this->makeEmployeeListQuery($this->piVars[char]);
 		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		$row_counter = 0;
-		$em_org_kombis=array(); //store all kombinations of an employee and his/her employing organisational unit here
+		$em_org_kombis=array(); //store all combinations of an employee and his/her employing organisation unit here
 		$kills=array(); //will be used to eleminate dublicates from the above list
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
 				$employees[$row_counter]['em_uid']=$row['emp_uid'];
@@ -1145,7 +1143,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		
 		if ($searchBox) {
-			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
+			//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1); //dropped this according to instructions from security review
 			$smartyEmployeeList->assign('searchbox', $this->pi_list_searchBox('',true));
 		}
 		
@@ -1285,12 +1283,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$form_row['cat']=$row['ca_name'];
 			}else{
 				if($form_row['typ']== 'e'){ // extra Category for Forms-without-a-category donated by the County, bigger Community, etc....
-					// to do: get locallang......
+					// todo: get locallang......
 					$form_row['cat']='externe Formulare';
 				}
 			}
 			if($form_row['typ']== 'e'){ // highlighting for all Forms donated by the County, bigger Community, etc....
-				// to do: get locallang......
+				// todo: get locallang......
 				// not useful until we can name the donator!
 				// $form_row['name'].=' (externes Formular)';
 			}
@@ -1304,7 +1302,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//ATTENTION: multisort is case sensitive!!!
 		for($i=0; $i<count($all_forms); $i++){
 			if($cat_count > 0){ // mandant uses categories
-				// to do: get text from locallang properly!!!
+				// todo: get text from locallang properly!!!
 				// i.e. only if we want to have an extra categorie for unclassified forms (forms without a category)
 				#$all_forms[$i]['cat']=!$all_forms[$i]['cat']?'nix Zuordnung':$all_forms[$i]['cat'];
 			}else{ // not one category used at the mandant's
@@ -1329,18 +1327,18 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$form_names[$i] = $all_forms[$i]['name'];
 		}
 		
-		//multisort auf $all_forms......
+		//apply multisort() to $all_forms......
 		if(is_array($all_forms) && count($all_forms)>0){
 			array_multisort($category_names, SORT_ASC, $form_names, SORT_ASC, $all_forms);
 		}
-		
 		//reinstate lower_case category_names.....? there shouldn't be any!!!
 		
 		
 		
 		
 		foreach ($all_forms as $single_form) {
-			//test b.k.: get the categories indiviually (because we do not want to lose those forms having no category)
+			//test b.k.: get the categories indiviually (because we do not want to lose those forms 
+			// having no category)
 			//cast value of actual_category into string!
 			if($single_form['cat'] != "".$actual_category){
 				$actual_category =$single_form['cat'];
@@ -1452,7 +1450,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyFormList->assign('pagebar',$this->pi_list_browseresults(true,'', ' '.$this->conf['abcSpacer'].' '));
 
 		if ($searchBox) {
-			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
+			//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1); //dropped this according to instructions from security review
 			$smartyFormList->assign('searchbox', $this->pi_list_searchBox('',true));
 		}
 
@@ -1606,7 +1604,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function do_search(&$smartySearchResult,$searchBox) {
 		$searchString = $this->piVars['sword'];
-		$searchString = ereg_replace('"', '', $searchString);	//Delete quotation marks from search value
+		#$searchString = ereg_replace('"', '', $searchString);	//Delete quotation marks from search value
+		$searchString=$this->check_searchword(strip_tags($searchString)); //strip and check to avoid xss-exploits
 		$sword = preg_split('/[\s,.\"]+/',$searchString);		//Split search string into multiple keywords and store them in an array
 
 		//Set initial where clauses
@@ -1757,7 +1756,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				}
 
 				if ($searchBox) {
-					$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
+					//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1); //dropped this according to instructions from security review
 					$smartySearchResult->assign('searchbox', $this->pi_list_searchBox());
 				}
 
@@ -1815,7 +1814,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyTop15->assign('frequently_visited_label',$this->pi_getLL('tx_civserv_pi1_common.frequently_visited','The following sites are visited frequently'));
 
 		if ($searchBox) {
-			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
+			//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1); //dropped this according to instructions from security review
 			$smartyTop15->assign('searchbox', $this->pi_list_searchBox('',true));
 		}
 
@@ -2035,7 +2034,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$smartyService->assign('abcbarServiceList_continued', $this->makeAbcBar($query, 'service_list'));
 		}
 		
-		$uid = $this->piVars[id];
+		$uid = intval($this->piVars[id]);	//SQL-Injection!!!
 		$community_id = $this->community['id'];
 		$employee = $this->community['employee_search'];
 				
@@ -2174,7 +2173,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//Query for similar services
 		
 		// in case this is an external service the query must be asked differently!!!
-		// baustelle
+		// this is still a building site
 		$from= 'tx_civserv_service AS service,
 						 tx_civserv_service_sv_similar_services_mm AS mm,
 						 tx_civserv_service AS similar';
@@ -2224,7 +2223,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$row_counter++;
 		}
 
-		//Add colomns with url for email form and employee page to array $service_employees and format position description string
+		//Add coloumns with url for email form and employee page to array $service_employees and format position description string
 		for ($i = 0; $i < count($service_employees); $i++) {
 			if($service_employees[$i]['address']==2){
 				$service_employees[$i]['address_long'] = $this->pi_getLL('tx_civserv_pi1_organisation.address_female', 'Ms.');
@@ -2422,7 +2421,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyService->assign('link_to_top',$this->pi_getLL('tx_civserv_pi1_service.link_to_top','Jump label to the beginning of this page'));
 
 		if ($searchBox) {
-			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
+			//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1); //dropped this according to instructions from security review
 			$smartyService->assign('searchbox', $this->pi_list_searchBox('',true));
 		}
 
@@ -2442,9 +2441,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'',
 						'');
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-		$log_interval = intval($row[cf_value]);//warum nicht $row['cf_value']
+		$log_interval = intval($row[cf_value]);
 		$accesslog = t3lib_div::makeInstance('tx_civserv_accesslog');
-		$accesslog->update_log($uid,$log_interval, $_SERVER['REMOTE_ADDR']);
+		$accesslog->update_log($uid,$log_interval, long2ip(ip2long($_SERVER['REMOTE_ADDR'])));
 
 		//Title for the Indexed Search Engine
 		$GLOBALS['TSFE']->indexedDocTitle = $service_common[sv_name];
@@ -2483,7 +2482,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
 	function employeeDetail(&$smartyEmployee,$searchBox) {
-		$uid = $this->piVars[id];
+		$uid = intval($this->piVars[id]);	//SQL-Injection!!!
 		$pos_id = $this->piVars[pos_id];
 
 		//Standard query for employee details
@@ -2605,40 +2604,39 @@ class tx_civserv_pi1 extends tslib_pibase {
 					'',
 					'');
 
-		//Assign employee position data
-		$employee_position = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_position);
-		$employee_position['or_link'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'organisation', id => $employee_position['or_uid']),1,1));
-		if($employee_position['building_to_show'] > ''){
-			$employee_position['building'] = $employee_position['building_to_show'];
-		}
-		$smartyEmployee->assign('position',$employee_position);
-
-		//Assign employee-position working hours
-		$row_counter = 0;
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_pos_hours) ){	
-			$emp_pos_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
-			$emp_pos_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
-			$emp_pos_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
-			$emp_pos_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
-			$emp_pos_hours[$row_counter]['end_afternoon'] = $row[oh_end_afternoon];
-			$emp_pos_hours[$row_counter]['freestyle'] = $row[oh_freestyle];
-			$row_counter++;
-		}
-		$smartyEmployee->assign('emp_pos_hours',$emp_pos_hours);
-
-		//Assign employee-organisation working hours
-		$row_counter = 0;
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_org_hours) ){	
-			$emp_org_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
-			$emp_org_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
-			$emp_org_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
-			$emp_org_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
-			$emp_org_hours[$row_counter]['end_afternoon'] = $row[oh_end_afternoon];
-			$emp_org_hours[$row_counter]['freestyle'] = $row[oh_freestyle];
-			$row_counter++;
-		}
-		$smartyEmployee->assign('emp_org_hours',$emp_org_hours);
-
+			//Assign employee position data
+			$employee_position = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_position);
+			$employee_position['or_link'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'organisation', id => $employee_position['or_uid']),1,1));
+			if($employee_position['building_to_show'] > ''){
+				$employee_position['building'] = $employee_position['building_to_show'];
+			}
+			$smartyEmployee->assign('position',$employee_position);
+	
+			//Assign employee-position working hours
+			$row_counter = 0;
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_pos_hours) ){	
+				$emp_pos_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
+				$emp_pos_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
+				$emp_pos_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
+				$emp_pos_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
+				$emp_pos_hours[$row_counter]['end_afternoon'] = $row[oh_end_afternoon];
+				$emp_pos_hours[$row_counter]['freestyle'] = $row[oh_freestyle];
+				$row_counter++;
+			}
+			$smartyEmployee->assign('emp_pos_hours',$emp_pos_hours);
+	
+			//Assign employee-organisation working hours
+			$row_counter = 0;
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_org_hours) ){	
+				$emp_org_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
+				$emp_org_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
+				$emp_org_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
+				$emp_org_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
+				$emp_org_hours[$row_counter]['end_afternoon'] = $row[oh_end_afternoon];
+				$emp_org_hours[$row_counter]['freestyle'] = $row[oh_freestyle];
+				$row_counter++;
+			}
+			$smartyEmployee->assign('emp_org_hours',$emp_org_hours);
 		} //End if additional queries
 
 		$employee_rows = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_common);
@@ -2711,7 +2709,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 
 		if ($searchBox) {
-			$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1);
+			//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1); //dropped this according to instructions from security review
 			$smartyTop15->assign('searchbox', $this->pi_list_searchBox('',true));
 		}
 		$GLOBALS['TSFE']->page['title']=$this->pi_getLL('tx_civserv_pi1_employee.employee_plural','Employees');
@@ -2732,9 +2730,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$query = $this->makeOrganisationListQuery(all,false);
 			$smartyOrganisation->assign('abcbarOrganisationList_continued', $this->makeAbcBar($query, 'organisation_list'));
 		}
-		$uid = $this->piVars[id];
+		$uid = intval($this->piVars[id]);	//SQL-Injection!!!
 
-		//Standard query for organisation details
+		// Standard query for organisation details
 		// test bk: include or_show_supervisor
 		$res_common = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'uid, 
@@ -2823,8 +2821,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		$organisation_rows = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_common);
 		
-		// test bk: 
-		// query for sub_organisations, 
+		// test bk: query for sub_organisations, 
 		// they will be exposed somewhere in the organisation_detail page
 		$sub_organisations=array();
 		$res_sub_org = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -2846,8 +2843,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		if($this->conf['showSubOrganisations'] && $row_count_sub_orgs>0)$smartyOrganisation->assign('sub_organisations',$sub_organisations);//!!!!
 		
-		// test bk: 
-		// query for super_organisation, 
+		// test bk: query for super_organisation, 
 		// they will be exposed somewhere in the organisation_detail page
 		$super_organisation=array();
 		$res_super_org = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -3565,7 +3561,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$smartyDebitForm->assign('service_uid',$service[uid]);
 			$smartyDebitForm->assign('service_name',$service[sv_name]);
 
-		} else {  //Debit form was called from servie list
+		} else {  //Debit form was called from service list
 			$community_id = $this->community['id'];
 			$transaction_key = 'debit_authorisation';
 
@@ -3706,7 +3702,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		if ($is_valid) {
 			//Store entry in database
-			$ip = $_SERVER['REMOTE_ADDR'];
+			$ip = long2ip(ip2long($_SERVER['REMOTE_ADDR']));
 			$time = time();
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_civserv_transaction_debit_authorisation',
 												   array(	"tstamp" => $time,
@@ -3793,6 +3789,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	function formatStr($str)	{
 		if (is_array($this->conf["general_stdWrap."]))	{
 			$str = $this->local_cObj->stdWrap($str,$this->conf["general_stdWrap."]);
+
 		}
 		return $str;
 	}
@@ -3861,7 +3858,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		);
 		if($res){
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res); 
-			$hoster_email = $row['cf_value'];//oder $row[cf_value]
+			$hoster_email = $row['cf_value'];
 		}else{
 			$hoster_email = "info@some_hoster.de";
 		}
@@ -3896,17 +3893,30 @@ class tx_civserv_pi1 extends tslib_pibase {
 	/**
 	 * Overwrites the same function from the parent class tslib_pibase. Does the same, but uses no tables and is optimized for accessibility.
 	 * Returns a Search box, sending search words to piVars "sword" and setting the "no_cache" parameter as well in the form.
-	 * Submits the search request to the current REQUEST_URI
+	 * no longer Submits the search request to the current REQUEST_URI but to search_mode-enhanced URL
 	 *
 	 * @param	string		Attributes for the div tag which is wrapped around the table cells containing the search box
 	 * @param	boolean		If true, a heading for the search box is printed
 	 * @return	string		Output HTML, wrapped in <div>-tags with a class attribute
 	 */
 	function pi_list_searchBox($divParams='',$header=false) {
+		// the $sBox search-form gets displayed on the result-page of the search accomplished by $this->do_search
+		// searchword is run against white list (here and in do_search) by $this->check_searchword
+	
+
 		// Search box design:
 		if ($this->piVars[sword] <= '') {
 			 $this->piVars[sword] = $this->pi_getLL('pi_list_searchBox_defaultValue','search item');
 		}
+		// changed action tag according to instructions from security review:
+		// dropped:		<form method="post" action="'.htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')).'" style="margin: 0 0 0 0;" >
+		// introduced:	<form method="post" action="'.htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1)).'" style="margin: 0 0 0 0;" >
+		
+		
+		
+		//  $this->pi_classParam('searchbox-sword') contains the markup for css: 'class="tx-civserv-pi1-searchbox-sword"'
+		$search_word=$this->check_searchword(strip_tags($this->piVars['sword']));  //strip and check to avoid xss-exploits
+
 		$sBox = '
 
 		<!--
@@ -3914,14 +3924,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 		-->
 
 		<div' . $this->pi_classParam('searchbox') . '>
-			<form method="post" action="'.htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')).'" style="margin: 0 0 0 0;" >
+			<form method="post" action="'.htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1)).'" style="margin: 0 0 0 0;" >
 				<fieldset>
         				<legend>' . $this->pi_getLL('pi_list_searchBox_searchform','Search form') . '</legend>
           				<div class="searchform" ' . trim($divParams) . '>
             				<p><label for="query" title="' . $this->pi_getLL('pi_list_searchBox_searchkey','Please enter here your search key') . '">' .
             					($header?'<strong>' . $this->pi_getLL('pi_list_searchBox_header','Keyword search') . ':</strong><br />':'') .
             				'</label></p>
-           					<input type="text" name="' . $this->prefixId . '[sword]" id="query" class="searchkey" size="16" maxlength="60" value="' . htmlspecialchars($this->piVars['sword']) . '"' . $this->pi_classParam('searchbox-sword') . ' onblur="if(this.value==\'\') this.value=\'' . htmlspecialchars($this->piVars['sword']) . '\';" onfocus="if(this.value==\'' . $this->pi_getLL('pi_list_searchBox_defaultValue','search item') . '\') this.value=\'\';" />
+           					<input type="text" name="' . $this->prefixId . '[sword]" id="query" class="searchkey" size="16" maxlength="60" value="' . htmlentities($search_word) . '"' . $this->pi_classParam('searchbox-sword') . ' onblur="if(this.value==\'\') this.value=\'' . htmlentities($search_word) . '\';" onfocus="if(this.value==\'' . $this->pi_getLL('pi_list_searchBox_defaultValue','search item') . '\') this.value=\'\';" />
             				<input type="submit" value="' . $this->pi_getLL('pi_list_searchBox_search','Search',TRUE) . '"' . $this->pi_classParam('searchbox-button') . ' accesskey="S" title="' . $this->pi_getLL('pi_list_searchBox_submit','Klick here, to submit the search query') . '"/>
             				<input type="hidden" name="no_cache" value="1" />
             				<input type="hidden" name="'.$this->prefixId.'[pointer]" value="" />
@@ -3929,7 +3939,6 @@ class tx_civserv_pi1 extends tslib_pibase {
        			</fieldset>
      		 </form>
 		</div>';
-
 		return $sBox;
 	}
 
@@ -3981,7 +3990,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			for($i=0;$i<$max;$i++)  {
 				// check that the starting point (equivalent of $pR1) doesn't exceed the total $count
 				if($a*$results_at_a_time+1>$count){
-					$i=$max; //quit!!!
+					$i=$max; //quitt!!!
 				}else{	
 					$links[]=sprintf('%s'.$this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page','Page',TRUE).' '.($a+1)),array('pointer'=>($a?$a:'')),1).'%s',
 								($pointer==$a?'<span '.$this->pi_classParam('browsebox-SCell').'><strong>':''),
@@ -4075,7 +4084,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$this->piVars[community_id] = $_SESSION['community_id'];
 		}
 		
-		//test bk: Münster, name them so you can sort them!
+		//test bk: you might want to control the display-order of menu (via $conf). Name them so you can sort them!
 		if ($conf['menuServiceList']) {
 			$menuArray['menuServiceList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.service_list','Services A - Z'),
@@ -4148,7 +4157,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		
 		
-		//test bk: münster: andere reihenfolge
+		//test bk: city of Münster: define first menu-item via $conf!
 		if ($conf['menuItems_01'] > '' && $conf[$conf['menuItems_01']]) {
 			$first = $menuArray[$conf['menuItems_01']];
 			unset($menuArray[$conf['menuItems_01']]);
@@ -4312,23 +4321,23 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}elseif($this->piVars[mode]=="employee"){
 			return $_SESSION['stored_pagelink'];
 		}elseif($this->piVars[mode]==""){
-			// bedeutet ich befinde mich auf Seite außerhalb des Seitenbaums des virtuellen Rathaus --> will keine osiris-breadcrumb
-			// oder auf einer Info-Seite --> will osiris-breadcrumb einblenden, Parent-Ordner der Infoseiten wird bei Mandanten konfiguration eingetragen!
+			// no mode means either it is a page outside the pagetree of civserv --> do not display custom breadcrumb!
+			// or else it is an Info-Page belonging to civserv --> do display custom breadcrumb! The pid of info-pages is available from tx_civserv_conf_mandant!
 			if(in_array($_SESSION['info_folder_uid'], $parent_list)){ 
-				$breadcrumb = $_SESSION['info_sites']; //Zuständigkeiten A-Z
-				$breadcrumb .=  $_SESSION['stored_pagelink']; //Dienstleistung
+				$breadcrumb = $_SESSION['info_sites']; //Organisations A-Z
+				$breadcrumb .=  $_SESSION['stored_pagelink']; //Services
 				return $breadcrumb;
 			 	#return '<span style="border:solid red 1px;">'.$breadcrumb.'</span>';
 			 }else{
 			 	return '';
 			 }
 		}else{
-			// there is a mode - but none of the above-mentioned
+			// there is a mode - but none of the above-mentioned (e.g. a mode belonging to another extension)
 			return '';
 			#return '<span style="border:solid blue 1px;">'.$this->piVars[mode].'</span>';
 		}
 		if(!$pageid == $_SESSION['page_uid'] && !$pageid == $_SESSION['alternative_page_uid']){
-			return ''; // only the pages of the virtual townhall (whoes FE always happens in the one and same page) want to have this user-breadcrumb
+			return ''; // generally only the civserv display-pages need to have custom-breadcrumb
 		}
 		return $this->getCompletePageLink($pageLink, $linkText);
 		#return '<span style="border:solid green 1px;">'.$this->getCompletePageLink($pageLink, $linkText).'</span>';
@@ -4342,7 +4351,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$pageid = $GLOBALS['TSFE']->id;
 		}
 		$linkText=$GLOBALS['TSFE']->page['title'];
-		 // bei Organisationen brauchen wir einen anderen Linktext
+		 // mark: for organisations we need a different linktext
 		 
 		 //tx_civserv_pi1_organisation_list.organisation_list.heading
 
@@ -4357,7 +4366,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//third parameter ist for the elemination of all piVars. must not be set in this case or else link won't work! (id of service goes missing)
 		$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => $this->piVars[mode]),1,0,$pageid);
 		if(!$pageid == $_SESSION['page_uid'] && !$pageid == $_SESSION['alternative_page_uid']){
-			return ''; //only the pages of the virtual townhall (whoes FE always happens in the one and same page) want to have this user-breadcrumb
+			return ''; // generally only the civserv display-pages need to have custom-breadcrumb
 		}
 		return $this->getCompletePageLink($pageLink, $linkText);
 		#return '<span style="border:solid blue 1px;">'.$this->getCompletePageLink($pageLink, $linkText).'</span>';
@@ -4370,16 +4379,58 @@ class tx_civserv_pi1 extends tslib_pibase {
 		return $completePageLink;
 	}
 	
-		/******************************
+	
+	 /*******************************************
+	 *
+	 * Function for white-listing search words
+	 *
+	 ********************************************/
+	function check_searchword($string){
+		//white list
+		$searchword_pattern = '/^[A-Za-z0-9ÄäÖöÜüß\- ]*$/';
+		if(!preg_match($searchword_pattern, $string)){
+			//collect all occurring illegal characters
+			#$arr_bad_chars=array();
+			foreach (count_chars($string, 1) as $i => $val) {
+				if(!preg_match($searchword_pattern, chr($i))){
+					#$arr_bad_chars[]=chr($i);
+					$string = str_replace(chr($i),"",$string);
+				}
+			}
+		}
+		#debug($arr_bad_chars, 'arr_bad_chars');
+		return $string;
+	}
+
+	
+	 /******************************
 	 *
 	 * Functions for Custom-Links
 	 *
 	 *******************************/
+	function replace_umlauts($string){
+		// remove all kinds of umlauts
+		$umlaute = Array("/ä/","/ö/","/ü/","/Ä/","/Ö/","/Ü/","/ß/", "/é/"); //should use hexadecimal-code for é à etc????
+		$replace = Array("ae","oe","ue","Ae","Oe","Ue","ss", "e");
+		$string = preg_replace($umlaute, $replace, $string);
+		
+		//eliminate:
+		$string=str_replace(".", "", $string);			// 'Bücherei Zweigstelle Wolbecker Str.'				--> buecherei_zweigstelle_wolbecker_str.html
+		$string=str_replace(" - ", "-", $string);		// 'La Vie - Begegnungszentrum Gievenbeck'				--> la_vie-begegnungszentrum_gievenbeck.html
+		$string=str_replace("- ", "-", $string);		// 'Veterinär- und Lebensmittel...'						--> veterinaer-und_lebensmittel.html
+		$string=str_replace("-, ", " ", $string);		// 'Amt für Stadt-, Verkehrs- und Parkplatzplanung'		--> amt_fuer_stadt_verkehrs_und_parkplatzplanung.html
+		$string=str_replace(",", "", $string);			// 'Ich, du, Müllers's Kuh'								--> ich_du_muellers_kuh.html
+		$string=str_replace(": ", " ", $string);		// 'Gesundheitsamt: Therapie und Hilfe sofort'			--> gesundheitsamt_therapie_und_hilfe_sofort.html
 
-	
+		//make blanks:
+		$string=str_replace("+", " ", $string);			// 'Wohn + Stadtbau'
+		$string=str_replace("&", " ", $string);			// 'Ich & Ich'
+		$string=str_replace("/", " ", $string);			// 'Feuerwehr/Rettungsdienst'
+		$string=str_replace("\\", " ", $string);		// 'Eins\Zwei\Drei'
+		return $string;
+	}
 
-	
-	
+
 	function strip_extra($string){
 		// Mobilé (Zentrum für clevere Verkehrsnutzung) => Mobile.html
 		$string=trim(ereg_replace("\([^\)]*\)", "", $string));
@@ -4394,7 +4445,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 		return $string;
 	}
 	
-	//get all the parents!!!!
+	
+	
+	 /*********************************************************************************
+	 *
+	 * Function for including external info-pages in custom-breadccrumb navigation
+	 *
+	 **********************************************************************************/
+	//get all the parents!!!! (inversion of pid_list which'll contain all the children)
 	function get_Parent_list($result, $parent_list){
 		global $parent_list;
 		if($result){
