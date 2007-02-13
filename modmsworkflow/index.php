@@ -129,9 +129,19 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 		$this->content.=$this->doc->spacer(5);
 
 		// Render content:
-		$case = t3lib_div::_GP('case');
-		$uid = t3lib_div::_GP('uid');
-		$responsible = t3lib_div::_GP('responsible');
+		// in order to prevent SQL-Injection from BE the values get white-listed:
+		// todo: control all GB-values!
+		$arrCases=array("view", "approve", "revise");
+		$arrResponsible=array("one", "two", "both");
+		$case = ""; //default
+		if(in_array(t3lib_div::_GP('case'), $arrCases)){
+			$case = t3lib_div::_GP('case');
+		}
+		$uid = intval(t3lib_div::_GP('uid'));
+		$responsible = "one";
+		if(in_array(t3lib_div::_GP('responsible'), $arrResponsible)){
+			$responsible = t3lib_div::_GP('responsible');
+		}
 		$abort = $HTTP_POST_VARS['abort'];
 
 		if (isset($abort)){
@@ -302,7 +312,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 			if (empty($comment)) $checked = false;
 		}
 
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+		//$GLOBALS['TYPO3_DB']->debugOutput = TRUE; //debugging - only in test-sites!
 
 		if ((empty($submit) || (!$checked)) && empty($abort)){
 			if ($responsible=="both") $responsible="one";
@@ -590,7 +600,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 		';
 
 			//Query to get image_folder for model srevices
-		$GLOBALS['TYPO3_DB']->debugOutput=true;
+		//$GLOBALS['TYPO3_DB']->debugOutput=true; //debugging only in test-sites
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'cf_value',			 							// SELECT ...
 			'tx_civserv_configuration',		// FROM ...

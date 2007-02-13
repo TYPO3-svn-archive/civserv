@@ -142,15 +142,15 @@ $TYPO3_CONF_VARS["BE"]["XCLASS"]["typo3/class.db_list_extra.inc"] = t3lib_extMgm
 $TYPO3_CONF_VARS["BE"]['XCLASS']['typo3/class.browse_links.php'] = t3lib_extMgm::extPath($_EXTKEY).'class.ux_browseLinks.php';
 $TYPO3_CONF_VARS["BE"]["XCLASS"]["typo3/template.php"]= t3lib_extMgm::extPath($_EXTKEY).'class.ux_template.php';
 
-$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_floorbuild.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_floorbuild.php';
-$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_oepupdate.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_oepupdate.php';
-$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_mandant.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_mandant.php';
-$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_ms_maintenance.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_ms_maintenance.php';
-$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_commit.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_commit.php';
-$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_service_maintenance.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_service_maintenance.php';
-$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_weekday_maintenance.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_weekday_maintenance.php';
-
-$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_user_be_msg.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_user_be_msg.php';
+// superfluous declaration of civserv - res - classes. eleminate thes following lines in next version (if this runs well without them)
+#$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_floorbuild.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_floorbuild.php';
+#$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_oepupdate.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_oepupdate.php';
+#$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_mandant.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_mandant.php';
+#$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_ms_maintenance.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_ms_maintenance.php';
+#$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_commit.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_commit.php';
+#$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_service_maintenance.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_service_maintenance.php';
+#$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_weekday_maintenance.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_weekday_maintenance.php';
+#$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_user_be_msg.php']=t3lib_extMgm::extPath($_EXTKEY).'res/class.tx_civserv_user_be_msg.php';
 
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc'][] = 'tx_civserv_commit->update_postAction'; //call user function
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:civserv/res/class.tx_civserv_commit.php:&tx_civserv_commit';
