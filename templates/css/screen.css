@@ -190,7 +190,9 @@ html #right {
 	clear: both; 
 	width: 100%; 
 	color: #000000; 
-	position: relative; 
+	xposition: relative; /* nicht nötig? rausgenommen für ie7, s.u. */
+	position: fixed; /* ie7 */
+	bottom: 0px; /* ie7 */
 	height: 4.2em;
 	background-color: #ffffff;
 	background: url(../images/bgs/footer.gif) repeat-x #ffffff;

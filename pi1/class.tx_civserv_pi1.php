@@ -947,9 +947,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$organisations[$row_counter]['name'] = $row['name'] . ' (= ' . $row['realname'] . ')';
 			}
 			if(!$this->conf['useCustomLinks_Organisations']){
-				$organisations[$row_counter]['or_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'organisation',id => $row[or_uid]),1,1));
+				$organisations[$row_counter]['or_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'organisation',id => $row['or_uid']),1,1));
 			}else{
-				$organisations[$row_counter]['or_url'] = strtolower($this->convert_plus_minus(urlencode($this->replace_umlauts($this->strip_extra($row['realname']."_".$row['uid']))))).".html";
+				$organisations[$row_counter]['or_url'] = strtolower($this->convert_plus_minus(urlencode($this->replace_umlauts($this->strip_extra($row['realname']."_".$row['or_uid']))))).".html";
 			}
 			$row_counter++;
 		}
@@ -1956,6 +1956,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$orderby='or1.sorting, or2.sorting';
 		}
 		if ($mode == 'organisation_tree') {
+			debug($orderby, '$orderby');
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 								'or1.uid as uid, or1.or_code as code, or1.or_name as name',
 								'tx_civserv_organisation as or1,tx_civserv_organisation_or_structure_mm as ormm,tx_civserv_organisation as or2',
@@ -2072,6 +2073,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		
 		//Check if service is an external service and swap the pid_list if it is! so you can show the right contact persons!!
 		if (!array_key_exists($service_common['pid'],array_flip(explode(',',$this->community[pidlist])))) {
+			$article='';
 			$mandant = t3lib_div::makeInstanceClassName('tx_civserv_mandant');
 			$mandantInst = new $mandant();
 			$service_community = $mandantInst->get_mandant($service_common['pid']);
@@ -2083,7 +2085,22 @@ class tx_civserv_pi1 extends tslib_pibase {
 											'tx_civserv_conf_mandant',
 											'cm_community_id = ' . $service_community);
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-			$smartyService->assign('external_service_label',$this->pi_getLL('tx_civserv_pi1_service.external_service','This service is provided and advised by') . ': ' . $row['cm_community_name']);
+			//todo: get $article from locallang
+			$town=explode(' ',$row['cm_community_name']);
+			switch($town[0]){
+				case 'Stadt':
+					$article= 'die ';
+				break;
+				case 'Gemeinde':
+					$article= 'die ';
+				break;
+				case 'Kreis':
+					$article= 'den ';
+				break;
+				default:
+				break;	
+			}
+			$smartyService->assign('external_service_label',$this->pi_getLL('tx_civserv_pi1_service.external_service','This service is provided and advised by') . ' ' . $article . $row['cm_community_name']);
 			$service_pidlist= $this->pi_getPidList($row['cm_uid'],$this->conf['recursive']);
 			$service_common['typ']='e';
 		} else {
@@ -2145,7 +2162,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 ep_email, 
 						 em_datasec as em_datasec,
 						 ep_datasec as ep_datasec', // additional
-						'tx_civserv_service, tx_civserv_service_sv_position_mm, tx_civserv_position, tx_civserv_employee, tx_civserv_employee_em_position_mm',
+						'tx_civserv_service, 
+						 tx_civserv_service_sv_position_mm, 
+						 tx_civserv_position, 
+						 tx_civserv_employee, 
+						 tx_civserv_employee_em_position_mm',
 						'tx_civserv_service.uid = ' . $uid . '
 						 AND tx_civserv_service.deleted=0 AND tx_civserv_service.hidden=0
 						 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
@@ -2215,6 +2236,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 
 		$service_employees = $this->sql_fetch_array_r($res_employees);
+		debug($service_employees, '$service_employees');
 
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_similar))	{
@@ -2585,7 +2607,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 					 ep_email as email, 
 					 or_name as organisation',
 					'tx_civserv_employee, tx_civserv_position, tx_civserv_room, tx_civserv_floor, tx_civserv_organisation, tx_civserv_building, tx_civserv_employee_em_position_mm, tx_civserv_building_bl_floor_mm, tx_civserv_position_po_organisation_mm',
-					'tx_civserv_employee.uid='.$uid.' AND em_datasec=1 AND tx_civserv_position.uid = '.$pos_id.'
+					'tx_civserv_employee.uid='.$uid.' 
+					 AND em_datasec=1 
+					 AND tx_civserv_position.uid = '.$pos_id.'
 					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 					 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
 					 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
@@ -3843,7 +3867,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	function get_hoster_email()	{
 		// some mandants may have configured an individual hoster_email in their TS-Template
 		if(!empty($this->conf['contact_email']) && t3lib_div::validEmail($this->conf['contact_email'])){
-			#return $this->conf['contact_email'];
+			return $this->conf['contact_email'];
 		}
 		
 		// default: take the email-adress given in tx_civserv_configuration

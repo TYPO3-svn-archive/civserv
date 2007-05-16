@@ -238,6 +238,7 @@ $LOCAL_LANG = Array (
 		'tx_civserv_pi1_weekday_301' => 'Holiday',
 		'tx_civserv_pi1_weekday_302' => 'Sun- and Holiday',
 		'tx_civserv_pi1_weekday_401' => 'Extra hours',
+		'tx_civserv_pi1_weekday_402' => 'Please note',
 		'tx_civserv_pi1_community_choice.notice' => 'The following information is related to ###COMMUNITY_NAME###.',
 		'tx_civserv_pi1_community_choice.link_text' => 'Click here, to choose another community.',
 	),
@@ -399,7 +400,7 @@ $LOCAL_LANG = Array (
 		'tx_civserv_pi1_search_result.service' => 'Gefundene Dienstleistungen',
 		#'tx_civserv_pi1_service.service' => 'Zuständigkeiten A-Z', // modification
 		'tx_civserv_pi1_service.service' => 'Anliegen A-Z', // modification
-		'tx_civserv_pi1_service.external_service' => 'Für diese Dienstleistung wenden Sie sich bitte an',
+		'tx_civserv_pi1_service.external_service' => 'Für diese Dienstleistung wenden Sie sich bitte an ',
 		'tx_civserv_pi1_service.name' => 'Name des Anliegens',
 		'tx_civserv_pi1_service.ext_service' => 'Bei dieser Dienstleistung handelt es sich um eine externe Dienstleistung. Details zu dieser Dienstleistung finden sie unter folgendem Link',
 		'tx_civserv_pi1_service.description' => 'Beschreibung',
@@ -453,6 +454,7 @@ $LOCAL_LANG = Array (
 		'tx_civserv_pi1_weekday_301' => 'An Feiertagen',
 		'tx_civserv_pi1_weekday_302' => 'Sonn- und Feiertags',
 		'tx_civserv_pi1_weekday_401' => 'zusätzlich',
+		'tx_civserv_pi1_weekday_402' => 'Hinweis',
 		'tx_civserv_pi1_community_choice.notice' => 'Die folgenden Informationen beziehen sich auf: ###COMMUNITY_NAME###.',
 		'tx_civserv_pi1_community_choice.link_text' => 'Klicken Sie hier, um einen anderen Ort einzustellen.',
 	),

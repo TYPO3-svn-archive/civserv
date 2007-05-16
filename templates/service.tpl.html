@@ -181,24 +181,22 @@
 					<!--{if $employee.title > ''}-->{$employee.title}<!--{/if}-->	
 					{$employee.firstname}&nbsp;{$employee.name}</strong><br />
 				<!--{/if}-->
-			<!--{/if}-->
-			<!--{if $employee.email_code != ""}-->
-				{$email_label}: {$employee.email_code}<br />	
-			<!--{/if}-->		
-			<!--{if $employee.ep_telephone != ""}-->
-				{$phone_label}: {$employee.ep_telephone}<br />
-			<!--{elseif $employee.em_telephone != ""}-->
-				{$phone_label}: {$employee.em_telephone}<br />
-			<!--{/if}-->		
-			
-			<!--{if $employee.description != ""}-->
-				{$employee.description}<br />
-			<!--{/if}-->
-			
-			<!--{if $employee.ep_email != ""}-->
-				<a href="{$employee.email_form_url}" class="link">{$web_email_label}</a><br /><br />
-			<!--{elseif $employee.em_email != ""}-->
-				<a href="{$employee.email_form_url}" class="link">{$web_email_label}</a><br /><br />
+				<!--{if $employee.email_code != ""}-->
+					{$email_label}: {$employee.email_code}<br />	
+				<!--{/if}-->		
+				<!--{if $employee.ep_telephone != ""}-->
+					{$phone_label}: {$employee.ep_telephone}<br />
+				<!--{elseif $employee.em_telephone != ""}-->
+					{$phone_label}: {$employee.em_telephone}<br />
+				<!--{/if}-->		
+				<!--{if $employee.description != ""}-->
+					{$employee.description}<br />
+				<!--{/if}-->
+				<!--{if $employee.ep_email != ""}-->
+					<a href="{$employee.email_form_url}" class="link">{$web_email_label}</a><br /><br />
+				<!--{elseif $employee.em_email != ""}-->
+					<a href="{$employee.email_form_url}" class="link">{$web_email_label}</a><br /><br />
+				<!--{/if}-->
 			<!--{/if}-->
 			</p>
 		<!--{/foreach}-->
