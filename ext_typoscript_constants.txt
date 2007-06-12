@@ -160,6 +160,10 @@ showSuperOrganisation = 1
 selectBuildingsToShow = 0
 
 
+# show office_hour_labels like 'in the morning' and 'in the afternoon'
+showOhLabels = 1
+
+
 
 # Enable/disable menu-items
 menuServiceList = 1

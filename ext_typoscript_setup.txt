@@ -108,6 +108,7 @@ plugin.tx_civserv_pi1 {
 	showSubOrganisations = {$showSubOrganisations}
 	showSuperOrganisation = {$showSuperOrganisation}
 	selectBuildingsToShow = {$selectBuildingsToShow}
+	showOhLabels = {$showOhLabels}
 
 
 	general_stdWrap.parseFunc.nonTypoTagStdWrap.encapsLines { 
