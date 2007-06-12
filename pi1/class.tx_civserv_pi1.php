@@ -2719,10 +2719,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyEmployee->assign('working_hours_label',$this->pi_getLL('tx_civserv_pi1_employee.hours','Working hours'));
 		$smartyEmployee->assign('office_hours_summary',str_replace('###EMPLOYEE###',$employee_rows[em_firstname] . ' ' . $employee_rows[em_name],$this->pi_getLL('tx_civserv_pi1_employee.officehours','In the table are the office hours of ###EMPLOYEE### shown.')));
 		if($this->conf['showOhLabels']){
-			$smartyEmployee->assign('weekday',$this->pi_getLL('tx_civserv_pi1_weekday','Weekday'));
-			$smartyEmployee->assign('morning',$this->pi_getLL('tx_civserv_pi1_organisation.morning','mornings'));
-			$smartyEmployee->assign('afternoon',$this->pi_getLL('tx_civserv_pi1_organisation.afternoon','in the afternoon'));
+			//default
+		}else{
+			$smartyEmployee->assign('supress_labels', 'invisible');
 		}
+		$smartyEmployee->assign('weekday',$this->pi_getLL('tx_civserv_pi1_weekday','Weekday'));
+		$smartyEmployee->assign('morning',$this->pi_getLL('tx_civserv_pi1_organisation.morning','mornings'));
+		$smartyEmployee->assign('afternoon',$this->pi_getLL('tx_civserv_pi1_organisation.afternoon','in the afternoon'));
+
 		$smartyEmployee->assign('organisation_label',$this->pi_getLL('tx_civserv_pi1_employee.organisation','Organisation'));
 		$smartyEmployee->assign('room_label',$this->pi_getLL('tx_civserv_pi1_employee.room','Room'));
 		//the image_employee_label is not being used yet
@@ -3069,10 +3073,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyOrganisation->assign('employee_details',$this->pi_getLL('tx_civserv_pi1_organisation.employee_details','Jumps to a page with details of this employee'));
 		$smartyOrganisation->assign('office_hours_summary',str_replace('###ORGANISATION###',$organisation_rows[or_name],$this->pi_getLL('tx_civserv_pi1_organisation.officehours','In the table are the office hours of ###ORGANISATION### shown.')));
 		if($this->conf['showOhLabels']){
-			$smartyOrganisation->assign('weekday',$this->pi_getLL('tx_civserv_pi1_weekday','Weekday'));
-			$smartyOrganisation->assign('morning',$this->pi_getLL('tx_civserv_pi1_organisation.morning','in the morning'));
-			$smartyOrganisation->assign('afternoon',$this->pi_getLL('tx_civserv_pi1_organisation.afternoon','in the afternoon'));
-		}
+			//default
+		}else{
+			$smartyOrganisation->assign('supress_labels', 'invisible');
+		}			
+		$smartyOrganisation->assign('weekday',$this->pi_getLL('tx_civserv_pi1_weekday','Weekday'));
+		$smartyOrganisation->assign('morning',$this->pi_getLL('tx_civserv_pi1_organisation.morning','in the morning'));
+		$smartyOrganisation->assign('afternoon',$this->pi_getLL('tx_civserv_pi1_organisation.afternoon','in the afternoon'));
 
 		if (intval($organisation_supervisor[em_address]) == 2) {
 			$smartyOrganisation->assign('su_address_label',$this->pi_getLL('tx_civserv_pi1_organisation.address_female','Mrs.'));

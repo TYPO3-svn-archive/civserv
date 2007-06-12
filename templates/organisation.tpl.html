@@ -90,9 +90,15 @@
 				<caption>{$office_hours_label}:</caption>
 				<thead>
 					<tr>
+					<!--{if $supress_labels > ''}-->
+						<th class="invisible">{$weekday}</th>
+						<th class="invisible">{$morning}</th>
+						<th class="invisible">{$afternoon}</th>
+					<!--{else}-->
 						<th>{$weekday}</th>
 						<th>{$morning}</th>
 						<th>{$afternoon}</th>
+					<!--{/if}-->	
 					</tr>
 				</thead>
 				<tbody>
