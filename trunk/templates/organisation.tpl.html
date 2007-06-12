@@ -1,0 +1,137 @@
+<!--TYPO3SEARCH_begin-->
+{* unneccessary comment for testing *}
+<!--{if $abcbarOrganisationList_continued != ""}-->
+	{$abcbarOrganisationList_continued}
+<!--{/if}-->
+<div class="orgadetail">
+	<!--{if $or_image != ""}-->
+		<span style="float:right;padding:10px">
+			{$or_image}
+		</span>
+	<!--{/if}-->
+	<!--{if $bl_available == 1}-->
+		<strong>{$building_address_label}:</strong><br/>
+		<!--{foreach from=$buildings item=building}-->
+			<!--{if $building.bl_building_street != "" OR $building.bl_building_postcode != "" OR $building.bl_building_city != ""}-->
+				<!--{if $building.bl_name_to_show != ""}-->
+					{$building.bl_name_to_show}<br />
+				<!--{/if}-->
+				{$building.bl_building_street}<br/>
+				{$building.bl_building_postcode}&nbsp;{$building.bl_building_city}<br />
+			<!--{/if}-->
+			<!--{if $building.bl_pubtrans_stop != ""}-->
+				{$pub_trans_info_label}:
+				<!--{if $building.bl_pubtrans_link != ""}-->
+					{$pub_trans_stop_label}:&nbsp;<a href="{$building.bl_pubtrans_link}" target="_blank">{$building.bl_pubtrans_stop}</a><br />
+				<!--{else}-->
+					{$pub_trans_stop_label}:&nbsp;{$building.bl_pubtrans_stop}<br />
+				<!--{/if}-->
+			<!--{/if}-->		
+			<!--{if $building.bl_citymap_link != ""}-->
+				<a href="{$building.bl_citymap_link}" target="_blank">{$bl_citymap_label}</a><br /><br /> 
+			<!--{/if}-->
+		<!--{/foreach}-->
+		<!--{if $building.bl_mail_street != "" OR $building.bl_mail_pob != "" OR $building.bl_mail_postcode != "" OR $building.bl_mail_city != ""}-->
+			<strong>{$postal_address_label}:</strong><br />
+			<!--{if $building.bl_mail_street != ""}-->
+			{$building.bl_mail_street}<br />
+			<!--{/if}-->
+			<!--{if $building.bl_mail_pob != ""}-->
+			{$postbox_label}&nbsp;{$building.bl_mail_pob}<br />
+			<!--{/if}-->
+			{$building.bl_mail_postcode}&nbsp;{$building.bl_mail_city}<br /><br />
+		<!--{/if}-->
+	<!--{/if}-->
+	
+		
+	<!--{if $or_phone != ""}-->
+		<strong>{$phone_label}:</strong> {$or_phone}<br />
+	<!--{/if}-->
+	<!--{if $or_fax != ""}-->
+		<strong>{$fax_label}:</strong> {$or_fax}<br />
+	<!--{/if}-->
+	<br />
+	<!--{if $or_email_code != ""}-->
+		<strong>{$email_label}:</strong> {$or_email_code}<br/>
+		<a href="{$or_email_form_url}" class="link">{$web_email_label}</a><br /><br />
+	<!--{/if}-->
+	<!--{if $or_addinfo != ""}-->
+		<div>{$or_addinfo}</div>
+	<!--{/if}-->	
+	<!--{if $or_infopage != ""}-->
+		<strong>{$infopage_label}:</strong>
+		<a href="{$or_infopage}" class="link">{$or_infopage}&nbsp;</a><br /><br />
+	<!--{/if}-->
+	<!--{if $su_name != ""}-->
+		<strong>{$supervisor_label}:</strong>
+		<!--{if $su_link != ""}-->
+			<a href="{$su_link}" title="{$employee_details}">
+			<!--{if $su_address_label != ""}-->
+				{$su_address_label}
+			<!--{/if}-->
+			<!--{if $su_title != ""}-->
+				{$su_title}
+			<!--{/if}-->
+			{$su_firstname}&nbsp;{$su_name}</a><br/>
+		<!--{else}-->
+			<!--{if $su_address_label != ""}-->
+				{$su_address_label}
+			<!--{/if}-->
+			<!--{if $su_title != ""}-->
+				{$su_title}
+			<!--{/if}-->
+			{$su_firstname}&nbsp;{$su_name}</a><br/>
+		<!--{/if}-->
+		<br />
+	<!--{/if}-->
+	<!--{if $bl_available == 1}-->
+		<!--{if $office_hours != ""}-->
+			<table summary="{$office_hours_summary}">
+				<caption>{$office_hours_label}:</caption>
+				<thead>
+					<tr>
+						<th>{$weekday}</th>
+						<th>{$morning}</th>
+						<th>{$afternoon}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!--{foreach from=$office_hours item=hours }-->
+						<tr>
+							<td>{$hours.weekday}</td>
+							<!--{if $hours.freestyle > ''}-->
+								<td colspan="2">{$hours.freestyle}</td>
+							<!--{else}-->
+								<!--{if $hours.end_morning == "0" AND $hours.start_afternoon == "0"}-->
+									<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+								<!--{else}-->
+									<!--{if $hours.start_morning != "0" AND $hours.end_morning != "0"}-->
+										<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_morning}</td>
+									<!--{/if}-->
+									<!--{if $hours.start_afternoon != "0" AND $hours.end_afternoon != "0"}-->
+										<td colspan="2" style="text-align:right">{$hours.start_afternoon}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+									<!--{/if}-->
+								<!--{/if}-->
+							<!--{/if}-->	
+						</tr>
+					<!--{/foreach}-->
+				</tbody>
+			</table>
+		<!--{/if}-->
+	<!--{/if}-->
+	<!--{if $super_organisation != ""}-->
+		<strong><br /><br /><br />{$super_org_label}</strong>
+		<a href="{$super_organisation.link}">{$super_organisation.name}</a>
+	<!--{/if}-->
+	<!--{if $sub_organisations != ""}-->
+		<div id="linklist">
+		<strong><br /><br /><br />{$sub_org_label}</strong><br /><br />
+			<ul class="level1">
+				<!--{foreach from=$sub_organisations item=organisation }-->
+					<li><a href="{$organisation.link}">{$organisation.name}</a></li>
+				<!--{/foreach}-->			
+			</ul><!-- level1 end -->
+		</div>
+	<!--{/if}-->
+</div>
+<!--TYPO3SEARCH_end-->

@@ -1,0 +1,17 @@
+<!--TYPO3SEARCH_begin-->
+<!--TYPO3SEARCH_end-->
+
+<div id="right">
+	{include file=$right_searchbox_template}
+	{include file=$right_top_template}
+</div><!-- right end -->
+
+<div id="centrecontent">
+<h1>{$community_choice_label}</h1>
+	<ul>
+	<!--{foreach from=$communities item=community }-->
+		<li><a href="{$community.link}">{$community.name}</a></li>
+	<!--{/foreach}-->
+	</ul>
+</div><!-- centrecontent end -->
+

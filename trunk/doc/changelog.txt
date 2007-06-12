@@ -1,0 +1,11 @@
+2006-27-02 [civserv version > 3.1.11]
+- added wizard for service-organisation-relations, displays organisation-names or organisation codes, has to activated via tca.php, look at service-position - array for an example
+
+2006-07-03 [civserv version 4.0.0]
+- added options for making osiris bilingual (sort-of), see http://www4.citeq.de/osiris_demo/.0.html
+- for configuration instruction read civserv/doc/osiris_bilingual_howto.txt
+
+
+
+2006-10-09 [civserv version 4.1.3]
+- introduced categories that form-records can be related to. In FE the forms will appear according to their category (if any)

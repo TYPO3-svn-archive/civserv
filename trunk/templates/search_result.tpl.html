@@ -1,0 +1,20 @@
+<div id="right">
+	{include file=$right_top_template}
+</div><!-- right end -->
+
+<div id="centrecontent">
+	<h1>{$service_label}:&nbsp;{$number}</h1>
+
+	<!--{if $searchbox != ""}-->
+		<div class="content">
+			{$searchbox}
+		</div>
+	<!--{/if}-->
+
+	<ul>
+	<!--{foreach from=$service item=row }-->
+		<li><a href="{$row.link}">{$row.name}</a></li>
+	<!--{/foreach}-->
+	</ul>
+</div>
+	

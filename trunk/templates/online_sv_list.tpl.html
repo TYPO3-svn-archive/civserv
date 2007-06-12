@@ -1,0 +1,69 @@
+<div id="centrecontent">	
+	<!--{if $heading != ""}-->		
+		<h3>{$heading}</h3>	
+	<!--{/if}-->
+		
+	{* Shows the organisation details *}	
+	<!--{if $or_name != ""}-->		
+		{include file=$organisation_template}	
+	<!--{/if}-->
+		
+	<!--{if $abcbar != ""}-->		
+		{$abcbar}	
+	<!--{/if}-->
+	
+	
+	<!--{if $services}-->
+		<!--{if $subheading}-->
+			<h2>{$subheading}:</h2>	
+		<!--{/if}-->	
+		<div id="onlineService">		
+			<!--{assign var=count value=0}-->
+			<ul>			
+			<!--{foreach from=$services item=service }-->
+				<!--{$count++}-->
+				<!--{if $count%2 == 1}-->	
+					<!--{if $service.preview == 1}-->	
+						<li style="color:red">
+					<!--{else}-->
+						<li>
+					<!--{/if}-->
+						<!--{if $service.image != ""}-->
+						{* ;border:solid yellow 1px *}
+						<span style="float:left;padding-right:10px">
+							{$service.image}
+						</span>
+						<!--{/if}-->
+						<a href="{$service.link}">{$service.name}</a>
+						<div class="content">
+							{$service.descr}
+						</div>	
+					</li>
+					<hr noshade>
+				<!--{else}-->
+					<!--{if $service.preview == 1}-->	
+						<li style="color:red">
+					<!--{else}-->
+						<li>
+					<!--{/if}-->
+						<!--{if $service.image != ""}-->
+						{* ;border:solid yellow 1px *}
+						<span style="float:right;padding-left:10px">
+							{$service.image}
+						</span>
+						<!--{/if}-->
+						<a href="{$service.link}">{$service.name}</a>
+						<div class="content">
+							{$service.descr}
+						</div>	
+					</li>
+					<hr noshade>
+				<!--{/if}-->
+			<!--{/foreach}-->		
+			</ul>	
+	</div>	
+	{$pagebar}	
+	<!--{/if}-->	
+</div><!-- centrecontent end -->				
+<!--TYPO3SEARCH_begin-->
+<!--TYPO3SEARCH_end-->				
