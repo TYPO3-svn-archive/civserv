@@ -2718,8 +2718,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyEmployee->assign('web_email_label',$this->pi_getLL('tx_civserv_pi1_organisation.web_email','E-Mail-Form'));
 		$smartyEmployee->assign('working_hours_label',$this->pi_getLL('tx_civserv_pi1_employee.hours','Working hours'));
 		$smartyEmployee->assign('office_hours_summary',str_replace('###EMPLOYEE###',$employee_rows[em_firstname] . ' ' . $employee_rows[em_name],$this->pi_getLL('tx_civserv_pi1_employee.officehours','In the table are the office hours of ###EMPLOYEE### shown.')));
-		$smartyEmployee->assign('weekday',$this->pi_getLL('tx_civserv_pi1_weekday','Weekday'));
 		if($this->conf['showOhLabels']){
+			$smartyEmployee->assign('weekday',$this->pi_getLL('tx_civserv_pi1_weekday','Weekday'));
 			$smartyEmployee->assign('morning',$this->pi_getLL('tx_civserv_pi1_organisation.morning','mornings'));
 			$smartyEmployee->assign('afternoon',$this->pi_getLL('tx_civserv_pi1_organisation.afternoon','in the afternoon'));
 		}
@@ -3068,8 +3068,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyOrganisation->assign('supervisor_label',$this->pi_getLL('tx_civserv_pi1_organisation.supervisor','Supervisor'));
 		$smartyOrganisation->assign('employee_details',$this->pi_getLL('tx_civserv_pi1_organisation.employee_details','Jumps to a page with details of this employee'));
 		$smartyOrganisation->assign('office_hours_summary',str_replace('###ORGANISATION###',$organisation_rows[or_name],$this->pi_getLL('tx_civserv_pi1_organisation.officehours','In the table are the office hours of ###ORGANISATION### shown.')));
-		$smartyOrganisation->assign('weekday',$this->pi_getLL('tx_civserv_pi1_weekday','Weekday'));
 		if($this->conf['showOhLabels']){
+			$smartyOrganisation->assign('weekday',$this->pi_getLL('tx_civserv_pi1_weekday','Weekday'));
 			$smartyOrganisation->assign('morning',$this->pi_getLL('tx_civserv_pi1_organisation.morning','in the morning'));
 			$smartyOrganisation->assign('afternoon',$this->pi_getLL('tx_civserv_pi1_organisation.afternoon','in the afternoon'));
 		}
