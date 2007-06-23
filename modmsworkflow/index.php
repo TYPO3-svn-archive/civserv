@@ -395,7 +395,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 		global $LANG,$BE_USER;
 
 		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
-		#test b.k. make it possible for BE_user to have several mountpoints (so long as one of them can be identified with a community)
+		#citeq: make it possible for BE_user to have several mountpoints (so long as one of them can be identified with a community)
 		$community_id=0;
 		$possibleMPs=explode(",", $BE_USER->user["db_mountpoints"]);
 		foreach($possibleMPs as $mp){
@@ -405,7 +405,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 			}
 		}
 
-			//which approver am i? show only model services, which are currently not revised
+			//which approver am I? show only model services, which are currently not revised
 		$resp_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'org.ms_mandant, org.ms_approver_one, org.ms_approver_two, cm_community_name, temp.*',			 							// SELECT ...
 			'tx_civserv_model_service AS org, tx_civserv_model_service_temp AS temp, tx_civserv_conf_mandant',		// FROM ...

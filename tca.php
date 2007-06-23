@@ -455,8 +455,7 @@ $TCA["tx_civserv_service"] = Array (
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
 				"type" => "user",
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
-				"readonly" => 1, //no effect
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"
 			)
 		),
 		"sv_similar_services" => Array (
@@ -494,8 +493,7 @@ $TCA["tx_civserv_service"] = Array (
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
 				"type" => "user",
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
-				"readonly" => 1, //no effect
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"
 			)
 		),
 		"sv_form" => Array (
@@ -540,8 +538,7 @@ $TCA["tx_civserv_service"] = Array (
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
 				"type" => "user",
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
-				"readonly" => 1, //no effect
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"
 			)
 		),
 		"sv_searchword" => Array (
@@ -577,8 +574,7 @@ $TCA["tx_civserv_service"] = Array (
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
 				"type" => "user",
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
-				"readonly" => 1, //no effect
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"
 			)
 		),
 		"sv_position" => Array (
@@ -636,8 +632,7 @@ $TCA["tx_civserv_service"] = Array (
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
 				"type" => "user",
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
-				"readonly" => 1, //no effect
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"
 			)
 		),
 		"sv_organisation" => Array (
@@ -673,8 +668,7 @@ $TCA["tx_civserv_service"] = Array (
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
 				"type" => "user",
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
-				"readonly" => 1, //no effect
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"
 			)
 		),
 		"sv_navigation" => Array (
@@ -699,8 +693,7 @@ $TCA["tx_civserv_service"] = Array (
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
 				"type" => "user",
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
-				"readonly" => 1, //no effect
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"
 			)
 		),
 		/*
@@ -711,8 +704,7 @@ $TCA["tx_civserv_service"] = Array (
 			"displayCond" => "FIELD:t3ver_wsid:>:0",
 			"config" => Array (
 				"type" => "user",
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
-				"readonly" => 1, //no effect
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"
 			)
 		),
 		*/
@@ -986,43 +978,86 @@ $TCA["tx_civserv_model_service"] = Array (
 
 			)
 		),
+// can't get userfunc to work. Typo3 mopes about wrong prefix - although the class and function are prepended with user_ or tx_ respectively
+// also the re-edited 'INSIDE TYPO3' for typo3 4.1.1 is awkwardly silent about 'userfunc'.....		
+// but Typo3 Core Documentation still contains paragraph about TCA type => "user"
 		"ms_mandant" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_mandant",
+			"displayCond" => "REC:NEW:true",
 			"config" => Array (
-				"type" => "select",
-				"items" => Array("", ""),
-				"itemsProcFunc" => "tx_civserv_ms_maintenance->show_mandants",
-				"size" => 1,
-				"minitems" => 1,
-				"maxitems" => 1,
+				"type" => "user",
+#				"userfunc" => "tx_civserv_transfer_ms_approver->user_transfer_approver_pages2modelservice"	//functionsname kommt gar nicht erst bei t3lib_div->callUserFunction an!
+#				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"									//die gabs vorher schon, aufruf funktioniert
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
+#				"userFunc" => "user_transfer_approver_pages2modelservice"									//funktionsname kommt an, aber kann die dazugehörige funktion nicht finden!
+			)
+		),
+		"ms_mandant_READONLY" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_mandant",
+			"displayCond" => "REC:NEW:false",  //for LIVE workspace, see below!
+			"config" => Array (
+				"type" => "user",
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
 			)
 		),
 		"ms_approver_one" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_approver_one",
+			"displayCond" => "REC:NEW:true",
 			"config" => Array (
-				"type" => "select",
-				"itemsProcFunc" => "tx_civserv_ms_maintenance->show_mandants",
-				"size" => 1,
-				"minitems" => 1,
-				"maxitems" => 1,
+				"type" => "user",
+#				"userfunc" => "tx_civserv_transfer_ms_approver->user_transfer_approver_pages2modelservice"	//functionsname kommt gar nicht erst bei t3lib_div->callUserFunction an!
+#				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"									//die gabs vorher schon, aufruf funktioniert
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
+#				"userFunc" => "user_transfer_approver_pages2modelservice"									//funktionsname kommt an, aber kann die dazugehörige funktion nicht finden!
+			)
+		),
+		"ms_approver_one_READONLY" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_approver_one",
+			"displayCond" => "REC:NEW:false",  //for LIVE workspace, see below!
+			"config" => Array (
+				"type" => "user",
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
 			)
 		),
 		"ms_approver_two" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_approver_two",
+			"displayCond" => "REC:NEW:true",
 			"config" => Array (
-				"type" => "select",
-				"itemsProcFunc" => "tx_civserv_ms_maintenance->show_mandants",
-				"size" => 1,
-				"minitems" => 1,
-				"maxitems" => 1,
+				"type" => "user",
+#				"userfunc" => "tx_civserv_transfer_ms_approver->user_transfer_approver_pages2modelservice"	//functionsname kommt gar nicht erst bei t3lib_div->callUserFunction an!
+#				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"									//die gabs vorher schon, aufruf funktioniert
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
+#				"userFunc" => "user_transfer_approver_pages2modelservice"									//funktionsname kommt an, aber kann die dazugehörige funktion nicht finden!
+			)
+		),
+		"ms_approver_two_READONLY" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_approver_two",
+			"displayCond" => "REC:NEW:false",  //for LIVE workspace, see below!
+			"config" => Array (
+				"type" => "user",
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
 			)
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, ms_name, ms_synonym1, ms_synonym2, ms_synonym3, ms_descr_short;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], ms_descr_long;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], ms_image, ms_image_text, ms_fees;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], ms_documents;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], ms_legal_global;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], ms_searchword, ms_mandant, ms_approver_one, ms_approver_two")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, ms_name, ms_synonym1, ms_synonym2, ms_synonym3, 
+									ms_descr_short;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], 
+									ms_descr_long;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], 
+									ms_image, ms_image_text, 
+									ms_fees;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], 
+									ms_documents;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], 
+									ms_legal_global;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], 
+									ms_searchword, 
+									ms_mandant, ms_mandant_READONLY, 
+									ms_approver_one, ms_approver_one_READONLY, 
+									ms_approver_two, ms_approver_two_READONLY
+					")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")
@@ -1498,8 +1533,7 @@ $TCA["tx_civserv_building"] = Array (
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
 				"type" => "user",
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
-				"readonly" => 1, //no effect
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"
 			)
 		),
 		"bl_floor" => Array (
@@ -1903,8 +1937,7 @@ $TCA["tx_civserv_employee"] = Array (
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
 				"type" => "user",
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
-				"readonly" => 1, //no effect
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"
 			)
 		),
 		"em_position" => Array (
@@ -2442,6 +2475,7 @@ $TCA["tx_civserv_officehours"] = Array (
 					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_101", 101),	// monday to friday
 					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_102", 102),	// monday to thursday
 					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_103", 103),	// monday to wednesday
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_104", 104),	// tuesday to saturday
 					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_201", 201),	// monday
 					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_202", 202),	// tuesday
 					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_203", 203),	// wednesday
@@ -3104,8 +3138,7 @@ $TCA["tx_civserv_service_sv_position_mm"] = Array (
 			"dbField" => "sp_descr", //custom info passed on to $PA in userFunc
 			"config" => Array (
 				"type" => "user",
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test",
-				"readonly" => 1, //no effect
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"
 			)
 		),
 		"sp_descr" => Array (

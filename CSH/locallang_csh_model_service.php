@@ -39,11 +39,17 @@ $LOCAL_LANG = Array (
 		"ms_synonym1.details"=> "The synonym will be integrated in the navigation and leads to this model service.",
 		"ms_image.details" => "1st field: The image can be loaded from a local folder of Typo3. \n 2nd field: An external stored image can be integrated.",
 		"ms_image_text.details" => "For granting accessibility statement, a description of the image has to be added. It can for example be read to visually handicapped persons by reading machines.", 
+		"ms_mandant.details" => "You cannot edit this field. Its value is defined in the page properties of the modelservice container containing this model service record",
+		"ms_approver_one.details" => "You cannot edit this field. Its value is defined in the page properties of the modelservice container containing this model service record",
+		"ms_approver_two.details" => "You cannot edit this field. Its value is defined in the page properties of the modelservice container containing this model service record",
     ),
     "de" => Array (    
 		"ms_synonym1.details"=> "Das eingegebene Synonym wird in die Navigation mit aufgenommen und führt zu diesem Musteranliegen.",
 		"ms_image.details" => "1. Feld: Das Bild kann aus einem lokalen Ordner von Typo3 geladen werden. \n 2. Feld: Es kann ein extern gespeichertes Bild eingebunden werden.",
 		"ms_image_text.details" => "Um Barrierefreiheit zu gewährleisten, sollte eine Bildbeschreibung eingefügt werden. Sie kann z.B. von Vorleseprogrammen für Sehbehinderte vorgelesen werden.", 
+		"ms_mandant.details" => "Das Feld ist nicht editierbar. Die Werte werden in den Seiteneingeschaften des Musteranliegenordners, der diesen Musteranliegen-Datensatz enthält, festgelegt",
+		"ms_approver_one.details" => "Das Feld ist nicht editierbar. Die Werte werden in den Seiteneingeschaften des Musteranliegenordners, der diesen Musteranliegen-Datensatz enthält, festgelegt",
+		"ms_approver_two.details" => "Das Feld ist nicht editierbar. Die Werte werden in den Seiteneingeschaften des Musteranliegenordners, der diesen Musteranliegen-Datensatz enthält, festgelegt",
 	),
 );
 ?>

@@ -924,6 +924,17 @@ CREATE TABLE be_users (
 	db_mountpoints varchar(120) DEFAULT '' NOT NULL
 );
 
+
+#
+# extend Table structure for table 'pages'
+#
+CREATE TABLE pages (
+  tx_civserv_ms_mandant tinytext NOT NULL,
+  tx_civserv_ms_approver_one tinytext NOT NULL,
+  tx_civserv_ms_approver_two tinytext NOT NULL
+);
+
+
 #
 # in version 4.1.1 the structure for weekdays in officehours was changed:
 #

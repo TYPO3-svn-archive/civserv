@@ -380,8 +380,6 @@ class tx_civserv_ms_maintenance {
 			$params['items'][++ $i] = Array ($data['cm_community_name'], $data['cm_community_id']);
 		}
 	}
-
-
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_ms_maintenance.php']) {
 	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_ms_maintenance.php']);

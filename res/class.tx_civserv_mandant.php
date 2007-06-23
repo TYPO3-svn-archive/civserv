@@ -201,7 +201,7 @@ class tx_civserv_mandant{
 	*/
 	function limit_region_items(&$params, &$pObj){
 		// ercis: retrieve PID from cachedTSconfig
-		// citeq: for limit_region_items we could also take it from
+		// citeq: for limit_region_items we could also take it from [...] fix me!
 		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
 		if(array_key_exists("",$params['items'])){
 			$empty_entry=1;

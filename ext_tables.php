@@ -80,6 +80,10 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv
 	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_user_be_msg.php']);
 }
 
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_transfer_ms_approver.php']) {
+	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_transfer_ms_approver.php']);
+	debug('done it!'); //nützt aber nix, die aufrufe aus dem TCA kommen nicht gescheit in der Typo3-Core an!
+}
 
 if (TYPO3_MODE=='BE')	{
 	// model service workflow
@@ -129,6 +133,102 @@ t3lib_extMgm::addPlugin(Array("LLL:EXT:civserv/locallang_db.php:tt_content.list_
 
 t3lib_extMgm::addStaticFile($_EXTKEY,"pi1/static/","Civil Services");
 
+
+
+/**
+* citeq: Test for model_service workflow!
+*/
+$tempColumns = Array (
+	"tx_civserv_ms_mandant" => Array (		
+		"exclude" => 1,
+		"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_mandant",
+		"config" => Array (
+			"type" => "select",
+			"items" => Array("", ""),
+			"itemsProcFunc" => "tx_civserv_ms_maintenance->show_mandants",
+			"size" => 1,
+#			"minitems" => 1,
+			"maxitems" => 1,
+		)
+	),
+	"tx_civserv_ms_approver_one" => Array (		
+		"exclude" => 1,
+		"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_approver_one",
+		"config" => Array (
+			"type" => "select",
+			"items" => Array("", ""),
+			"itemsProcFunc" => "tx_civserv_ms_maintenance->show_mandants",
+			"size" => 1,
+#			"minitems" => 1,
+			"maxitems" => 1,
+		)
+	),
+	"tx_civserv_ms_approver_two" => Array (		
+		"exclude" => 1,
+		"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_approver_two",
+		"config" => Array (
+			"type" => "select",
+			"items" => Array("", ""),
+			"itemsProcFunc" => "tx_civserv_ms_maintenance->show_mandants",
+			"size" => 1,
+#			"minitems" => 1,
+			"maxitems" => 1,
+		)
+	),
+);
+
+t3lib_div::loadTCA("pages");
+/**
+* addTCAcolumns - Kaspar says:
+* Adding fields to an existing table definition in $TCA
+* Adds an array with $TCA column-configuration to the $TCA-entry for that table.
+* This function adds the configuration needed for rendering of the field in TCEFORMS - but it does NOT add the field names to the types lists!
+* So to have the fields displayed you must also call fx. addToAllTCAtypes or manually add the fields to the types list.
+* FOR USE IN ext_tables.php FILES
+* Usage: 4
+*
+* @param   string      $table is the table name of a table already present in $TCA with a columns section
+* @param   array       $columnArray is the array with the additional columns (typical some fields an extension wants to add)
+* @param   boolean     If $addTofeInterface is true the list of fields are also added to the fe_admin_fieldList.
+* @return  void
+*/
+t3lib_extMgm::addTCAcolumns("pages",$tempColumns,1);
+
+
+$PAGES_TYPES['242'] = array(
+	'type' => 'whatever',
+	'icon' =>  t3lib_extMgm::extRelPath($_EXTKEY)."icon_tx_civserv_ms_folder.gif",
+	'allowedTables' => 'tx_civserv_model_service, pages' 
+);
+$TCA['pages']['columns']['doktype']['config']['items'][] = array('-----', '--div--');
+$TCA['pages']['columns']['doktype']['config']['items'][] = array('LLL:EXT:civserv/locallang_db.php:tx_civserv.doktype.model_service', '242');
+
+
+
+/**
+* addToAllTCAtypes - Kaspar says:
+* Makes fields visible in the TCEforms, adding them to the end of (all) "types"-configurations
+*
+* Adds a string $str (comma list of field names) to all ["types"][xxx]["showitem"] entries for table $table (unless limited by $specificTypesList)
+* This is needed to have new fields shown automatically in the TCEFORMS of a record from $table.
+* Typically this function is called after having added new columns (database fields) with the addTCAcolumns function
+* FOR USE IN ext_tables.php FILES
+* Usage: 1
+*
+* @param   string      Table name
+* @param   string      Field list to add.
+* @param   string      List of specific types to add the field list to. (If empty, all type entries are affected)
+* @param   string      Insert fields before (default) or after one of this fields (commalist with "before:" or "after:" commands). Example: "before:keywords,--palette--;;4,after:description". Palettes must be passed like in the example no matter how the palette definition looks like in TCA.
+* @return  void
+*/
+t3lib_extMgm::addToAllTCAtypes("pages","tx_civserv_ms_mandant,tx_civserv_ms_approver_one,tx_civserv_ms_approver_two", '242');
+#t3lib_extMgm::addToAllTCAtypes("pages","tx_civserv_ms_mandant");
+#t3lib_extMgm::addToAllTCAtypes("pages","tx_civserv_ms_approver_one");
+#t3lib_extMgm::addToAllTCAtypes("pages","tx_civserv_ms_approver_two");
+
+// type = 242 --> special SysFolder for Model Services (based on type 254)!!!! alternative manual configuration - instead of using addToAllTCAtypes()
+#$TCA['pages']['types']['242']['showitem'] = $TCA['pages']['types']['254']['showitem'].", tx_civserv_ms_mandant,tx_civserv_ms_approver_one,tx_civserv_ms_approver_two";
+$TCA['pages']['types']['242']['showitem'] = 'hidden;;;;1-1-1, doktype, title;LLL:EXT:lang/locallang_general.php:LGL.title;;;2-2-2, --div--, TSconfig;;6;nowrap;5-5-5, tx_civserv_ms_mandant, tx_civserv_ms_approver_one, tx_civserv_ms_approver_two';
 
 
 /**
@@ -350,7 +450,7 @@ $TCA["tx_civserv_building"] = Array (
 * Changes:
 * 06.08.04, CR - hide ro_floor & ro_building
 * in feInterface because they are not longer
-* needed (done by rfb_building_bl_floor
+* needed (done by rfb_building_bl_floor)
 */
 $TCA["tx_civserv_room"] = Array (
 	"ctrl" => Array (
@@ -652,5 +752,8 @@ t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_service','EXT:civserv/CSH/locallan
 /**
 * END of CSH-definitions
 */
+
+
+#debug($GLOBALS);
 
 ?>
