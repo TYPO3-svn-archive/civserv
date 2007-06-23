@@ -119,9 +119,92 @@ class tx_civserv_user_be_msg {
 			return $div_open.$msg.$returnURL.$div_close;
 	}
 	
-	// would prefer more speaking function-name but couldn't get typo3 to find the function then, see tca.php
+//	would prefer more speaking function-name but couldn't get typo3 to find the function then, see tca.php
 	function user_TCAform_test2(&$PA, &$fobj) {
-#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+		debug($PA, '$PA');
+		//new record --> no proper uid....
+		debug($PA['row']['uid'], 'uid');
+		if(preg_match('/NEW/', $PA['row']['uid'])){
+			debug('new Record!!!');
+			// select mandant-roles from table pages where the doktype is 'Model Service Container'
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'tx_civserv_ms_mandant, tx_civserv_ms_approver_one, tx_civserv_ms_approver_two',				// Field list for SELECT
+				'pages ',							// Tablename, local table
+				'deleted=0 AND hidden=0 AND doktype= \'242\' AND uid='.$PA['row']['pid'],								// Optional additional WHERE clauses
+				'',													// Optional GROUP BY field(s), if none, supply blank string.
+				'',								// Optional ORDER BY field(s), if none, supply blank string.
+				'' 													// Optional LIMIT value ([begin,]max), if none, supply blank string.
+			);
+			$value=0;
+			$text='';
+			while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) { //precisely once......
+				debug($data, '$data');
+				switch ($PA['field']){
+					case 'ms_mandant':
+						$value = $data['tx_civserv_ms_mandant'];
+						break;
+					case 'ms_approver_one':
+						$value = $data['tx_civserv_ms_approver_one'];
+						break;
+					case 'ms_approver_two':
+						$value = $data['tx_civserv_ms_approver_two'];
+						break;
+				}
+			}
+			//get human readable names for the mandant-roles
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'cm_community_name',			 			// SELECT ...
+				'tx_civserv_conf_mandant',			// FROM ...
+				'cm_community_id  = '.$value,	// AND title LIKE "%blabla%"', // WHERE...
+				'', 						// GROUP BY...
+				'',   						// ORDER BY...
+				'' 							// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+			);
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+			$text = $row['cm_community_name'];			
+			$div_open='<div style="width : 90%; margin: 5px 5px 5px 5px; padding: 5px 5px 5px 5px; border:0;">';
+			$html_field='<input type="hidden"	name="'.$PA['itemFormElName'].'"
+							value="'.$value.'"
+							'.$PA['onFocus'].'/>
+						<span>'.$text.' (Gemeindekennziffer: '.$value.')</span>';
+			$div_close='</div>';
+		//old record	
+		}else{
+			debug('old Record!!!');
+			$value='';
+			$text='';
+			switch ($PA['field']){
+				case 'ms_mandant':
+					$value = $PA['row']['ms_mandant'];
+					break;
+				case 'ms_approver_one':
+					$value = $PA['row']['ms_approver_one'];
+					break;
+				case 'ms_approver_two':
+					$value = $PA['row']['ms_approver_two'];
+					break;
+			}
+			//get human readable names for the mandant-roles
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'cm_community_name',			 			// SELECT ...
+				'tx_civserv_conf_mandant',			// FROM ...
+				'cm_community_id  = '.$value,	// AND title LIKE "%blabla%"', // WHERE...
+				'', 						// GROUP BY...
+				'',   						// ORDER BY...
+				'' 							// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+			);
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+			$text = $row['cm_community_name'];			
+			$div_open = '<div style="width : 90%; margin: 5px 5px 5px 5px; padding: 5px 5px 5px 5px;">';
+			$html_field = $text." (Gemeindekennziffer: ".$value.")";
+			$div_close = '</div>';
+		}
+		return $div_open.$html_field.$div_close;
+	}
+/*
+	function user_TCAform_test2(&$PA, &$fobj) {
+		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		if(preg_match('/_READONLY/', $PA['field'])){
 			$value='';
 			$text='';
@@ -162,13 +245,6 @@ class tx_civserv_user_be_msg {
 			);
 			
 			while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) { //precisely once......
-/*
-				//NEW record - can't do it, have no UID!!!
-				$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_civserv_model_service', array(	'ms_mandant' =>  $data['tx_civserv_ms_mandant'],
-																							'ms_approver_one' =>  $data['tx_civserv_ms_approver_one'],
-																							'ms_approver_tow' =>  $data['tx_civserv_ms_approver_two']
-																						));
-*/
 				$value=0;
 				$text='';
 				switch ($PA['field']){
@@ -203,7 +279,7 @@ class tx_civserv_user_be_msg {
 		}
 		return $div_open.$html_field.$div_close;
 	}
-
+*/	
 }
 
 

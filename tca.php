@@ -984,64 +984,34 @@ $TCA["tx_civserv_model_service"] = Array (
 		"ms_mandant" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_mandant",
-			"displayCond" => "REC:NEW:true",
 			"config" => Array (
 				"type" => "user",
 #				"userfunc" => "tx_civserv_transfer_ms_approver->user_transfer_approver_pages2modelservice"	//functionsname kommt gar nicht erst bei t3lib_div->callUserFunction an!
 #				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"									//die gabs vorher schon, aufruf funktioniert
 				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
 #				"userFunc" => "user_transfer_approver_pages2modelservice"									//funktionsname kommt an, aber kann die dazugehörige funktion nicht finden!
-			)
-		),
-		"ms_mandant_READONLY" => Array (
-			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_mandant",
-			"displayCond" => "REC:NEW:false",  //for LIVE workspace, see below!
-			"config" => Array (
-				"type" => "user",
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
 			)
 		),
 		"ms_approver_one" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_approver_one",
-			"displayCond" => "REC:NEW:true",
 			"config" => Array (
 				"type" => "user",
 #				"userfunc" => "tx_civserv_transfer_ms_approver->user_transfer_approver_pages2modelservice"	//functionsname kommt gar nicht erst bei t3lib_div->callUserFunction an!
 #				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"									//die gabs vorher schon, aufruf funktioniert
 				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
 #				"userFunc" => "user_transfer_approver_pages2modelservice"									//funktionsname kommt an, aber kann die dazugehörige funktion nicht finden!
-			)
-		),
-		"ms_approver_one_READONLY" => Array (
-			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_approver_one",
-			"displayCond" => "REC:NEW:false",  //for LIVE workspace, see below!
-			"config" => Array (
-				"type" => "user",
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
 			)
 		),
 		"ms_approver_two" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_approver_two",
-			"displayCond" => "REC:NEW:true",
 			"config" => Array (
 				"type" => "user",
 #				"userfunc" => "tx_civserv_transfer_ms_approver->user_transfer_approver_pages2modelservice"	//functionsname kommt gar nicht erst bei t3lib_div->callUserFunction an!
 #				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"									//die gabs vorher schon, aufruf funktioniert
 				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
 #				"userFunc" => "user_transfer_approver_pages2modelservice"									//funktionsname kommt an, aber kann die dazugehörige funktion nicht finden!
-			)
-		),
-		"ms_approver_two_READONLY" => Array (
-			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_approver_two",
-			"displayCond" => "REC:NEW:false",  //for LIVE workspace, see below!
-			"config" => Array (
-				"type" => "user",
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
 			)
 		),
 	),
@@ -1054,10 +1024,9 @@ $TCA["tx_civserv_model_service"] = Array (
 									ms_documents;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], 
 									ms_legal_global;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], 
 									ms_searchword, 
-									ms_mandant, ms_mandant_READONLY, 
-									ms_approver_one, ms_approver_one_READONLY, 
-									ms_approver_two, ms_approver_two_READONLY
-					")
+									ms_mandant,  
+									ms_approver_one,  
+									ms_approver_two")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")
