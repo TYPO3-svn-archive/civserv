@@ -41,6 +41,7 @@
 
 $LOCAL_LANG = Array (
 	"default" => Array (
+		"tx_civserv.doktype.model_service" => "Model Service Container",
 		"tx_civserv_conf_mandant" => "Mandant",
 		"tx_civserv_conf_mandant.cm_community_name" => "Community name",
 		"tx_civserv_conf_mandant.cm_community_id" => "Community id",
@@ -245,6 +246,7 @@ $LOCAL_LANG = Array (
 		"tx_civserv_weekday_101" => "Monday to Friday",
 		"tx_civserv_weekday_102" => "Monday to Thursday",
 		"tx_civserv_weekday_103" => "Monday to Wednesday",
+		"tx_civserv_weekday_104" => "Tuesday to Saturday",
 		"tx_civserv_weekday_201" => "Monday",
 		"tx_civserv_weekday_202" => "Tuesday",
 		"tx_civserv_weekday_203" => "Wednesday",
@@ -259,6 +261,7 @@ $LOCAL_LANG = Array (
 		"tt_content.list_type_pi1" => "Virtual Civil Services",	 // Name of Plug-in (for Flag)
 	),
 	"de" => Array (
+		"tx_civserv.doktype.model_service" => "Model Service Container",
 		"tx_civserv_conf_mandant" => "Mandant",
 		"tx_civserv_conf_mandant.cm_community_name" => "Mandantenbezeichnung",
 		"tx_civserv_conf_mandant.cm_community_id" => "Gemeindekennziffer",
@@ -464,6 +467,7 @@ $LOCAL_LANG = Array (
 		"tx_civserv_weekday_101" => "Montag bis Freitag",
 		"tx_civserv_weekday_102" => "Montag bis Donnerstag",
 		"tx_civserv_weekday_103" => "Montag bis Mittwoch",
+		"tx_civserv_weekday_104" => "Dienstag bis Samstag",
 		"tx_civserv_weekday_201" => "Montag",
 		"tx_civserv_weekday_202" => "Dienstag",
 		"tx_civserv_weekday_203" => "Mittwoch",
