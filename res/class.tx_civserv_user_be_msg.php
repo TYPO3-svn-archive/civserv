@@ -46,7 +46,7 @@
 class tx_civserv_user_be_msg {
 	function user_TCAform_test($PA=array(), $fobj=array()) { //adding '=array()' to signature enabels calls to this function with no parameters (happens through "displayCond" => "REC:NEW:true")
 		global $LANG;
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$LANG->includeLLFile("EXT:civserv/res/locallang_user_be_msg.php");
 		
 		$table=$PA['table'];
@@ -121,8 +121,7 @@ class tx_civserv_user_be_msg {
 	
 	// would prefer more speaking function-name but couldn't get typo3 to find the function then, see tca.php
 	function user_TCAform_test2(&$PA, &$fobj) {
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
-		debug($PA, '$PA');
+#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		if(preg_match('/_READONLY/', $PA['field'])){
 			$value='';
 			$text='';
@@ -151,7 +150,6 @@ class tx_civserv_user_be_msg {
 			$div_open = '<div style="width : 90%; margin: 5px 5px 5px 5px; padding: 5px 5px 5px 5px;">';
 			$html_field = $text." (Gemeindekennziffer: ".$value.")";
 			$div_close = '</div>';
-			debug($html_field);
 		}else{
 			// select mandant-roles from table pages where the doktype is 'Model Service Container'
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -164,7 +162,6 @@ class tx_civserv_user_be_msg {
 			);
 			
 			while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) { //precisely once......
-				debug($data, 'data');
 /*
 				//NEW record - can't do it, have no UID!!!
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_civserv_model_service', array(	'ms_mandant' =>  $data['tx_civserv_ms_mandant'],
@@ -203,7 +200,6 @@ class tx_civserv_user_be_msg {
 							'.$PA['onFocus'].'/>
 						<span>'.$text.' (Gemeindekennziffer: '.$value.')</span>';
 			$div_close='</div>';
-			debug($html_field);
 		}
 		return $div_open.$html_field.$div_close;
 	}

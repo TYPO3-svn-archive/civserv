@@ -99,7 +99,7 @@ if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
 		$current_id=t3lib_div::_GET('id');
 		if ($current_id == null){
 			$url=parse_url(t3lib_div::_GET('returnUrl'));
-			//debug($url, "TCA returnUrl");
+#			debug($url, "TCA returnUrl");
 			parse_str($url['query'],$url_query);
 		    $current_id=$url_query['id'];
 		}
@@ -734,18 +734,18 @@ $TCA["tx_civserv_service"] = Array (
 	)
 );
 
-#debug($TCA['tx_civserv_service']['columns'], 'tx_civserv_service columns');
-#debug($TCA["tx_civserv_service"], 'tx_civserv_service');
+#	debug($TCA['tx_civserv_service']['columns'], 'tx_civserv_service columns');
+#	debug($TCA["tx_civserv_service"], 'tx_civserv_service');
 
 
-#debug($GLOBALS['BE_USER']->user['workspace_id'], 'TCA be_user workspace_id');
+#	debug($GLOBALS['BE_USER']->user['workspace_id'], 'TCA be_user workspace_id');
 
 /*
 if($GLOBALS['BE_USER']->user['workspace_id']==0) { //LIVE-Workspace!!!!
 	$TCA['tx_civserv_service']['columns']['sv_region']['displayCond']="REC:NEW:false"; 
 }
 */
-#debug($TCA['tx_civserv_service']['columns'], 'TCA tx_civserv_service->columns');
+#	debug($TCA['tx_civserv_service']['columns'], 'TCA tx_civserv_service->columns');
 
 
 

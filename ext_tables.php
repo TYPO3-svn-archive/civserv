@@ -82,7 +82,7 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_transfer_ms_approver.php']) {
 	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_transfer_ms_approver.php']);
-	debug('done it!'); //nützt aber nix, die aufrufe aus dem TCA kommen nicht gescheit in der Typo3-Core an!
+	//nützt nix, die aufrufe aus dem TCA kommen nicht gescheit in der Typo3-Core an!
 }
 
 if (TYPO3_MODE=='BE')	{
