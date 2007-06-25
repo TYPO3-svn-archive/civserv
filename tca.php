@@ -987,9 +987,10 @@ $TCA["tx_civserv_model_service"] = Array (
 			"config" => Array (
 				"type" => "user",
 #				"userfunc" => "tx_civserv_transfer_ms_approver->user_transfer_approver_pages2modelservice"	//functionsname kommt gar nicht erst bei t3lib_div->callUserFunction an!
-#				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"									//die gabs vorher schon, aufruf funktioniert
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
-#				"userFunc" => "user_transfer_approver_pages2modelservice"									//funktionsname kommt an, aber kann die dazugehörige funktion nicht finden!
+#				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"									//die Klasse und Methode gabs vorher schon, Aufruf funktioniert
+#				"userFunc" => "tx_civserv_user_be_msg->user_transfer_approver_pages2modelservice"			//funktionsname kommt an, aber kann die dazugehörige funktion nicht finden!
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2",
+				"eval" => "required"
 			)
 		),
 		"ms_approver_one" => Array (
@@ -997,10 +998,9 @@ $TCA["tx_civserv_model_service"] = Array (
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_approver_one",
 			"config" => Array (
 				"type" => "user",
-#				"userfunc" => "tx_civserv_transfer_ms_approver->user_transfer_approver_pages2modelservice"	//functionsname kommt gar nicht erst bei t3lib_div->callUserFunction an!
-#				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"									//die gabs vorher schon, aufruf funktioniert
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
-#				"userFunc" => "user_transfer_approver_pages2modelservice"									//funktionsname kommt an, aber kann die dazugehörige funktion nicht finden!
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2",
+				"eval" => "required" //no use
+
 			)
 		),
 		"ms_approver_two" => Array (
@@ -1008,10 +1008,8 @@ $TCA["tx_civserv_model_service"] = Array (
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_model_service.ms_approver_two",
 			"config" => Array (
 				"type" => "user",
-#				"userfunc" => "tx_civserv_transfer_ms_approver->user_transfer_approver_pages2modelservice"	//functionsname kommt gar nicht erst bei t3lib_div->callUserFunction an!
-#				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"									//die gabs vorher schon, aufruf funktioniert
-				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2"
-#				"userFunc" => "user_transfer_approver_pages2modelservice"									//funktionsname kommt an, aber kann die dazugehörige funktion nicht finden!
+				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2",
+				"eval" => "required" //now use
 			)
 		),
 	),

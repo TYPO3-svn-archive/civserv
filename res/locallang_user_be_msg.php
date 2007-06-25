@@ -44,6 +44,9 @@ $LOCAL_LANG = Array (
 		"tx_civserv_user_be_msg.tx_civserv_service.sv_region_ws" => "This service can only be forwarded to another region after it has been published",
 		"tx_civserv_user_be_msg.tx_civserv_service.return" => "back this way",
 		"tx_civserv_user_be_msg.tx_civserv_building.bl_floor" => "To add one or more floors to this building hit the 'save' button. You will then find a select box for floors here. Return to the list of services by hitting the 'close' button",
+		"tx_civserv_user_be_msg.tx_civserv_model_service.no_mandant_roles" => "The mandant roles for model services are not set correctly in the modelservice container! Please edit the page properties of the modelservice folder '###ms_container_name###' (uid: ###ms_container_uid###). Depending on the user rights architecture in the site you might have to ask your administrator to do it for you.",
+		"tx_civserv_user_be_msg.tx_civserv_model_service.community_code" => "Community code",
+		"tx_civserv_user_be_msg.tx_civserv_model_service.new_record_no_mandant_roles" => "please go back and edit the page properties of the Parent-Folder '###ms_container_name###' (uid: ###ms_container_uid###) first! You need to set the mandant roles for the model service workflow.",
 	),
 	"de" => Array (
 		"tx_civserv_user_be_msg.tx_civserv_employee.em_position" => "Um dem Mitarbeiter eine Stelle zuzuweisen klicken Sie auf die Schaltfläche 'save'. Danach steht Ihnen hier eine Auswahlliste zur Verfügung",
@@ -58,6 +61,9 @@ $LOCAL_LANG = Array (
 		"tx_civserv_user_be_msg.tx_civserv_service.sv_region_ws" => "Die Dienstleistung kann erst an eine andere Region weitergegeben werden, wenn die Dienstleistung veröffentlicht ist.",
 		"tx_civserv_user_be_msg.tx_civserv_service.return" => "hier geht\'s zurück",
 		"tx_civserv_user_be_msg.tx_civserv_building.bl_floor" => "Um dem Gebäude eine oder mehrere Etagen zuzuweisen klicken Sie auf die Schaltfläche 'save'. Danach steht Ihnen hier eine Auswahlliste zur Verfügung",
+		"tx_civserv_user_be_msg.tx_civserv_model_service.no_mandant_roles" => "Die Mandanten-Rollen für den Musteranliegen-Workflow sind nicht gesetzt! Bitte bearbeiten Sie die Seiteneigenschaften des Modelservice-Ordners '###ms_container_name###' (Uid: ###ms_container_uid###). Je nachdem wie die Benutzerberechtigungen konfiguriert sind, müssen Sie ggfs den Administrator der Site bitten, dies zu tun.",
+		"tx_civserv_user_be_msg.tx_civserv_model_service.community_code" => "Gemeindekennziffer",
+		"tx_civserv_user_be_msg.tx_civserv_model_service.new_record_no_mandant_roles" => "Bitte gehen Sie 1 Ebene zurück und bearbeiten Sie die Seiteneigenschaften des Ordners '###ms_container_name###' (Uid: ###ms_container_uid###)! Sie müssen dort die Mandanten-Rollen für den Musteranliegen-Workflow festlegen.",
 	),
 );
 ?>

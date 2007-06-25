@@ -100,36 +100,40 @@ class tx_civserv_user_be_msg {
 			$closeicon = '<img'.t3lib_iconWorks::skinImg($this->PH_backPath,'gfx/closedok.gif','width="21" height="16"').' title="'.$GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.close',1).'" alt="" />';
 			$backurl_closeicon = '<a href="'.$backurl.'"><img'.t3lib_iconWorks::skinImg($this->PH_backPath,'gfx/closedok.gif','width="21" height="16"').' title="'.$GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.close',1).'" alt="" /></a>';
 		}
-
-		
-
-			$div_open= '
-            	<div style="
-                     border: 2px dashed #666666;
-                     width : 90%;
-                     margin: 5px 5px 5px 5px;
-                     padding: 5px 5px 5px 5px;"
-                     >';
-			$msg= $info_img;
-			$msg.='<p>'.$LANG->getLL("tx_civserv_user_be_msg.".$table.".".$field).'</p>';
-			$msg=str_replace('###sv_name###', $sv_name, $msg);
-			$msg=str_replace('###icon###', $backurl_closeicon, $msg);
-			$returnURL=$PA['table']=='tx_civserv_service_sv_position_mm' ? '<a href="'.$backurl.'">hier geht\'s zurück</a>' : '';
-			$div_close='</div>';
-			return $div_open.$msg.$returnURL.$div_close;
+		$div_open= '
+			<div style="
+				 border: 2px dashed #666666;
+				 width : 90%;
+				 margin: 5px 5px 5px 5px;
+				 padding: 5px 5px 5px 5px;"
+				 >';
+		$msg= $info_img;
+		$msg.='<p>'.$LANG->getLL("tx_civserv_user_be_msg.".$table.".".$field).'</p>';
+		$msg=str_replace('###sv_name###', $sv_name, $msg);
+		$msg=str_replace('###icon###', $backurl_closeicon, $msg);
+		$returnURL=$PA['table']=='tx_civserv_service_sv_position_mm' ? '<a href="'.$backurl.'">hier geht\'s zurück</a>' : '';
+		$div_close='</div>';
+		return $div_open.$msg.$returnURL.$div_close;
 	}
 	
 //	would prefer more speaking function-name but couldn't get typo3 to find the function then, see tca.php
 	function user_TCAform_test2(&$PA, &$fobj) {
+		global $LANG;
+#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+		$LANG->includeLLFile("EXT:civserv/res/locallang_user_be_msg.php");
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
-		debug($PA, '$PA');
+#		debug($PA, '$PA');
 		//new record --> no proper uid....
-		debug($PA['row']['uid'], 'uid');
+#		debug($PA['row']['uid'], 'uid');
+#		debug($PA['row']['pid'], 'pid');
+
+		$ms_container_name='Container Love'; //dummy 
+		$ms_container_pid = $PA['row']['pid'];
 		if(preg_match('/NEW/', $PA['row']['uid'])){
 			debug('new Record!!!');
 			// select mandant-roles from table pages where the doktype is 'Model Service Container'
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_civserv_ms_mandant, tx_civserv_ms_approver_one, tx_civserv_ms_approver_two',				// Field list for SELECT
+				'title, tx_civserv_ms_mandant, tx_civserv_ms_approver_one, tx_civserv_ms_approver_two',				// Field list for SELECT
 				'pages ',							// Tablename, local table
 				'deleted=0 AND hidden=0 AND doktype= \'242\' AND uid='.$PA['row']['pid'],								// Optional additional WHERE clauses
 				'',													// Optional GROUP BY field(s), if none, supply blank string.
@@ -140,6 +144,7 @@ class tx_civserv_user_be_msg {
 			$text='';
 			while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) { //precisely once......
 				debug($data, '$data');
+				$ms_container_name = $data['title'];
 				switch ($PA['field']){
 					case 'ms_mandant':
 						$value = $data['tx_civserv_ms_mandant'];
@@ -152,25 +157,40 @@ class tx_civserv_user_be_msg {
 						break;
 				}
 			}
-			//get human readable names for the mandant-roles
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'cm_community_name',			 			// SELECT ...
-				'tx_civserv_conf_mandant',			// FROM ...
-				'cm_community_id  = '.$value,	// AND title LIKE "%blabla%"', // WHERE...
-				'', 						// GROUP BY...
-				'',   						// ORDER BY...
-				'' 							// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-			);
-			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-			$text = $row['cm_community_name'];			
-			$div_open='<div style="width : 90%; margin: 5px 5px 5px 5px; padding: 5px 5px 5px 5px; border:0;">';
-			$html_field='<input type="hidden"	name="'.$PA['itemFormElName'].'"
-							value="'.$value.'"
-							'.$PA['onFocus'].'/>
-						<span>'.$text.' (Gemeindekennziffer: '.$value.')</span>';
-			$div_close='</div>';
-		//old record	
-		}else{
+			debug($value, 'gemeindekennziffer');
+			if($value == 0){ // mandant roles not set in modelservice container? return!
+				$div_open= '
+					<div style="
+						 border: 2px dashed #666666;
+						 width : 90%;
+						 margin: 5px 5px 5px 5px;
+						 padding: 5px 5px 5px 5px;"
+						 >';
+				$info_img = '<img'.t3lib_iconWorks::skinImg($this->PH_backPath,'gfx/required_h.gif','width="18" height="16"').' title="'.$GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.close',1).'" alt="" />';
+				$msg .= '<p>'.$info_img.'&nbsp;&nbsp;'.$LANG->getLL("tx_civserv_user_be_msg.tx_civserv_model_service.no_mandant_roles").'</p>';
+				$msg = str_replace('###ms_container_name###', $ms_container_name, $msg);
+				$msg = str_replace('###ms_container_uid###', $ms_container_pid, $msg);
+				return $div_open.$msg.$div_close;
+			}else{
+				//get human readable names for the mandant-roles
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'cm_community_name',			 			// SELECT ...
+					'tx_civserv_conf_mandant',			// FROM ...
+					'cm_community_id  = '.$value,	// AND title LIKE "%blabla%"', // WHERE...
+					'', 						// GROUP BY...
+					'',   						// ORDER BY...
+					'' 							// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+				);
+				$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+				$text = $row['cm_community_name'];			
+				$div_open='<div style="width : 90%; margin: 5px 5px 5px 5px; padding: 5px 5px 5px 5px; border:0;">';
+				$html_field='<input type="hidden"	name="'.$PA['itemFormElName'].'"
+								value="'.$value.'"
+								'.$PA['onFocus'].'/>
+							<span>'.$text.' ('.$LANG->getLL("tx_civserv_user_be_msg.tx_civserv_model_service.community_code").': '.$value.')</span>';
+				$div_close='</div>';
+			} //mandant roles not set correctly!!!
+		}else{	// old record	
 			debug('old Record!!!');
 			$value='';
 			$text='';
@@ -202,84 +222,6 @@ class tx_civserv_user_be_msg {
 		}
 		return $div_open.$html_field.$div_close;
 	}
-/*
-	function user_TCAform_test2(&$PA, &$fobj) {
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
-		if(preg_match('/_READONLY/', $PA['field'])){
-			$value='';
-			$text='';
-			switch (str_replace('_READONLY', '', $PA['field'])){
-				case 'ms_mandant':
-					$value = $PA['row']['ms_mandant'];
-					break;
-				case 'ms_approver_one':
-					$value = $PA['row']['ms_approver_one'];
-					break;
-				case 'ms_approver_two':
-					$value = $PA['row']['ms_approver_two'];
-					break;
-			}
-			//get human readable names for the mandant-roles
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'cm_community_name',			 			// SELECT ...
-				'tx_civserv_conf_mandant',			// FROM ...
-				'cm_community_id  = '.$value,	// AND title LIKE "%blabla%"', // WHERE...
-				'', 						// GROUP BY...
-				'',   						// ORDER BY...
-				'' 							// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-			);
-			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-			$text = $row['cm_community_name'];			
-			$div_open = '<div style="width : 90%; margin: 5px 5px 5px 5px; padding: 5px 5px 5px 5px;">';
-			$html_field = $text." (Gemeindekennziffer: ".$value.")";
-			$div_close = '</div>';
-		}else{
-			// select mandant-roles from table pages where the doktype is 'Model Service Container'
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_civserv_ms_mandant, tx_civserv_ms_approver_one , tx_civserv_ms_approver_two',				// Field list for SELECT
-				'pages ',							// Tablename, local table
-				'deleted=0 AND hidden=0 AND doktype= \'242\' AND uid='.$PA['row']['pid'],								// Optional additional WHERE clauses
-				'',													// Optional GROUP BY field(s), if none, supply blank string.
-				'',								// Optional ORDER BY field(s), if none, supply blank string.
-				'' 													// Optional LIMIT value ([begin,]max), if none, supply blank string.
-			);
-			
-			while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) { //precisely once......
-				$value=0;
-				$text='';
-				switch ($PA['field']){
-					case 'ms_mandant':
-						$value = $data['tx_civserv_ms_mandant'];
-						break;
-					case 'ms_approver_one':
-						$value = $data['tx_civserv_ms_approver_one'];
-						break;
-					case 'ms_approver_two':
-						$value = $data['tx_civserv_ms_approver_two'];
-						break;
-				}
-			}
-			//get human readable names for the mandant-roles
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'cm_community_name',			 			// SELECT ...
-				'tx_civserv_conf_mandant',			// FROM ...
-				'cm_community_id  = '.$value,	// AND title LIKE "%blabla%"', // WHERE...
-				'', 						// GROUP BY...
-				'',   						// ORDER BY...
-				'' 							// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-			);
-			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-			$text = $row['cm_community_name'];			
-			$div_open='<div style="width : 90%; margin: 5px 5px 5px 5px; padding: 5px 5px 5px 5px; border:0;">';
-			$html_field='<input type="hidden"	name="'.$PA['itemFormElName'].'"
-							value="'.$value.'"
-							'.$PA['onFocus'].'/>
-						<span>'.$text.' (Gemeindekennziffer: '.$value.')</span>';
-			$div_close='</div>';
-		}
-		return $div_open.$html_field.$div_close;
-	}
-*/	
 }
 
 

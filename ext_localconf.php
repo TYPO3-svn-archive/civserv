@@ -138,6 +138,7 @@ $TYPO3_CONF_VARS["BE"]['CUSTOM_CITEQ']['EXCLUDE_VS']="www4.citeq.de/osiris/typo3
 /**
  * Definition of own class files. To-Do: include file which again includes class-files
 */
+$TYPO3_CONF_VARS["BE"]["XCLASS"]["typo3/db_new.php"] = t3lib_extMgm::extPath($_EXTKEY).'class.ux_db_new.php'; 
 $TYPO3_CONF_VARS["BE"]["XCLASS"]["typo3/class.db_list_extra.inc"] = t3lib_extMgm::extPath($_EXTKEY).'class.ux_db_list_extra.php'; 
 $TYPO3_CONF_VARS["BE"]['XCLASS']['typo3/class.browse_links.php'] = t3lib_extMgm::extPath($_EXTKEY).'class.ux_browseLinks.php';
 $TYPO3_CONF_VARS["BE"]["XCLASS"]["typo3/template.php"]= t3lib_extMgm::extPath($_EXTKEY).'class.ux_template.php';
