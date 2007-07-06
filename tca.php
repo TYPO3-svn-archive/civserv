@@ -2004,7 +2004,7 @@ $TCA["tx_civserv_organisation"] = Array (
 			"config" => Array (
 				"type" => "input",
 				"size" => "30",
-				"max" => "5",
+				"max" => "10",
 			)
 		),
 		"or_name" => Array (
