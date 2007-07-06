@@ -1003,6 +1003,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 
 	function makeOrganisationListQuery($char=all,$limit=true,$count=false) {
+		debug($this->conf['organisation_per_page']);
 			if ($char != all) {
 				$regexp = $this->buildRegexp($char);
 			}
@@ -1016,10 +1017,19 @@ class tx_civserv_pi1 extends tslib_pibase {
 						tx_civserv_organisation.hidden=0 '.
 						($regexp?'AND or_name REGEXP "' . $regexp . '"':'') . ' ';		
 			} else {
+/*
 				$query = 'Select 
 						tx_civserv_organisation.uid as or_uid,
 						tx_civserv_organisation.or_name as name,
 						tx_civserv_organisation.or_name as realname
+					from 
+						tx_civserv_organisation
+					where 
+*/			
+				$query = 'Select 
+						tx_civserv_organisation.uid as or_uid,'.
+						($this->conf['displayOrganisationCode'] ? 'CONCAT(tx_civserv_organisation.or_name, \' [\', tx_civserv_organisation.or_code, \']\')' : 'tx_civserv_organisation.or_name ').'as name,'.
+						($this->conf['displayOrganisationCode'] ? 'CONCAT(tx_civserv_organisation.or_name, \' [\', tx_civserv_organisation.or_code, \']\')' : 'tx_civserv_organisation.or_name ').'as realname 
 					from 
 						tx_civserv_organisation
 					where 
@@ -1029,8 +1039,19 @@ class tx_civserv_pi1 extends tslib_pibase {
 						tx_civserv_organisation.hidden=0';
 			}
 			for ($synonymNr = 1; $synonymNr <= 3; $synonymNr++) {
-			$query .=	' UNION ALL
-						 SELECT ' . ($count?'count(*) ':'tx_civserv_organisation.uid as or_uid, or_synonym' . $synonymNr . ' AS name, or_name AS realname ') . '
+/*				$query .=	' UNION ALL
+						 SELECT ' . ($count?'count(*) ':'tx_civserv_organisation.uid as or_uid, 
+						 	or_synonym' . $synonymNr . ' AS name, 
+							or_name AS realname ') . '
+							 FROM tx_civserv_organisation
+							 WHERE 	tx_civserv_organisation.pid IN (' . $this->community[pidlist] . ') '
+								. ($regexp?'AND or_synonym' . $synonymNr . ' REGEXP "' . $regexp . '"':'') .
+								'AND or_synonym' . $synonymNr . ' != "" ' . ' ';
+*/				
+				$query .=	' UNION ALL
+						 SELECT ' . ($count ? 'count(*) ' : 'tx_civserv_organisation.uid as or_uid, 
+						 				or_synonym' . $synonymNr . ' AS name, '.
+										($this->conf['displayOrganisationCode'] ? 'CONCAT(or_name, \' [\', tx_civserv_organisation.or_code, \']\')' : 'or_name' ).' AS realname ') . '
 							 FROM tx_civserv_organisation
 							 WHERE 	tx_civserv_organisation.pid IN (' . $this->community[pidlist] . ') '
 								. ($regexp?'AND or_synonym' . $synonymNr . ' REGEXP "' . $regexp . '"':'') .
@@ -1053,6 +1074,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					}
 	
 			}
+			debug ($query);
 			return $query;
 		}
 
