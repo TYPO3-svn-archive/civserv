@@ -27,9 +27,9 @@
 			<!--{if $category != ""}-->		
 				<h2 class="category">{$category}</h2>
 			<!--{/if}-->
-				<ul>		
+				<ul class="formlist">		
 				<!--{foreach from=$cat item=form}-->			
-					<li><strong><a href="{$form.url}" target="_blank">{$form.name}&nbsp;</a></strong><br />		
+					<img src="{$form.icon}" class="fileicon"/><li><a href="{$form.url}" target="_blank">{$form.name}&nbsp;</a><br />		
 					{*<li><strong>{$form.url}</strong><br />*}
 					<!--{if $form.descr != ""}-->					
 						{$form.descr}				

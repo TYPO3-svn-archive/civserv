@@ -1,6 +1,8 @@
 <div id="right">
 	{include file=$right_searchbox_template}
 	
+	{* This ruddy Template is not being used at all!!!!! *}
+	
 	{* If a service with at least one of the following sections is shown,
 		the subnavigation is shown here. *}
 	<!--{if $fees != "" OR $documents != "" OR $forms != "" OR $legal_local != "" OR $legal_global != "" OR $employees != ""}-->
@@ -30,10 +32,12 @@
 	<!--{if $related_topics != ""}-->
 		<h3 class="invisible">{$serviceinformation_label}:</h3>
 		<div id="serviceinformation">
-		<strong>{$pages_related_topics_label}:</strong><br /><br />
+			<strong>{$pages_related_topics_label}:</strong><br /><br />
+			<ul>
 			<!--{foreach from=$related_topics item=service }-->
-				<a href="{$service.link}" class="link">{$service.name}</a><br />
+				<li><a href="{$service.link}" class="link">{$service.name}</a></li>
 			<!--{/foreach}-->
+			</ul><!-- level1 end -->
 		</div><!-- serviceinformation end -->
 	<!--{/if}-->
 	

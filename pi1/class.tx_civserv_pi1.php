@@ -114,6 +114,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 	var $versioningEnabled = FALSE;
 	var $previewMode = FALSE;
 	var $current_ws = 0;
+	var $iconDir = 'typo3/gfx/fileicons/';
+
 
 
 	/**
@@ -1003,7 +1005,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 
 	function makeOrganisationListQuery($char=all,$limit=true,$count=false) {
-		debug($this->conf['organisation_per_page']);
 			if ($char != all) {
 				$regexp = $this->buildRegexp($char);
 			}
@@ -1074,7 +1075,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					}
 	
 			}
-			debug ($query);
+#			debug ($query);
 			return $query;
 		}
 
@@ -1354,7 +1355,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			array_multisort($category_names, SORT_ASC, $form_names, SORT_ASC, $all_forms);
 		}
 		//reinstate lower_case category_names.....? there shouldn't be any!!!
-		
+		#debug($all_forms);
 		
 		
 		
@@ -1365,7 +1366,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 			if($single_form['cat'] != "".$actual_category){
 				$actual_category =$single_form['cat'];
 			}
-			$forms[$actual_category][$form_row_counter]['name'] = $this->pi_getEditIcon($single_form['name'],'fo_name',$this->pi_getLL('tx_civserv_pi1_form_list.name','form name'),$single_form,'tx_civserv_form');
+			$forms[$actual_category][$form_row_counter]['name'] = $this->pi_getEditIcon(
+																				$single_form['name'],
+																				'fo_name',
+																				$this->pi_getLL('tx_civserv_pi1_form_list.name','form name'),
+																				$single_form,
+																				'tx_civserv_form');
 			$forms[$actual_category][$form_row_counter]['descr'] = $this->formatStr($this->local_cObj->stdWrap($this->pi_getEditIcon(trim($single_form['descr']),'fo_descr',$this->pi_getLL('tx_civserv_pi1_form_list.description','form description'),$single_form,'tx_civserv_form'),$this->conf['fo_name_stdWrap.']));
 
 
@@ -1423,6 +1429,35 @@ class tx_civserv_pi1 extends tslib_pibase {
 			} else {
 				$forms[$actual_category][$form_row_counter]['url'] = $folder_forms . $single_form[file];
 			}
+			
+			
+			if(preg_match('/http/',$forms[$actual_category][$form_row_counter]['url'])){
+#				debug('its an Alien!!!!');
+			}else{
+#				debug('its one of us!!!!');
+			}
+			if(preg_match('/.pdf$/',$forms[$actual_category][$form_row_counter]['url']) || preg_match('/pdf.form-solutions.net/',$forms[$actual_category][$form_row_counter]['url'])){
+				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."pdf.gif";
+			}elseif(preg_match('/.doc$/',$forms[$actual_category][$form_row_counter]['url'])){
+				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."doc.gif";
+			}elseif(preg_match('/.odt$/',$forms[$actual_category][$form_row_counter]['url'])){
+				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."sxw.gif";	
+			}elseif(preg_match('/.sxw$/',$forms[$actual_category][$form_row_counter]['url'])){
+				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."sxw.gif";			
+			}elseif(preg_match('/.html$/',$forms[$actual_category][$form_row_counter]['url'])){
+				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."html.gif";			
+			}elseif(preg_match('/.gif$/',$forms[$actual_category][$form_row_counter]['url'])){
+				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."gif.gif";			
+			}elseif(preg_match('/.php$/',$forms[$actual_category][$form_row_counter]['url'])){
+				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."php3.gif";			
+			}elseif(preg_match('/.zip$/',$forms[$actual_category][$form_row_counter]['url'])){
+				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."zip.gif";			
+			}elseif(preg_match('/.txt$/',$forms[$actual_category][$form_row_counter]['url'])){
+				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."txt.gif";			
+			}else{
+				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."default.gif";
+			}
+
 			$form_row_counter++;
 		}
 
@@ -1896,14 +1931,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// build a string with the links to the character-sites
 		$abcBar =  '<p id="abcbar">' . "\n\t";
 		for($i = 0; $i < sizeof($alphabet); $i++)	{
-			$actual = (strtoupper($this->piVars[char])==$alphabet[$i]);
+			$actual = (strtoupper($this->piVars[char]) == $alphabet[$i]);
 			if($occuringInitials && in_array($alphabet[$i],$occuringInitials))	{
 				$abcBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . '%s '.$this->conf['abcSpacer'].' ',
 						$actual?'<strong>':'',
 						$actual?'</strong>':'');
 			}
 			else	{
-				$abcBar .= $alphabet[$i].' '.$this->conf['abcSpacer'].' ';
+				$abcBar .= '<span>'.$alphabet[$i].'</span> '.$this->conf['abcSpacer'].' ';
 			}
 		}
 
@@ -2525,9 +2560,24 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function employeeDetail(&$smartyEmployee,$searchBox) {
 		$uid = intval($this->piVars[id]);	//SQL-Injection!!!
-		$pos_id = $this->piVars[pos_id];
+		$pos_id = intval($this->piVars[pos_id]); //must come from piVars -> need to know which one of several possible positions is to be displayed....
 
-		//Standard query for employee details
+		// test bk: get position from Database
+		// a) employee is linked to position-record, could be > 1 !!!
+		// b) employee is linked to organisation-record (leader of the pack)
+		/*
+		$pos_id = intval($this->piVars[pos_id]);
+		$res_emppos = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+					'uid',
+					'tx_civserv_employee,
+					 tx_civserv_employee_em_position_mm,
+					 tx_civserv_position'
+		);
+		*/
+		
+
+
+		// Standard query for employee details --> table tx_civserv_employee
 		$res_common = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'uid, 
 						 em_address, 
@@ -2569,10 +2619,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 					'oh_weekday',
 					'');
 
-		//Create additional queries if position uid is set in piVars
+		// Create additional queries if position uid is set in piVars
 		if ($pos_id != '') {
 
-			//Query for employee-position office hours
+			// Query for employee-position office hours
 			$res_emp_pos_hours = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_freestyle, oh_weekday',
 					'tx_civserv_employee, tx_civserv_position, tx_civserv_officehours, tx_civserv_employee_em_position_mm, tx_civserv_officehours_oep_employee_em_position_mm_mm',
@@ -2588,10 +2638,23 @@ class tx_civserv_pi1 extends tslib_pibase {
 					'oh_weekday',
 					'');
 
-			//Query for employee-organisation office hours
+			// Query for employee-organisation office hours
+			// 1. will only return result if position occupied by employee has relation to organisation
+			// 2. ignores direct employee-organisation-relations (leader of the pack....)
 			$res_emp_org_hours = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_freestyle, oh_weekday',
-					'tx_civserv_employee, tx_civserv_organisation, tx_civserv_position, tx_civserv_officehours, tx_civserv_employee_em_position_mm, tx_civserv_position_po_organisation_mm, tx_civserv_organisation_or_hours_mm',
+					'oh_start_morning, 
+					 oh_end_morning, 
+					 oh_start_afternoon, 
+					 oh_end_afternoon, 
+					 oh_freestyle, 
+					 oh_weekday',
+					'tx_civserv_employee, 
+					 tx_civserv_organisation, 
+					 tx_civserv_position, 
+					 tx_civserv_officehours, 
+					 tx_civserv_employee_em_position_mm, 
+					 tx_civserv_position_po_organisation_mm, 
+					 tx_civserv_organisation_or_hours_mm',
 					'tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 					 AND tx_civserv_officehours.deleted=0 AND tx_civserv_officehours.hidden=0
 					 AND tx_civserv_position.deleted=0 AND tx_civserv_organisation.hidden=0
@@ -2612,38 +2675,61 @@ class tx_civserv_pi1 extends tslib_pibase {
 			//todo!
 
 
-			//Query for organisation, building, floor and room (depending on position of employee)
+			// not all employee-position-records have a relation to a room (building, floor)
+
 			$res_position = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_civserv_position.uid as pos_uid, 
-					 tx_civserv_organisation.uid as or_uid, 
-					 tx_civserv_employee.uid as emp_uid, 
-					 po_name as position, 
-					 bl_name as building, 
+				'tx_civserv_position.uid as pos_uid, 
+				 tx_civserv_organisation.uid as or_uid, 
+				 tx_civserv_employee.uid as emp_uid, 
+				 po_name as position, 
+				 ep_telephone as phone, 
+				 ep_fax as fax, 
+				 ep_email as email, 
+				 or_name as organisation',
+				'tx_civserv_employee, 
+				 tx_civserv_position, 
+				 tx_civserv_organisation, 
+				 tx_civserv_employee_em_position_mm, 
+				 tx_civserv_position_po_organisation_mm',
+				'tx_civserv_employee.uid='.$uid.' 
+				 AND em_datasec=1 
+				 AND tx_civserv_position.uid = '.$pos_id.'
+				 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
+				 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
+				 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
+				 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
+				 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
+				 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
+				 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign',
+				'',
+				'',
+				'');
+
+			$res_room = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'bl_name as building, 
 					 bl_name_to_show as building_to_show,
 					 fl_descr as floor, 
-					 ro_name as room, 
-					 ep_telephone as phone, 
-					 ep_fax as fax, 
-					 ep_email as email, 
-					 or_name as organisation',
-					'tx_civserv_employee, tx_civserv_position, tx_civserv_room, tx_civserv_floor, tx_civserv_organisation, tx_civserv_building, tx_civserv_employee_em_position_mm, tx_civserv_building_bl_floor_mm, tx_civserv_position_po_organisation_mm',
+					 ro_name as room', 
+					'tx_civserv_employee, 
+					 tx_civserv_position, 
+					 tx_civserv_room, 
+					 tx_civserv_floor, 
+					 tx_civserv_building, 
+					 tx_civserv_employee_em_position_mm, 
+					 tx_civserv_building_bl_floor_mm', 
 					'tx_civserv_employee.uid='.$uid.' 
 					 AND em_datasec=1 
 					 AND tx_civserv_position.uid = '.$pos_id.'
-					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 					 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
 					 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
 					 AND tx_civserv_room.deleted=0 AND tx_civserv_room.hidden=0
 					 AND tx_civserv_floor.deleted=0 AND tx_civserv_floor.hidden=0
-					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
 					 AND tx_civserv_employee_em_position_mm.ep_room = tx_civserv_room.uid
 					 AND tx_civserv_building.uid = tx_civserv_building_bl_floor_mm.uid_local
 					 AND tx_civserv_floor.uid = tx_civserv_building_bl_floor_mm.uid_foreign
-					 AND tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid
-					 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
-					 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign',
+					 AND tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid',
 					'',
 					'',
 					'');
@@ -2653,6 +2739,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$employee_position['or_link'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'organisation', id => $employee_position['or_uid']),1,1));
 			if($employee_position['building_to_show'] > ''){
 				$employee_position['building'] = $employee_position['building_to_show'];
+			}
+			$employee_room = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_room);
+			if(count($employee_room) > 0){
+				$employee_position = array_merge($employee_position, $employee_room);
 			}
 			$smartyEmployee->assign('position',$employee_position);
 	
