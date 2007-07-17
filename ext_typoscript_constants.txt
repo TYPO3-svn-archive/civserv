@@ -22,6 +22,8 @@ tpl_contact_form = typo3conf/ext/civserv/templates/contact_form.tpl.html
 tpl_right_searchbox = typo3conf/ext/civserv/templates/right_searchbox.tpl.html
 tpl_right_top = typo3conf/ext/civserv/templates/right_top.tpl.html
 tpl_employee_list = typo3conf/ext/civserv/templates/employee_list.tpl.html
+tpl_none = typo3conf/ext/civserv/templates/none.tpl.html
+
 
 
 # Path definitions (common part)

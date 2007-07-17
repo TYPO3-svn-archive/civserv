@@ -329,6 +329,11 @@ $TCA["tx_civserv_service"] = Array (
 			"endtime" => "endtime",
 			"fe_group" => "fe_group",
 		),
+		"typeicon_column" => "sv_type", //intranet or internet?
+        "typeicons" => Array (
+				'0' => t3lib_extMgm::extRelPath($_EXTKEY)."icon_tx_civserv_service.gif",
+				'1' => t3lib_extMgm::extRelPath($_EXTKEY)."icon_tx_civserv_service_int.gif",
+        ),
 		"dynamicConfigFile" => t3lib_extMgm::extPath($_EXTKEY)."tca.php",
 		"iconfile" => t3lib_extMgm::extRelPath($_EXTKEY)."icon_tx_civserv_service.gif",
 	),

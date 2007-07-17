@@ -662,13 +662,13 @@ class tx_civserv_commit {
 		$base=substr($base,0,strrpos($base,'/'));
 		if(file_exists($base.'/fileadmin')){ // the typo3 imp_exp-tool starts from a different script_filename	
 			if (!file_exists($base.'/fileadmin/civserv/'.$community)){
-				mkdir($base.'/fileadmin/civserv/'.$community, 0775);
+				t3lib_div::mkdir($base.'/fileadmin/civserv/'.$community, 0775);
 			}
 			if (!file_exists($base.'/fileadmin/civserv/'.$community.'/images')){
-				mkdir($base.'/fileadmin/civserv/'.$community.'/images', 0775);
+				t3lib_div::mkdir($base.'/fileadmin/civserv/'.$community.'/images', 0775);
 			}
 			if (! file_exists($base.'/fileadmin/civserv/'.$community.'/forms')){
-				mkdir($base.'/fileadmin/civserv/'.$community.'/forms', 0775);
+				t3lib_div::mkdir($base.'/fileadmin/civserv/'.$community.'/forms', 0775);
 			}
 		}
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -683,7 +683,7 @@ class tx_civserv_commit {
 		$model_service_image_folder = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 		$model_service_folder = $model_service_image_folder['cf_value'];
 		if (!file_exists($base.'/'.$model_service_folder)){
-			mkdir($base.'/'.$model_service_folder, 0775);
+			t3lib_div::mkdir($base.'/'.$model_service_folder, 0775);
 		}
 	}
 }

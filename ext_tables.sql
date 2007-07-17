@@ -244,6 +244,7 @@ CREATE TABLE tx_civserv_service (
 	endtime int(11) unsigned DEFAULT '0' NOT NULL,
 	fe_group int(11) DEFAULT '0' NOT NULL,
 	sv_name tinytext NOT NULL,
+	sv_type tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	sv_synonym1 tinytext NOT NULL,
 	sv_synonym2 tinytext NOT NULL,
 	sv_synonym3 tinytext NOT NULL,
@@ -919,9 +920,11 @@ CREATE TABLE tx_civserv_model_service_temp (
 
 #
 # Overwrite table definition of fields in be_users so we can offer editors sufficient db_mountpoints
+# Keep this modification in case civserv still runs with typo3_src < 4.1.0 somewhere
+# (since typo3_src 4.1.0 the value *is* 255)
 #
 CREATE TABLE be_users (
-	db_mountpoints varchar(120) DEFAULT '' NOT NULL
+	db_mountpoints varchar(255) DEFAULT '' NOT NULL
 );
 
 

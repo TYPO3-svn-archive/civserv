@@ -23,6 +23,7 @@ plugin.tx_civserv_pi1 {
 	tpl_right_searchbox = {$tpl_right_searchbox}
 	tpl_right_top = {$tpl_right_top}
 	tpl_employee_list = {$tpl_employee_list}
+	tpl_none = {tpl_none}
 
 	
 

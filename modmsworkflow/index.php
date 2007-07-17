@@ -81,7 +81,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
     * @return   [type]      ...
     */
 	function init()	{
-		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$HTTP_GET_VARS,$HTTP_POST_VARS,$CLIENT,$TYPO3_CONF_VARS;
+		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
 		parent::init();
 	}
 
@@ -94,7 +94,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
     * @return   module content
     */
 	function main()	{
-		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$HTTP_GET_VARS,$HTTP_POST_VARS,$CLIENT,$TYPO3_CONF_VARS;
+		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
 
 			// Draw the header.
 		$this->doc = t3lib_div::makeInstance("mediumDoc");
@@ -142,7 +142,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 		if(in_array(t3lib_div::_GP('responsible'), $arrResponsible)){
 			$responsible = t3lib_div::_GP('responsible');
 		}
-		$abort = $HTTP_POST_VARS['abort'];
+		$abort = t3lib_div::GP('abort');
 
 		if (isset($abort)){
 			$this->mainContent();
@@ -186,10 +186,10 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
     * @return   module content
     */
 	function approveContent($uid, $responsible)	{
-		global $LANG,$HTTP_GET_VARS,$HTTP_POST_VARS;
+		global $LANG;
 
-		$submit = $HTTP_POST_VARS['submit'];
-		$abort = $HTTP_POST_VARS['abort'];
+		$submit = t3lib_div::GP('submit');
+		$abort = t3lib_div::GP('abort');
 			//if neither commit nor abort was pressed, this is the initial display mode
 		if (empty($submit) && empty($abort)){
 				//Qustion: Should edited model services really be committed?
@@ -300,12 +300,12 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
     * @return   module content
     */
 	function reviseContent($uid, $responsible){
-		global $LANG,$HTTP_GET_VARS,$HTTP_POST_VARS;
+		global $LANG;
 
-		$submit = $HTTP_POST_VARS['submit'];
-		$comment = $HTTP_POST_VARS['comment'];
-		$reset = $HTTP_POST_VARS['reset'];
-		$abort = $HTTP_POST_VARS['abort'];
+		$submit = t3lib_div::GP('submit');
+		$comment = t3lib_div::GP('comment');
+		$reset = t3lib_div::GP('reset');
+		$abort = t3lib_div::GP('abort');
 
 		$checked = true;
 		if (isset($submit)){
