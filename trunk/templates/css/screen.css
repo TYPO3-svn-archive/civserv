@@ -1,0 +1,1250 @@
+/*
+CODE:			Livingpage® für O.S.I.R.I.S.
+REVISION:		0.2
+LAST CHANGE:      14.10.04 bm@livingpage.com
+
+CSS nach Typen sortiert. Was wozu gehoert steht im Kommentar davor. 
+
+Getestet und fuer gut befunden aufgrund kurzer Entwicklungszeit nur in:
+
+Mac: keine
+Win: IE6, Firefox 08
+'x: keine
+
+Nicht geeignet fuer NN4.x. (any version, any platform)
+
+Weitere Erklaerungen gibt es bei w3.org/TR/REC-CSS2/
+
+Achtung: Die Nutzung dieser CSS-Daten ist ausschließlich für die Präsentation des Systems am 15.10.2004 vereinbart. Weitere Verwendungen bedürfen weiterer Vereinbarungen und Absprachen mit Livingpage MediaAgentur.
+
+*/
+
+
+/* ---------------------------------------------- */
+/* ---------------- Begin HTML-Tags ------------- */
+/* ---------------------------------------------- */
+
+h1 {
+	font-size: 1.3em;
+	font-weight: bold;
+	padding-top: 15px;
+}
+
+h2 {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+h2.category {
+	font-size: 1.1em;
+	font-weight: bold;
+	color:#003399;
+}
+
+
+h3 {
+	font-size: 1em;
+	font-weight: bold;
+}
+
+h4 {
+	font-size: 1em;
+	font-weight: bold;
+}
+
+form {
+	margin: 0;
+	padding: 0;
+	display: inline;
+}
+
+img {
+	border: 0;
+}
+
+img.fileicon {
+	float:left;
+	margin-right: 10px;
+}
+
+
+html {
+	height: 100%
+}
+
+body {
+	height: 100%
+}
+
+body {
+	padding-right: 0px; 
+	padding-left: 0px; 
+	background: url(../images/bgs/body.gif) repeat-y left top; 
+	padding-bottom: 0px; 
+	margin: 0px; 
+	color: #000000; 
+	padding-top: 0px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 0.8em;
+}
+
+unknown {
+	float: left; 
+	width: 100%;
+}
+
+div {
+	margin-top: 0px;
+}
+
+p {
+	margin-top: 0px;
+}
+
+/* ---------------------------------------------- */
+/* ----------------- End HTML-Tags -------------- */
+/* ---------------------------------------------- */
+
+/* ---------------------------------------------- */
+/* ----------------- Begin RTE htmlArea --------- */
+/* ---------------------------------------------- */
+
+a.extern{
+	background:  url(../images/externer_link.gif) no-repeat;
+	background-position: 0em 0.2em;
+	padding-left: 1.2em;
+}
+
+a.intern{
+  text-decoration: none;
+  font-weight: bold;	
+}
+/* ---------------------------------------------- */
+/* ----------------- End RTE htmlArea ----------- */
+/* ---------------------------------------------- */
+
+
+/* ---------------------------------------------- */
+/* ----------- Begin page segmentation ---------- */
+/* ---------------------------------------------- */
+
+#outer {
+	min-height: 100%;
+	margin-bottom: -40px;
+	padding-left: 190px;    /* musste für IE 5.0 von margin auf padding geändert werden */
+	padding-right: 197px;   /* musste für IE 5.0 von margin auf padding geändert werden */
+	color: #000000;
+	height: 100%;
+}
+
+unknown {
+	height: auto
+}
+
+#header {
+	background: url(../images/headermotive.jpg) #c7cee9 no-repeat; 
+	left: 0px; 
+	overflow: hidden; 
+	width: 100%; 
+	color: #000000; 
+	position: absolute; 
+	top: 0px; 
+	height: 102px;
+}
+
+#left {
+	float: left; 
+	margin-left: -195px; 
+	width: 190px; 
+	position: relative
+}
+
+ html #left {
+	padding-bottom: 40px; 
+	margin-right: -3px;
+}
+
+#right {
+	float: right;
+	width: 195px;
+	margin-right: -195px;
+	position: relative;
+	padding-top: 20px;
+}
+
+/* 
+* to use on pages without searchword or right menu
+* contact.tpl.html
+* email.tpl.html
+* in cases where you give a background-color to the #right area
+* else you would get an empty red, green, blue... box
+*/
+#right_dummy {
+	float: right;
+	width: 195px;
+	margin-right: -195px;
+	position: relative;
+	padding-top: 20px;
+}
+
+html #right {
+	padding-bottom: 4.5em; 
+	margin-right: -200px;
+}
+
+#footer {
+	clear: both; 
+	width: 100%; 
+	color: #000000; 
+	xposition: relative; /* nicht nötig? rausgenommen für ie7, s.u. */
+	position: fixed; /* ie7 */
+	bottom: 0px; /* ie7 */
+	height: 4.2em;
+	background-color: #ffffff;
+	background: url(../images/bgs/footer.gif) repeat-x #ffffff;
+	font-size: 0.8em;
+}
+
+html #footer {
+	height: 4.2em;
+}
+
+#footer .footer  {
+	padding-left: 10px;
+	padding-top: 5px;
+	line-height: 1.6em;
+}
+
+#clearheader {
+	height: 102px;
+}
+
+#clearfooter {
+	clear: both; 
+	height: 40px;
+}
+
+html #centrecontent {
+	margin-bottom: 12px; 
+	height: 1%;
+}
+
+#centrecontent {
+	float: right; 
+	margin: 0px -0.5%; 
+	width: 100%; 
+	position: relative;
+	font-size: 0.9em;
+	line-height: 1.4em;
+}
+
+#centrecontent p,h1,h2,div.content {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+#centrecontent div.content p{
+	padding-left: 0px;
+}
+#centrecontent table {
+	margin-left: 0px;
+	font-size: 1em;
+}
+
+#centrecontent td {
+	padding: 0;
+	margin: 0;
+	padding-right: 15px;
+}
+
+#centrecontent caption {
+	padding-left: 0px;
+	text-align: left;
+	font-weight: bold;
+}
+
+#centrecontent th {
+	padding: 0;
+	margin: 0;
+	text-align: left;
+	padding-right: 15px;
+	padding-bottom: 5px;
+	font-weight: normal;
+	font-size: 0.95em;
+}
+
+#centrecontent .error {
+	color:red;
+	font-weight:bold;
+	padding-left:100px;
+}
+
+#validator {
+	position: relative;
+	top: 90px;
+	margin: 0;
+	text-align: right;
+}
+
+
+/*---------------- Rendering for Online Services --------------------------*/
+#onlineService{
+	/*what ever*/
+	
+}
+
+#onlineService li{
+	margin-top:20px;
+	margin-bottom:10px;
+	xborder:solid red 2px;
+	list-style-type:none;
+	min-height:100px;
+	xcolor:green;
+}
+
+#onlineService hr{
+	clear:both;
+	width:100%;
+	height: 1px;
+	color: #005494;
+}
+/*---------------- Rendering for Online Services --------------------------*/
+
+
+/* ---------------------------------------------- */
+/* ------------ End page segmentation ----------- */
+/* ---------------------------------------------- */
+
+
+/* ---------------------------------------------- */
+/* ------------------- Begin IDs ---------------- */
+/* ---------------------------------------------- */
+
+// The root navigation is not included in the template
+#rootnavigation {
+	font-size: 0.75em;
+	padding-left: 15px;
+	padding-top: 15px;
+}
+
+/* ---------------------------------------------- */
+/* ------------------- End IDs ------------------ */
+/* ---------------------------------------------- */
+
+
+/* ---------------------------------------------- */
+/* ----------------- Begin classes -------------- */
+/* ---------------------------------------------- */
+
+.outerwrap {
+	float: left; 
+	width: 99%
+}
+
+/*
+.invisible {
+	display: none;
+}
+*/
+
+
+/* better for screenreaders as i.e. jaws (jaws ignores all markup with display:none; */
+.invisible {
+	position: absolute;
+	left: -1000px;
+	top: -1000px;
+	width: 0px;
+	height: 0px;
+	overflow: hidden;
+	display: inline;
+}
+
+
+.searchwords{
+	display: none;
+	visibility: hidden;
+}
+
+table.right {
+	margin: 0;
+	font-size: 0.95em;
+	margin-right: 1em;
+	padding:0;
+}
+
+.orgadetail {
+	margin-left: 15px;
+	margin-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background-color: #ECE3D7;
+	padding-left: 10px;
+}
+
+.employeedetail {
+	margin-left: 15px;
+	margin-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	background-color: #ECE3D7;
+	padding-left: 10px;
+}
+
+.external_service{
+	font-size: 1.5em;
+	color: red;
+}
+
+.preview{
+	font-size: 1.1em;
+	font-weight: bold;
+	background-color: #FFFFAA;
+}
+
+/* ---------------------------------------------- */
+/* ------------------ End classes --------------- */
+/* ---------------------------------------------- */
+
+
+/* ---------------------------------------------- */
+/* ------------ Begin main navigation ----------- */
+/* ---------------------------------------------- */
+
+#leftmenu {
+	position: relative;
+	width: 200px;
+	font-size: 0.85em;
+	top: 32px;
+	text-align: right;
+	color: #000000;
+}
+
+#leftmenu ul 
+{
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
+	display: inline;
+	overflow: hidden;
+	list-style: none;
+	font-weight: bold;
+}
+
+#leftmenu ul li
+{
+	width: 200px;
+	margin: 0;
+	padding: 0;
+	display: inline; /* duplicated for IE 5/Win */
+	list-style-type: none; /* duplicated for IE 5/Win */
+}
+
+#leftmenu ul li a
+{
+	text-decoration: none;
+	padding-left: 5px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	color: #000000;
+	line-height: 1.0em;
+	display: block;
+	border-bottom: 1px solid #000000;
+}
+
+#leftmenu ul li a:hover
+{
+	color: #000000;
+	background-color: #FFFFFF;
+}
+
+#leftmenu ul li .active
+{
+	background-color: #000000;
+	color: #FFFFFF;
+}
+
+#leftmenu .german
+{
+	background: url(../images/bgs/d.gif); 
+	background-repeat: no-repeat;
+	background-position: 45px 5px;
+}
+
+#leftmenu .german a:hover
+{
+	background: url(../images/bgs/d.gif); 
+	background-repeat: no-repeat;
+	background-position: 45px 5px;
+	color: #FFFFFF;
+	background-color: #375FFF;
+}
+
+
+#leftmenu .english
+{
+	background: url(../images/bgs/gb.gif);
+	background-repeat: no-repeat;
+	background-position: 45px 5px;
+}
+
+#leftmenu .english a:hover
+{
+	background: url(../images/bgs/gb.gif); 
+	background-repeat: no-repeat;
+	background-position: 45px 5px;
+	color: #FFFFFF;
+	background-color: #375FFF;
+}
+
+
+/* ---------------------------------------------- */
+/* ------------- End main navigation ------------ */
+/* ---------------------------------------------- */
+
+
+/* ---------------------------------------------- */
+/* -------------- Begin subnavigation ----------- */
+/* ---------------------------------------------- */
+
+#rightmenu {
+	margin: 0;
+	padding: 0;
+	width: 195px;
+	font-size: 0.85em;
+	margin-top: 20px;
+}
+
+#rightmenu ul 
+{
+	margin: 0;
+	padding: 0;
+	display: inline;
+	overflow: hidden;
+	list-style: none;
+}
+
+#rightmenu ul li
+{
+	width: 195px;
+	margin: 0;
+	padding: 0;
+	display: inline; /* duplicated for IE 5/Win */
+	list-style-type: none; /* duplicated for IE 5/Win */
+}
+
+#rightmenu ul li a
+{
+	text-decoration: none;
+	padding-left: 10px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	color: #666666;
+	line-height: 1.9em;
+	display: block;
+	border-bottom: 1px solid #666666;
+}
+
+#rightmenu ul li a:hover
+{
+	color: #000000;
+	font-weight: bold;
+}
+
+#rightmenu .fees
+{
+	background-image: url(../images/menu/rightmenu/fees.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+#rightmenu .fees:hover 
+{
+	background-image: url(../images/menu/rightmenu/fees_f2.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+
+}
+
+#rightmenu .necessarydocuments
+{
+	background-image: url(../images/menu/rightmenu/necessarydocuments.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+#rightmenu .necessarydocuments:hover 
+{
+	background-image: url(../images/menu/rightmenu/necessarydocuments_f2.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+#rightmenu .forms
+{
+	background-image: url(../images/menu/rightmenu/forms.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+#rightmenu .forms:hover 
+{
+	background-image: url(../images/menu/rightmenu/forms_f2.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+#rightmenu .legals
+{
+	background-image: url(../images/menu/rightmenu/legals.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+#rightmenu .legals:hover 
+{
+	background-image: url(../images/menu/rightmenu/legals_f2.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+#rightmenu .contactperson
+{
+	background-image: url(../images/menu/rightmenu/cantactperson.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+#rightmenu .contactperson:hover 
+{
+	background-image: url(../images/menu/rightmenu/cantactperson_f2.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+/* -------------------------------------------------------------------- */
+/* ------------- End subnavigation rightmenu--------------------------- */
+/* -------------------------------------------------------------------- */
+
+
+
+
+/* -------------------------------------------------------------------- */
+/* ------------- begin subnavigation serviceinformation---------------- */
+/* -------------------------------------------------------------------- */
+#serviceinformation {
+	margin: 0;
+	padding: 0;
+	width: 195px; /* 195px */
+	font-size: 0.9em;
+	margin-top: 25px;
+	overflow: hidden;
+}
+
+#serviceinformation ul 
+{
+	margin: 0;
+	padding: 0;
+	display: inline;
+	overflow: hidden;
+	list-style: none;
+}
+
+#serviceinformation ul li
+{
+	width: 195px; /* 195px */
+	margin: 0;
+	padding: 0;
+	color: red;
+	display: inline; /* duplicated for IE 5/Win */
+	list-style-type: none; /* duplicated for IE 5/Win */
+	xborder: solid red 1px;
+}
+
+#serviceinformation a.link {
+	display: block;
+	padding-bottom: 0.9em;
+	background: url(../images/icons/link.gif) no-repeat;
+	background-position: 0em 0.4em;
+	padding-left: 1.2em;
+	text-decoration: none;
+}
+
+/* ---------------------------------------------- */
+/* ------------- End subnavigation -------------- */
+/* ---------------------------------------------- */
+
+
+
+
+
+
+
+/* ---------------------------------------------- */
+/* ---------- Begin globale navigation ---------- */
+/* ---------------------------------------------- */
+
+#globalenavigation {
+    position: absolute;
+	width: 100%;
+	left: 0em; 
+    right: 0em;
+    bottom: 0;
+	overflow: hidden; 
+    font-size: 0.85em;
+	background-color: #cccccc;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	height: 2em;
+	line-height: 2em;
+	border-top: 1px solid #000000;
+	border-bottom: 1px solid #000000;
+}
+
+#globalenavigation ul 
+{	
+	display: inline;
+	margin: 0;
+	padding: 0;
+	list-style-position: outside;
+	list-style-type: none;
+}
+    
+#globalenavigation li {
+	display: inline;
+	float: left;
+	border-right: 1px solid #000000;
+	padding-right: 0.5em;    /* für IE 5.0 zusätzlich eingefügt */
+	padding-left: 0.5em;		/* für IE 5.0 zusätzlich eingefügt */
+}
+
+
+#globalenavigation li a {
+	color: #000000;
+	padding: 0em 1.5em 0em 1.5em;
+	text-decoration: none;
+	padding-top: 0.5em;
+	padding-bottom: 0.4em;
+}
+    
+#globalenavigation li a:hover {
+	text-decoration: underline;
+}
+
+#globalenavigation li .active {
+	text-decoration: underline;
+}
+
+#globalenavigation li.kommune
+{
+	width: 195px;
+	text-align: right;
+	border: none;
+}
+
+/* ---------------------------------------------- */
+/* ------------ End globale navigation ---------- */
+/* ---------------------------------------------- */
+
+.tx-civserv-pi1-searchbox
+{
+	font-size: 0.85em;
+}
+
+#rightinfo {
+	position: relative;
+	margin-top: 30px;
+}
+
+/* ---------------------------------------------- */
+/* ----------------- Begin Links ---------------- */
+/* ---------------------------------------------- */
+
+a {
+	color: #003399;
+	text-decoration: underline;
+}
+
+a:link {
+	color: #003399;
+}
+
+a:visited {
+	color: #003399;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+/* ---------------------------------------------- */
+/* ------------------- End Links ---------------- */
+/* ---------------------------------------------- */
+
+
+/* ---------------------------------------------- */
+/* ---------- Begin service navigation ---------- */
+/* ---------------------------------------------- */
+
+#servicenavigation {
+	position: relative;
+	width: 200px;
+	font-size: 0.85em;
+	top: 60px;
+	text-align: right;
+}
+
+#servicenavigation ul 
+{
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
+	display: inline;
+	overflow: hidden;
+	list-style: none;
+}
+
+#servicenavigation ul li
+{
+	width: 200px;
+	margin: 0;
+	padding: 0;
+	display: inline; /* duplicated for IE 5/Win */
+	list-style-type: none; /* duplicated for IE 5/Win */
+}
+
+#servicenavigation ul li a
+{
+	text-decoration: none;
+	padding-left: 5px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	color: #000000;
+	line-height: 1.0em;
+	display: block;
+	background-repeat: repeat-x;
+	background-position: top;
+	border-bottom: 1px solid #000000;
+}
+
+#servicenavigation ul li a:hover
+{
+	color: #000000;
+	background-color: #FFFFFF
+}
+
+#servicenavigation .printversion
+{
+	background-image: url(../images/icons/printversion.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+	padding-right: 23px;
+}
+
+#servicenavigation .printversion:hover 
+{
+	background-image: url(../images/icons/printversion_f2.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+
+#servicenavigation .back
+{
+	background-image: url(../images/icons/back.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+	padding-right: 23px;
+}
+
+#servicenavigation .back:hover 
+{
+	background-image: url(../images/icons/back_f2.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+
+#servicenavigation .bookmark
+{
+	background-image: url(../images/icons/bookmark.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+	padding-right: 23px;
+}
+
+#servicenavigation .bookmark:hover 
+{
+	background-image: url(../images/icons/bookmark_f2.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+
+#servicenavigation .home
+{
+	background-image: url(../images/icons/home.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+	padding-right: 23px;
+}
+
+#servicenavigation .home:hover 
+{
+	background-image: url(../images/icons/home_f2.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+
+/* ---------------------------------------------- */
+/* ---------- End service navigation ------------ */
+/* ---------------------------------------------- */
+
+
+
+
+
+/* ---------------------------------------------- */
+/* ---------- begin form / file list ------------ */
+/* ---------------------------------------------- */
+ul.formlist{
+	list-style: none outside;
+}
+
+ul.formlist li a{
+	font-weight:bold;
+}
+
+/* ---------------------------------------------- */
+/* ----------- end form / file list ------------- */
+/* ---------------------------------------------- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ---------------------------------------------- */
+/* --------------- Begin Icons ------------------ */
+/* ---------------------------------------------- */
+
+.newwindow {
+	background: url(../images/icons/newwindow.gif) no-repeat;
+	background-position: 0em 0.2em;
+	padding-left: 1.3em;
+	text-decoration: none;
+}
+
+.link {
+	background: url(../images/icons/link.gif) no-repeat;
+	background-position: 0em 0.4em;
+	padding-left: 1.2em;
+	text-decoration: none;
+}
+
+.email {
+	background: url(../images/icons/email.gif) no-repeat;
+	background-position: 0em 0.3em;
+	padding-left: 1.3em;
+	text-decoration: none;
+}
+
+.topofpage {
+	background: url(../images/icons/topofpage.gif) no-repeat;
+	background-position: 0em 0.3em;
+	padding-left: 1.3em;
+	text-decoration: none;
+	font-size: 0.85em;
+}
+
+/* ---------------------------------------------- */
+/* ----------------- End Icons ------------------ */
+/* ---------------------------------------------- */
+
+
+/* ---------------------------------------------- */
+/* ---------- Begin formular elements ----------- */
+/* ---------------------------------------------- */
+
+
+
+fieldset {
+	border: 1px;
+	margin: 0;
+	padding: 0;
+	padding-left: 15px;
+}
+
+legend {
+  display: none;
+}
+
+input {
+	padding: 0;
+	margin: 0;
+}
+
+/* Durch das folgende Beispiel verwandelt sich der Mauszeiger beim Überfahren des Labels in eine Hand mit Zeigefinger: */
+label {
+	cursor: pointer;
+}
+
+/* Als nächstes werden die Textfelder beim Erreichen des Fokus (also durch das Setzen der Einfügemarke per Tabulator oder Maus, oder auch durch Anklicken des damit verbundenen Labels) farblich hervorgehoben: */
+#centrecontent input:focus, #centrecontent textarea:focus {
+	color: #000;
+	background: #fff;
+}
+
+/* Zunächst werden die Labels mit der Klasse "left" rechtsbündig an eine imaginäre Mittelachse gebracht und mit einem Abstand zu den daneben stehenden Kontrollelementen versehen: */
+#centrecontent label.left {
+	float: left;
+	text-align: right;
+	width: 8em;
+	margin-right: .3em;
+	}
+
+/* Als nächstes werden die Text- und Auswahlboxen rechts daneben positioniert. Weil diese im HTML ohne einen erzwungenen Zeilenumbruch (z.B. durch <br /> oder die Grenzen einer <td>) nach den Labels kommen, ordnen sie sich durch das float:left; automatisch rechts neben die Beschriftungen ein: */
+#outer input[type=text], select {
+	float: left;
+	}
+
+/* Aus unerfindlichen Gründen braucht der Mozilla eine Extrawurst in Form eines zusätzlichen em für den Abstand nach links: */
+#centrecontent input[type=checkbox].right,
+#centrecontent input[type=radio].right,
+#centrecontent input[type=submit].right {
+	margin-left: 7.5em;
+	}
+
+/* Durch die folgende Deklaration werden die float-Zustände wieder aufgehoben, so dass es danach ganz normal im Fluss des Dokumentes weitergehen kann: */
+form br {
+	clear: both;
+	}
+
+/* Nun wird die Hintergrundfarbe von Textfeldern , sobald diese aktiviert sind, geändert. Damit teilen Sie Ihrem Benutzer deutlich mit, in welchem Abschnitt des Formulares er sich zur Zeit befindet und welche Eingabe als nächstes erwartet wird. Hierzu müssen Sie zunächst einmal die Hintergrundfarbe der Textfelder definieren: */
+#centrecontent fieldset input, #centrecontent fieldset textarea {
+	color: #000;
+	background: #ddd;
+	border: solid 1px #696969;
+	width: 20em; 
+	}
+
+/* Als nächstes werden die Textfelder beim Erreichen des Fokus (also durch das Setzen der Einfügemarke per Tabulator oder Maus, oder auch durch Anklicken des damit verbundenen Labels) farblich hervorgehoben: */
+input:focus, textarea:focus {
+	color: #000;
+	background: #fff;
+	}
+
+/* ---------------------------------------------- */
+/* ------------ end formelements ----------- */
+/* ---------------------------------------------- */
+
+
+/* ---------------------------------------------- */
+/* ------------ begin searchformelements ------------- */
+/* ---------------------------------------------- */
+
+
+#suche
+{
+	font-size: 0.85em;
+}
+
+#suche p {
+	margin: 0;
+	padding: 0;
+	padding-bottom: 5px;
+}
+
+#suche .searchform input .suchbegriff {
+	width: 150px;
+}
+
+#rightinfo {
+	position: relative;
+	margin-top: 30px;
+}
+
+#tx-civserv-pi1-searchbox .searchform input .suchbegriff {
+	width: 100px;
+}
+
+
+.tx-civserv-pi1-searchbox p {
+	margin: 0;
+	padding: 0;
+	padding-bottom: 5px;
+}
+
+
+/* ---------------------------------------------- */
+/* ------------- end searchformelements -------------- */
+/* ---------------------------------------------- */
+
+
+/* ---------------------------------------------- */
+/* --------- Begin  service information --------- */
+/* ---------------------------------------------- */
+/*
+#serviceinformation {
+	margin: 0;
+	padding: 0;
+	width: 195px;
+	font-size: 0.85em;
+	margin-top: 20px;
+	overflow: hidden;
+}
+
+#serviceinformation a.link {
+	display: block;
+	background: url(../images/icons/link.gif) no-repeat;
+	background-position: 0em 0.4em;
+	padding-left: 1.2em;
+	text-decoration: none;
+}
+*/
+/* ---------------------------------------------- */
+/* ---------- End service information ----------- */
+/* ---------------------------------------------- */
+
+
+/* ---------------------------------------------- */
+/* ------ Begin indexed search extention -------- */
+/* ---------------------------------------------- */
+
+.tx-indexedsearch {
+	padding-top: 15px;
+	padding-left: 15px;
+}
+
+.tx-indexedsearch .tx-indexedsearch-searchbox a {
+	font-weight: normal;
+	font-style: underline;
+}
+
+.tx-indexedsearch .tx-indexedsearch-rules h2 {
+	font-weight: bold;
+}
+
+.tx-indexedsearch .tx-indexedsearch-rules p {
+	font-weight: normal;
+}
+
+.tx-indexedsearch-browsebox p {
+	font-weight: normal;
+}
+
+.tx-indexedsearch-browsebox-strong p {
+	font-weight: bold;
+}
+
+.tx-indexedsearch-sectionlinks ul li {
+	margin: 0;
+	padding: 0;
+	display: inline; 
+	list-style-type: none;
+}
+
+.tx-indexedsearch-sectionlinks a {
+	font-weight: bold;
+	background: url(../images/icons/link.gif) no-repeat;
+	background-position: 0em 0.4em;
+	text-decoration: none;
+}
+
+.tx-indexedsearch-browsebox table tr td p a {
+	font-weight: normal;
+}
+
+.tx-indexedsearch-browsebox table tr td.tx-indexedsearch-browsebox-SCell p a {
+	font-weight: bold;
+}
+
+.tx-indexedsearch .tx-indexedsearch-searchbox INPUT.tx-indexedsearch-searchbox-button {
+	width: 100px;
+}
+
+.tx-indexedsearch .tx-indexedsearch-searchbox INPUT.tx-indexedsearch-searchbox-sword {
+	width: 150px; 
+}
+
+.tx-indexedsearch .tx-indexedsearch-whatis P .tx-indexedsearch-sw { 
+	font-weight: bold;
+	font-style: italic; 
+}
+
+.tx-indexedsearch .tx-indexedsearch-whatis { 
+	margin-top: 10px;
+	margin-bottom: 5px; 
+}
+
+.tx-indexedsearch P.tx-indexedsearch-noresults { 
+	text-align: center;
+	font-weight: bold; 
+}
+
+.tx-indexedsearch .tx-indexedsearch-res p {
+}
+
+.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-title { 
+	background: #eeeeee; 
+}
+
+.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-title P {
+	font-weight: bold; 
+}
+
+.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-title P.tx-indexedsearch-percent {
+	font-weight: normal; 
+}
+
+.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-descr P {
+	font-style: italic; 
+}
+.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-descr P .tx-indexedsearch-redMarkup {
+	color: red; 
+}
+
+.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-info {
+	background: #eeeeff; 
+}
+
+.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-secHead {
+	margin-top: 20px;
+	margin-bottom: 5px; 
+}
+
+.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-secHead H2 {
+	margin-top: 0px;
+	margin-bottom: 0px; 
+}
+
+.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-secHead TABLE {
+	background:#cccccc; 
+}
+
+.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-secHead TD {
+	vertical-align: absmiddle; 
+}
+
+/* ---------------------------------------------- */
+/* ------- End indexed search extention --------- */
+/* ---------------------------------------------- */

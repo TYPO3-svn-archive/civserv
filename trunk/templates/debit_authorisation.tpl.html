@@ -1,0 +1,57 @@
+<div id="right">
+</div><!-- right end -->
+
+<div id="centrecontent">
+
+	<!--{if $complete != ""}-->
+		<br />
+		<p>{$complete}</p>
+	<!--{else}-->
+		<h1>{$debit_form_label}</h1>
+		
+		<form method="post" action="{$action_url}">
+			<!--{if $service_name != ""}-->
+				<p>{$serviceName_label}:<br /><strong>{$service_name}</strong></p>
+				<input type="hidden" name="serviceName" value="{$service_name}" />
+				<input type="hidden" name="serviceUID" value="{$service_uid}" />
+				<!--{else}-->
+					<p>{$serviceSelect_label}:<br />
+					<select name="service">
+					<!--{foreach from=$serviceList item=service}-->
+						<option value="{$service.uid}|{$service.name}">{$service.name}</option>
+					<!--{/foreach}-->
+					</select></p>
+			<!-- {/if}-->
+			
+			<p>{$cashNumber_label}:<br />
+			<input type="text" name="cashNumber" size="30" value="{$cashNumber}" />&nbsp;<span class="error">{$error_cashNumber}</span></p>
+			
+			<p>{$bankName_label}:<br />
+			<input type="text" name="bankName" size="40" value="{$bankName}" />&nbsp;<span class="error">{$error_bankName}</span></p>
+
+			<p>{$bankCode_label}:<br />
+			<input type="text" name="bankCode" size="10" value="{$bankCode}" />&nbsp;<span class="error">{$error_bankCode}</span></p>
+			
+			<p>{$accountNumber_label}:<br />
+			<input type="text" name="accountNumber" size="10" value="{$accountNumber}" />&nbsp;<span class="error">{$error_accountNumber}</span></p>
+			
+			<p>{$accountHolder_label}
+			<br /><br />
+			<p>{$firstname_label}:<br />
+			<input type="text" name="firstname" size="30" value="{$firstname}" />&nbsp;<span class="error">{$error_firstname}</span></p>
+			<br />
+			<p>{$surname_label}:<br />
+			<input type="text" name="surname" size="30" value="{$surname}" />&nbsp;<span class="error">{$error_surname}</span></p>
+		
+			<p>{$agreement_label}</p>
+			<p>{$optional_data_label}:<p>
+			<br />
+			<p>{$phone_label}:<br />
+			<input type="text" name="phone" size="30" value="{$phone}" /></p>
+			<p>{$email_label}:<br />
+			<input type="text" name="email" size="30" value="{$email}" />&nbsp;<span class="error">{$error_email}</span></p>
+			<br />
+			<p><input type="submit" value="{$button_send_label}" />&nbsp;&nbsp;<input type="{$button_type}" name="reset" value="{$button_reset_label}" /></p>
+		</form>
+	<!--{/if}-->
+</div><!-- centrecontent end -->

@@ -1,0 +1,13 @@
+{* If defined, here are shown the top N services. *}
+<!--{if $top15 != ""}-->
+	<h3 class="invisible">{$serviceinformation_label}:</h3>
+	<div id="serviceinformation">
+		<strong>{$frequently_visited_label}:</strong><br /><br />
+		<ul>
+		<!--{foreach from=$top15 item=service }-->
+			<li><a href="{$service.link}" class="link">{$service.name}</a></li>
+		<!--{/foreach}-->
+		</ul><!-- level1 end -->
+		
+	</div><!-- serviceinformation end -->
+<!--{/if}-->

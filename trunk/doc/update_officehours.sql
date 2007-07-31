@@ -1,0 +1,11 @@
+update `tx_civserv_officehours`  set `oh_weekday` = 401 where `oh_weekday` = 11;
+update `tx_civserv_officehours`  set `oh_weekday` = 101 where `oh_weekday` = 10;
+update `tx_civserv_officehours`  set `oh_weekday` = 302 where `oh_weekday` = 9;
+update `tx_civserv_officehours`  set `oh_weekday` = 301 where `oh_weekday` = 8;
+update `tx_civserv_officehours`  set `oh_weekday` = 207 where `oh_weekday` = 7;
+update `tx_civserv_officehours`  set `oh_weekday` = 206 where `oh_weekday` = 6;
+update `tx_civserv_officehours`  set `oh_weekday` = 205 where `oh_weekday` = 5;
+update `tx_civserv_officehours`  set `oh_weekday` = 204 where `oh_weekday` = 4;
+update `tx_civserv_officehours`  set `oh_weekday` = 203 where `oh_weekday` = 3;
+update `tx_civserv_officehours`  set `oh_weekday` = 202 where `oh_weekday` = 2;
+update `tx_civserv_officehours`  set `oh_weekday` = 201 where `oh_weekday` = 1;

@@ -1,0 +1,75 @@
+<div id="right_dummy">
+		&nbsp;
+</div><!-- right end -->
+
+
+<div id="centrecontent">
+	<!--{if $complete != ""}-->
+		<br />
+		<p>{$complete}</p>
+	<!--{else}-->
+		<h1>{$email_form_label}</h1>
+		<p>{$notice_label}</p>
+		<form name="email" method="post" action="{$action_url}">
+			<fieldset>
+				<legend>Kontaktdaten</legend><br />
+				<label for="title" class="left">{$title_label}</label>
+				<select id="title" name="title" title="Hier bitte die Anrede ausw&auml;hlen">
+					<option selected="selected">{$chose_option}</option>
+					<option>{$female_option}</option>
+					<option>{$male_option}</option>
+				</select><br />
+				<br />
+				<label for="surname" class="left">{$surname_label}&nbsp;*:</label>
+				<input id="surname" name="surname" type="bodytext" title="Hier bitte den Nachnamen eingeben" value="{$surname}"/>
+				<br />&nbsp;<span class="error">{$error_surname}</span>
+				<br />
+				<label for="firstname" class="left">{$firstname_label}&nbsp;*:</label>
+				<input id="firstname" name="firstname" type="bodytext" title="Hier bitte den Vorname eingeben" value="{$firstname}" />
+				<br />&nbsp;<span class="error">{$error_firstname}</span>
+				<br />
+				<label for="street" class="left">{$street_label}&nbsp;:</label>
+				<input id="street" name="street" type="bodytext" title="Hier bitte die Straße und die Hausnummer eingeben" value="{$street}" />
+				<br />
+				<br />
+				<label for="postcode" class="left">{$postcode_label}&nbsp;:</label>
+				<input id="postcode" name="postcode" type="bodytext" title="Hier bitte die PLZ eingeben" value="{$postcode}"/>
+				<br />&nbsp;<span class="error">{$error_postcode}</span>
+				<br />			
+				<label for="city" class="left">{$city_label}&nbsp;:</label>
+				<input id="city" name="city" type="bodytext" title="Hier bitte den Ort eingeben" value="{$city}" />
+				<br />
+				<br />			
+				<label for="email" class="left">{$email_label}&nbsp;:</label>
+				<input id="email" name="email" type="bodytext" title="Hier bitte die E-Mailadresse eingeben" value="{$email}" />
+				<br />&nbsp;<span class="error">{$error_email}</span>
+				<br />			
+				<label for="phone" class="left">{$phone_label}:</label>
+				<input id="phone" name="phone" type="bodytext" title="Hier bitte die Telefonnummer eingeben" value="{$phone}" />
+				<br />&nbsp;<span class="error">{$error_phone}</span>
+				<br />
+				<label for="fax" class="left">{$fax_label}:</label>
+				<input id="fax" name="fax" type="bodytext" title="Hier bitte die Faxnummer eingeben" value="{$fax}" />
+				<br />
+				<br />
+			</fieldset><br />
+		
+			<fieldset>
+				<legend>bodytextmitteilung</legend><br />
+				<label for="subject" class="left">{$subject_label}*:</label> 
+				<input id="subject" name="subject" type="bodytext" title="Hier bitte den Betreff der Mitteilung eingeben" value="{$subject}" />
+				<br />&nbsp;<span class="error">{$error_subject}</span>
+				<br />
+				<label for="bodytext" class="left">{$bodytext_label}&nbsp;*:</label>
+				<textarea id="bodytext" name="bodytext" title="Hier bitte den Text eingeben" rows="20" cols="20" >{$bodytext}</textarea>
+				<br />&nbsp;<span class="error">{$error_bodytext}</span>
+			</fieldset>
+			<br />
+			<p>
+			<input accesskey="9" id="formularabsenden" type="submit" class="button" name="submit" value="{$submit_label}"  title="Senden Sie hier das ausgef&uuml;llte Formular ab" />&nbsp;<input accesskey="9" id="formularloeschen" type="reset" name="reset" value="{$reset_label}" title="L&ouml;schen Sie die eingetragenen Daten" />
+		</p>
+		<br />
+		<p>*&nbsp;{$required_label}</p>
+		</form>
+		<!--{/if}-->			
+	</div><!-- centrecontent end -->

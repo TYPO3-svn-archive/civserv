@@ -1,0 +1,137 @@
+
+
+
+howto activate bilingual version of o.s.i.r.i.s.
+
+we start from a fully-fitted monolingual site with running be and fe.
+
+
+1. create a folder for services-in-the-alternative-language somewhere in your folder tree, we recommend directly inside the services-folder
+2. create a 2nd webpage (copy of the one main webpage for the display of all services)
+3. register both in tx_civserv_conf_mandant
+4. add extension ts-template to alternative_page (see below: 'TS-Template for bilingual civserv - minimal configuration', mark how the values of 'pageid' and 'alternative_page_id' toggle)
+5. if you do not use the standard design template in typo3conf/ext/civserv/index.html make a copy of your individual fileadmin/civserv/1114444/templates/index_or_whatever.html and translate into language of choice
+6. if you do not use the standard css-file in typo3conf/ext/civserv/templates/css/screen.css add section for the display of national flag icons to your individual stylesheet (see below: 'Style-sheet-section')
+7. create test service in new folder
+
+now you should find a new menuItem in your FE which will show you main-language-content and 2nd-language-content alternatively!
+
+
+
+
+
+
+
+
+
+
+
+
+
+TS-Template for bilingual civserv - minimal configuration:
+
+Constants - alternative_page:
+------------------------------------------------------------------------------------------------------
+pageid = 123
+alternative_page_id = 321
+
+fulltext_search_id =  
+
+
+# Enable/disable menu-items
+menuServiceList = 1
+menuCircumstanceTree = 0
+menuUsergroupTree = 0
+menuOrganisationList = 0
+menuOrganisationTree = 0
+menuFormList = 0
+menuTop15 = 0
+menuEmployeeList = 0
+
+
+
+Setup - alternative_page:
+------------------------------------------------------------------------------------------------------
+page.config.language >
+page.config.language = default
+page.10.template.file = typo3conf/ext/civserv/templates/index_english.html
+
+leftmenu.1.NO.allWrap =|*||*| <li> | </li> || <li class="german"> | </li>
+leftmenu.1.ACT.allWrap =|*||*| <li> | </li> || <li class="german"> | </li>
+page.10.marks.MENU < leftmenu
+
+
+
+
+******************************************************************************************************
+
+
+
+
+Constants - main_page:
+------------------------------------------------------------------------------------------------------
+pageid = 321
+alternative_page_id = 123
+
+fulltext_search_id = 122
+
+cache_services = 0
+community_choice = 0
+community_id = 1114444
+
+
+
+
+Setup - main_page:
+------------------------------------------------------------------------------------------------------
+leftmenu.1.NO.allWrap =|*||*| <li> | </li> || <li class="english"> | </li>
+leftmenu.1.ACT.allWrap =|*||*| <li> | </li> || <li class="english"> | </li>
+page.10.marks.MENU < leftmenu
+
+
+plugin.tx_civserv_pi1._DEFAULT_PI_VARS.community_id= {$community_id}
+
+
+
+
+******************************************************************************************************
+
+Style-sheet-section:
+
+#leftmenu .german
+{
+	background: url(../images/bgs/d.gif); 
+	background-repeat: no-repeat;
+	background-position: 45px 5px;
+}
+
+#leftmenu .german a:hover
+{
+	background: url(../images/bgs/d.gif); 
+	background-repeat: no-repeat;
+	background-position: 45px 5px;
+	color: #FFFFFF;
+	background-color: #375FFF;
+}
+
+
+#leftmenu .english
+{
+	background: url(../images/bgs/gb.gif);
+	background-repeat: no-repeat;
+	background-position: 45px 5px;
+}
+
+#leftmenu .english a:hover
+{
+	background: url(../images/bgs/gb.gif); 
+	background-repeat: no-repeat;
+	background-position: 45px 5px;
+	color: #FFFFFF;
+	background-color: #375FFF;
+}
+
+
+
+
+
