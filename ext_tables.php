@@ -124,14 +124,21 @@ $TCA['be_groups']['columns']['db_mountpoints']['config']['autoSizeMax'] = 30;
 
 /**
 * Definition of plug-in "Virtual civil services" aka "Virtuelle Verwaltung".
-* Needed for intergation in Frontend.
+* Needed for integration in Frontend.
 */
 t3lib_div::loadTCA("tt_content");
 $TCA["tt_content"]["types"]["list"]["subtypes_excludelist"][$_EXTKEY."_pi1"]="layout,select_key";
-
 t3lib_extMgm::addPlugin(Array("LLL:EXT:civserv/locallang_db.php:tt_content.list_type_pi1", $_EXTKEY."_pi1"),"list_type");
+/**
+* This line take care that you can add the Civil Services Static Template (setup.txt or screen.css???) in your
+* TS-Template via 'Include static (from extensions)'
+*/
+t3lib_extMgm::addStaticFile($_EXTKEY,"pi1/static/","Civil Services pi1");
 
-t3lib_extMgm::addStaticFile($_EXTKEY,"pi1/static/","Civil Services");
+// test citeq: 2nd FE Class
+$TCA["tt_content"]["types"]["list"]["subtypes_excludelist"][$_EXTKEY."_pi2"]="layout,select_key";
+t3lib_extMgm::addPlugin(Array("LLL:EXT:civserv/locallang_db.php:tt_content.list_type_pi2", $_EXTKEY."_pi2"),"list_type");
+t3lib_extMgm::addStaticFile($_EXTKEY,"pi2/static/","Civil Services pi2");
 
 
 

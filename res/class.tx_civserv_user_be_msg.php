@@ -127,7 +127,7 @@ class tx_civserv_user_be_msg {
 #		debug($PA['row']['uid'], 'uid');
 #		debug($PA['row']['pid'], 'pid');
 
-		$ms_container_name='Container Love'; //dummy 
+		$ms_container_name='unbekannt'; //dummy 
 		$ms_container_pid = $PA['row']['pid'];
 		if(preg_match('/NEW/', $PA['row']['uid'])){
 			debug('new Record!!!');

@@ -404,8 +404,19 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 				break;
 			}
 		}
+		// to do: abfragen, ob flag "mount from groups" gesetzt ist........
+		if($community_id == 0){ //user hat keinen db_mountpoint - hat eine seiner Gruppen einen?
+			foreach($BE_USER->userGroupsUID as $groupid){
+				if($BE_USER->userGroups[$groupid]['db_mountpoints'] > 0){
+					$community_id=$mandant_obj->get_mandant($BE_USER->userGroups[$groupid]['db_mountpoints']);
+					if($community_id > 0){
+						break;
+					}
+				}
+			}
+		}
 
-			//which approver am I? show only model services, which are currently not revised
+		// which approver am I? show only model services, which are currently not revised
 		$resp_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'org.ms_mandant, org.ms_approver_one, org.ms_approver_two, cm_community_name, temp.*',			 							// SELECT ...
 			'tx_civserv_model_service AS org, tx_civserv_model_service_temp AS temp, tx_civserv_conf_mandant',		// FROM ...

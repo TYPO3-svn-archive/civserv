@@ -1094,6 +1094,49 @@ input:focus, textarea:focus {
 	padding-bottom: 5px;
 }
 
+/*
+.tx-civserv-pi2-searchbox table #extended_em_list {
+	border: solid red 1px;
+}
+
+.tx-civserv-pi2-searchbox tr .tableheader {
+	margin: 0;
+	padding: 0;
+	padding-bottom: 5px;
+	background-color: blue;
+}
+
+.tx-civserv-pi2-searchbox tr .tablerow {
+	margin: 0;
+	padding: 0;
+	padding-bottom: 5px;
+	background-color: lightyellow;
+}
+*/
+
+#extended_em_list {
+	border: solid red 1px;
+}
+
+.tableheader {
+	margin: 0;
+	padding: 0;
+	padding-bottom: 5px;
+	background-color: blue;
+}
+
+.tablerow {
+	margin: 0;
+	padding: 0;
+	padding-bottom: 5px;
+	background-color: lightyellow;
+}
+
+
+
+
+
+
 
 /* ---------------------------------------------- */
 /* ------------- end searchformelements -------------- */

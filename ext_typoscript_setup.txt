@@ -154,3 +154,151 @@ plugin.tx_indexedsearch.show.rules = 0
 plugin.tx_indexedsearch.tableParams {
 	searchBox = border=0 cellpadding=0 cellspacing=0
 }
+
+
+
+plugin.tx_civserv_pi2 {
+	tpl_service_list = {$tpl_service_list}
+	tpl_online_sv_list = {$tpl_online_sv_list}
+	tpl_circumstance_tree = {$tpl_circumstance_tree}
+	tpl_usergroup_tree = {$tpl_usergroup_tree} 
+	tpl_organisation_list = {$tpl_organisation_list}
+	tpl_organisation_tree = {$tpl_organisation_tree}
+	tpl_service = {$tpl_service}
+	tpl_employee =  typo3conf/ext/civserv/templates/employee_plus.tpl.html
+	tpl_circumstance = {$tpl_circumstance}
+	tpl_usergroup = {$tpl_usergroup}
+	tpl_organisation = {$tpl_organisation} 
+	tpl_form_list = {$tpl_form_list} 
+	tpl_community_choice = {$tpl_community_choice}
+	tpl_error_page = {$tpl_error_page}
+	tpl_search_result = {$tpl_search_result}
+	tpl_top15 = {$tpl_top15}
+	tpl_email_form = {$tpl_email_form}
+	tpl_debit_authorisation = {$tpl_debit_authorisation}
+	tpl_contact_form = {$tpl_contact_form}
+	tpl_legal_notice = {$tpl_legal_notice}
+	tpl_right_searchbox = {$tpl_right_searchbox}
+	tpl_right_top = {$tpl_right_top}
+	tpl_employee_list = typo3conf/ext/civserv/templates/employee_list_plus.tpl.html
+	tpl_none = {tpl_none}
+
+	
+
+	folder_services = {$folder_services}
+	folder_organisations = {$folder_organisations}
+	folder_employees = {$folder_employees}
+	folder_global_images = {$folder_global_images}
+	
+	german_flag = {$german_flag}
+	english_flag = {$english_flag}
+
+	
+	recursive = {$recursive}
+	
+	menuItems_01 = {$menuItems_01}
+
+	items_per_page = {$services_per_page}
+	services_per_page = {$services_per_page}
+	forms_per_page = {$forms_per_page}
+	max_pages_in_pagebar = {$max_pages_in_pagebar}
+	community_choice = {$community_choice}
+	cache_services = {$cache_services}
+	show_counts = {$show_counts}
+	service_count = {$service_count}
+	employee_per_page = {$employee_per_page}
+	organisation_per_page = {$organisation_per_page}
+	
+	contact_email = {$contact_email}
+
+	searchAtServiceList = {$searchAtServiceList}
+	searchAtCircumstanceTree = {$searchAtCircumstanceTree}
+	searchAtUsergroupTree = {$searchAtUsergroupTree}
+	searchAtOrganisationTree = {$searchAtOrganisationTree}
+	searchAtCircumstance = {$searchAtCircumstance}
+	searchAtUsergroup = {$searchAtUsergroup}
+	searchAtService = {$searchAtService}
+	searchAtOrganisation = {$searchAtOrganisation}
+	searchAtForms = {$searchAtForms}
+	searchAtTop15 = {$searchAtTop15}
+	searchAtEmployee = {$searchAtEmployee}
+	searchAtEmployeeList = {$searchAtEmployeeList}
+	searchAtOrganisationList = {$searchAtOrganisationList}
+
+
+	pagesSubtitleContainsOrganisationUid = {$pagesSubtitleContainsOrganisationUid}
+	abcSpacer={$abcSpacer}
+	continueAbcBarFromOrganisationList={$continueAbcBarFromOrganisationList}
+	continueAbcBarFromServiceList={$continueAbcBarFromServiceList}
+	includeNameInHeading={$includeNameInHeading}
+	displayOrganisationCode={$displayOrganisationCode}
+	useCustomLinks_Services={$useCustomLinks_Services}
+	useCustomLinks_Organisations={$useCustomLinks_Organisations}
+	
+
+	abcBarAtServiceList = {$abcBarAtServiceList}
+	abcBarAtCircumstance = {$abcBarAtCircumstance}
+	abcBarAtUsergroup = {$abcBarAtUsergroup}
+	abcBarAtOrganisation = {$abcBarAtOrganisation}
+	abcBarAtFormList_all = {$abcBarAtFormList_all}
+	abcBarAtFormList_orga = {$abcBarAtFormList_orga}
+	abcBarAtEmployeeList = {$abcBarAtEmployeeList}
+	abcBarAtOrganisationList = {$abcBarAtOrganisationList}	
+	
+	#orderFormsByCategory = {$orderFormsByCategory}
+
+	topAtServiceList = {$topAtServiceList}
+	topAtCircumstanceTree = {$topAtCircumstanceTree}
+	topAtUsergroupTree = {$topAtUsergroupTree}
+	topAtOrganisationTree = {$topAtOrganisationTree}
+	topAtFormList = {$topAtFormList}
+	topAtCircumstance = {$topAtCircumstance}
+	topAtUsergroup = {$topAtUsergroup}
+	topAtOrganisation = {$topAtOrganisation}
+	topAtService = {$topAtService}
+	topCount = {$topCount}
+	topAtEmployeeList = {$topAtEmployeeList}
+	topAtOrganisationList = {$topAtOrganisationList}
+		
+
+	orgaList = {$orgaList}
+	otherEmployees = {$otherEmployees}
+	relatedTopics = {$relatedTopics}
+	showSubOrganisations = {$showSubOrganisations}
+	showSuperOrganisation = {$showSuperOrganisation}
+	selectBuildingsToShow = {$selectBuildingsToShow}
+	showOhLabels = {$showOhLabels}
+
+
+	general_stdWrap.parseFunc.nonTypoTagStdWrap.encapsLines { 
+		encapsTagList = div, p, ul, ol, li
+		wrapNonWrappedLines = | <br /> 
+		stdWrap.htmlSpecialChars = 1
+	}
+
+	# Default mode in the service list, including the keyword search
+	_DEFAULT_PI_VARS.mode = service_list
+	
+	_DEFAULT_PI_VARS.community_id = {$community_id}
+
+	# Parameters for image enlargement
+	employee-image {
+		file.maxH = {$maxH}
+		file.maxW = {$maxW}
+		imageLinkWrap = 1
+		imageLinkWrap {
+			enable = 1
+			bodyTag (
+				<body bgcolor="#FFFFFF" leftmargin="2" topmargin="2" marginwidth="2" marginheight="2">
+			)
+			wrap = <a href="javascript:close();"> | </a>
+			width = 800m
+			height = 600m
+			JSwindow = 1
+			JSwindow.newWindow = 1
+			JSwindow.expand = 4,4
+		}    
+	}
+	organisation-image < plugin.tx_civserv_pi1.employee-image
+	service-image < .employee-image
+}

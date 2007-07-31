@@ -168,10 +168,13 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'][] = 
 /**
 * Extending TypoScript from static template uid=43 to set up userdefined tag (virtual civil services aka Virtuelle Verwaltung):
 */
-t3lib_extMgm::addTypoScript($_EXTKEY,"editorcfg","
-	tt_content.CSS_editor.ch.tx_civserv_pi1 = < plugin.tx_civserv_pi1.CSS_editor
-",43);
-
+t3lib_extMgm::addTypoScript($_EXTKEY,"editorcfg","tt_content.CSS_editor.ch.tx_civserv_pi1 = < plugin.tx_civserv_pi1.CSS_editor",43);
 t3lib_extMgm::addPItoST43($_EXTKEY,"pi1/class.tx_civserv_pi1.php","_pi1","list_type",1);
+
+// test citeq:
+t3lib_extMgm::addTypoScript($_EXTKEY,"editorcfg","tt_content.CSS_editor.ch.tx_civserv_pi2 = < plugin.tx_civserv_pi2.CSS_editor",43);
+t3lib_extMgm::addPItoST43($_EXTKEY,"pi2/class.tx_civserv_pi2.php","_pi2","list_type",1);
+
+
 
 ?>
