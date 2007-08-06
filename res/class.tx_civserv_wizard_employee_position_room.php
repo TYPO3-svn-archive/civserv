@@ -166,17 +166,20 @@ function init() {
 
 		$formFieldName = 'data['.$this->pArr[0].']['.$this->pArr[1].']['.$this->pArr[2].']';
 
+		    //get charset
+        $charset = $GLOBALS['LANG']->charSet ? $GLOBALS['LANG']->charSet : 'iso-8859-1';
+        
 			// Draw the header.
 		$this->content.='
 			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 			 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-			<?xml version="1.0" encoding="iso-8859-1"?>
+			<?xml version="1.0" encoding="'.$charset.'"?>
 			<?xml-stylesheet href="#internalStyle" type="text/css"?>
 
 			<html>
 			<head>
 			<!-- TYPO3 Script ID: typo3conf/ext/civserv/xlass.tx_civserv_wizard_employee_position_room.php -->
-			<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+			<meta http-equiv="Content-Type" content="text/html; charset='.$charset.'" />
 			<meta name="GENERATOR" content="TYPO3 3.6.2, http://typo3.com, &#169; Kasper Sk&#229;rh&#248;j 1998-2004, extensions are copyright of their respective owners." />
 
 			<title>'.$LANG->getLL('tx_civserv_wizard_employee_position_room.title').'</title>
