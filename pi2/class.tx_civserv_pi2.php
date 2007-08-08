@@ -99,7 +99,7 @@ require_once(PATH_tslib . 'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('smarty') . 'class.tx_smarty.php');
 #require_once(t3lib_extMgm::extPath('civserv') . 'pi2/class.tx_civserv_accesslog.php');
 require_once(t3lib_extMgm::extPath('civserv') . 'res/class.tx_civserv_mandant.php');
-
+debug(t3lib_extMgm::extPath('civserv'), 'extpath');
 
 /**
  * Class for plugin 'Civil Services'
@@ -122,7 +122,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @return	$content		Content that is to be displayed within the plugin
 	 */
 	function main($content,$conf)	{
-		//$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging - only on test-sites!
+		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging - only on test-sites!
 		if (TYPO3_DLOG)  t3lib_div::devLog('function main of FE class entered', 'civserv');
 
 		
@@ -241,6 +241,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			// Set piVars[community_id] because it could only be registered in the session and not in the URL
 			$this->piVars[community_id] = $_SESSION['community_id'];
 			switch($this->piVars[mode])	{
+/*			
 				case 'service_list':
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_service_list.overview','Service list');
 					$template = $this->conf['tpl_service_list'];
@@ -270,13 +271,15 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$template = $this->conf['tpl_organisation_list'];
 					$accurate = $this->organisation_list($smartyObject,$this->conf['abcBarAtOrganisationList'],$this->conf['searchAtOrganisationList'],$this->conf['topAtOrganisationList']);
 					break;						
-					
+*/					
+
+				// pi2 for extended employee_list is being called here!
 				case 'employee_list':
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_employee_list.employee_list','Employees A - Z');
 					$template = $this->conf['tpl_employee_list'];
-					$accurate = $this->employee_list($smartyObject,$this->conf['abcBarAtEmployeeList'],$this->conf['searchAtEmployeeList'],$this->conf['topAtEmployeeList']);
+					$accurate = $this->employee_list_plus($smartyObject,$this->conf['abcBarAtEmployeeList'],$this->conf['searchAtEmployeeList'],$this->conf['topAtEmployeeList']);
 					break;					
-
+/*
 				case 'form_list':
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_form_list.form_list','Forms');
 					$template = $this->conf['tpl_form_list'];
@@ -312,14 +315,17 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$template = $this->conf['tpl_usergroup'];
 					$accurate = $this->serviceList($smartyObject,$this->conf['abcBarAtUsergroup'],$this->conf['searchAtUsergroup'],$this->conf['topAtUsergroup']);
 					break;
+*/
 
+				// to do: check if we need this????
 				case 'organisation':
 					#$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_service_list.organisation','Organisation');
 					$template = $this->conf['tpl_service_list'];
 					// test bk: continue the abcBar from the OrganisationList!!!
-					$accurate = $this->organisationDetail($smartyObject, $this->conf['continueAbcBarFromOrganisationList']) && $this->serviceList($smartyObject,$this->conf['abcBarAtOrganisation'],$this->conf['searchAtOrganisation'],$this->conf['topAtOrganisation']);
+					#$accurate = $this->organisationDetail($smartyObject, $this->conf['continueAbcBarFromOrganisationList']) && $this->serviceList($smartyObject,$this->conf['abcBarAtOrganisation'],$this->conf['searchAtOrganisation'],$this->conf['topAtOrganisation']);
+					$accurate = $this->organisationDetail($smartyObject, $this->conf['continueAbcBarFromOrganisationList']);
 					break;
-
+/*
 				case 'service':
 					$template = $this->conf['tpl_service'];
 					// test bk: continue the abcBar from the ServiceList!!!
@@ -382,7 +388,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$template = $this->conf['tpl_plain_text'];
 					$accurate = $this->showPlainText($smartyObject);
 					break;
-
+*/
 				default:
 					$accurate = false;
 					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi2_error.invalid_mode','Invalid mode');
@@ -430,6 +436,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	boolean		If true, a list with the top <i>plugin.tx_civserv_pi2.topCount</i> services is generated
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
+/*	 
 	function serviceList(&$smartyServiceList,$abcBar=false,$searchBox=false,$topList=false) {
 		//	function makeServiceListQuery($char=all,$limit=true,$count=false) {
 		$query = $this->makeServiceListQuery($this->piVars[char]);
@@ -635,7 +642,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		return true;
 	}
-	
+*/	
 
 	/**
 	 * Generates a database query for the function serviceList. The returned query depends on the given parameter (like described below)
@@ -647,6 +654,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	boolean		If true, the services are only counted.
 	 * @return	string		The database query
 	 */
+/*	 
 	function makeServiceListQuery($char=all,$limit=true,$count=false) {
 		//for versioning we need the hidden records, will be dismissed from live-display in fct. service_list....
 		$from  =	'tx_civserv_service';
@@ -807,6 +815,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		}
 		return $query;
 	}
+*/	
 
 
 	/**
@@ -817,6 +826,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	integer		The uid from the selected organisation or circumstancd/usergroup.
 	 * @return	string		The heading
 	 */
+ /*
 	function getServiceListHeading($mode,$uid) {
 		switch ($mode) {
 			case 'service_list':
@@ -885,6 +895,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		}
 		return $heading;
 	}
+*/
 
 
 	/**
@@ -896,6 +907,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	boolean		If true, a list with the top <i>plugin.tx_civserv_pi2.topCount</i> services is generated
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
+/*	 
 	function navigationTree(&$smartyTree,$uid,$searchBox=false,$topList=false) {
 		$mode = $this->piVars[mode];
 		$content = $this->makeTree($uid,$content,$mode);
@@ -926,6 +938,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 		return true;
 	}
+*/	
 	
 	/**
 	 * Generates a list of all organisations
@@ -936,6 +949,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	[type]		$topList: ...
 	 * @return	[type]		...
 	 */
+/*	 
 	function organisation_list(&$smartyOrganisationList, $abcBar=false,$searchBox=false,$topList=false){
 		$query = $this->makeOrganisationListQuery($this->piVars[char]);
 		$res_organisation = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
@@ -991,6 +1005,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 		return true;
 	}
+*/	
 	
 	/**
 	 * Generates a database query for the function organisation_list. The returned query depends on the given parameter (like described below)
@@ -1001,7 +1016,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	[type]		$count: ...
 	 * @return	[type]		...
 	 */
-
+/*
 	function makeOrganisationListQuery($char=all,$limit=true,$count=false) {
 			if ($char != all) {
 				$regexp = $this->buildRegexp($char);
@@ -1055,7 +1070,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			}
 			return $query;
 		}
-
+*/
 	
 	/**
 	 * Generates a list of all employees
@@ -1066,31 +1081,81 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	[type]		$topList: ...
 	 * @return	[type]		...
 	 */
-	function employee_list(&$smartyEmployeeList,$abcBar=false,$searchBox=false,$topList=false){
-		$query = $this->makeEmployeeListQuery_plus($this->piVars[char]);
+	function employee_list_plus(&$smartyEmployeeList,$abcBar=false,$searchBox=false,$topList=false){
+		$query = $this->makeEmployeeListQueryPlus($this->piVars[char]);
+#		debug($query, 'makeEmployeeListQueryPlus');
 		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		$row_counter = 0;
 		$em_org_kombis=array(); //store all combinations of an employee and his/her employing organisation unit here
 		$kills=array(); //will be used to eleminate dublicates from the above list
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
-				$employees[$row_counter]['em_uid']=$row['emp_uid'];
-				if($row['em_address']==2){
-					$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi2_organisation.address_female', 'Ms.');
-				}elseif($row['em_address']==1){
-					$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi2_organisation.address_male', 'Mr.');
-				}
-				$employees[$row_counter]['title'] = $row['em_title'];
-				$employees[$row_counter]['name'] = $row['name']; //alias in makeEmployeeListQuery, need for generic makeAbcBar
-				$employees[$row_counter]['firstname'] = $row['em_firstname'];
-				$employees[$row_counter]['em_datasec'] = $row['em_datasec'];
+#			debug($row, 'employees_row');
+			$employees[$row_counter]['em_uid']=$row['emp_uid'];
+			if($row['em_address']==2){
+				$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi2_organisation.address_female', 'Ms.');
+			}elseif($row['em_address']==1){
+				$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi2_organisation.address_male', 'Mr.');
+			}
+			$employees[$row_counter]['title'] = $row['em_title'];
+			$employees[$row_counter]['name'] = $row['name']; //alias in makeEmployeeListQueryPlus, need for generic makeAbcBar
+			$employees[$row_counter]['firstname'] = $row['em_firstname'];
+			$employees[$row_counter]['em_telephone'] = $row['em_telephone'];
+			$employees[$row_counter]['em_fax'] = $row['em_fax'];
+			$employees[$row_counter]['em_mobile'] = $row['em_mobile'];
+			$employees[$row_counter]['em_email'] = $row['em_email'];
+			$employees[$row_counter]['em_image'] = $row['em_image'];
+			$employees[$row_counter]['em_datasec'] = $row['em_datasec'];
+			$employees[$row_counter]['emp_uid'] = $row['emp_uid'];
+			
+			debug(t3lib_div::getIndpEnv(TYPO3_REQUEST_SCRIPT), 'TYPO3_REQUEST_SCRIPT');
+			debug(t3lib_div::getIndpEnv(TYPO3_REQUEST_DIR), 'TYPO3_REQUEST_DIR');
+			debug(t3lib_div::getIndpEnv(SCRIPT_NAME), 'SCRIPT_NAME');
+			debug(t3lib_div::getIndpEnv(PATH_INFO), 'PATH_INFO');
+			#SCRIPT_NAME
+			
+			$employees[$row_counter]['em_imagecode']=""; // leere Initialisierung
+			if ($employees[$row_counter]['em_image'] != "") {
+				$image = $employees[$row_counter]['em_image'];
+				$imagepath = $this->conf['folder_organisations'] . $this->community['id'] . '/images/';
+				debug($imagepath, '$imagepath');
+				$image_text = "blabalbal";
+				debug($this->conf['service-image.'], 'conf');
+				$imageCode = $this->getImageCode($image,$imagepath,$this->conf['service-image.'],$image_text);
+				debug($imageCode, '$imageCode Mitarbeiter 1');
+				$imageCode = preg_replace('/<img[^>]*>/', '<img src="'.t3lib_div::getIndpEnv(TYPO3_REQUEST_DIR).'/typo3conf/ext/civserv/icon_tx_civserv_foto.gif" alt="click it like beckam" />', $imageCode);
+				debug($imageCode, '$imageCode Mitarbeiter 2');
+				$employees[$row_counter]['em_imagecode'] = $imageCode;
+			}
+			#debug($employees, 'finally');
 
 				//select the organisation assigned to the employee
 				$orga_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'tx_civserv_position.uid as pos_uid, 
+					 tx_civserv_position.po_descr,
 					 tx_civserv_organisation.uid as or_uid, 
-					 tx_civserv_organistaion.or_code,
-					 tx_civserv_employee.uid as emp_uid, 
-					 or_name as organisation',
+ 					 tx_civserv_organisation.or_name as organisation,
+					 tx_civserv_organisation.or_code,
+					 tx_civserv_organisation.or_synonym1,
+					 tx_civserv_organisation.or_synonym2,
+					 tx_civserv_organisation.or_synonym3,
+					 tx_civserv_organisation.or_supervisor,
+					 tx_civserv_organisation.or_show_supervisor,
+					 tx_civserv_organisation.or_hours,
+					 tx_civserv_organisation.or_telephone,
+					 tx_civserv_organisation.or_fax,
+					 tx_civserv_organisation.or_email,
+					 tx_civserv_organisation.or_image,
+					 tx_civserv_organisation.or_infopage,
+					 tx_civserv_organisation.or_addinfo,
+					 tx_civserv_organisation.or_addlocation,
+					 tx_civserv_employee_em_position_mm.ep_officehours,
+					 tx_civserv_employee_em_position_mm.ep_room,
+					 tx_civserv_employee_em_position_mm.ep_telephone,
+					 tx_civserv_employee_em_position_mm.ep_fax,
+					 tx_civserv_employee_em_position_mm.ep_mobile,
+					 tx_civserv_employee_em_position_mm.ep_email,
+					 tx_civserv_employee_em_position_mm.ep_datasec,
+					 tx_civserv_employee_em_position_mm.ep_label',
 					'tx_civserv_employee, 
 					 tx_civserv_position, 
 					 tx_civserv_organisation, 
@@ -1108,7 +1173,11 @@ class tx_civserv_pi2 extends tslib_pibase {
 					 '',
 					 '',
 					 '');
+					 
+					$organisation_buildings= array();
+					$orga_bl_count=0;
 					while ($orga_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($orga_res) ) {
+#						debug($orga_row, '$orga_row');
 						$test_string=$employees[$row_counter]['em_uid'].'_'.$orga_row[organisation];
 						//only elminate dublicates if there is no data_sec (an employee with several positions within the same 
 						//organisational unit might still have different opening hours for each of them
@@ -1118,7 +1187,84 @@ class tx_civserv_pi2 extends tslib_pibase {
 							$employees[$row_counter]['orga_name'] = $orga_row[organisation];
 							$em_org_kombis[]=$employees[$row_counter]['em_uid'].'_'.$employees[$row_counter]['orga_name'];
 						}
+						
+						$res_building = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+								'tx_civserv_building.bl_mail_street, 
+								 tx_civserv_building.bl_mail_pob, 
+								 tx_civserv_building.bl_mail_postcode, 
+								 tx_civserv_building.bl_mail_city, 
+								 tx_civserv_building.bl_name, 
+								 tx_civserv_building.bl_name_to_show,
+								 tx_civserv_building.bl_building_street, 
+								 tx_civserv_building.bl_building_postcode, 
+								 tx_civserv_building. bl_building_city, 
+								 tx_civserv_building.bl_pubtrans_stop, 
+								 tx_civserv_building.bl_pubtrans_url,
+								 tx_civserv_building.bl_citymap_url',
+								'tx_civserv_organisation',
+								'tx_civserv_organisation_or_building_to_show_mm',
+								'tx_civserv_building',
+								'AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
+								 AND tx_civserv_building.deleted=0 AND tx_civserv_building.hidden=0
+								 AND tx_civserv_organisation.uid = ' . $orga_row['or_uid'],
+								'',
+								'',
+								'');
+						while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_building)){
+							//store whole building in array
+							$organisation_buildings[$orga_bl_count]=$row;
+							//modify some values:
+							//typofy the Link! this has to be done all over again below for the different cases (show building-of-or_supervisor, show building-selected-via-BE)
+							$organisation_buildings[$orga_bl_count]['bl_pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
+							$organisation_buildings[$orga_bl_count]['bl_citymap_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_citymap_url']));
+							$orga_bl_count++;
+						}	
+								
+						if($orga_bl_count == 0){		
+							$organisation_buildings= array();
+							$res_building = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+									'tx_civserv_building.bl_mail_street, 
+									 tx_civserv_building.bl_mail_pob, 
+									 tx_civserv_building.bl_mail_postcode, 
+									 tx_civserv_building.bl_mail_city, 
+									 tx_civserv_building.bl_name, 
+									 tx_civserv_building.bl_name_to_show,
+									 tx_civserv_building.bl_building_street, 
+									 tx_civserv_building.bl_building_postcode, 
+									 tx_civserv_building.bl_building_city, 
+									 tx_civserv_building.bl_pubtrans_stop, 
+									 tx_civserv_building.bl_pubtrans_url,
+									 tx_civserv_building.bl_citymap_url',
+									'tx_civserv_organisation',
+									'tx_civserv_organisation_or_building_mm',
+									'tx_civserv_building',
+									'AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
+									 AND tx_civserv_building.deleted=0 AND tx_civserv_building.hidden=0
+									 AND tx_civserv_organisation.uid = ' . $orga_row['or_uid'],
+									'',
+									'',
+									'');
+							while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_building)){
+								//store whole building in array
+								$organisation_buildings[$orga_bl_count]=$row;
+								//modify some values:
+								//typofy the Link! this has to be done all over again below for the different cases (show building-of-or_supervisor, show building-selected-via-BE)
+								$organisation_buildings[$orga_bl_count]['bl_pubtrans_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_pubtrans_url']));
+								$organisation_buildings[$orga_bl_count]['bl_citymap_link'] = $this->cObj->typoLink_URL(array(parameter => $row['bl_citymap_url']));
+								$orga_bl_count++;
+							}	
+						}
 					}
+#					debug($organisation_buildings, '$organisation_buildings');
+					$or_bl_names=array();
+					foreach($organisation_buildings as $bl_data){
+						if ($bl_data['bl_name_to_show'] > ''){
+							$or_bl_names[] = $bl_data['bl_name_to_show'];
+						}else{
+							$or_bl_names[] = $bl_data['bl_name'];
+						}
+					}
+					$employees[$row_counter]['or_buildings']=implode('|', $or_bl_names);							
 					$employees[$row_counter]['em_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $row['emp_uid'],pos_id => $row['pos_uid']),1,1));
 					$row_counter++;
 		}
@@ -1129,7 +1275,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		// Retrieve the employee count
 		$row_count = 0;
-		$query = $this->makeEmployeeListQuery($this->piVars[char],false,true);
+		$query = $this->makeEmployeeListQueryPlus($this->piVars[char],false,true);
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$row_count += $row['count(*)'];
@@ -1146,7 +1292,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 
 		if ($abcBar) {
-			$query = $this->makeEmployeeListQuery(all,false);
+			$query = $this->makeEmployeeListQueryPlus(all,false);
 			$smartyEmployeeList->assign('abcbar',$this->makeAbcBar($query));
 		}
 		
@@ -1175,7 +1321,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	[type]		$count: ...
 	 * @return	[type]		...
 	 */
-	function makeEmployeeListQuery_plus($char=all,$limit=true,$count=false) {
+	function makeEmployeeListQueryPlus($char=all,$limit=true,$count=false) {
 			if ($char != all) {
 				$regexp = $this->buildRegexp($char);
 			}
@@ -1198,6 +1344,11 @@ class tx_civserv_pi2 extends tslib_pibase {
 						tx_civserv_employee.em_title, 
 						tx_civserv_employee.em_name as name, 
 						tx_civserv_employee.em_firstname, 
+						tx_civserv_employee.em_telephone,		 	 	 	 	 	 	 
+ 						tx_civserv_employee.em_fax, 	 	 	 	 	 	 
+ 						tx_civserv_employee.em_mobile,		 	 	 	 	 	 	 
+ 						tx_civserv_employee.em_email,		 	 	 	 	 	 	 
+ 						tx_civserv_employee.em_image,
 						tx_civserv_employee.em_datasec,
 						tx_civserv_employee.uid as emp_uid, 
 						tx_civserv_position.uid as pos_uid 
@@ -1232,6 +1383,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . $start . ',' . $max;
 					}
 			}
+#			debug ($query);
 			return $query;
 		}
 
@@ -1248,6 +1400,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	boolean		If true, a list with all organisations is generated
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
+/*	 
 	function formList(&$smartyFormList,$organisation_id=0,$abcBar=false,$searchBox=false,$topList=false,$orgaList=false) {
 		//Set path to forms of services
 		$folder_forms = $this->conf['folder_services'];
@@ -1499,7 +1652,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		}
 		return true;
 	}
-
+*/
 
 	/**
 	 * Generates a database query for the function formList. The returned query depends on the given parameter (like described below)
@@ -1512,6 +1665,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	boolean		If true, the services are only counted.
 	 * @return	string		The database query.
 	 */
+/*	 
 	function makeFormListQuery($char=all,$organisation_id=0,$orderByCategory=0,$limit=true,$count=false) {
 		if ($count) {
 			//$select = 'count(*)';
@@ -1601,7 +1755,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		}
 		return $query;
 	}
-
+*/
 
 	/**
 	 * Executes a search in the database for given keywords.
@@ -1610,6 +1764,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	boolean		If true, a searchbox is generated (keyword search)
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
+/*	 
 	function do_search(&$smartySearchResult,$searchBox) {
 		$searchString = $this->piVars['sword'];
 		#$searchString = ereg_replace('"', '', $searchString);	//Delete quotation marks from search value
@@ -1783,7 +1938,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		}
 		// End empty query
 	}
-
+*/
 
 	/**
 	 * Calculates the 15 most frequently used services through a database query.
@@ -1943,6 +2098,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	string		Mode for which tree is to be generated (
 	 * @return	string		Content that is to be displayed within the plugin
 	 */
+/*
 	function makeTree($uid,$add_content,$mode) {
 		global $add_content;
 		//Execute query depending on mode
@@ -2003,7 +2159,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		}
 		return $add_content;
 	}
-
+*/
 
 
 
@@ -2028,6 +2184,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	boolean		If true, a list with the top <i>plugin.tx_civserv_pi2.topCount</i> services is generated
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
+ /*
 	function serviceDetail(&$smartyService,$searchBox=false,$topList=false, $continueAbcBarFromServiceList=false) {
 		// first the basics:
 		// service_pidlist is needed for identifying the Employees: in case of an external service the employes have 
@@ -2459,7 +2616,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			}
 		}
 
-/*
+
 		//Access log for most frequently requested services
 		//Get logging interval from configuration table
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -2473,14 +2630,14 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$log_interval = intval($row[cf_value]);
 		$accesslog = t3lib_div::makeInstance('tx_civserv_accesslog');
 		$accesslog->update_log($uid,$log_interval, long2ip(ip2long($_SERVER['REMOTE_ADDR'])));
-*/
+
 
 		//Title for the Indexed Search Engine
 		$GLOBALS['TSFE']->indexedDocTitle = $service_common[sv_name];
 		$GLOBALS['TSFE']->page['title']=$this->pi_getLL('tx_civserv_pi2_service.service','Service').": ".$name;
 		return true;
 	}
-
+*/
 
 	/**
 	 * Generates a query for standard service details.
@@ -2488,6 +2645,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	integer		Service uid
 	 * @return	result_set		Result of database query
 	 */
+/*	 
 	function queryService($uid) {
 		// VERSIONING:
 		// we need the hidden records as well!
@@ -2502,7 +2660,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 						'');
 		return $res;
 	}
-
+*/
 
 	/**
 	 * Generates information about a specific employee.
@@ -3587,6 +3745,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	object		Smarty object, the template key/value-pairs should be assigned to
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
+/*	 
 	function setDebitForm(&$smartyDebitForm) {
 		//Check if debit form was called from a specific service (id = service id)
 		if ($this->piVars[id] > '') {
@@ -3674,7 +3833,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		return true;
 	}
-
+*/
 
 	/**
 	 * Checks the submitted debit authorisation form and stores the entry in the database.
@@ -3682,6 +3841,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	object		Smarty object, the template key/value-pairs should be assigned to
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
+/*	 
 	function checkDebitForm(&$smartyDebitForm) {
 		//Retrieve passed parameters
 		$service = t3lib_div::_POST('service');		//service = service.uid|service.name
@@ -3797,7 +3957,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			return true;
 		}
 	}
-
+*/
 
 
 
@@ -4128,6 +4288,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		}
 		
 		//test bk: you might want to control the display-order of menu (via $conf). Name them so you can sort them!
+	/*	
 		if ($conf['menuServiceList']) {
 			$menuArray['menuServiceList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.service_list','Services A - Z'),
@@ -4158,12 +4319,14 @@ class tx_civserv_pi2 extends tslib_pibase {
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'organisation_list'),1,1,$pageid),
 								'ITEM_STATE' => (($this->piVars[mode]=='organisation_list') || ($this->piVars[mode]=='organisation_list'))?'ACT':'NO');
 		}
+		*/
 		if ($conf['menuEmployeeList']) {
 			$menuArray['menuEmployeeList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.employee_list','Employees A - Z'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'employee_list'),1,1,$pageid),
 								'ITEM_STATE' => ($this->piVars[mode]=='employee_list')?'ACT':'NO');
 		}
+		/*
 		if ($conf['menuFormList']) {
 			$menuArray['menuFormList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.form_list','Forms'),
@@ -4198,7 +4361,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'service_list'),0,1,$conf['alternative_page_id']),
 							'ITEM_STATE' => ($GLOBALS['TSFE']->id==$conf['alternative_page_id'])?'ACT':'NO');
 		}
-		
+		*/
 		
 		//test bk: city of Münster: define first menu-item via $conf!
 		if ($conf['menuItems_01'] > '' && $conf[$conf['menuItems_01']]) {

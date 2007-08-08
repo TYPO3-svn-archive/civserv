@@ -1133,8 +1133,13 @@ input:focus, textarea:focus {
 }
 
 
+li span .em_name {
+	border: solid red 1px;
+}
 
-
+.em_name {
+	border: solid red 1px;
+}
 
 
 
