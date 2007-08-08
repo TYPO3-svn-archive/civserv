@@ -103,7 +103,14 @@ class tx_civserv_mandant{
 	*/
 	function get_mandant($pid) {
 		if ($pid > 0){
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_uid','tx_civserv_conf_mandant','deleted=0 AND hidden=0','','','',''); 
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'cm_uid',
+					'tx_civserv_conf_mandant',
+					'deleted=0 AND hidden=0',
+					'',
+					'',
+					'',
+					''); 
 			$valid_uids = array();
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
 				$valid_uids[]=$row['cm_uid'];
@@ -112,7 +119,14 @@ class tx_civserv_mandant{
 		}
 		if ($master_uid == NULL) $master_uid = $pid;
 		if ($master_uid > 0) {
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_community_id, cm_community_name','tx_civserv_conf_mandant','cm_uid = '.$GLOBALS['TYPO3_DB']->quoteStr($master_uid,'tx_civserv_conf_mandant'),'','','',''); 
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'cm_community_id, cm_community_name',
+				'tx_civserv_conf_mandant',
+				'cm_uid = '.$GLOBALS['TYPO3_DB']->quoteStr($master_uid,'tx_civserv_conf_mandant'),
+				'',
+				'',
+				'',
+				''); 
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 			return $row['cm_community_id'];
 		} else return 0;
@@ -127,7 +141,14 @@ class tx_civserv_mandant{
 	function get_mandant_name($pid){
 		if ($pid > 0) $mandant = $this->get_mandant($pid);
 		if ($mandant > 0) {
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_community_name','tx_civserv_conf_mandant','cm_community_id = '.$GLOBALS['TYPO3_DB']->quoteStr($mandant,'tx_civserv_conf_mandant'),'','','',''); 
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'cm_community_name',
+					'tx_civserv_conf_mandant',
+					'cm_community_id = '.$GLOBALS['TYPO3_DB']->quoteStr($mandant,'tx_civserv_conf_mandant'),
+					'',
+					'',
+					'',
+					''); 
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 			return $row['cm_community_name'];
 		} else return "";
@@ -142,7 +163,10 @@ class tx_civserv_mandant{
 	function get_mandant_cmuid($pid){
 		if ($pid > 0) $mandant = $this->get_mandant($pid);
 		if ($mandant > 0) {
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_uid','tx_civserv_conf_mandant','cm_community_id = '.$GLOBALS['TYPO3_DB']->quoteStr($mandant,'tx_civserv_conf_mandant'),'','','',''); 
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'cm_uid',
+				'tx_civserv_conf_mandant',
+				'cm_community_id = '.$GLOBALS['TYPO3_DB']->quoteStr($mandant,'tx_civserv_conf_mandant'),'','','',''); 
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 			return $row['cm_uid'];
 		} else return "";
@@ -158,12 +182,64 @@ class tx_civserv_mandant{
 	function get_mandant_uid($pid){
 		if ($pid > 0) $mandant = $this->get_mandant($pid);
 		if ($mandant > 0) {
-			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','tx_civserv_conf_mandant','cm_community_id = '.$GLOBALS['TYPO3_DB']->quoteStr($mandant,'tx_civserv_conf_mandant'),'','','',''); 
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'uid',
+				'tx_civserv_conf_mandant',
+				'cm_community_id = '.$GLOBALS['TYPO3_DB']->quoteStr($mandant,'tx_civserv_conf_mandant'),
+				'',
+				'',
+				'',
+				''); 
 			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
 			return $row['uid'];
 		} else return "";
 	}
 	
+	
+	/*
+	* Returns all configuration - IDs for a given mandant
+	* @param	int	PID	is the node in the tree from where the mandant should be determined
+	* @return	string	community-name representing the mandant belonging to the given pid
+	* @see get_path
+	*/
+	function get_mandant_conf_all($pid){
+		if ($pid > 0) $mandant = $this->get_mandant($pid);
+		if ($mandant > 0) {
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'*',
+				'tx_civserv_conf_mandant',
+				'cm_community_id = '.$GLOBALS['TYPO3_DB']->quoteStr($mandant,'tx_civserv_conf_mandant'),
+				'',
+				'',
+				'',
+				''); 
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+			return $row;
+		} else return "";
+	}
+
+	/*
+	* Returns startobjects for a given mandant
+	* @param	int	PID	is the node in the tree from where the mandant should be determined
+	* @return	string	community-name representing the mandant belonging to the given pid
+	* @see get_path
+	*/
+	function get_mandant_startobjects($pid){
+		if ($pid > 0) $mandant = $this->get_mandant($pid);
+		if ($mandant > 0) {
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'cm_circumstance_uid, cm_usergroup_uid, cm_organisation_uid',
+				'tx_civserv_conf_mandant',
+				'cm_community_id = '.$GLOBALS['TYPO3_DB']->quoteStr($mandant,'tx_civserv_conf_mandant'),
+				'',
+				'',
+				'',
+				''); 
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+			return $row;
+		} else return "";
+	}
+
 			
 	/*
 	* Limits the items of an array to guarantee, that within an treenode only elements are shown, which belong to the same mandant
