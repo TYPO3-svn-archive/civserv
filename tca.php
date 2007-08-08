@@ -84,6 +84,14 @@
 if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
 
 	if (TYPO3_MODE=='BE'){
+		$mandant_conf = array();
+		$mandantID = "";
+		$uploadfolder = "";
+		$cm_circumstance = 0;
+		$cm_usergroup = 0;
+		$cm_organisation = 0;
+	
+	
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'cf_value',			 							// SELECT ...
 			'tx_civserv_configuration',						// FROM ...
@@ -100,23 +108,60 @@ if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
 		if ($current_id == null){
 			$url=parse_url(t3lib_div::_GET('returnUrl'));
 #			debug($url, "TCA returnUrl");
-			parse_str($url['query'],$url_query);
-		    $current_id=$url_query['id'];
+			parse_str($url['query'], $url_query);
+		    $current_id = $url_query['id'];
 		}
 		
+		// citeq introduced this, can't remember why?
+		// there are cases, when the returnURL does not reveal the current id.......
 		if ($current_id == null){
-			$current_id=$GLOBALS['WEBMOUNTS'][0];
+			$current_id = $GLOBALS['WEBMOUNTS'][0];
 		}
+		
 		if ($current_id > 0){
 			$mandant_obj=t3lib_div::makeInstance('tx_civserv_mandant');
-			$mandantID = $mandant_obj->get_mandant($current_id);
-			if ($mandantID) $upload_folder = "fileadmin/civserv/".$mandantID;
-			else $upload_folder = "fileadmin/civserv";
+			$mandant_conf = $mandant_obj->get_mandant_conf_all($current_id);
+			debug($mandant_conf, 'mandanten_konfiguration');
+			#$mandantID = $mandant_obj->get_mandant($current_id);
+			$mandantID = $mandant_conf['cm_community_id'];
+			if ($mandantID) {
+				$upload_folder = "fileadmin/civserv/".$mandantID;
+			} else {
+				$upload_folder = "fileadmin/civserv";
+			}
+			if($mandant_conf['cm_circumstance_uid'] > 0){
+				$cm_circumstance = $mandant_conf['cm_circumstance_uid'];
+			}
+			if($mandant_conf['cm_usergroup_uid'] > 0){
+				$cm_usergroup = $mandant_conf['cm_usergroup_uid'];
+			}
+			if($mandant_conf['cm_organisation_uid'] > 0){
+				$cm_organisation = $mandant_conf['cm_organisation_uid'];
+			}
 		} else $upload_folder = "fileadmin/civserv";
+		
+/*		
+		if($mandantID > ''){
+			$res2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'*',			 							// SELECT ...
+				'tx_civserv_conf_mandant',						// FROM ...
+				'cm_community_id ='.$GLOBALS['TYPO3_DB']->quoteStr($mandantID,'tx_civserv_conf_mandant'), // WHERE
+				'', 											// GROUP BY...
+				'',   											// ORDER BY...
+				'' 												// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+				);
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res2)){
+				$cm_circumstance = $row['cm_circumstance_uid'];
+				$cm_usergroup = $row['cm_usergroup_uid'];
+				$cm_organisation = $row['cm_organisation_uid'];
+			}
+		}
+*/		
 	}
 
-
-
+debug($cm_circumstance);
+debug($cm_usergroup);
+debug($cm_organisation);
 
 /**
  * The definition of the backend-mask and logic for the table tx_civserv_service (contenttype service)
@@ -700,7 +745,8 @@ $TCA["tx_civserv_service"] = Array (
 			"config" => Array (
 				"type" => "select",
 				"foreign_table" => "tx_civserv_navigation",
-				"foreign_table_where" => "ORDER BY tx_civserv_navigation.nv_name",
+#				"foreign_table_where" => "ORDER BY tx_civserv_navigation.nv_name",
+				"foreign_table_where" => "AND tx_civserv_navigation.uid NOT IN (".$cm_circumstance.", ".$cm_usergroup.") ORDER BY tx_civserv_navigation.nv_name",
 				"itemsProcFunc" => "tx_civserv_mandant->limit_items",
 				"size" => 5,
 				"minitems" => 0,
