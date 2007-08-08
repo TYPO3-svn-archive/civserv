@@ -124,7 +124,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	$content		Content that is to be displayed within the plugin
 	 */
 	function main($content,$conf)	{
-		//$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging - only on test-sites!
+		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging - only on test-sites!
 		if (TYPO3_DLOG)  t3lib_div::devLog('function main of FE class entered', 'civserv');
 
 		
@@ -1080,7 +1080,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 					}
 	
 			}
-#			debug ($query);
 			return $query;
 		}
 
@@ -1360,7 +1359,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			array_multisort($category_names, SORT_ASC, $form_names, SORT_ASC, $all_forms);
 		}
 		//reinstate lower_case category_names.....? there shouldn't be any!!!
-		#debug($all_forms);
 		
 		
 		
@@ -1997,15 +1995,22 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	string		Mode for which tree is to be generated (
 	 * @return	string		Content that is to be displayed within the plugin
 	 */
-	function makeTree($uid,$add_content,$mode) {
+	function makeTree($uid, $add_content, $mode) {
 		global $add_content;
 		//Execute query depending on mode
 		if ($mode == 'circumstance_tree' || $mode == 'usergroup_tree') {
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-								'nv1.uid as uid, nv1.nv_name as name',
-								'tx_civserv_navigation as nv1,tx_civserv_navigation_nv_structure_mm as nvmm,tx_civserv_navigation as nv2',
-								'nv1.deleted=0 AND nv1.hidden=0 AND nv2.deleted=0 AND nv2.hidden=0
-								 AND nv1.uid = nvmm.uid_local AND nv2.uid = nvmm.uid_foreign
+								'nv1.uid as uid, 
+								 nv1.nv_name as name',
+								'tx_civserv_navigation as nv1,
+								 tx_civserv_navigation_nv_structure_mm as nvmm,
+								 tx_civserv_navigation as nv2',
+								'nv1.deleted=0 
+								 AND nv1.hidden=0 
+								 AND nv2.deleted=0 
+								 AND nv2.hidden=0
+								 AND nv1.uid = nvmm.uid_local 
+								 AND nv2.uid = nvmm.uid_foreign
 								 AND nv2.uid = ' . $uid ,
 								'',
 								'name',
@@ -2019,10 +2024,18 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		if ($mode == 'organisation_tree') {
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-								'or1.uid as uid, or1.or_code as code, or1.or_name as name',
-								'tx_civserv_organisation as or1,tx_civserv_organisation_or_structure_mm as ormm,tx_civserv_organisation as or2',
-								'or1.deleted=0 AND or1.hidden=0 AND or2.deleted=0 AND or2.hidden=0
-								 AND or1.uid = ormm.uid_local AND or2.uid = ormm.uid_foreign
+								'or1.uid as uid, 
+								 or1.or_code as code, 
+								 or1.or_name as name',
+								'tx_civserv_organisation as or1,
+								 tx_civserv_organisation_or_structure_mm as ormm,
+								 tx_civserv_organisation as or2',
+								'or1.deleted=0 
+								 AND or1.hidden=0 
+								 AND or2.deleted=0 
+								 AND or2.hidden=0
+								 AND or1.uid = ormm.uid_local 
+								 AND or2.uid = ormm.uid_foreign
 								 AND or2.uid = ' . $uid ,
 								'',
 								$orderby,
@@ -2032,25 +2045,51 @@ class tx_civserv_pi1 extends tslib_pibase {
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
 			$add_content = $add_content .  '<ul>';
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-				$uid = $row["uid"];
+				$uid = $row["uid"]; // or1 res. nv1
+				debug($uid, 'neue UID');
+				$makelink=false;
+				$res_connected_services = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+						'tx_civserv_service.sv_name',
+						'tx_civserv_service',
+						'tx_civserv_service_sv_navigation_mm',
+						'tx_civserv_navigation',
+						'AND tx_civserv_service_sv_navigation_mm.uid_foreign = '.$uid,
+						'');
 				switch ($mode) {
 					case 'circumstance_tree':
 						$link_mode = 'circumstance';
+						$makelink = ($GLOBALS['TYPO3_DB']->sql_num_rows($res_connected_services) > 0) ? true : false;
 						break;
 					case 'usergroup_tree':
 						$link_mode = 'usergroup';
+						$makelink = ($GLOBALS['TYPO3_DB']->sql_num_rows($res_connected_services) > 0) ? true : false;
 						break;
 					case 'organisation_tree':
 						$link_mode = 'organisation';
+						$makelink = true; // we want detail-information to all organisations 
+/*						
+// no! we want detail-information to all organisations - not only to those who offer services.....
+						$res_connected_services = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+								'tx_civserv_service.sv_name',
+								'tx_civserv_service',
+								'tx_civserv_service_sv_organisation_mm',
+								'tx_civserv_organisation',
+								'AND tx_civserv_service_sv_organisation_mm.uid_foreign = '.$uid,
+								'');
+*/								
 						break;
 				}
+				$add_content .= '<li>';
+				$add_content .= $makelink ? '<a href="' . htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => $link_mode,id => $row['uid']),1,1)) . '">' : '';
+				debug($makelink, 'makelink?');
 				// test bk: add organisational code
 				if($this->conf['displayOrganisationCode'] && !($mode=='usergroup_tree' || $mode=='circumstance_tree')){
-					$add_content .= '    <li>&nbsp;<a href="' . htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => $link_mode,id => $row['uid']),1,1)) . '">'.$row["code"].' '.$row["name"].'</a>';
+					$add_content .= $row["code"].' '.$row["name"];
 				}else{
-					$add_content .= '    <li>&nbsp;<a href="' . htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => $link_mode,id => $row['uid']),1,1)) . '">'.$row["name"].'</a>';
+					$add_content .= $row["name"];
 				}
-				$this->makeTree($uid,$add_content,$mode);
+				$add_content .= $makelink ? '</a>': '';
+				$this->makeTree($uid, $add_content, $mode);
 				$add_content .= "</li>\n";
 			}
 			$add_content = $add_content . "</ul>\n";
@@ -2415,11 +2454,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyService->assign('image_text',$image_descr);
 
 		//Image
-		if ($service_common[sv_image] != "") {
-			$image = $service_common[sv_image];
+		if ($service_common['sv_image'] != "") {
+			$image = $service_common['sv_image'];
 			$imagepath = $this->conf['folder_organisations'] . $service_community . '/images/';
 		} else {
-			$image = $model_service[ms_image];
+			$image = $model_service['ms_image'];
 			$imagepath = $this->conf['folder_organisations'] . 'model_services/images/';
 		}
 		if ($image) {
@@ -2428,11 +2467,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyService->assign('image',$imageCode);
 
 		//Fees
-		if ($service_common[sv_fees] != "") {
-			$fees = trim($service_common[sv_fees]);
+		if ($service_common['sv_fees'] != "") {
+			$fees = trim($service_common['sv_fees']);
 			$fees = $this->pi_getEditIcon($fees,'sv_fees',$this->pi_getLL('tx_civserv_pi1_service.description_fees','Fees'),$service_common,'tx_civserv_service');
 		} else {
-			$fees = trim($model_service[ms_fees]);
+			$fees = trim($model_service['ms_fees']);
 		}
 		//test bk: support htmlarea in not desplaying empty labels; todo: transmit this to other sections!!!
 		if(strip_tags($fees) > '' && strip_tags($documents) != '&nbsp;'){
@@ -2747,7 +2786,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}
 			$employee_room = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_room);
 			if(count($employee_room) > 0){
-				$employee_position = array_merge($employee_position, $employee_room);
+				$employee_position = array_merge($employee_position, (array)$employee_room);
 			}
 			$smartyEmployee->assign('position',$employee_position);
 	
@@ -3956,6 +3995,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	string		HTML-Code for including the image in a page
 	 */
 	function getImageCode($image,$path,$conf,$altText)	{
+		debug($conf, '$conf');
 		$conf['file'] = $path . $image;
 		// for the online_service_list we want to display thumbnails of the service images!
 		if($this->piVars['mode']=='online_services'){
