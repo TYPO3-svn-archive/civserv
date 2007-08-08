@@ -450,12 +450,13 @@ function init() {
 			// Removes all organisations from other mandants so that only
 			// the organisations of the actual mandant are displayed in the
 			// selectorbox.
+			// moreover it eleminates the organisation-start-object configured in tx_civserv_conf_mandant form the list!
 		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
 		$mandant = $mandant_obj->get_mandant($this->service_pid);
 		if ($this->res) {
 			while ($organisations = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
 					// Checks if the uid is already selected.
-				if ($mandant_obj->get_mandant($organisations['pid'])==$mandant){
+				if ($mandant_obj->get_mandant($organisations['pid']) == $mandant && !in_array($organisations['uid'], $mandant_obj->get_mandant_startobjects($organisations['pid']))){
 					if ($this->organisation_selected($organisations[uid])) {
 						$selVal = 'selected="selected"';
 					} else {
@@ -463,7 +464,7 @@ function init() {
 					}
 					$withCode='<option label="'.htmlspecialchars($organisations[or_name]).'" value="'.htmlspecialchars($organisations[uid]).'"'.$selVal.'>'.htmlspecialchars($organisations[or_code].' '.$organisations[or_name]).'</option>';
 					$withoutCode='<option label="'.htmlspecialchars($organisations[or_name]).'" value="'.htmlspecialchars($organisations[uid]).'"'.$selVal.'>'.htmlspecialchars($organisations[or_name].' ('.$organisations[or_code].')').'</option>';
-					$menuItems[]=$letter=="other" || ($letter=="search" && intval($this->searchitem)>0)?$withCode:$withoutCode;
+					$menuItems[] = $letter == "other" || ($letter == "search" && intval($this->searchitem) > 0) ? $withCode : $withoutCode;
 				}
 			}
 		}
