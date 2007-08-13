@@ -165,6 +165,9 @@ selectBuildingsToShow = 0
 # show office_hour_labels like 'in the morning' and 'in the afternoon'
 showOhLabels = 1
 
+# handling of navigation items with no related services
+no_link_empty_nv = 0
+hide_empty_nv = 0
 
 
 # Enable/disable menu-items

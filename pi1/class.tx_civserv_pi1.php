@@ -124,7 +124,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	$content		Content that is to be displayed within the plugin
 	 */
 	function main($content,$conf)	{
-		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging - only on test-sites!
+#		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging - only on test-sites!
 		if (TYPO3_DLOG)  t3lib_div::devLog('function main of FE class entered', 'civserv');
 
 		
@@ -2046,8 +2046,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$add_content = $add_content .  '<ul>';
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 				$uid = $row["uid"]; // or1 res. nv1
-				debug($uid, 'neue UID');
+#				debug($uid, 'neue UID');
 				$makelink=false;
+				if($this->conf['no_link_empty_nv']){
+#					debug('no_link_empty_nv gesetzt!');
+				}else{
+#					debug('no_link_empty_nv NICHT gesetzt!');
+				}
 				$res_connected_services = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 						'tx_civserv_service.sv_name',
 						'tx_civserv_service',
@@ -2058,11 +2063,21 @@ class tx_civserv_pi1 extends tslib_pibase {
 				switch ($mode) {
 					case 'circumstance_tree':
 						$link_mode = 'circumstance';
-						$makelink = ($GLOBALS['TYPO3_DB']->sql_num_rows($res_connected_services) > 0) ? true : false;
+#						debug($GLOBALS['TYPO3_DB']->sql_num_rows($res_connected_services), 'anzahl verknüpfungen');
+						if(($GLOBALS['TYPO3_DB']->sql_num_rows($res_connected_services) < 1) && $this->conf['no_link_empty_nv']){
+							$makelink = false;
+						}else{
+							$makelink = true;
+						}
 						break;
 					case 'usergroup_tree':
 						$link_mode = 'usergroup';
-						$makelink = ($GLOBALS['TYPO3_DB']->sql_num_rows($res_connected_services) > 0) ? true : false;
+#						debug($GLOBALS['TYPO3_DB']->sql_num_rows($res_connected_services), 'anzahl verknüpfungen');
+						if(($GLOBALS['TYPO3_DB']->sql_num_rows($res_connected_services) < 1) && $this->conf['no_link_empty_nv']){
+							$makelink = false;
+						}else{
+							$makelink = true;
+						}
 						break;
 					case 'organisation_tree':
 						$link_mode = 'organisation';
@@ -2079,18 +2094,23 @@ class tx_civserv_pi1 extends tslib_pibase {
 */								
 						break;
 				}
-				$add_content .= '<li>';
-				$add_content .= $makelink ? '<a href="' . htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => $link_mode,id => $row['uid']),1,1)) . '">' : '';
-				debug($makelink, 'makelink?');
-				// test bk: add organisational code
-				if($this->conf['displayOrganisationCode'] && !($mode=='usergroup_tree' || $mode=='circumstance_tree')){
-					$add_content .= $row["code"].' '.$row["name"];
+				if($this->conf['hide_empty_nv'] && $makelink == false){
+#					$add_content .= '<li>nixe</li>';
+					$this->makeTree($uid, $add_content, $mode);
 				}else{
-					$add_content .= $row["name"];
+					$add_content .= '<li>';
+					$add_content .= $makelink ? '<a href="' . htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => $link_mode,id => $row['uid']),1,1)) . '">' : '';
+#					debug($makelink, 'makelink?');
+					// test bk: add organisational code
+					if($this->conf['displayOrganisationCode'] && !($mode=='usergroup_tree' || $mode=='circumstance_tree')){
+						$add_content .= $row["code"].' '.$row["name"];
+					}else{
+						$add_content .= $row["name"];
+					}
+					$add_content .= $makelink ? '</a>': '';
+					$this->makeTree($uid, $add_content, $mode);
+					$add_content .= "</li>\n";
 				}
-				$add_content .= $makelink ? '</a>': '';
-				$this->makeTree($uid, $add_content, $mode);
-				$add_content .= "</li>\n";
 			}
 			$add_content = $add_content . "</ul>\n";
 		}
@@ -3995,7 +4015,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	string		HTML-Code for including the image in a page
 	 */
 	function getImageCode($image,$path,$conf,$altText)	{
-		debug($conf, '$conf');
+#		debug($conf, '$conf');
 		$conf['file'] = $path . $image;
 		// for the online_service_list we want to display thumbnails of the service images!
 		if($this->piVars['mode']=='online_services'){

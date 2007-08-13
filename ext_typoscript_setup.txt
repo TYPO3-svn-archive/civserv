@@ -110,7 +110,9 @@ plugin.tx_civserv_pi1 {
 	showSuperOrganisation = {$showSuperOrganisation}
 	selectBuildingsToShow = {$selectBuildingsToShow}
 	showOhLabels = {$showOhLabels}
-
+	
+	no_link_empty_nv = {$no_link_empty_nv}
+	hide_empty_nv = {$hide_empty_nv}
 
 	general_stdWrap.parseFunc.nonTypoTagStdWrap.encapsLines { 
 		encapsTagList = div, p, ul, ol, li
