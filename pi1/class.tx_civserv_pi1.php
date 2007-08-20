@@ -3550,9 +3550,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 				   "\n" . $this->pi_getLL('tx_civserv_pi1_email_form.bodytext','Your text') . ': ' .
 				   "\n" . $bodytext;
 				//todo: check possibilities of header injection
-				#$headers = !empty($email)?	"From: ".$email."\r\nReply-To: ".$email."\r\n":"From: ".$email_address."\r\nReply-To: ".$email_address."\r\n";
-				$headers = !empty($email)?	"From: ".$email."\r\nReply-To: ".$email."\r\n": !empty($this->conf['contact_email']) && t3lib_div::validEmail($this->conf['contact_email'])? "From: ".$this->conf['contact_email']."\r\n Reply-To: ".$this->conf['contact_email']."\r\n":"From: ".$email_address."\r\nReply-To: ".$email_address."\r\n";
-
+				if(!empty($email)){		// email given in contact-form is correct
+					$headers = "From: ".$email."\r\nReply-To: ".$email."\r\n";
+					debug($headers, 'email aus kontaktform');
+				}else{ // set email retrieved via hoster_get_email
+					$headers = "From: ".$email_address."\r\nReply-To: ".$email_address."\r\n";
+					debug($headers, 'email des hosters');
+				}
 
 				t3lib_div::plainMailEncoded($email_address, $subject, $body, $headers);
 				$reply = $this->pi_getLL('tx_civserv_pi1_email_form.complete','Thank you! Your message has been sent successfully ');
@@ -3669,7 +3673,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 				return false;
 			}
 		} elseif ($this->piVars['mode']=='check_contact_form') {	//Email form ist called by the contact_link in the main Navigation
-			//todo: add database field for hoster from which the address below should be retrieved
 			$hoster_email =$this->get_hoster_email();
 			return $hoster_email;
 		} else {
