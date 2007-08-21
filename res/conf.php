@@ -36,6 +36,8 @@
 * @@version 1.0
 *
 * Changes: 09.08.04, CR - Anpassung an Konventionen
+*
+* a useless comment - will be deleted!
 */
 
 	// DO NOT REMOVE OR CHANGE THESE 3 LINES:

@@ -142,7 +142,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 		if(in_array(t3lib_div::_GP('responsible'), $arrResponsible)){
 			$responsible = t3lib_div::_GP('responsible');
 		}
-		$abort = t3lib_div::GP('abort');
+		$abort = t3lib_div::_GP('abort');
 
 		if (isset($abort)){
 			$this->mainContent();
