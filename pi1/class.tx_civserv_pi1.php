@@ -1948,7 +1948,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						$actual?'<strong>':'',
 						$actual?'</strong>':'');
 			}
-			else	{
+			else{
 				$abcBar .= '<span>'.$alphabet[$i].'</span> '.$this->conf['abcSpacer'].' ';
 			}
 		}

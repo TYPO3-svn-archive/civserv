@@ -736,8 +736,7 @@ table.right {
 	text-decoration: underline;
 }
 
-#globalenavigation li.kommune
-{
+#globalenavigation li.kommune {
 	width: 195px;
 	text-align: right;
 	border: none;
@@ -747,8 +746,7 @@ table.right {
 /* ------------ End globale navigation ---------- */
 /* ---------------------------------------------- */
 
-.tx-civserv-pi1-searchbox
-{
+.tx-civserv-pi1-searchbox {
 	font-size: 0.85em;
 }
 
@@ -1093,27 +1091,62 @@ input:focus, textarea:focus {
 	padding: 0;
 	padding-bottom: 5px;
 }
+/* ---------------------------------------------- */
+/* ------------- end searchformelements -------------- */
+/* ---------------------------------------------- */
+
+
+
+/* ---------------------------------------------- */
+/* ------------ begin plugin extended ma list---- */
+/* ---------------------------------------------- */
+
 
 /*
-.tx-civserv-pi2-searchbox table #extended_em_list {
-	border: solid red 1px;
+#centrecontent {
+	border: dashed green 2x;
+	background-color: black;
+}
+*/
+
+.tx-civserv-pi2 #centrecontent table {
+	margin-left: 1em;
+	
+	xborder: dashed red 2x;
+	xbackground-color: green;
 }
 
-.tx-civserv-pi2-searchbox tr .tableheader {
+
+.tx-civserv-pi2 #centrecontent table tr.tableheader {
 	margin: 0;
 	padding: 0;
 	padding-bottom: 5px;
 	background-color: blue;
+	color: white;
+	font-size: 18px;
+	font-weight: bold;
 }
 
-.tx-civserv-pi2-searchbox tr .tablerow {
+
+.tx-civserv-pi2 #centrecontent table tr.tablerow_a, 
+.tx-civserv-pi2 #centrecontent table tr.tablerow_b {
 	margin: 0;
 	padding: 0;
 	padding-bottom: 5px;
-	background-color: lightyellow;
+	background-color: #ddd;
 }
-*/
+.tx-civserv-pi2 #centrecontent table tr.tablerow_a {
+	background-color: #eee;
+}
 
+
+.tx-civserv-pi2 #centrecontent table td, 
+.tx-civserv-pi2 #centrecontent table th {
+	border: solid white 1px;
+	padding-left: 3em;
+}
+
+/*
 #extended_em_list {
 	border: solid red 1px;
 }
@@ -1140,12 +1173,14 @@ li span .em_name {
 .em_name {
 	border: solid red 1px;
 }
-
-
+*/
 
 /* ---------------------------------------------- */
-/* ------------- end searchformelements -------------- */
+/* ------------ end plugin extended ma list---- */
 /* ---------------------------------------------- */
+
+
+
 
 
 /* ---------------------------------------------- */

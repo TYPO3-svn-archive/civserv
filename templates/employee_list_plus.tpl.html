@@ -32,25 +32,26 @@
 				<th>Bermerkungen (Standort)</th>
 			</tr>
 		<!--{foreach from=$employees item=employee}-->
-			<tr class = "tablerow">
+			<tr class = "tablerow{cycle values=_a,_b}">
 				<td><!--{if $employee.or_code > ''}-->{$employee.or_code}<!--{/if}--></td>
 				<td>
 		<!--{if $employee.em_datasec == "1"}-->
 					<a href="{$employee.em_url}">
 					{$employee.address_long}
 					<!--{if $employee.title > ''}-->{$employee.title}<!--{/if}-->	
-					{$employee.name}<!--{if $employee.firstname > ''}-->,&nbsp;{$employee.firstname}<!--{/if}-->	
+					{$employee.name}<!--{if $employee.firstname > ''}-->,&nbsp;{$employee.firstname}<!--{/if}-->
 					</a>
 		<!--{else}-->
 					{$employee.address_long}
 					<!--{if $employee.title > ''}-->{$employee.title}<!--{/if}-->
 					{$employee.name}<!--{if $employee.firstname > ''}-->,&nbsp;{$employee.firstname}<!--{/if}-->
 		<!--{/if}-->
+				<br />({$employee.po_name})	
 				</td>	
 				<td><!--{if $employee.em_image > ''}-->{$employee.em_imagecode}<!--{/if}--></td>
 				<td><!--{if $employee.em_telephone > ''}-->{$employee.em_telephone}<!--{/if}--></td>	
 				<td>
-					<!--{if $employee.orga_name > ''}-->{$employee.orga_name}<!--{/if}-->
+					<!--{if $employee.or_name > ''}-->{$employee.or_name}<!--{/if}-->
 					<!--{if $employee.or_buildings > ''}--> ({$employee.or_buildings})<!--{/if}-->
 				</td>	
 			</tr>
