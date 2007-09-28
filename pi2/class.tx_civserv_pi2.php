@@ -22,12 +22,12 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Plugin 'Civil Services' for the 'civserv' extension.
+ * Additional Plugin 'Civil Services employeelist extended' for the 'civserv' extension.
+ * could be used in an intranet environment
  *
  * $Id: class.tx_civserv_pi2.php 5671 2007-06-12 13:10:15Z bkohorst $
  *
- * @author	Stephan Dümmer <sduemmer@uni-muenster.de>
- * @author	Stefan Meesters <meesters@uni-muenster.de>
+ * @author	Britta Kohorst <kohorst@citeq.de>
  * @package TYPO3
  * @subpackage tx_civserv
  * @version 1.0

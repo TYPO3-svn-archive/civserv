@@ -1,0 +1,162 @@
+<!--TYPO3SEARCH_begin-->
+<!--TYPO3SEARCH_end-->
+
+<div id="right_dummy">
+	{include file=$right_searchbox_template}
+	{include file=$right_top_template}
+</div><!-- right end -->
+
+<div id="centrecontent">
+		
+	<h1>{$employee_label}:
+	<!--{if $address != ""}-->{$address}<!--{/if}-->
+	<!--{if $title != ""}-->{$title}<!--{/if}-->
+	<!--{if $firstname != ""}-->{$firstname}<!--{/if}-->
+	<!--{if $name != ""}-->{$name}<!--{/if}-->
+	</h1>
+	
+	<div class="employeedetail">
+
+		<!--{if $image != ""}-->
+			<span style="float:right;padding:10px"
+				{$image}
+			</span>
+		<!--{/if}-->
+
+		<!--{if $position.organisation != ""}-->
+			{$organisation_label}:&nbsp;<a href="{$position.or_link}">{$position.organisation}</a><br /><br />
+		<!--{/if}-->
+		
+		<!--{if $position.room != ""}-->
+			{$position.building}&nbsp;({$position.floor},&nbsp;{$room_label}&nbsp;{$position.room})<br /><br />
+		<!--{/if}-->
+		
+		<!--{if $position.phone != ""}-->
+			<strong>{$phone_label}:</strong>
+			{$position.phone}<br />
+		<!--{elseif $phone != ""}-->
+			<strong>{$phone_label}:</strong>
+			{$phone}<br />
+		<!--{/if}-->
+		
+		<!--{if $position.fax != ""}-->
+			<strong>{$fax_label}:</strong>
+			{$position.fax}<br />
+		<!--{elseif $fax != ""}-->
+			<strong>{$fax_label}:</strong>
+			{$fax}<br />
+		<!--{/if}-->
+		<br />
+		
+		<!--{if $email_form_url != ""}-->
+			<strong>{$email_label}:</strong>
+			{$email_code}<br />
+			<a href="{$email_form_url}" class="link">{$web_email_label}</a><br /><br />
+		<!--{/if}-->
+		
+		<!--{if $emp_pos_hours != ""}-->
+			<table summary="{$office_hours_summary}">
+				<caption>{$working_hours_label}:</caption>
+				<thead>
+					<tr>
+					<!--{if $supress_labels > ''}-->
+						<th class="invisible">{$weekday}</th>
+						<th class="invisible">{$morning}</th>
+						<th class="invisible">{$afternoon}</th>
+					<!--{else}-->
+						<th>{$weekday}</th>
+						<th>{$morning}</th>
+						<th>{$afternoon}</th>
+					<!--{/if}-->						
+					</tr>
+				</thead>
+				<tbody>
+					<!--{foreach from=$emp_pos_hours item=hours }-->
+						<tr>
+							<td>{$hours.weekday}</td>
+							<!--{if $hours.freestyle > ''}-->
+								<td colspan="2">{$hours.freestyle}</td>
+							<!--{else}-->
+								<!--{if $hours.end_morning == "0" AND $hours.start_afternoon == "0"}-->
+									<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+								<!--{else}-->
+									<!--{if $hours.start_morning != "0" AND $hours.end_morning != "0"}-->
+										<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_morning}</td>
+									<!--{/if}-->
+									<!--{if $hours.start_afternoon != "0" AND $hours.end_afternoon != "0"}-->
+										<td colspan="2" style="text-align:right">{$hours.start_afternoon}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+									<!--{/if}-->
+								<!--{/if}-->
+							<!--{/if}-->	
+						</tr>
+					<!--{/foreach}-->
+				</tbody>
+			</table>
+		<!--{elseif $emp_hours != ""}-->
+			<table summary="{$office_hours_summary}">
+				<caption>{$working_hours_label}:</caption>
+				<thead>
+					<tr>
+						<th>{$weekday}</th>
+						<th>{$morning}</th>
+						<th>{$afternoon}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!--{foreach from=$emp_hours item=hours }-->
+						<tr>
+							<td>{$hours.weekday}</td>
+							<!--{if $hours.freestyle > ''}-->
+								<td colspan="2">{$hours.freestyle}</td>
+							<!--{else}-->
+								<!--{if $hours.end_morning == "0" AND $hours.start_afternoon == "0"}-->
+									<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+								<!--{else}-->
+									<!--{if $hours.start_morning != "0" AND $hours.end_morning != "0"}-->
+										<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_morning}</td>
+									<!--{/if}-->
+									<!--{if $hours.start_afternoon != "0" AND $hours.end_afternoon != "0"}-->
+										<td colspan="2" style="text-align:right">{$hours.start_afternoon}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+									<!--{/if}-->
+								<!--{/if}-->
+							<!--{/if}-->	
+						</tr>
+					<!--{/foreach}-->
+				</tbody>
+			</table>
+		<!--{elseif $emp_org_hours != ""}-->
+			<table summary="{$office_hours_summary}">
+				<caption>{$working_hours_label}:</caption>
+				<thead>
+					<tr>
+						<th>{$weekday}</th>
+						<th>{$morning}</th>
+						<th>{$afternoon}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!--{foreach from=$emp_org_hours item=hours }-->
+						<tr>
+							<td>{$hours.weekday}</td>
+							<!--{if $hours.freestyle > ''}-->
+								<td colspan="2">{$hours.freestyle}</td>
+							<!--{else}-->
+								<!--{if $hours.end_morning == "0" AND $hours.start_afternoon == "0"}-->
+									<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+								<!--{else}-->
+									<!--{if $hours.start_morning != "0" AND $hours.end_morning != "0"}-->
+										<td>{$hours.start_morning}&nbsp;-&nbsp;{$hours.end_morning}</td>
+									<!--{/if}-->
+									<!--{if $hours.start_afternoon != "0" AND $hours.end_afternoon != "0"}-->
+										<td colspan="2" style="text-align:right">{$hours.start_afternoon}&nbsp;-&nbsp;{$hours.end_afternoon}</td>
+									<!--{/if}-->
+								<!--{/if}-->
+							<!--{/if}-->	
+						</tr>
+					<!--{/foreach}-->
+				</tbody>
+			</table>
+		<!--{/if}-->
+		</div>
+		
+</div>

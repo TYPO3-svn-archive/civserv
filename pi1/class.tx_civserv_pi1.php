@@ -1936,6 +1936,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 		for($i = 0; $i < sizeof($alphabet); $i++)	{
 			$actual = (strtoupper($this->piVars['char']) == $alphabet[$i]);
 			if($occuringInitials && in_array($alphabet[$i],$occuringInitials))	{
+			//hier knallts im Memmingen......
+			// Warning: sprintf(): Too few arguments in /html/typo3conf/ext/civserv/pi1/class.tx_civserv_pi1.php on line 1941
+
+				$test = sprintf('%s' . $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . '%s '.$this->conf['abcSpacer'].' ',
+						$actual?'<strong>':'',
+						$actual?'</strong>':'');
+				debug($test);				
+
 				$abcBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . '%s '.$this->conf['abcSpacer'].' ',
 						$actual?'<strong>':'',
 						$actual?'</strong>':'');
