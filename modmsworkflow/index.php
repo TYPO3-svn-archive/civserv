@@ -188,8 +188,8 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 	function approveContent($uid, $responsible)	{
 		global $LANG;
 
-		$submit = t3lib_div::GP('submit');
-		$abort = t3lib_div::GP('abort');
+		$submit = t3lib_div::_GP('submit');
+		$abort = t3lib_div::_GP('abort');
 			//if neither commit nor abort was pressed, this is the initial display mode
 		if (empty($submit) && empty($abort)){
 				//Qustion: Should edited model services really be committed?
@@ -302,10 +302,10 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 	function reviseContent($uid, $responsible){
 		global $LANG;
 
-		$submit = t3lib_div::GP('submit');
-		$comment = t3lib_div::GP('comment');
-		$reset = t3lib_div::GP('reset');
-		$abort = t3lib_div::GP('abort');
+		$submit = t3lib_div::_GP('submit');
+		$comment = t3lib_div::_GP('comment');
+		$reset = t3lib_div::_GP('reset');
+		$abort = t3lib_div::_GP('abort');
 
 		$checked = true;
 		if (isset($submit)){
