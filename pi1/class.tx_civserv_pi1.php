@@ -1113,9 +1113,17 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 				//select the organisation assigned to the employee
 				$orga_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_civserv_position.uid as pos_uid, tx_civserv_organisation.uid as or_uid, tx_civserv_employee.uid as emp_uid, or_name as organisation',
-					'tx_civserv_employee, tx_civserv_position, tx_civserv_organisation, tx_civserv_employee_em_position_mm, tx_civserv_position_po_organisation_mm',
-					'tx_civserv_employee.uid = ' . $row['emp_uid'] . ' AND tx_civserv_position.uid = '.$row['pos_uid'] .'
+					'tx_civserv_position.uid as pos_uid, 
+					 tx_civserv_organisation.uid as or_uid, 
+					 tx_civserv_employee.uid as emp_uid, 
+					 or_name as organisation',
+					'tx_civserv_employee, 
+					 tx_civserv_position, 
+					 tx_civserv_organisation, 
+					 tx_civserv_employee_em_position_mm, 
+					 tx_civserv_position_po_organisation_mm',
+					'tx_civserv_employee.uid = ' . $row['emp_uid'] . ' 
+					 AND tx_civserv_position.uid = '.$row['pos_uid'] .'
 					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 					 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
 					 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0

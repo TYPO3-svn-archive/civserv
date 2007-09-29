@@ -35,18 +35,10 @@
 			<tr class = "tablerow{cycle values=_a,_b}">
 				<td><!--{if $employee.or_code > ''}-->{$employee.or_code}<!--{/if}--></td>
 				<td>
-		<!--{if $employee.em_datasec == "1"}-->
-					<a href="{$employee.em_url}">
-					{$employee.address_long}
-					<!--{if $employee.title > ''}-->{$employee.title}<!--{/if}-->	
-					{$employee.name}<!--{if $employee.firstname > ''}-->,&nbsp;{$employee.firstname}<!--{/if}-->
-					</a>
-		<!--{else}-->
-					{$employee.address_long}
-					<!--{if $employee.title > ''}-->{$employee.title}<!--{/if}-->
-					{$employee.name}<!--{if $employee.firstname > ''}-->,&nbsp;{$employee.firstname}<!--{/if}-->
-		<!--{/if}-->
-				<br />({$employee.po_name})	
+					{$employee.full_name}
+					<!--{if $employee.email_code > ''}--><br />{$employee.email_code}<!--{/if}-->
+					<br />({$employee.po_name})	
+					<br /><a href="{$employee.em_url}">mehr...</a>&nbsp;
 				</td>	
 				<td><!--{if $employee.em_image > ''}-->{$employee.em_imagecode}<!--{/if}--></td>
 				<td><!--{if $employee.em_telephone > ''}-->{$employee.em_telephone}<!--{/if}--></td>	

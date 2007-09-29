@@ -276,7 +276,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 				// pi2 for extended employee_list is being called here!
 				case 'employee_list':
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_employee_list.employee_list','Employees A - Z');
-					$template = $this->conf['tpl_employee_list'];
+					$template = $this->conf['tpl_employee_list']; //muss das nicht employee_list_plus heißen???
 					$accurate = $this->employee_list_plus($smartyObject,$this->conf['abcBarAtEmployeeList'],$this->conf['searchAtEmployeeList'],$this->conf['topAtEmployeeList']);
 					break;					
 /*
@@ -331,10 +331,11 @@ class tx_civserv_pi2 extends tslib_pibase {
 					// test bk: continue the abcBar from the ServiceList!!!
 					$accurate = $this->serviceDetail($smartyObject,$this->conf['searchAtService'], $this->conf['topAtService'],$this->conf['continueAbcBarFromServiceList']);
 					break;
-
+*/
+				// pi2 for extended employee_detail is being called here!
 				case 'employee':
 					$template = $this->conf['tpl_employee'];
-					$accurate = $this->employeeDetail($smartyObject,$this->conf['searchAtEmployee']);
+					$accurate = $this->employeeDetailPlus($smartyObject,$this->conf['searchAtEmployee']);
 					break;
 
 				case 'check_email_form':
@@ -350,6 +351,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$template = $this->conf['tpl_email_form'];
 					$accurate = $this->setEmailForm($smartyObject);
 					break;
+/*					
 
 				case 'check_debit_form':
 					$reset = t3lib_div::_POST('reset');
@@ -1089,21 +1091,26 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		$row_counter = 0;
 		
-		$em_org_kombis=array(); //store all combinations of an employee and his/her employing organisation unit here
+		$em_org_kombis=array(); // store all combinations of an employee and his/her employing organisation unit here
 		
-		$kills=array(); //will be used to eleminate dublicates from the above list
+		$kills=array(); // will be used to eleminate dublicates from the above list
 		
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
 			debug($row, 'employees_row');
 			$employees[$row_counter]['em_uid']=$row['em_uid'];
+			
+			// Anrede bestimmen
 			if($row['em_address']==2){
 				$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi2_organisation.address_female', 'Ms.');
 			}elseif($row['em_address']==1){
 				$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi2_organisation.address_male', 'Mr.');
 			}
+			
+			// Mitarbeiter-Daten
 			$employees[$row_counter]['title'] = $row['em_title'];
 			$employees[$row_counter]['name'] = $row['name']; //alias in makeEmployeeListQueryPlus, need for generic makeAbcBar
 			$employees[$row_counter]['firstname'] = $row['em_firstname'];
+			$employees[$row_counter]['full_name'] = $row['name'].", ".$row['em_firstname'];
 			$employees[$row_counter]['em_telephone'] = $row['em_telephone'];
 			$employees[$row_counter]['em_fax'] = $row['em_fax'];
 			$employees[$row_counter]['em_mobile'] = $row['em_mobile'];
@@ -1112,19 +1119,19 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$employees[$row_counter]['em_datasec'] = $row['em_datasec'];
 			$employees[$row_counter]['em_uid'] = $row['em_uid'];
 			
-			
+			// Position-Daten
 			$employees[$row_counter]['po_name'] = $row['po_name'];
 			
+			// Mitarbeiter-Position-Daten
+			$employees[$row_counter]['ep_uid'] = $row['ep_uid'];
 			$employees[$row_counter]['ep_officehours'] = $row['ep_officehours'];
 			$employees[$row_counter]['ep_room'] = $row['ep_room'];
 			$employees[$row_counter]['ep_telephone'] = $row['ep_telephone'];
 			$employees[$row_counter]['ep_fax'] = $row['ep_fax'];
 			$employees[$row_counter]['ep_mobile'] = $row['ep_mobile'];
-			$employees[$row_counter]['ep_mail'] = $row['ep_email'];
+			$employees[$row_counter]['ep_email'] = $row['ep_email'];
 			$employees[$row_counter]['ep_datasec'] = $row['ep_datasec'];
 			$employees[$row_counter]['ep_label'] = $row['ep_label'];
-			
-			
 			
 			
 #			debug(t3lib_div::getIndpEnv(TYPO3_REQUEST_SCRIPT), 'TYPO3_REQUEST_SCRIPT');
@@ -1134,7 +1141,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			#SCRIPT_NAME
 
 			
-//Bild			
+			// Bild	holen
 			$employees[$row_counter]['em_imagecode']=""; // leere Initialisierung
 			if ($employees[$row_counter]['em_image'] != "") {
 				$image = $employees[$row_counter]['em_image'];
@@ -1150,7 +1157,36 @@ class tx_civserv_pi2 extends tslib_pibase {
 			}
 
 
-// organisation:
+			// Organisation:
+			// select the organisation assigned to the position of the employee employee
+			$orga_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'tx_civserv_organisation.uid as or_uid, 
+				 tx_civserv_organisation.or_name as organisation,
+				 tx_civserv_organisation.or_code,
+				 tx_civserv_organisation.or_synonym1,
+				 tx_civserv_organisation.or_synonym2,
+				 tx_civserv_organisation.or_synonym3,
+				 tx_civserv_organisation.or_supervisor,
+				 tx_civserv_organisation.or_show_supervisor,
+				 tx_civserv_organisation.or_hours,
+				 tx_civserv_organisation.or_telephone,
+				 tx_civserv_organisation.or_fax,
+				 tx_civserv_organisation.or_email,
+				 tx_civserv_organisation.or_image,
+				 tx_civserv_organisation.or_infopage,
+				 tx_civserv_organisation.or_addinfo,
+				 tx_civserv_organisation.or_addlocation',
+				'tx_civserv_organisation,
+				 tx_civserv_position_po_organisation_mm',
+				'tx_civserv_position_po_organisation_mm.uid_local = ' . $row['po_uid'] . ' 
+				 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign
+				 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0',
+				'',
+				'',
+				'');
+				
+/*			
+			
 			//select the organisation assigned to the employee
 			$orga_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'tx_civserv_organisation.uid as or_uid, 
@@ -1187,7 +1223,9 @@ class tx_civserv_pi2 extends tslib_pibase {
 				'',
 				'',
 				'');
-				
+*/			
+
+
 			// Schleife über alle Organisationen, bei denen die Stelle angesiedelt ist - das sollte nur einen Durchgang ergeben!!!
 			while ($orga_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($orga_res) ) {
 				$employees[$row_counter]['or_uid'] = $orga_row['or_uid'];
@@ -1195,9 +1233,11 @@ class tx_civserv_pi2 extends tslib_pibase {
 				$employees[$row_counter]['or_code'] = $orga_row['or_code'];
 			}
 
-//Gebäude
-			if($employees[$row_counter]['ep_room'] > 0){ //dem Mitarbeiter wurde ein Raum zugewiesen, hol mir das passende Gebäude
-				// der Raum weiß über rbf_building_bl_floor zu welchem Gebäude er gehört und zu welcher Etage....
+			// Gebäude
+			if($employees[$row_counter]['ep_room'] > 0){ 
+				// dem Mitarbeiter wurde ein Raum zugewiesen, hol mir das passende Gebäude
+				// der Raum weiß über rbf_building_bl_floor zu welchem Gebäude er gehört und
+				// zu welcher Etage....
 				debug('if......');
 				debug($employees[$row_counter]['ep_room'], 'Raum:');
 				$res_building = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -1231,12 +1271,13 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$employees[$row_counter]['or_buildings'] = $row_building['bl_name_to_show'] > ''? $row_building['bl_name_to_show'] : $row_building['bl_name'];
 					$employees[$row_counter]['or_buildings'] .= ": Raum ".$row_building['ro_name'].", ".$row_building['fl_descr'];
 				}	
-			}else{
+			}else{ // der Mitarbeiter-Stellenzuordnung wurde kein Raum zugewiesen
 				$organisation_buildings= array();
 				$orga_bl_count=0;
 				
-				// wir können nicht wissen, welchem Gebäude die Position des Mitarbeiters angesiedelt ist....
-				// wir gucken erst mal, ob bestimmte zu der Organisation gehörende Gebäude überhaupt für die Anzeige ausgewählt wurden?
+				// wir können nicht wissen, in welchem Gebäude die Position des Mitarbeiters angesiedelt ist....
+				// wir gucken erst mal, ob bestimmte zu der Organisation gehörende Gebäude überhaupt 
+				// für die Anzeige ausgewählt wurden (in Tabelle tx_civserv_organisation_or_building_to_show_mm)?
 				$res_building = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 					'tx_civserv_building.bl_mail_street, 
 					 tx_civserv_building.bl_mail_pob, 
@@ -1285,7 +1326,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 						 tx_civserv_building.bl_pubtrans_url,
 						 tx_civserv_building.bl_citymap_url',
 						'tx_civserv_organisation',
-						'tx_civserv_organisation_or_building_mm',
+						'tx_civserv_organisation_or_building_mm', //die Original-Zuordnungstabelle!
 						'tx_civserv_building',
 						'AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
 						 AND tx_civserv_building.deleted=0 AND tx_civserv_building.hidden=0
@@ -1310,7 +1351,16 @@ class tx_civserv_pi2 extends tslib_pibase {
 				}
 				$employees[$row_counter]['or_buildings'] = implode(', ', $or_bl_names);			
 			}
+			
+			//spezielle Links zusammenbauen:
 			$employees[$row_counter]['em_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $row['em_uid'],pos_id => $row['po_uid']),1,1));
+			$employees[$row_counter]['email_code'] = "";
+			if($employees[$row_counter]['ep_email'] > ''){
+				$employees[$row_counter]['email_code'] = $this->cObj->typoLink($employees[$row_counter]['ep_email'],array(parameter => $employees[$row_counter]['ep_email'],ATagParams => 'class="email"'));
+			}else{
+				$employees[$row_counter]['email_code'] = $this->cObj->typoLink($employees[$row_counter]['em_email'],array(parameter => $employees[$row_counter]['em_email'],ATagParams => 'class="email"'));
+			}
+			
 			$row_counter++;
 		} // ende schleife über alle mitarbeiter
 		foreach($kills as $kill){
@@ -1397,7 +1447,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 						tx_civserv_employee.em_datasec,
 						tx_civserv_employee.uid as em_uid, 
 						tx_civserv_position.uid as po_uid,
-						tx_civserv_position.po_name as po_name,
+						tx_civserv_position.po_name,
+						tx_civserv_employee_em_position_mm.uid as ep_uid,
 						tx_civserv_employee_em_position_mm.ep_officehours,
 						tx_civserv_employee_em_position_mm.ep_room,
 						tx_civserv_employee_em_position_mm.ep_telephone,
@@ -2723,9 +2774,9 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	boolean		If true, a searchbox is generated (keyword search)
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
-	function employeeDetail(&$smartyEmployee,$searchBox) {
+	function employeeDetailPlus(&$smartyEmployee,$searchBox) {
 		$uid = intval($this->piVars[id]);	//SQL-Injection!!!
-		$pos_id = $this->piVars[pos_id];
+		$pos_id = intval($this->piVars[pos_id]);
 
 		//Standard query for employee details
 		$res_common = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
