@@ -37,13 +37,14 @@
 				<td>
 					{$employee.full_name}
 					<!--{if $employee.email_code > ''}--><br />{$employee.email_code}<!--{/if}-->
-					<br />({$employee.po_name})	
-					<br /><a href="{$employee.em_url}">mehr...</a>&nbsp;
+					{* <br />({$employee.po_name}) *}
+					<!--{if $employee.em_datasec == "1"}--><br /><a href="{$employee.em_url}">mehr...</a>&nbsp;<!--{/if}-->
 				</td>	
 				<td><!--{if $employee.em_image > ''}-->{$employee.em_imagecode}<!--{/if}--></td>
 				<td><!--{if $employee.em_telephone > ''}-->{$employee.em_telephone}<!--{/if}--></td>	
 				<td>
 					<!--{if $employee.or_name > ''}-->{$employee.or_name}<!--{/if}-->
+					<!--{if $employee.po_descr > ''}--> - {$employee.po_descr}<!--{/if}-->
 					<!--{if $employee.or_buildings > ''}--> ({$employee.or_buildings})<!--{/if}-->
 				</td>	
 			</tr>

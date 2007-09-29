@@ -1121,8 +1121,8 @@ input:focus, textarea:focus {
 	margin: 0;
 	padding: 0;
 	padding-bottom: 1em;
-	background-color: blue;
-	color: white;
+	background-color: red;
+	color: #fff;
 	font-size: 1.1em;
 	font-weight: bold;
 }
@@ -1143,37 +1143,8 @@ input:focus, textarea:focus {
 .tx-civserv-pi2 #centrecontent table td, 
 .tx-civserv-pi2 #centrecontent table th {
 	border: solid white 1px;
-	padding-left: 3em;
+	padding-left: 1em;
 }
-
-/*
-#extended_em_list {
-	border: solid red 1px;
-}
-
-.tableheader {
-	margin: 0;
-	padding: 0;
-	padding-bottom: 5px;
-	background-color: blue;
-}
-
-.tablerow {
-	margin: 0;
-	padding: 0;
-	padding-bottom: 5px;
-	background-color: lightyellow;
-}
-
-
-li span .em_name {
-	border: solid red 1px;
-}
-
-.em_name {
-	border: solid red 1px;
-}
-*/
 
 /* ---------------------------------------------- */
 /* ------------ end plugin extended ma list---- */
