@@ -660,7 +660,11 @@ class tx_civserv_commit {
 		$base=dirname($_SERVER['SCRIPT_FILENAME']);
 		//eliminate /typo3
 		$base=substr($base,0,strrpos($base,'/'));
-		if(file_exists($base.'/fileadmin')){ // the typo3 imp_exp-tool starts from a different script_filename	
+		// ATTENTION: the typo3 imp_exp-tool starts from a different script_filename and therefore base!
+		if(preg_match('/impexp/', $base)){
+			//do nothing! we are importing a t3d  file and would get an error if we tried to create the folders right now
+			debug('typo3 impexp feature ist running!!!');
+		}elseif(file_exists($base.'/fileadmin')){ // the typo3 imp_exp-tool starts from a different script_filename	
 			if (!file_exists($base.'/fileadmin/civserv/'.$community)){
 				t3lib_div::mkdir($base.'/fileadmin/civserv/'.$community, 0775);
 			}
@@ -682,7 +686,11 @@ class tx_civserv_commit {
 
 		$model_service_image_folder = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 		$model_service_folder = $model_service_image_folder['cf_value'];
-		if (!file_exists($base.'/'.$model_service_folder)){
+		// ATTENTION: the typo3 imp_exp-tool starts from a different script_filename and therefore base!
+		if(preg_match('/impexp/', $base)){
+			//do nothing! we are importing a t3d  file and would get an error if we tried to create the folders right now
+			debug('typo3 impexp feature ist running!!!');
+		}elseif(!file_exists($base.'/'.$model_service_folder)){
 			t3lib_div::mkdir($base.'/'.$model_service_folder, 0775);
 		}
 	}
