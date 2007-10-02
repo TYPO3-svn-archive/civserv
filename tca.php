@@ -159,9 +159,9 @@ if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
 */		
 	}
 
-debug($cm_circumstance);
-debug($cm_usergroup);
-debug($cm_organisation);
+#	debug($cm_circumstance, 'cm_circumstance');
+#	debug($cm_usergroup, 'cm_usergroup');
+#	debug($cm_organisation, 'cm_organisation');
 
 /**
  * The definition of the backend-mask and logic for the table tx_civserv_service (contenttype service)
