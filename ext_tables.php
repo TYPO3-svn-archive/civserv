@@ -122,6 +122,11 @@ $TCA['be_groups']['columns']['db_mountpoints']['config']['maxitems'] = 30;
 $TCA['be_groups']['columns']['db_mountpoints']['config']['autoSizeMax'] = 30;
 
 
+// Load TYPO3 Core Array (TCA) for sys_action 
+t3lib_div::loadTCA("sys_action");
+$TCA['sys_action']['columns']['t1_allowed_groups']['config']['size'] = 10;
+
+
 /**
 * Definition of plug-in "Virtual civil services" aka "Virtuelle Verwaltung".
 * Needed for integration in Frontend.
