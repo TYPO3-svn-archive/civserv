@@ -43,6 +43,8 @@
 * Changes: Datum, Initialen - vorgenommene Änderungen
 */
 
+
+
 class tx_civserv_user_be_msg {
 	function user_TCAform_test($PA=array(), $fobj=array()) { //adding '=array()' to signature enabels calls to this function with no parameters (happens through "displayCond" => "REC:NEW:true")
 		global $LANG;

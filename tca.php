@@ -121,7 +121,7 @@ if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
 		if ($current_id > 0){
 			$mandant_obj=t3lib_div::makeInstance('tx_civserv_mandant');
 			$mandant_conf = $mandant_obj->get_mandant_conf_all($current_id);
-			debug($mandant_conf, 'mandanten_konfiguration');
+#			debug($mandant_conf, 'mandanten_konfiguration');
 			#$mandantID = $mandant_obj->get_mandant($current_id);
 			$mandantID = $mandant_conf['cm_community_id'];
 			if ($mandantID) {
@@ -2141,7 +2141,7 @@ $TCA["tx_civserv_organisation"] = Array (
 		"or_show_supervisor" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_organisation.or_show_supervisor",
-			"displayCond" => "FIELD:or_supervisor:REQ:true",
+#			"displayCond" => "FIELD:or_supervisor:REQ:true",
 			"config" => Array (
 				"type" => "check",
 			)
@@ -2309,7 +2309,26 @@ $TCA["tx_civserv_organisation"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, or_number, or_code, or_name, or_synonym1, or_synonym2, or_synonym3, or_supervisor, or_show_supervisor, or_hours, or_telephone, or_fax, or_email, or_image, or_infopage, or_addlocation, or_addinfo;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], or_structure, or_building_to_show, or_building")
+		"0" => Array("showitem" => "	hidden;;1;;1-1-1, 
+										or_number, 
+										or_code, 
+										or_name, 
+										or_synonym1, 
+										or_synonym2, 
+										or_synonym3, 
+										or_supervisor, 
+										or_show_supervisor, 
+										or_hours, 
+										or_telephone, 
+										or_fax, 
+										or_email, 
+										or_image, 
+										or_infopage, 
+										or_addlocation, 
+										or_addinfo;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], 
+										or_structure, 
+										or_building_to_show, 
+										or_building")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")
