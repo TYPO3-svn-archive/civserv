@@ -4573,6 +4573,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	}
 	
 	function getActualPage($content, $conf) {
+		debug($conf, '$conf');
 		$this->pi_loadLL(); //or else the pi_getLL won't work!
 		if ($conf['pageid'] > '') {
 			$pageid = $conf['pageid'];

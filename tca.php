@@ -517,7 +517,7 @@ $TCA["tx_civserv_service"] = Array (
 		),
 		"sv_similar_services_PLACEHOLDER" => Array (
 			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_similar_services",
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_similar_services_PLACEHOLDER",
 			"dbField" => "sv_similar_services", //custom info passed on to $PA in userFunc
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
@@ -555,7 +555,7 @@ $TCA["tx_civserv_service"] = Array (
 		),
 		"sv_form_PLACEHOLDER" => Array (
 			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_form",
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_form_PLACEHOLDER",
 			"dbField" => "sv_form", //custom info passed on to $PA in userFunc
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
@@ -600,7 +600,7 @@ $TCA["tx_civserv_service"] = Array (
 		),
 		"sv_searchword_PLACEHOLDER" => Array (
 			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_searchword",
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_searchword_PLACEHOLDER",
 			"dbField" => "sv_searchword", //custom info passed on to $PA in userFunc
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
@@ -636,7 +636,7 @@ $TCA["tx_civserv_service"] = Array (
 		),
 		"sv_position_PLACEHOLDER" => Array (
 			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_position",
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_position_PLACEHOLDER",
 			"dbField" => "sv_position", //custom info passed on to $PA in userFunc
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
@@ -694,7 +694,7 @@ $TCA["tx_civserv_service"] = Array (
 		),
 		"sv_organisation_PLACEHOLDER" => Array (
 			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_organisation",
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_organisation_PLACEHOLDER",
 			"dbField" => "sv_organisation", //custom info passed on to $PA in userFunc
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
@@ -730,7 +730,7 @@ $TCA["tx_civserv_service"] = Array (
 		),
 		"sv_navigation_PLACEHOLDER" => Array (
 			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_navigation",
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_navigation_PLACEHOLDER",
 			"dbField" => "sv_navigation", //custom info passed on to $PA in userFunc
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
@@ -756,7 +756,7 @@ $TCA["tx_civserv_service"] = Array (
 		),
 		"sv_region_PLACEHOLDER_live" => Array (
 			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_region_live",
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_region_PLACEHOLDER_live",
 			"dbField" => "sv_region_live", //custom info passed on to $PA in userFunc, in this case its a fake field
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
@@ -1565,7 +1565,7 @@ $TCA["tx_civserv_building"] = Array (
 		),
 		"bl_floor_PLACEHOLDER" => Array (
 			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_building.bl_floor",
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_building.bl_floor_PLACEHOLDER",
 			"dbField" => "bl_floor", //custom info passed on to $PA in userFunc
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
@@ -1969,7 +1969,7 @@ $TCA["tx_civserv_employee"] = Array (
 		),
 		"em_position_PLACEHOLDER" => Array (
 			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_position",
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_employee.em_position_PLACEHOLDER",
 			"dbField" => "em_position", //custom info passed on to $PA in userFunc
 			"displayCond" => "REC:NEW:true",
 			"config" => Array (
@@ -1980,7 +1980,7 @@ $TCA["tx_civserv_employee"] = Array (
 		"em_position" => Array (
 			"exclude" => 1,
 			"adminOnly" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_position",
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_employee.em_position",
 			"displayCond" => "REC:NEW:false",
 			"config" => Array (
 				"type" => "group",
@@ -3189,7 +3189,7 @@ $TCA["tx_civserv_service_sv_position_mm"] = Array (
 		),
 		"sp_descr_PLACEHOLDER" => Array (
 			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service_sv_position_mm.sp_descr",
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service_sv_position_mm.sp_descr_PLACEHOLDER",
 			"displayCond" => "FIELD:pid:<=:0", // problem with rights for custom_ws-editors, they get no permission msg from core.
 			"dbField" => "sp_descr", //custom info passed on to $PA in userFunc
 			"config" => Array (
