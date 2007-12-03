@@ -94,7 +94,6 @@ class tx_civserv_floorbuild {
 
 		//write the building-floor-combinations back in the params-Array (which is shown in the selectorbox)
 		while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			//debug($data);
 			$params['items'][++ $i] = Array ($data['bl_name'].', '.$data['fl_descr'], $data['uid']);
 		}
 	}

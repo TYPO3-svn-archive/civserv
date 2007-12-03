@@ -396,7 +396,7 @@ function init() {
 	 * @@return	void
 	 */
 	function get_folders($startnode) {
-		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
+#		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'pid,
 			uid',

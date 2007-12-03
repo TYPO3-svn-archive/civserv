@@ -102,7 +102,7 @@ function init() {
 
 			// Gets parameters out of the p-array.
 		$this->P = t3lib_div::_GP('P');
-		#debug($this->P, 'tx_civserv_wizard_service_form_category->init: P');
+#		debug($this->P, 'tx_civserv_wizard_service_form_category->init: P');
 
 			// Find "mode"
 		$this->mode='db';
@@ -158,7 +158,7 @@ function init() {
 		}
 
 		$formFieldName = 'data['.$this->pArr[0].']['.$this->pArr[1].']['.$this->pArr[2].']';
-		#debug($formFieldName, 'wizard_form_cat->init: $formFieldName');
+#		debug($formFieldName, 'wizard_form_cat->init: $formFieldName');
 
 		    //get charset
         $charset = $GLOBALS['LANG']->charSet ? $GLOBALS['LANG']->charSet : 'iso-8859-1';
@@ -412,7 +412,7 @@ function init() {
 	 */
 	function getFormCategories()	{
 		global $LANG;
-		//$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 
 			// Gets all categories which aren't hidden or deleted out of the database.
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -446,12 +446,12 @@ function init() {
 		}
 
 		$PItemName = "&PItemName=".$this->pArr[0];
-		#debug($PItemName, '->getFormCategory: $PItemName');
+#		debug($PItemName, '->getFormCategory: $PItemName');
 
 			// Displays the first selectorbox with the categories.
 			
 		if(count($menuItems)>1){	// 1 for the dummy
-			#debug($menuItems, 'tx_civserv_wizard_service_form_category.php->getFormCategories: return wert $menuItems');
+#			debug($menuItems, 'tx_civserv_wizard_service_form_category.php->getFormCategories: return wert $menuItems');
 			return '<select name="selectedCategories" onchange="changeCategory()">'.implode('',$menuItems).'</select>';
 		}else{
 			// Baustelle!
@@ -468,14 +468,14 @@ function init() {
 	 */
 	function getForms()	{
 		global $LANG;
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$mode = (string)t3lib_div::_GP('mode');
 		$this->searchitem = $this->make_clean($this->searchitem);
 
 			// Gets all forms with the selected category_uid out of the database.
 			// Checks also if forms and categories aren't hidden or deleted.
-		#debug($this->category_uid, 'tx_civserv_wizard_service_form_category.php->getForms: $this->category_uid');
+#		debug($this->category_uid, 'tx_civserv_wizard_service_form_category.php->getForms: $this->category_uid');
 
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 				'tx_civserv_form.uid,

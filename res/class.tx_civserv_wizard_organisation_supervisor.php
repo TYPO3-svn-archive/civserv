@@ -133,7 +133,7 @@ function init() {
 		$formFieldName = 'data['.$this->pArr[0].']['.$this->pArr[1].']['.$this->pArr[2].']';
 
 		    //get charset
-            t3lib_div::debug($LANG->getLL('tx_civserv_wizard_organisation_supervisor.warning_msg_1'));
+#  			t3lib_div::debug($LANG->getLL('tx_civserv_wizard_organisation_supervisor.warning_msg_1'));
         $charset = $GLOBALS['LANG']->charSet ? $GLOBALS['LANG']->charSet : 'iso-8859-1';
         
 			// Draw the header.
@@ -401,7 +401,7 @@ function init() {
 	 */
 	function getSupervisors($letter)	{
 		global $LANG;
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$this->searchitem = $this->make_clean($this->searchitem);
 

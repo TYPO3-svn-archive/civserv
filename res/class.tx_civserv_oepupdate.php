@@ -167,7 +167,7 @@ class tx_civserv_oepupdate {
 	*/
 	function ep_room(&$params, &$pObj) {
 		
-		//$GLOBALS['TYPO3_DB']->debugOutput=true;
+#		$GLOBALS['TYPO3_DB']->debugOutput=true;
 	
 		//The Pid ist now extracted from the cachedTSconfig. This seems to be the best way!
 		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);

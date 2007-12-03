@@ -3227,7 +3227,7 @@ $TCA["tx_civserv_service_sv_position_mm"] = Array (
 	)
 );
 
-#debug($TCA["tx_civserv_service_sv_position_mm"]['columns'], 'TCA tx_civserv_service_sv_position_mm->columns');
+#	debug($TCA["tx_civserv_service_sv_position_mm"]['columns'], 'TCA tx_civserv_service_sv_position_mm->columns');
 
 if (t3lib_div::int_from_ver(TYPO3_version) < 4000000) {
 	$TCA['tx_civserv_service_sv_position_mm']['columns']['sp_descr_PLACEHOLDER']['displayCond']="FIELD:pid:<:-1"; //make sure its never displayed in typo3 version <= 3.8.1

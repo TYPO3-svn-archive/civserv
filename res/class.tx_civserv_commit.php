@@ -178,17 +178,17 @@ class tx_civserv_commit {
 		// this function ist called for every (?) single table in the whole DB whenever a folder in the pagetree is selected!
 		//all workspace: LIVE and CUSTOM
 		if($table == 'tx_civserv_service_sv_position_mm'){
-			#debug($queryParts, '$queryParts am Anfang');
-			#debug($table, '$table');
-			#debug($id, '$id');
-			#debug($addWhere, '$addWhere');
-			#debug($fieldList, '$fieldList');
-			#debug($_params, '$_params');
+#			debug($queryParts, '$queryParts am Anfang');
+#			debug($table, '$table');
+#			debug($id, '$id');
+#			debug($addWhere, '$addWhere');
+#			debug($fieldList, '$fieldList');
+#			debug($_params, '$_params');
 			
 			$queryParts['ORDERBY']=' tx_civserv_service_sv_position_mm.sp_label'; 
 			$queryParts['WHERE'].=' AND deleted=0'; //have to add this explicitely for mm-tables!!! 
 			//standard typo3: mm_tables have no 'deleted'-field and are never displayed at all
-			#debug($queryParts, '$queryParts am Ende erstens');
+#			debug($queryParts, '$queryParts am Ende erstens');
 		}	
 		// in CUSTOM workspaces we want to see the records relating to the newest service-version as well as the
 		// records relating to the actual online services.
@@ -225,7 +225,7 @@ class tx_civserv_commit {
 				$queryParts['WHERE']='pid in (0, -1, '.$onlinepid.')'; 
 				$queryParts['WHERE'].=' AND uid_local in ('.implode(',',$sv_uids).')';
 			}
-			#debug($queryParts, '$queryParts am Ende zweitens');
+#			debug($queryParts, '$queryParts am Ende zweitens');
 		}// CUSTOM WORKSPACE
 	}
 	
@@ -233,12 +233,12 @@ class tx_civserv_commit {
 	/* this function has become obsolete by the proposal of Michael Stucki, see http://bugs.typo3.org/view.php?id=4361 */
 	function remakeQueryArray($table, $id, &$pid, $fieldList, &$addWhere, &$orderby){
 	
-		#debug($table, '$table');
-		#debug($id, '$id');
-		#debug($pid, '$pid');
-		#debug($fieldList, '$fieldList');
-		#debug($addWhere, '$addWhere');
-		#debug($orderby, '$orderby');
+#			debug($table, '$table');
+#			debug($id, '$id');
+#			debug($pid, '$pid');
+#			debug($fieldList, '$fieldList');
+#			debug($addWhere, '$addWhere');
+#			debug($orderby, '$orderby');
 	
 		//all workspace: LIVE and CUSTOM
 		if($table == 'tx_civserv_service_sv_position_mm'){
@@ -387,9 +387,9 @@ class tx_civserv_commit {
 	function processCmdmap_preProcess($command, &$table, $id, $value, &$pObj){
 		// $id						contains uid of actual online service in LIVE version
 		// $value['swap_with']		contains uid of the versioned offline-service in custom workspace, the one that ist beeing published
-		#debug($table, 'commit->processCmdmap_preProcess table');
-		#debug($command, 'command');
-		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
+#		debug($table, 'commit->processCmdmap_preProcess table');
+#		debug($command, 'command');
+#		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
 		if (array_key_exists($table,$this->tables) && $table =='tx_civserv_service' && $command == 'delete'){
 			// apparently 'deleted = 1' does not suffice to eleminate service-position records from the BE?
 			// the remake-query-array-hook below is needed to make sure they are not listed in BE!
@@ -397,13 +397,13 @@ class tx_civserv_commit {
 			$sub_result = $GLOBALS['TYPO3_DB']->exec_UPDATEquery(' tx_civserv_service_sv_position_mm','uid_local = '.$id,$update_row);
 		}
 		if (array_key_exists($table,$this->tables) && $table =='tx_civserv_service' && $command == 'version'){
-			#debug($table, 'tabelle');
-			#debug($value, 'value');
+#		debug($table, 'tabelle');
+#		debug($value, 'value');
 			switch($value['action']){
 				case 'setStage':
 				break; //not cared for yet
 				case 'swap':
-					#debug('case swap starting now!');
+#					debug('case swap starting now!');
 					$pid=0;
 					$res_pid=$GLOBALS['TYPO3_DB']->exec_SELECTquery('pid',$table,'uid = '.$id);
 					if($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_pid)){
@@ -533,7 +533,7 @@ class tx_civserv_commit {
 		if ($GLOBALS['BE_USER']->workspace==0){ //only do this in the live workspace!!!
 			// get all MM tables, which could be concerned by the typo3 MM-entrie problem
 			$mmTables = explode(',',$this->tables[$table]);
-			$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
+#			$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
 			// for all concerned MM-tables save the concerned entries at the end of the MM-tables and backup the origin uid in the field uid_temp
 			foreach($mmTables as $mmTable){
 				//only get the entries, which are selected in the actual backendmask for the contenttype "service". So deleted ones are not listed here
@@ -663,7 +663,7 @@ class tx_civserv_commit {
 		// ATTENTION: the typo3 imp_exp-tool starts from a different script_filename and therefore base!
 		if(preg_match('/impexp/', $base)){
 			//do nothing! we are importing a t3d  file and would get an error if we tried to create the folders right now
-			debug('typo3 impexp feature ist running!!!');
+#			debug('typo3 impexp feature ist running!!!');
 		}elseif(file_exists($base.'/fileadmin')){ // the typo3 imp_exp-tool starts from a different script_filename	
 			if (!file_exists($base.'/fileadmin/civserv/'.$community)){
 				t3lib_div::mkdir($base.'/fileadmin/civserv/'.$community, 0775);
@@ -689,7 +689,7 @@ class tx_civserv_commit {
 		// ATTENTION: the typo3 imp_exp-tool starts from a different script_filename and therefore base!
 		if(preg_match('/impexp/', $base)){
 			//do nothing! we are importing a t3d  file and would get an error if we tried to create the folders right now
-			debug('typo3 impexp feature ist running!!!');
+#			debug('typo3 impexp feature ist running!!!');
 		}elseif(!file_exists($base.'/'.$model_service_folder)){
 			t3lib_div::mkdir($base.'/'.$model_service_folder, 0775);
 		}

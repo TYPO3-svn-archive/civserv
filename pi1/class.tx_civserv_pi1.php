@@ -1944,13 +1944,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 		for($i = 0; $i < sizeof($alphabet); $i++)	{
 			$actual = (strtoupper($this->piVars['char']) == $alphabet[$i]);
 			if($occuringInitials && in_array($alphabet[$i],$occuringInitials))	{
-			//hier knallts im Memmingen......
 			// Warning: sprintf(): Too few arguments in /html/typo3conf/ext/civserv/pi1/class.tx_civserv_pi1.php on line 1941
 
 				$test = sprintf('%s' . $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . '%s '.$this->conf['abcSpacer'].' ',
 						$actual?'<strong>':'',
 						$actual?'</strong>':'');
-				debug($test);				
+#				debug($test);				
 
 				$abcBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . '%s '.$this->conf['abcSpacer'].' ',
 						$actual?'<strong>':'',
@@ -3568,10 +3567,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 				//todo: check possibilities of header injection
 				if(!empty($email)){		// email given in contact-form is correct
 					$headers = "From: ".$email."\r\nReply-To: ".$email."\r\n";
-					debug($headers, 'email aus kontaktform');
+#					debug($headers, 'email aus kontaktform');
 				}else{ // set email retrieved via hoster_get_email
 					$headers = "From: ".$email_address."\r\nReply-To: ".$email_address."\r\n";
-					debug($headers, 'email des hosters');
+#					debug($headers, 'email des hosters');
 				}
 
 				t3lib_div::plainMailEncoded($email_address, $subject, $body, $headers);
@@ -4034,7 +4033,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	string		HTML-Code for including the image in a page
 	 */
 	function getImageCode($image,$path,$conf,$altText)	{
-#		debug($conf, '$conf');
 		$conf['file'] = $path . $image;
 		// for the online_service_list we want to display thumbnails of the service images!
 		if($this->piVars['mode']=='online_services'){
@@ -4573,7 +4571,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 	}
 	
 	function getActualPage($content, $conf) {
-		debug($conf, '$conf');
 		$this->pi_loadLL(); //or else the pi_getLL won't work!
 		if ($conf['pageid'] > '') {
 			$pageid = $conf['pageid'];

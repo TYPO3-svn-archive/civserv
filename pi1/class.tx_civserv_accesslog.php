@@ -55,7 +55,7 @@
 class tx_civserv_accesslog {
 
 	function update_log($service_uid, $log_interval, $ip){
-		//$GLOBALS['TYPO3_DB']->debugOutput=TRUE; // Debugging - only on test-sites!
+#		$GLOBALS['TYPO3_DB']->debugOutput=TRUE; // Debugging - only on test-sites!
 		//$today = getdate();
 		$lock_interval = 10;
 		$lock_interval = $lock_interval * 60;

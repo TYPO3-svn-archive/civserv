@@ -313,7 +313,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 			if (empty($comment)) $checked = false;
 		}
 
-		//$GLOBALS['TYPO3_DB']->debugOutput = TRUE; //debugging - only in test-sites!
+#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE; //debugging - only in test-sites!
 
 		if ((empty($submit) || (!$checked)) && empty($abort)){
 			if ($responsible=="both") $responsible="one";
@@ -612,7 +612,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 		';
 
 			//Query to get image_folder for model srevices
-		//$GLOBALS['TYPO3_DB']->debugOutput=true; //debugging only in test-sites
+#		$GLOBALS['TYPO3_DB']->debugOutput=true; //debugging only in test-sites
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'cf_value',			 							// SELECT ...
 			'tx_civserv_configuration',		// FROM ...
@@ -747,7 +747,7 @@ class tx_civserv_ms_workflow extends t3lib_SCbase {
 				</tr>
 		';
 		//Query to get all single searchwords for the model service and display them
-		$GLOBALS['TYPO3_DB']->debugOutput=true;
+#		$GLOBALS['TYPO3_DB']->debugOutput=true;
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'sw_search_word',			 							// SELECT ...
 			'tx_civserv_search_word',		// FROM ...
