@@ -665,6 +665,9 @@ class tx_civserv_commit {
 			//do nothing! we are importing a t3d  file and would get an error if we tried to create the folders right now
 #			debug('typo3 impexp feature ist running!!!');
 		}elseif(file_exists($base.'/fileadmin')){ // the typo3 imp_exp-tool starts from a different script_filename	
+			if (!file_exists($base.'/fileadmin/civserv')){
+				t3lib_div::mkdir($base.'/fileadmin/civserv/', 0775);
+			}
 			if (!file_exists($base.'/fileadmin/civserv/'.$community)){
 				t3lib_div::mkdir($base.'/fileadmin/civserv/'.$community, 0775);
 			}
