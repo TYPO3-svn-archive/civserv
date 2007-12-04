@@ -77,6 +77,7 @@ plugin.tx_civserv_pi1 {
 	useCustomLinks_Services={$useCustomLinks_Services}
 	useCustomLinks_Organisations={$useCustomLinks_Organisations}
 	
+	orcodeBarAtEmployeeList = {$orcodeBarAtEmployeeList}
 
 	abcBarAtServiceList = {$abcBarAtServiceList}
 	abcBarAtCircumstance = {$abcBarAtCircumstance}
@@ -167,7 +168,7 @@ plugin.tx_civserv_pi2 {
 	tpl_organisation_list = {$tpl_organisation_list}
 	tpl_organisation_tree = {$tpl_organisation_tree}
 	tpl_service = {$tpl_service}
-	tpl_employee =  typo3conf/ext/civserv/templates/employee_plus.tpl.html
+	tpl_employee =  {$tpl_employee}
 	tpl_circumstance = {$tpl_circumstance}
 	tpl_usergroup = {$tpl_usergroup}
 	tpl_organisation = {$tpl_organisation} 
@@ -182,9 +183,11 @@ plugin.tx_civserv_pi2 {
 	tpl_legal_notice = {$tpl_legal_notice}
 	tpl_right_searchbox = {$tpl_right_searchbox}
 	tpl_right_top = {$tpl_right_top}
-	tpl_employee_list = typo3conf/ext/civserv/templates/employee_list_plus.tpl.html
+	tpl_employee_list ={$tpl_employee_list}
 	tpl_none = {tpl_none}
-
+	
+	tpl_employee_list_az = {$tpl_employee_list_az}
+	tpl_employee_list_orcode = {$tpl_employee_list_orcode}
 	
 
 	folder_services = {$folder_services}

@@ -1,4 +1,4 @@
-# Template path definition
+# Template path definition (Standard-Templates, pi1)
 tpl_service_list = typo3conf/ext/civserv/templates/service_list.tpl.html
 tpl_online_sv_list = typo3conf/ext/civserv/templates/online_sv_list.tpl.html
 tpl_circumstance_tree = typo3conf/ext/civserv/templates/circumstance_tree.tpl.html
@@ -23,6 +23,17 @@ tpl_right_searchbox = typo3conf/ext/civserv/templates/right_searchbox.tpl.html
 tpl_right_top = typo3conf/ext/civserv/templates/right_top.tpl.html
 tpl_employee_list = typo3conf/ext/civserv/templates/employee_list.tpl.html
 tpl_none = typo3conf/ext/civserv/templates/none.tpl.html
+
+# Templates for extended employee_list (pi2)
+tpl_employee_list_az = typo3conf/ext/civserv/templates/employee_list_az.tpl.html
+tpl_employee_list_orcode = typo3conf/ext/civserv/templates/employee_list_orcode.tpl.html
+
+
+
+
+
+
+
 
 
 
@@ -109,6 +120,9 @@ displayOrganisationCode=0
 # convert typolinks into human readable service links - works only with appropriate rewrite rules!
 useCustomLinks_Services=0
 useCustomLinks_Organisations=0
+
+# for mode 'orcode' in extended employeelist
+orcodeBarAtEmployeeList = 1
 
 
 # Defines at which sites the abcBar will be shown
