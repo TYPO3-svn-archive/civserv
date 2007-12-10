@@ -2569,12 +2569,14 @@ class tx_civserv_pi2 extends tslib_pibase {
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array('mode' => 'organisation_list'),1,1,$pageid),
 								'ITEM_STATE' => (($this->piVars['mode']=='organisation_list') || ($this->piVars['mode']=='organisation_list'))?'ACT':'NO');
 		}
+		*/
 		if ($conf['menuEmployeeList']) {
 			$menuArray['menuEmployeeList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.employee_list','Employees A - Z'),
-								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array('mode' => 'employee_list'),1,1,$pageid),
-								'ITEM_STATE' => ($this->piVars['mode']=='employee_list')?'ACT':'NO');
+								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array('mode' => 'employee_list_az'),1,1,$pageid),
+								'ITEM_STATE' => ($this->piVars['mode']=='employee_list_az') ? 'ACT' : 'NO');
 		}
+		/*
 		if ($conf['menuFormList']) {
 			$menuArray['menuFormList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.form_list','Forms'),
