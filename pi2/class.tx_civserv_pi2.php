@@ -699,7 +699,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 						tx_civserv_position, 
 						tx_civserv_employee_em_position_mm 
 					where 
-						tx_civserv_employee.pid IN (' . $this->community[pidlist] . ') AND 
+						tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') AND 
 						tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
 						tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
 						tx_civserv_employee.deleted=0 AND
@@ -735,7 +735,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 						tx_civserv_position, 
 						tx_civserv_employee_em_position_mm 
 					where 
-						tx_civserv_employee.pid IN (' . $this->community[pidlist] . ') '
+						tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') '
 					    . ($regexp?'AND em_name REGEXP "' . $regexp . '"':'') . 'AND 
 						tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
 						tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
@@ -779,12 +779,12 @@ class tx_civserv_pi2 extends tslib_pibase {
 						tx_civserv_employee_em_position_mm,
 						tx_civserv_organisation,
 						tx_civserv_position_po_organisation_mm';
-			$conditions =   'tx_civserv_employee.pid IN (' . $this->community[pidlist] . ') AND 
+			$conditions =   'tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') AND 
 							tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
 							tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
 							tx_civserv_position_po_organisation_mm.uid_local = tx_civserv_position.uid AND
 							tx_civserv_position_po_organisation_mm.uid_foreign = tx_civserv_organisation.uid AND '.
-							($orcode > '' && $orcode != 'all' ? 'tx_civserv_organisation.or_code = \''.$orcode.'\' AND ' : '').
+							($orcode > '' && $orcode != 'all' ? 'tx_civserv_organisation.or_code in (\''.$orcode.'\', \''.str_replace('_', ' ', $orcode).'\') AND ' : '').
 						   'tx_civserv_organisation.deleted = 0 AND
 							tx_civserv_organisation.hidden = 0 AND						
 							tx_civserv_position.deleted = 0 AND
@@ -935,7 +935,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 
 
-
+	
 	function makeOrCodeBar($query, $text="", $additional_mode = "") {
 		
 		// get all organisations which have any positions
@@ -943,50 +943,58 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 		$row_counter = 0;
 		
-
+		// the resultset contains any organisation, that has a relation to one or more positions
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
 #			debug($row);
-			$namefield_arr = $row['or_code'];
-			
-#			$orcode = str_replace(array('Ä','Ö','Ü'), array('A','O','U'), strtoupper($namefield_arr{0}));
-#			$occuringCodes[] = $orcode;
-
-
-#			$occuringCodes[] = ucfirst($namefield_arr);
-			$occuringCodes[] = strtoupper($namefield_arr);
-
-#			debug($occuringCodes, 'occuringCodes');
-			$row_counter++;
+			if($row['or_code'] > ''){
+				$namefield_arr = $row['or_code'];
+				
+	#			$orcode = str_replace(array('Ä','Ö','Ü'), array('A','O','U'), strtoupper($namefield_arr{0}));
+	#			$occuringCodes[] = $orcode;
+	
+	
+	#			$occuringCodes[] = ucfirst($namefield_arr);
+				$occuringCodes[] = (string)str_replace(' ', '_', strtoupper($namefield_arr));
+	
+	#			debug($occuringCodes, 'occuringCodes');
+				$row_counter++;
+			}else{
+				//do nothing
+			}
 		}
 		if ($occuringCodes ) $occuringCodes = array_unique($occuringCodes);
 		
 #		debug($occuringCodes, 'occuringCodes unique');
 
-		// get all organisations which exist
+		// get all organisations which exist (no matter if they do or don't harbour any positions)
 		$orCodeArray = array();
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'or_code',
 			'tx_civserv_organisation',
-			'tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
+			'tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ') 
+			 AND tx_civserv_organisation.deleted = 0 
+			 AND tx_civserv_organisation.hidden = 0
 			 AND tx_civserv_organisation.or_code > \'\'',
 			'',
 			'or_code',
 			'');
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-#			$orCodeArray[] = ucfirst($row['or_code']);
-			$orCodeArray[] = strtoupper($row['or_code']);
+			$orCodeArray[] = str_replace(' ', '_', strtoupper($row['or_code']));
 		}
-#		debug($orCodeArray, 'orCodeArray');	
+		debug($orCodeArray, 'orCodeArray');	
 
 		// build a string with the links to the orcode-sites
 		$orcodeBar =  '<p id="orcodebar">' . "\n\t";
 		for($i = 0; $i < sizeof($orCodeArray); $i++)	{
 #			debug($this->piVars['orcode'], 'pivars orcode');
 #			debug($orCodeArray[$i], '$orCodeArray[$i]');
-			$actual = (strtoupper($this->piVars['orcode']) == strtoupper($orCodeArray[$i])); //flag true or false
+			// === !!! or else will take 001 and 01 for equal....
+			$actual = (strtoupper($this->piVars['orcode']) === strtoupper($orCodeArray[$i])); //flag, true or false
 #			debug($actual, '$actual');
-			if ($occuringCodes && in_array($orCodeArray[$i], $occuringCodes))	{
+			if ($occuringCodes && in_array((string)$orCodeArray[$i], $occuringCodes, true)){ //true for check on data-type string! or else will set '001' and '01' equal
 #				debug('match');
+				debug($orCodeArray[$i]);
+
 				$orcodeBar .= sprintf(	'%s' . 
 										$this->pi_linkTP_keepPIvars(
 													$this->replace_umlauts($orCodeArray[$i]), 
