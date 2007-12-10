@@ -52,39 +52,9 @@ require_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_c
 */
 class tx_civserv_miscupdate {
 	
-	/**
-	* Initializes an update of the PID to show it right in the tree structure.
-	* All mm-entries are updated to the corresponding employee's pid
-	*
-	* @param	string		$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API
-	* @return	void
-	*/
-	function update_pid($params){
-		if (is_array($params) && ($params['table']== 'tx_civserv_employee' || $params['table']=='tx_civserv_employee_em_position_mm')) {		
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_civserv_employee_em_position_mm.uid, tx_civserv_employee.pid',	//SELECT
-			'tx_civserv_employee', 												//LOCAL_TABLE
-			'tx_civserv_employee_em_position_mm', 								//MM_TABLE
-			'', 																//foreign_table
-			'', 																//whereClause
-			'', 																//groupBy
-			'', 																//orderBy
-			'');																//limit
-			
-			$liste="";
-			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-					'tx_civserv_employee_em_position_mm', 
-					'uid = '.$GLOBALS['TYPO3_DB']->quoteStr($row['uid'], 
-					'tx_civserv_employee_em_position_mm'), array ("pid" => $row['pid'])
-					);
-				$liste.=$row['uid'].", ";
-			}
-			
-		}
-	}
 	
 	/**
+	* FUNKTIONIRT NICHT!!!!
 	* Updates the label of all employee-position-relations to get a speaking name for mm-relation-entries
 	* This is a workaround which is needed in Typo3 at the moment because the labels of a record (defined in ext_tables.php)
 	* can only consist of attributes in the same record out of the same table and can't be resolved out of foreign-relations
@@ -92,149 +62,61 @@ class tx_civserv_miscupdate {
 	* @param	string		$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API
 	* @return	void
 	*/
-	function update_label($params){
+	function update_orcode($params){
 		// experimental: make function faster by including $params['uid'] in where-clause - if available i.e. uid != 'NEW12345'
-		// ATTENTION: this only makes sense in combination with a displaycond on tx_civserv_employee in TCA!!!
-		if (is_array($params) && ($params['table']== 'tx_civserv_employee' || $params['table']=='tx_civserv_employee_em_position_mm')) {	
-			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-				'tx_civserv_employee_em_position_mm.uid, 
-				 tx_civserv_employee.em_name, 
-				 tx_civserv_employee.em_firstname, 
-				 tx_civserv_position.po_name ',		// SELECT
-				'tx_civserv_employee', 				// local table
-				'tx_civserv_employee_em_position_mm',	// mm table
-				'tx_civserv_position', 				// foreign table
-				(substr($params['uid'],0,3)!='NEW')?
-					($params['table']=='tx_civserv_employee_em_position_mm')?
-						'AND tx_civserv_employee_em_position_mm.uid='.$GLOBALS['TYPO3_DB']->quoteStr($params['uid'], 'tx_civserv_employee_em_position_mm') :
-						'AND tx_civserv_employee.uid='.$GLOBALS['TYPO3_DB']->quoteStr($params['uid'], 'tx_civserv_employee')			// where
-				: '',	
-				'', 
-				'', 
-				'');
-			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-					'tx_civserv_employee_em_position_mm', 	// update table
-					'uid = '.$GLOBALS['TYPO3_DB']->quoteStr($row['uid'], 'tx_civserv_employee_em_position_mm'),  // where
-					array ("ep_label" => $row['em_name'].', '.$row['em_firstname'].' ('.$row['po_name'].')')	// set... (array)
-				);
-			}
-		}
-		#if (is_array($params) && ($params['table']== 'tx_civserv_room' || $params['table']=='tx_civserv_employee_em_position_mm')) {	
-		if (is_array($params) && ($params['table']== 'tx_civserv_room')) {	
-			$where= 'tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid 
-				 AND tx_civserv_building_bl_floor_mm.uid_local = tx_civserv_building.uid 
-				 AND tx_civserv_building_bl_floor_mm.uid_foreign = tx_civserv_floor.uid 
-				 AND tx_civserv_building_bl_floor_mm.deleted=0 
-				 AND tx_civserv_building_bl_floor_mm.hidden=0 ';
-			//make it faster by changing just the room in question: uncomment following line:	 
-			#$where.= (substr($params['uid'],0,3)!='NEW') ? 'AND tx_civserv_room.uid = '.$GLOBALS['TYPO3_DB']->quoteStr($params['uid'], 'tx_civserv_room') : '';
-		
+		// ATTENTION: this only makes sense in combination with a displaycond on tx_civserv_organisation in TCA!!!
+		if (is_array($params) && ($params['table']== 'tx_civserv_organisation')) {	
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_civserv_room.pid, 
-				 tx_civserv_room.uid uid, 
-				 tx_civserv_room.ro_name ro_name, 
-				 tx_civserv_building.bl_name bl_name, 
-				 tx_civserv_floor.fl_descr fl_descr',			// SELECT
-				'tx_civserv_room, 
-				 tx_civserv_building, 
-				 tx_civserv_floor, 
-				 tx_civserv_building_bl_floor_mm',				// FROM
-				 $where,										// WHERE
-				'',												// GROUP_BY
-				'bl_name, fl_descr, ro_name', 					// ORDER BY
-				'' 												// LIMIT
-			);
-			
-			while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				$GLOBALS['TYPO3_DB']->exec_UPDATEquery(		
-					'tx_civserv_room',
-					'uid = '.$GLOBALS['TYPO3_DB']->quoteStr($data['uid'], 'tx_civserv_room'),  // where
-					array ("rbf_label" => $data['ro_name'].' ('.$data['bl_name'].', '.$data['fl_descr'].')')	// set... (array)
+				'tx_civserv_organisation.uid,
+				 tx_civserv_organisation.or_code',		// SELECT
+				'tx_civserv_organisation', 				// FROM
+				'',										// WHERE
+				'', 									// Group by
+				'', 									// Order by
+				''										// limit
+				);
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				debug($this->replace_umlauts($row['or_code']), 'hömm???');
+				$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+					'tx_civserv_organisation', 	// update table
+					'uid = '.$GLOBALS['TYPO3_DB']->quoteStr($row['uid'], 'tx_civserv_organisation'),  // where
+					array ("or_code" => $this->replace_umlauts($row['or_code']))	// set... (array)
 				);
 			}
 		}
-	}
+	}//end function update_orcode
 	
-	/**
-	* Shows building and floor in the selectorbox for each room in the Employee-Position-Relationship (this version of
-	* Employee-Position-Relationship is a real entity and thus a faked MM-Relation.) Only rooms which have an associated Building-Floor-Relationship
-	* are shown.  (column 'ep_room' in TCA)
-	*
-	* @param	string		$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API
-	* @param	string		$pObj is a reference to the calling object
-	* @return	void
-	*/
-	function ep_room(&$params, &$pObj) {
+	 /******************************
+	 *
+	 * Functions for Custom-Links, borrowed from Frontend-Classes....
+	 *
+	 *******************************/
+	function replace_umlauts($string){
+		// remove all kinds of umlauts
+		debug($string);
+		$umlaute = Array("/ä/","/ö/","/ü/","/Ä/","/Ö/","/Ü/","/ß/", "/é/"); //should use hexadecimal-code for é à etc????
+		$replace = Array("ae","oe","ue","Ae","Oe","Ue","ss", "e");
+		$string = preg_replace($umlaute, $replace, $string);
 		
-#		$GLOBALS['TYPO3_DB']->debugOutput=true;
-	
-		//The Pid ist now extracted from the cachedTSconfig. This seems to be the best way!
-		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
+		//eliminate:
+		$string=str_replace(".", "", $string);			// 'Bücherei Zweigstelle Wolbecker Str.'				--> buecherei_zweigstelle_wolbecker_str.html
+		$string=str_replace(" - ", "-", $string);		// 'La Vie - Begegnungszentrum Gievenbeck'				--> la_vie-begegnungszentrum_gievenbeck.html
+		$string=str_replace("- ", "-", $string);		// 'Veterinär- und Lebensmittel...'						--> veterinaer-und_lebensmittel.html
+		$string=str_replace("-, ", " ", $string);		// 'Amt für Stadt-, Verkehrs- und Parkplatzplanung'		--> amt_fuer_stadt_verkehrs_und_parkplatzplanung.html
+		$string=str_replace(",", "", $string);			// 'Ich, du, Müllers's Kuh'								--> ich_du_muellers_kuh.html
+		$string=str_replace(": ", " ", $string);		// 'Gesundheitsamt: Therapie und Hilfe sofort'			--> gesundheitsamt_therapie_und_hilfe_sofort.html
 
-		$admin = t3lib_div::makeInstance('tx_civserv_mandant');
-		
-		$uidAdministration = $admin->get_path($pid,0);
-		
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_civserv_room.pid, tx_civserv_room.uid uid, tx_civserv_room.ro_name ro_name, tx_civserv_building.bl_name bl_name, tx_civserv_floor.fl_descr fl_descr',	// SELECT
-			'tx_civserv_room, tx_civserv_building, tx_civserv_floor, tx_civserv_building_bl_floor_mm',	// FROM
-			'tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid AND tx_civserv_building_bl_floor_mm.uid_local = tx_civserv_building.uid AND tx_civserv_building_bl_floor_mm.uid_foreign = tx_civserv_floor.uid AND tx_civserv_building_bl_floor_mm.deleted=0 AND !tx_civserv_building_bl_floor_mm.hidden',	// WHERE
-			'',	// GROUP_BY
-			'', // ORDER BY
-			'' // LIMIT
-		);
-		
-		while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			if ($admin->get_path($data['pid'],0)==$uidAdministration)		
-				$params['items'][++ $i] = Array ($data['ro_name'].' ('.$data['bl_name'].', '.$data['fl_descr'].')', $data['uid']);
-		
-		}
-	}
+		//make blanks:
+		$string=str_replace("+", " ", $string);			// 'Wohn + Stadtbau'
+		$string=str_replace("&", " ", $string);			// 'Ich & Ich'
+		$string=str_replace("/", " ", $string);			// 'Feuerwehr/Rettungsdienst'
+		$string=str_replace("\\", " ", $string);		// 'Eins\Zwei\Drei'
+		return $string;
+	}//end function replace_umlauts
 	
-	/**
-	* Shows building and floor in the selectorbox for each room in the Employee-Position-Relationship (this version of
-	* Employee-Position-Relationship is a real MM-Relation and thus a faked entity.) Only rooms which have an associated Building-Floor-Relationship
-	* are shown. (column 'ep_room' in TCA)
-	*
-	* @param	string		$params are parameters sent along to alt_doc.php. This requires a much more details description which you must seek in Inside TYPO3s documentation API
-	* @param	string		$pObj is a reference to the calling object
-	* @return	void
-	*/
-	function ep_room2(&$params, &$pObj) {
-		//The Pid ist now extracted from the cachedTSconfig. This seems to be the best way!
-		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
-
-		$admin = t3lib_div::makeInstance('tx_civserv_mandant');
-		
-		if ($pid > 0) $uidAdministration = $admin->get_mandant($pid);
-		
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_civserv_room.pid, 
-				 tx_civserv_room.uid uid, 
-				 tx_civserv_room.ro_name ro_name, 
-				 tx_civserv_building.bl_name bl_name, 
-				 tx_civserv_floor.fl_descr fl_descr',	// SELECT
-				'tx_civserv_room, 
-				 tx_civserv_building, 
-				 tx_civserv_floor, 
-				 tx_civserv_building_bl_floor_mm',	// FROM
-				'tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid 
-				 AND tx_civserv_building_bl_floor_mm.uid_local = tx_civserv_building.uid 
-				 AND tx_civserv_building_bl_floor_mm.uid_foreign = tx_civserv_floor.uid 
-				 AND tx_civserv_building_bl_floor_mm.deleted=0 
-				 AND tx_civserv_building_bl_floor_mm.hidden=0',	// WHERE
-				'',	// GROUP_BY
-				'bl_name, fl_descr, ro_name', // ORDER BY
-				'' // LIMIT
-		);
-		
-		while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			if ($admin->get_mandant($data['pid'])==$uidAdministration)		
-				$params['items'][++ $i] = Array ($data['ro_name'].' ('.$data['bl_name'].', '.$data['fl_descr'].')', $data['uid']);
-		}
-	}
-}
+	
+	
+}//end class	
 
 /**
 * Definition of class (needed for extension)

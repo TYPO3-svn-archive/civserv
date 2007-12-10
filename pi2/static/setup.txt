@@ -2,45 +2,7 @@
 config.language = de
 
 
-# ************************************* #
-# ********** Define left menu ********* #
-# ************************************* #
 
-leftmenu = HMENU
-leftmenu {
-	special = userfunction
-	special {
-		pageid = {$pageid}
-		fulltext_search_id = {$fulltext_search_id}
-		alternative_page_id = {$alternative_page_id}
-		menuServiceList = {$menuServiceList}
-		menuCircumstanceTree = {$menuCircumstanceTree}
-		menuUsergroupTree = {$menuUsergroupTree}
-		menuOrganisationTree = {$menuOrganisationTree}
-		menuOrganisationList = {$menuOrganisationList}
-		menuEmployeeList = {$menuEmployeeList}
-		menuFormList = {$menuFormList}
-		menuTop15 = {$menuTop15}
-		menuOnlineServices = {$menuOnlineServices}
-		userFunc = tx_civserv_pi2->makeMenuArray
-	}
-	stdWrap.wrap = <div id="leftmenu"> | </div>
-	1 = TMENU
-    1.noBlur = 1
-	1.wrap = <ul class="level1"> | </ul>
-	1.NO {
-		allWrap = <li> | </li>
-		stdWrap.htmlSpecialChars = 1
-	}
-	1.ACT = 1
-	1.ACT {
-		allWrap =<li> | </li>
-		stdWrap.htmlSpecialChars = 1
-		ATagParams = class="active"
-	}
-}
-		
-		
 		
 # ************************************* #
 # ********** Define choice link ********* #
@@ -120,7 +82,10 @@ page.10 {
 	marks.CONTENT = CONTENT
 	marks.CONTENT.table= tt_content
 	
-	marks.MENU < leftmenu
+	
+	# leftmenu is not part of pi2
+	marks.MENU >
+
 	
 	marks.COMMUNITY = USER
 	marks.COMMUNITY.community_id = {$community_id}

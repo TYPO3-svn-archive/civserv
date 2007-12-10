@@ -186,10 +186,9 @@ plugin.tx_civserv_pi2 {
 	tpl_employee_list ={$tpl_employee_list}
 	tpl_none = {tpl_none}
 	
-	tpl_employee_list_az = {$tpl_employee_list_az}
-	tpl_employee_list_orcode = {$tpl_employee_list_orcode}
+	tpl_employee_list_plus = {$tpl_employee_list_plus}
+	tpl_organisation_plus = {$tpl_organisation_plus}
 	
-
 	folder_services = {$folder_services}
 	folder_organisations = {$folder_organisations}
 	folder_employees = {$folder_employees}

@@ -643,6 +643,8 @@ class tx_civserv_commit {
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
 				$del_result = $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_civserv_organisation_or_structure_mm','uid_local = '.$row['uid_local'].' AND uid_foreign = '.$row['uid_local']);				
 			}
+			$update_obj = t3lib_div::makeInstance('tx_civserv_miscupdate');
+			$update_obj->update_orcode($params);
 		}
 	}
 
