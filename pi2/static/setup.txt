@@ -1,25 +1,47 @@
 # Set language for frontend ('default' = English, 'de' = German)
 config.language = de
 
+# ************************************* #
+# ********** Define left menu ********* #
+# ************************************* #
+
+leftmenu = HMENU
+leftmenu {
+	special = userfunction
+	special {
+		pageid = {$pageid}
+		fulltext_search_id = 0
+		alternative_page_id = 0
+		menuServiceList = 0
+		menuCircumstanceTree = 0
+		menuUsergroupTree = 0
+		menuOrganisationTree = 0 
+		menuOrganisationList = 0
+		menuEmployeeList = 1
+		menuFormList = 0
+		menuTop15 = 0
+		menuOnlineServices =  0
+		userFunc = tx_civserv_pi2->makeMenuArray
+	}
+	stdWrap.wrap = <div id="leftmenu"> | </div>
+	1 = TMENU
+    1.noBlur = 1
+	1.wrap = <ul class="level1"> | </ul>
+	1.NO {
+		allWrap = <li> | </li>
+		stdWrap.htmlSpecialChars = 1
+	}
+	1.ACT = 1
+	1.ACT {
+		allWrap =<li> | </li>
+		stdWrap.htmlSpecialChars = 1
+		ATagParams = class="active"
+	}
+}
+		
 
 
 		
-# ************************************* #
-# ********** Define choice link ********* #
-# ************************************* #
-includeLibs.DEVELOPER_Functions =    typo3conf/ext/civserv/pi2/class.tx_civserv_pi2.php
-temp.choicelink = USER
-temp.choicelink {
-	community_id = {$community_id}
-	pageid = {$pageid}
-	fulltext_search_id ={$fulltext_search_id}
-	userFunc = tx_civserv_pi2->getChoiceLink
-}
-
-
-
-
-
 
 # ************************************* #
 # ********* Define PAGE object ******** #
@@ -67,7 +89,7 @@ page.includeCSS {
 }
 
 # Delete default styles for indexed search
-plugin.tx_indexedsearch._CSS_DEFAULT_STYLE > 
+# plugin.tx_indexedsearch._CSS_DEFAULT_STYLE > 
 
 page.includeLibs.getCommunityName = typo3conf/ext/civserv/pi2/class.tx_civserv_pi2.php
 
@@ -75,17 +97,14 @@ page.includeLibs.getCommunityName = typo3conf/ext/civserv/pi2/class.tx_civserv_p
 page.10 = TEMPLATE
 page.10 {
 	template = FILE
-	template.file = typo3conf/ext/civserv/templates/index.html
+	template.file = typo3conf/ext/civserv/templates/intranet.html
 	
 	workOnSubpart = DOCUMENT
 	
 	marks.CONTENT = CONTENT
 	marks.CONTENT.table= tt_content
 	
-	
-	# leftmenu is not part of pi2
-	marks.MENU >
-
+	marks.MENU < leftmenu
 	
 	marks.COMMUNITY = USER
 	marks.COMMUNITY.community_id = {$community_id}
@@ -99,24 +118,7 @@ page.10 {
 	
 	marks.ACTPAGE = USER
 	marks.ACTPAGE.userFunc = tx_civserv_pi2->getActualPage
-	
-	marks.CHOICE_LINK < temp.choicelink
-	
-	/*
-	marks.CHOICE_LINK = USER
-	marks.CHOICE_LINK.community_id = {$community_id}
-	marks.CHOICE_LINK.pageid = {$pageid}
-	marks.CHOICE_LINK.fulltext_search_id ={$fulltext_search_id}
-	marks.CHOICE_LINK.userFunc = tx_civserv_pi2->getChoiceLink
-	*/
-	
-	marks.LEGAL_NOTICE_LINK = USER
-	marks.LEGAL_NOTICE_LINK.community_id = {$community_id}
-	marks.LEGAL_NOTICE_LINK.userFunc = tx_civserv_pi2->getLegalNoticeLink
-	
-	marks.CONTACT_LINK = USER
-	marks.CONTACT_LINK.community_id = {$community_id}
-	marks.CONTACT_LINK.userFunc = tx_civserv_pi2->getContactLink
+
 }
 
 
