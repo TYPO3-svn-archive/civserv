@@ -58,9 +58,9 @@ page.config {
 	# Insert the following statements to your .htaccess for static docu-ments:
 	#	RewriteEngine On
 	#	RewriteRule   ^[^/]*\.html$  index.php
-	simulateStaticDocuments = true
-	simulateStaticDocuments_pEnc = md5
-	simulateStaticDocuments_pEnc_onlyP = tx_civserv_pi2[mode],tx_civserv_pi2[community_id],tx_civserv_pi2[id],tx_civserv_pi2[pointer],tx_civserv_pi2[char],tx_civserv_pi2[sort],tx_civserv_pi2[pos_id],tx_civserv_pi2[sv_id],tx_civserv_pi2[sword],tx_civserv_pi2[org_id],cHash,tx_parkingzones_pi2[char],tx_parkingzones_pi2[mode],tx_parkingzones_pi2[pointer]
+#	simulateStaticDocuments = true
+#	simulateStaticDocuments_pEnc = md5
+#	simulateStaticDocuments_pEnc_onlyP = tx_civserv_pi2[mode],tx_civserv_pi2[community_id],tx_civserv_pi2[id],tx_civserv_pi2[pointer],tx_civserv_pi2[char],tx_civserv_pi2[sort],tx_civserv_pi2[pos_id],tx_civserv_pi2[sv_id],tx_civserv_pi2[sword],tx_civserv_pi2[org_id],cHash,tx_parkingzones_pi2[char],tx_parkingzones_pi2[mode],tx_parkingzones_pi2[pointer]
 	# XHTML
 	inlineStyle2TempFile = 1
 }

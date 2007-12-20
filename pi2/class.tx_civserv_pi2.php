@@ -254,7 +254,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$template = $this->conf['tpl_employee_list_plus'];
 #					$accurate = $this->employee_list_orcode($smartyObject, $this->conf['orCodeBarAtEmployeeList'], $this->conf['searchAtEmployeeList'], $this->conf['topAtEmployeeList']);
 					$accurate = $this->employee_list($smartyObject, false, $this->conf['orCodeBarAtEmployeeList'], $this->conf['searchAtEmployeeList'], $this->conf['topAtEmployeeList']);
-					break;					
+					break;			
 				case 'organisation':
 					#$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_service_list.organisation','Organisation');
 					$template = $this->conf['tpl_organisation_plus'];
@@ -337,12 +337,11 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$_SESSION['stored_filter_key'] = 'orcode';
 			$_SESSION['stored_filter_val'] = $this->piVars['orcode'];
 			$mode_text = $this->pi_getLL('tx_civserv_pi2_employee_list.by_organisation',' by department');
-		}else{
-#			debug($this->piVars['mode'], 'wrong mode for calling employee_list');
 		}
-		
-#		debug($query, 'makeEmployeeListQuery');
+		debug($query, 'makeEmployeeListQuery');
 
+
+		//hier ist die musik!
 		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		$row_counter = 0;
 		
@@ -414,40 +413,10 @@ class tx_civserv_pi2 extends tslib_pibase {
 			}
 
 
-			// Organisation:
-			// select the organisation assigned to the position of the employee employee
-			$orga_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_civserv_organisation.uid as or_uid, 
-				 tx_civserv_organisation.or_name as organisation,
-				 tx_civserv_organisation.or_code,
-				 tx_civserv_organisation.or_synonym1,
-				 tx_civserv_organisation.or_synonym2,
-				 tx_civserv_organisation.or_synonym3,
-				 tx_civserv_organisation.or_supervisor,
-				 tx_civserv_organisation.or_show_supervisor,
-				 tx_civserv_organisation.or_hours,
-				 tx_civserv_organisation.or_telephone,
-				 tx_civserv_organisation.or_fax,
-				 tx_civserv_organisation.or_email,
-				 tx_civserv_organisation.or_image,
-				 tx_civserv_organisation.or_infopage,
-				 tx_civserv_organisation.or_addinfo,
-				 tx_civserv_organisation.or_addlocation',
-				'tx_civserv_organisation,
-				 tx_civserv_position_po_organisation_mm',
-				'tx_civserv_position_po_organisation_mm.uid_local = ' . $row['po_uid'] . ' 
-				 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign
-				 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0',
-				'',
-				'',
-				'');
-				
-			// Schleife über alle Organisationen, bei denen die Stelle angesiedelt ist - das sollte nur einen Durchgang ergeben!!!
-			while ($orga_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($orga_res) ) {
-				$employees[$row_counter]['or_uid'] = $orga_row['or_uid'];
-				$employees[$row_counter]['or_name'] = $orga_row['organisation'];
-				$employees[$row_counter]['or_code'] = $orga_row['or_code'];
-				
+			if($this->piVars['orcode'] == 'hod'){
+				$employees[$row_counter]['or_code'] = $row['or_code']; //delivered by makeemployeelistQuery....
+				$employees[$row_counter]['or_uid'] = $row['or_uid'];
+				$employees[$row_counter]['or_name'] = $row['organisation'];
 				// spezielle Links zusammenbauen:
 				// link zur employee-detail-seite
 				$employees[$row_counter]['or_url'] = htmlspecialchars(
@@ -458,9 +427,84 @@ class tx_civserv_pi2 extends tslib_pibase {
 														),
 													1,1)
 												);
-#			debug($employees[$row_counter]['or_url'], 'or_url');
-				
-			}
+				// get position - if any
+				$empos_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'tx_civserv_position.uid as po_uid,
+					 tx_civserv_position.po_name,
+					 tx_civserv_position.po_descr,
+					 tx_civserv_employee_em_position_mm.uid as ep_uid,
+					 tx_civserv_employee_em_position_mm.ep_officehours,
+					 tx_civserv_employee_em_position_mm.ep_room,
+					 tx_civserv_employee_em_position_mm.ep_telephone,
+					 tx_civserv_employee_em_position_mm.ep_fax,
+					 tx_civserv_employee_em_position_mm.ep_mobile,
+					 tx_civserv_employee_em_position_mm.ep_email,
+					 tx_civserv_employee_em_position_mm.ep_datasec,
+					 tx_civserv_employee_em_position_mm.ep_label',
+					'tx_civserv_employee, 
+					 tx_civserv_position, 
+					 tx_civserv_employee_em_position_mm',
+					'tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local 
+					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid 
+					 AND tx_civserv_employee.uid = '.$employees[$row_counter]['em_uid'],
+					'',
+					'',
+					'');
+				// Schleife über alle Organisationen, bei denen die Stelle angesiedelt ist - das sollte nur einen Durchgang ergeben!!!
+				while ($empos_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($empos_res) ) {
+					$employees[$row_counter]['po_uid'] = $empos_row['po_uid'];
+					$employees[$row_counter]['po_name'] = $empos_row['po_name'];
+					$employees[$row_counter]['po_descr'] = $empos_row['or_descr'];
+				}
+			}else{
+				// Organisation:
+				// select the organisation assigned to the position of the employee employee
+				$orga_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'tx_civserv_organisation.uid as or_uid, 
+					 tx_civserv_organisation.or_name as organisation,
+					 tx_civserv_organisation.or_code,
+					 tx_civserv_organisation.or_synonym1,
+					 tx_civserv_organisation.or_synonym2,
+					 tx_civserv_organisation.or_synonym3,
+					 tx_civserv_organisation.or_supervisor,
+					 tx_civserv_organisation.or_show_supervisor,
+					 tx_civserv_organisation.or_hours,
+					 tx_civserv_organisation.or_telephone,
+					 tx_civserv_organisation.or_fax,
+					 tx_civserv_organisation.or_email,
+					 tx_civserv_organisation.or_image,
+					 tx_civserv_organisation.or_infopage,
+					 tx_civserv_organisation.or_addinfo,
+					 tx_civserv_organisation.or_addlocation',
+					'tx_civserv_organisation,
+					 tx_civserv_position_po_organisation_mm',
+					'tx_civserv_position_po_organisation_mm.uid_local = ' . $employees[$row_counter]['po_uid'] . ' 
+					 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign
+					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0',
+					'',
+					'',
+					''
+				);
+					
+				// Schleife über alle Organisationen, bei denen die Stelle angesiedelt ist - das sollte nur einen Durchgang ergeben!!!
+				while ($orga_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($orga_res) ) {
+					$employees[$row_counter]['or_uid'] = $orga_row['or_uid'];
+					$employees[$row_counter]['or_name'] = $orga_row['organisation'];
+					$employees[$row_counter]['or_code'] = $orga_row['or_code'];
+					
+					// spezielle Links zusammenbauen:
+					// link zur employee-detail-seite
+					$employees[$row_counter]['or_url'] = htmlspecialchars(
+														$this->pi_linkTP_keepPIvars_url(array(
+															'mode' => 'organisation',
+															'id' => $employees[$row_counter]['or_uid'],
+															'pos_id' => $employees[$row_counter]['po_uid']
+															),
+														1,1)
+													);
+	#			debug($employees[$row_counter]['or_url'], 'or_url');
+				}
+			}// end else
 
 			// Gebäude
 			if($employees[$row_counter]['ep_room'] > 0){ 
@@ -617,9 +661,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$query = $this->makeEmployeeListQueryAZ($this->piVars['char'],false,true);
 		}elseif($this->piVars['mode'] == 'employee_list_orcode'){
 			$query = $this->makeEmployeeListQueryOrCode($this->piVars['orcode'],false,true);
-		}else{
-			//nada
 		}
+
 
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -629,6 +672,9 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$this->internal['res_count'] = $row_count;
 		$this->internal['results_at_a_time']= $this->conf['employee_per_page'];
 		$this->internal['maxPages'] = $this->conf['max_pages_in_pagebar'];
+		
+		
+		
 
 		$smartyEmployeeList->assign('heading', str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'Employees '.$mode_text)));
 		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi2_employee_list.available_employees','Here you find the following employees'));
@@ -637,34 +683,17 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 
 		//take care of abc - orCode - BAR
-#		if ($abcBar && $this->piVars['mode'] == 'employee_list_az') {
-#		if(1==1){
 		if ($this->piVars['mode'] == 'employee_list_az') {
 			$query = $this->makeEmployeeListQueryAZ('all', false);
 			$smartyEmployeeList->assign('abcbar', $this->makeAbcBar($query, 'nach Ämtern', 'employee_list_orcode'));
 		}elseif($this->piVars['mode'] == 'employee_list_orcode') {
 			$query = $this->makeEmployeeListQueryOrCode('all', false);
-			$smartyEmployeeList->assign('orCodeBar', $this->makeOrCodeBar($query, 'nach Name',  'employee_list_az'));
-		}
-		
-		
-		
-		
-/*		
-// falls es möglich sein soll beide modes unabhängig voneinander zu schalten
-#		if ($orCodeBar && $this->piVars['mode'] == 'employee_list_orcode') {
-#		if(1==1){
-		if ($this->piVars['mode'] == 'employee_list_orcode') {
-			$query = $this->makeEmployeeListQueryOrCode('all', false);
 			$smartyEmployeeList->assign('orCodeBar', $this->makeOrCodeBar($query, 'nach Name', 'employee_list_az'));
 		}
-*/
-		
-		
 		
 		if ($searchBox) {
 			//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array('mode' => 'search_result'),0,1); //dropped this according to instructions from security review
-			$smartyEmployeeList->assign('searchbox', $this->pi_list_searchBox('',true));
+			$smartyEmployeeList->assign('searchbox', $this->pi_list_searchBox('', true));
 		}
 		
 		if ($topList) {
@@ -774,61 +803,105 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @return	[type]		...
 	 */
 	function makeEmployeeListQueryOrCode($orcode='all', $limit=true, $count=false) { //do not put the orcode in quotation marks!!
-			$tables =  'tx_civserv_employee, 
-						tx_civserv_position, 
-						tx_civserv_employee_em_position_mm,
-						tx_civserv_organisation,
-						tx_civserv_position_po_organisation_mm';
-			$conditions =   'tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') AND 
-							tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
-							tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
-							tx_civserv_position_po_organisation_mm.uid_local = tx_civserv_position.uid AND
-							tx_civserv_position_po_organisation_mm.uid_foreign = tx_civserv_organisation.uid AND '.
-							($orcode > '' && $orcode != 'all' ? 'tx_civserv_organisation.or_code in (\''.$orcode.'\', \''.str_replace('_', ' ', $orcode).'\') AND ' : '').
-						   'tx_civserv_organisation.deleted = 0 AND
-							tx_civserv_organisation.hidden = 0 AND						
-							tx_civserv_position.deleted = 0 AND
-							tx_civserv_position.hidden = 0 AND
-							tx_civserv_employee.deleted=0 AND
-							tx_civserv_employee.hidden=0';			
+			if($orcode == 'hod'){ // head of Department
+				$fields =  'tx_civserv_organisation.uid as or_uid, 
+						 	tx_civserv_organisation.or_name as organisation,
+						 	tx_civserv_organisation.or_code,
+						 	tx_civserv_organisation.or_synonym1,
+						 	tx_civserv_organisation.or_synonym2,
+						 	tx_civserv_organisation.or_synonym3,
+						 	tx_civserv_organisation.or_supervisor,
+						 	tx_civserv_organisation.or_show_supervisor,
+						 	tx_civserv_organisation.or_hours,
+						 	tx_civserv_organisation.or_telephone,
+						 	tx_civserv_organisation.or_fax,
+						 	tx_civserv_organisation.or_email,
+						 	tx_civserv_organisation.or_image,
+						 	tx_civserv_organisation.or_infopage,
+						 	tx_civserv_organisation.or_addinfo,
+						 	tx_civserv_organisation.or_addlocation,
+							tx_civserv_employee.em_address, 
+							tx_civserv_employee.em_title, 
+							tx_civserv_employee.em_name as name, 
+							tx_civserv_employee.em_firstname, 
+							tx_civserv_employee.em_telephone,		 	 	 	 	 	 	 
+							tx_civserv_employee.em_fax, 	 	 	 	 	 	 
+							tx_civserv_employee.em_mobile,		 	 	 	 	 	 	 
+							tx_civserv_employee.em_email,		 	 	 	 	 	 	 
+							tx_civserv_employee.em_image,
+							tx_civserv_employee.em_datasec,
+							tx_civserv_employee.uid as em_uid';
+				$tables =  'tx_civserv_employee, 
+							tx_civserv_organisation';
+						
+				$conditions =  'tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') AND 
+								tx_civserv_employee.uid = tx_civserv_organisation.or_supervisor AND
+								tx_civserv_organisation.deleted = 0 AND
+								tx_civserv_organisation.hidden = 0 AND						
+								tx_civserv_employee.deleted = 0 AND
+								tx_civserv_employee.hidden = 0';		
+			}else{
+				$fields =  'tx_civserv_organisation.or_code,
+							tx_civserv_organisation.or_name,
+							tx_civserv_employee.em_address, 
+							tx_civserv_employee.em_title, 
+							tx_civserv_employee.em_name as name, 
+							tx_civserv_employee.em_firstname, 
+							tx_civserv_employee.em_telephone,		 	 	 	 	 	 	 
+							tx_civserv_employee.em_fax, 	 	 	 	 	 	 
+							tx_civserv_employee.em_mobile,		 	 	 	 	 	 	 
+							tx_civserv_employee.em_email,		 	 	 	 	 	 	 
+							tx_civserv_employee.em_image,
+							tx_civserv_employee.em_datasec,
+							tx_civserv_employee.uid as em_uid, 
+							tx_civserv_position.uid as po_uid,
+							tx_civserv_position.po_name,
+							tx_civserv_position.po_descr,
+							tx_civserv_employee_em_position_mm.uid as ep_uid,
+							tx_civserv_employee_em_position_mm.ep_officehours,
+							tx_civserv_employee_em_position_mm.ep_room,
+							tx_civserv_employee_em_position_mm.ep_telephone,
+							tx_civserv_employee_em_position_mm.ep_fax,
+							tx_civserv_employee_em_position_mm.ep_mobile,
+							tx_civserv_employee_em_position_mm.ep_email,
+							tx_civserv_employee_em_position_mm.ep_datasec,
+							tx_civserv_employee_em_position_mm.ep_label';
+				
+				$tables =  'tx_civserv_employee, 
+							tx_civserv_position, 
+							tx_civserv_employee_em_position_mm,
+							tx_civserv_organisation,
+							tx_civserv_position_po_organisation_mm';
+							
+				$conditions =   'tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') AND 
+								tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
+								tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
+								tx_civserv_position_po_organisation_mm.uid_local = tx_civserv_position.uid AND
+								tx_civserv_position_po_organisation_mm.uid_foreign = tx_civserv_organisation.uid AND '.
+								($orcode > '' && $orcode != 'all' ? 'tx_civserv_organisation.or_code in (\''.$orcode.'\', \''.str_replace('_', ' ', $orcode).'\') AND ' : '').
+							   'tx_civserv_organisation.deleted = 0 AND
+								tx_civserv_organisation.hidden = 0 AND						
+								tx_civserv_position.deleted = 0 AND
+								tx_civserv_position.hidden = 0 AND
+								tx_civserv_employee.deleted = 0 AND
+								tx_civserv_employee.hidden = 0';		
+				}								
 			if ($count){
 				$or_code = $GLOBALS['TYPO3_DB']->quoteStr($or_code, 'tx_civserv_organisation');
-				$query = 'Select count(*) 
-					from '.$tables.' where '.$conditions;
+				$query = 'Select count(*) from '.$tables.' where '.$conditions;
 			} else {
-				$query = 'Select 
-						tx_civserv_organisation.or_code,
-						tx_civserv_organisation.or_name,
-						tx_civserv_employee.em_address, 
-						tx_civserv_employee.em_title, 
-						tx_civserv_employee.em_name as name, 
-						tx_civserv_employee.em_firstname, 
-						tx_civserv_employee.em_telephone,		 	 	 	 	 	 	 
- 						tx_civserv_employee.em_fax, 	 	 	 	 	 	 
- 						tx_civserv_employee.em_mobile,		 	 	 	 	 	 	 
- 						tx_civserv_employee.em_email,		 	 	 	 	 	 	 
- 						tx_civserv_employee.em_image,
-						tx_civserv_employee.em_datasec,
-						tx_civserv_employee.uid as em_uid, 
-						tx_civserv_position.uid as po_uid,
-						tx_civserv_position.po_name,
-						tx_civserv_position.po_descr,
-						tx_civserv_employee_em_position_mm.uid as ep_uid,
-						tx_civserv_employee_em_position_mm.ep_officehours,
-						tx_civserv_employee_em_position_mm.ep_room,
-						tx_civserv_employee_em_position_mm.ep_telephone,
-						tx_civserv_employee_em_position_mm.ep_fax,
-						tx_civserv_employee_em_position_mm.ep_mobile,
-						tx_civserv_employee_em_position_mm.ep_email,
-						tx_civserv_employee_em_position_mm.ep_datasec,
-						tx_civserv_employee_em_position_mm.ep_label
-					from '.$tables.' where '.$conditions;
+				$query = 'SELECT '.$fields.' FROM '.$tables.' WHERE '.$conditions;
 			}
 #			$orderby =	$this->piVars[sort]?'or_code, name, em_firstname DESC':'or_code, name, em_firstname ASC';
 
 			if (!$count) {
-				$orderby =	$this->piVars[sort]?'or_code, name, em_firstname DESC':'or_code, name, em_firstname ASC';
-				$query .= ' ORDER BY ' . $orderby . ' ';
+				if(orcode == 'hod'){
+					$orderby =	$this->piVars[sort] ? 'name, em_firstname, or_code DESC' : 'name, em_firstname, or_code ASC';
+					$query .= ' ORDER BY ' . $orderby . ' ';
+				}else{
+					$orderby =	$this->piVars[sort] ? 'or_code, name, em_firstname DESC' : 'or_code, name, em_firstname ASC';
+					$query .= ' ORDER BY ' . $orderby . ' ';
+				}
 
 
 				if ($limit) {
@@ -843,6 +916,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			}
 			return $query;
 		}
+
 
 
 
@@ -981,7 +1055,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$orCodeArray[] = str_replace(' ', '_', strtoupper($row['or_code']));
 		}
-		debug($orCodeArray, 'orCodeArray');	
+#		debug($orCodeArray, 'orCodeArray');	
 
 		// build a string with the links to the orcode-sites
 		$orcodeBar =  '<p id="orcodebar">' . "\n\t";
@@ -993,7 +1067,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 #			debug($actual, '$actual');
 			if ($occuringCodes && in_array((string)$orCodeArray[$i], $occuringCodes, true)){ //true for check on data-type string! or else will set '001' and '01' equal
 #				debug('match');
-				debug($orCodeArray[$i]);
+#				debug($orCodeArray[$i], 'amt....');
 
 				$orcodeBar .= sprintf(	'%s' . 
 										$this->pi_linkTP_keepPIvars(
@@ -1018,8 +1092,14 @@ class tx_civserv_pi2 extends tslib_pibase {
 		}
 
 		// adding the link 'all'
-		$actual = ($this->piVars['orcode'] <= '');
-		$orcodeBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($this->pi_getLL('tx_civserv_pi2_employee_list.orcode_all', 'all'), array(orcode => '', pointer => 0, mode => 'employee_list_orcode'),1,0) . '%s' . "\n",
+		$actual = ($this->piVars['orcode'] <= '' || $this->piVars['orcode'] == 'all' );
+		$orcodeBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($this->pi_getLL('tx_civserv_pi2_employee_list.orcode_all', 'all'), array(orcode => 'all', pointer => 0, mode => 'employee_list_orcode'),1,0) . '%s' . "\n",
+						$actual ? '<strong>' : '',
+						$actual ? '</strong>' : '');
+						
+		// adding link for head of Departmenst
+		$actual = ($this->piVars['orcode'] == 'hod' );
+		$orcodeBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($this->pi_getLL('tx_civserv_pi2_employee_list.orcode_hod', 'headofdepartment'), array(orcode => 'hod', pointer => 0, mode => 'employee_list_orcode'),1,0) . '%s' . "\n",
 						$actual ? '<strong>' : '',
 						$actual ? '</strong>' : '');
 						
