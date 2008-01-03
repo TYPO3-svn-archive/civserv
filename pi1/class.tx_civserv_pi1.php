@@ -1969,7 +1969,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 #		$linkconf['ATagParams'] =' title="'.$name.'" alt="'.$name.'" class="all"';
 		$linkconf['ATagParams'] =' class="all"';
 		$linkconf['parameter'] = $url;
-		//wieso funktioniert folgende zeile????
 		$abcBar .= 	sprintf(	'%s' .	
 								$this->local_cObj->typoLink('A-Z', $linkconf) .
 								'%s' . "\n",

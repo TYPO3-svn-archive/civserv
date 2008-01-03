@@ -993,9 +993,23 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		// adding the link 'A-Z'
 		$actual = ($this->piVars['char'] <= '');
+		$linkconf = array();
+		$url = $this->pi_linkTP_keepPIvars_url(array(char => '', pointer => 0, mode => 'employee_list_az'),1,0);
+		$linkconf['ATagParams'] =' class="all"';
+		$linkconf['parameter'] = $url;
+		$abcBar .= 	sprintf(	'%s' .	
+								$this->local_cObj->typoLink('A-Z', $linkconf) .
+								'%s' . "\n",
+								$actual?'<strong>':'',
+								$actual?'</strong>':''
+							);
+
+		
+		/*
 		$abcBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars('A-Z',array(char => '', pointer => 0, mode => 'employee_list_az'),1,0) . '%s' . "\n",
 						$actual?'<strong>':'',
 						$actual?'</strong>':'');
+		*/				
 		
 		// adding additional_mode Link (in this case: link for filtering the employeelist by organisation)
 		if($additional_mode > ''){
@@ -1092,9 +1106,24 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		// adding the link 'all'
 		$actual = ($this->piVars['orcode'] <= '' || $this->piVars['orcode'] == 'all' );
+		
+		$linkconf = array();
+		$url = $this->pi_linkTP_keepPIvars_url(array(orcode => 'all', pointer => 0, mode => 'employee_list_orcode'), 1, 0);
+		$linkconf['ATagParams'] =' class="all"';
+		$linkconf['parameter'] = $url;
+		$orcodeBar .= 	sprintf(	'%s' .	
+								$this->local_cObj->typoLink($this->pi_getLL('tx_civserv_pi2_employee_list.orcode_all', $linkconf) .
+								'%s' . "\n",
+								$actual?'<strong>':'',
+								$actual?'</strong>':''
+							);
+		
+		
+		/*
 		$orcodeBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($this->pi_getLL('tx_civserv_pi2_employee_list.orcode_all', 'all'), array(orcode => 'all', pointer => 0, mode => 'employee_list_orcode'),1,0) . '%s' . "\n",
 						$actual ? '<strong>' : '',
 						$actual ? '</strong>' : '');
+		*/						
 						
 		// adding link for head of Departmenst
 		$actual = ($this->piVars['orcode'] == 'hod' );
