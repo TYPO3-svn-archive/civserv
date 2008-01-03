@@ -701,7 +701,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 				return false;
 			}
 		}
-		
 		return true;
 	}
 

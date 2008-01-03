@@ -1962,9 +1962,29 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		// adding the link 'A-Z'
 		$actual = ($this->piVars['char'] <= '');
-		$abcBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars('A-Z',array(char => '',pointer => 0),1,0) . '%s' . "\n",
-						$actual?'<strong>':'',
-						$actual?'</strong>':'');
+		
+		$linkconf = array();
+		$name = 'hase';
+		$url = $this->pi_linkTP_keepPIvars_url(array(char => '', pointer => 0), 1, 0);
+#		$linkconf['ATagParams'] =' title="'.$name.'" alt="'.$name.'" class="all"';
+		$linkconf['ATagParams'] =' class="all"';
+		$linkconf['parameter'] = $url;
+		//wieso funktioniert folgende zeile????
+		$abcBar .= 	sprintf(	'%s' .	
+								$this->local_cObj->typoLink('A-Z', $linkconf) .
+								'%s' . "\n",
+								$actual?'<strong>':'',
+								$actual?'</strong>':''
+							);
+		
+		/*
+		$abcBar .= 	sprintf(	'%s' .
+								$this->pi_linkTP_keepPIvars('A-Z',array(char => '', pointer => 0),1,0) .
+								'%s' . "\n",
+								$actual?'<strong>':'',
+								$actual?'</strong>':''
+						);
+		*/				
 		$abcBar .= "</p>\n";
 
 		$this->piVars['mode']=$correctMode;
