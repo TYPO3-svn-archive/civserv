@@ -3240,6 +3240,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$or_title = $organisation_rows['or_name'];
 		if($organisation_rows[or_addlocation]>'')$or_title.=' ('.$organisation_rows[or_addlocation].')';
 		$smartyOrganisation->assign('or_title',$or_title);
+		$smartyOrganisation->assign('or_addlocation',$organisation_rows['or_addlocation']);
 		$smartyOrganisation->assign('or_name',$organisation_rows['or_name']);
 		$smartyOrganisation->assign('or_addinfo',$organisation_rows['or_addinfo']);
 		$smartyOrganisation->assign('or_phone',$organisation_rows['or_telephone']);

@@ -1112,11 +1112,12 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$linkconf['ATagParams'] =' class="all"';
 		$linkconf['parameter'] = $url;
 		$orcodeBar .= 	sprintf(	'%s' .	
-								$this->local_cObj->typoLink($this->pi_getLL('tx_civserv_pi2_employee_list.orcode_all', $linkconf) .
-								'%s' . "\n",
-								$actual?'<strong>':'',
-								$actual?'</strong>':''
+									$this->local_cObj->typoLink($this->pi_getLL('tx_civserv_pi2_employee_list.orcode_all'), $linkconf) .
+									'%s' . "\n",
+									$actual?'<strong>':'',
+									$actual?'</strong>':''
 							);
+		
 		
 		
 		/*
