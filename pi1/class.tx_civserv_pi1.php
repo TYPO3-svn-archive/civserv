@@ -2079,7 +2079,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
 			$add_content = $add_content .  '<ul>';
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-				$uid = $row["uid"]; // or1 res. nv1
+				$uid = $row['uid']; // or1 res. nv1
 #				debug($uid, 'neue UID');
 				$makelink=false;
 				if($this->conf['no_link_empty_nv']){
@@ -2137,9 +2137,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 #					debug($makelink, 'makelink?');
 					// test bk: add organisational code
 					if($this->conf['displayOrganisationCode'] && !($mode=='usergroup_tree' || $mode=='circumstance_tree')){
-						$add_content .= $row["code"].' '.$row["name"];
+						$add_content .= $row['code'].' '.$row['name'];
 					}else{
-						$add_content .= $row["name"];
+						$add_content .= $row['name'];
 					}
 					$add_content .= $makelink ? '</a>': '';
 					$this->makeTree($uid, $add_content, $mode);
@@ -2705,6 +2705,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					 oh_end_morning, 
 					 oh_start_afternoon, 
 					 oh_end_afternoon, 
+					 oh_manual_checkbox,
 					 oh_freestyle, 
 					 oh_weekday',
 					'tx_civserv_employee',
@@ -2722,8 +2723,18 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 			// Query for employee-position office hours
 			$res_emp_pos_hours = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_freestyle, oh_weekday',
-					'tx_civserv_employee, tx_civserv_position, tx_civserv_officehours, tx_civserv_employee_em_position_mm, tx_civserv_officehours_oep_employee_em_position_mm_mm',
+					'oh_start_morning, 
+					 oh_end_morning, 
+					 oh_start_afternoon, 
+					 oh_end_afternoon, 
+					 oh_manual_checkbox,
+					 oh_freestyle, 
+					 oh_weekday',
+					'tx_civserv_employee, 
+					 tx_civserv_position, 
+					 tx_civserv_officehours, 
+					 tx_civserv_employee_em_position_mm, 
+					 tx_civserv_officehours_oep_employee_em_position_mm_mm',
 					'tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
 					 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
 					 AND tx_civserv_officehours.deleted=0 AND tx_civserv_officehours.hidden=0
@@ -2743,7 +2754,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 					'oh_start_morning, 
 					 oh_end_morning, 
 					 oh_start_afternoon, 
-					 oh_end_afternoon, 
+					 oh_end_afternoon,
+					 oh_manual_checkbox, 
 					 oh_freestyle, 
 					 oh_weekday',
 					'tx_civserv_employee, 
@@ -2848,11 +2860,15 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$row_counter = 0;
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_pos_hours) ){	
 				$emp_pos_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
-				$emp_pos_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
-				$emp_pos_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
-				$emp_pos_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
-				$emp_pos_hours[$row_counter]['end_afternoon'] = $row[oh_end_afternoon];
-				$emp_pos_hours[$row_counter]['freestyle'] = $row[oh_freestyle];
+				$emp_pos_hours[$row_counter]['start_morning'] = $row['oh_start_morning'];
+				$emp_pos_hours[$row_counter]['end_morning'] = $row['oh_end_morning'];
+				$emp_pos_hours[$row_counter]['start_afternoon'] = $row['oh_start_afternoon'];
+				$emp_pos_hours[$row_counter]['end_afternoon'] = $row['oh_end_afternoon'];
+				if($row['oh_manual_checkbox'] == 1){
+					$emp_pos_hours[$row_counter]['freestyle'] = $row['oh_freestyle'];
+				}else{
+					$emp_pos_hours[$row_counter]['freestyle'] = '';
+				}
 				$row_counter++;
 			}
 			$smartyEmployee->assign('emp_pos_hours',$emp_pos_hours);
@@ -2861,11 +2877,16 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$row_counter = 0;
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_org_hours) ){	
 				$emp_org_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
-				$emp_org_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
-				$emp_org_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
-				$emp_org_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
-				$emp_org_hours[$row_counter]['end_afternoon'] = $row[oh_end_afternoon];
-				$emp_org_hours[$row_counter]['freestyle'] = $row[oh_freestyle];
+				$emp_org_hours[$row_counter]['start_morning'] = $row['oh_start_morning'];
+				$emp_org_hours[$row_counter]['end_morning'] = $row['oh_end_morning'];
+				$emp_org_hours[$row_counter]['start_afternoon'] = $row['oh_start_afternoon'];
+				$emp_org_hours[$row_counter]['end_afternoon'] = $row['oh_end_afternoon'];
+#				$emp_org_hours[$row_counter]['freestyle'] = $row['oh_freestyle'];
+				if($row['oh_manual_checkbox'] == 1){
+					$emp_org_hours[$row_counter]['freestyle'] = $row['oh_freestyle'];
+				}else{
+					$emp_org_hours[$row_counter]['freestyle'] = '';
+				}
 				$row_counter++;
 			}
 			$smartyEmployee->assign('emp_org_hours',$emp_org_hours);
@@ -2907,11 +2928,16 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_hours) ){
 			$emp_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
-			$emp_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
-			$emp_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
-			$emp_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
-			$emp_hours[$row_counter]['end_afternoon'] = $row[oh_end_afternoon];
-			$emp_hours[$row_counter]['freestyle'] = $row[oh_freestyle];
+			$emp_hours[$row_counter]['start_morning'] = $row['oh_start_morning'];
+			$emp_hours[$row_counter]['end_morning'] = $row['oh_end_morning'];
+			$emp_hours[$row_counter]['start_afternoon'] = $row['oh_start_afternoon'];
+			$emp_hours[$row_counter]['end_afternoon'] = $row['oh_end_afternoon'];
+#			$emp_hours[$row_counter]['freestyle'] = $row['oh_freestyle'];
+			if($row['oh_manual_checkbox'] == 1){
+				$emp_hours[$row_counter]['freestyle'] = $row['oh_freestyle'];
+			}else{
+				$emp_hours[$row_counter]['freestyle'] = '';
+			}
 			$row_counter++;
 		}
 		$smartyEmployee->assign('emp_hours',$emp_hours);
@@ -3046,7 +3072,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Query for office hours
 		$res_hour = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-						'oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_freestyle, oh_weekday',
+						'oh_start_morning, 
+						 oh_end_morning, 
+						 oh_start_afternoon, 
+						 oh_end_afternoon,
+						 oh_manual_checkbox, 
+						 oh_freestyle, 
+						 oh_weekday',
 						'tx_civserv_organisation',
 						'tx_civserv_organisation_or_hours_mm',
 						'tx_civserv_officehours',
@@ -3218,11 +3250,16 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_hour) ){	
 			$organisation_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
-			$organisation_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
-			$organisation_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
-			$organisation_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
-			$organisation_hours[$row_counter]['end_afternoon'] = $row[oh_end_afternoon];
-			$organisation_hours[$row_counter]['freestyle'] = $row[oh_freestyle];
+			$organisation_hours[$row_counter]['start_morning'] = $row['oh_start_morning'];
+			$organisation_hours[$row_counter]['end_morning'] = $row['oh_end_morning'];
+			$organisation_hours[$row_counter]['start_afternoon'] = $row['oh_start_afternoon'];
+			$organisation_hours[$row_counter]['end_afternoon'] = $row['oh_end_afternoon'];
+#			$organisation_hours[$row_counter]['freestyle'] = $row['oh_freestyle'];
+			if($row['oh_manual_checkbox'] == 1){
+				$organisation_hours[$row_counter]['freestyle'] = $row['oh_freestyle'];
+			}else{
+				$organisation_hours[$row_counter]['freestyle'] = '';
+			}
 			$row_counter++;
 		}
 		$smartyOrganisation->assign('office_hours',$organisation_hours);
