@@ -2542,7 +2542,8 @@ $TCA["tx_civserv_officehours"] = Array (
 					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_301", 301),	// on bank holidays
 					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_302", 302),	// saturdays and sundays
 					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_401", 401),	// additionally
-					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_402", 402),	// hint
+					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_402", 402),	// hint (hinweis)
+//					Array("LLL:EXT:civserv/locallang_db.php:tx_civserv_weekday_403", 403),	// weekday empty!!
 				),
 				//"eval" => "required,time",
 			)
