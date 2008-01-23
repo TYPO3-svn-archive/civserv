@@ -74,10 +74,12 @@ plugin.tx_civserv_pi1 {
 	continueAbcBarFromServiceList={$continueAbcBarFromServiceList}
 	includeNameInHeading={$includeNameInHeading}
 	displayOrganisationCode={$displayOrganisationCode}
+	
 	useCustomLinks_Services={$useCustomLinks_Services}
 	useCustomLinks_Organisations={$useCustomLinks_Organisations}
 	
 	orcodeBarAtEmployeeList = {$orcodeBarAtEmployeeList}
+	
 
 	abcBarAtServiceList = {$abcBarAtServiceList}
 	abcBarAtCircumstance = {$abcBarAtCircumstance}
@@ -111,6 +113,7 @@ plugin.tx_civserv_pi1 {
 	showSuperOrganisation = {$showSuperOrganisation}
 	selectBuildingsToShow = {$selectBuildingsToShow}
 	showOhLabels = {$showOhLabels}
+	orderOrgalistBy = {$orderOrgalistBy}
 	
 	no_link_empty_nv = {$no_link_empty_nv}
 	hide_empty_nv = {$hide_empty_nv}

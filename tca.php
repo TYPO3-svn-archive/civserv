@@ -2068,6 +2068,15 @@ $TCA["tx_civserv_organisation"] = Array (
 				#"eval" => "required",
 			)
 		),
+		"or_index" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_organisation.or_index",
+			"config" => Array (
+				"type" => "input",
+				"size" => "30",
+				"max" => "10",
+			)
+		),
 		"or_code" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_organisation.or_code",
@@ -2311,6 +2320,7 @@ $TCA["tx_civserv_organisation"] = Array (
 	"types" => Array (
 		"0" => Array("showitem" => "	hidden;;1;;1-1-1, 
 										or_number, 
+										or_index,
 										or_code, 
 										or_name, 
 										or_synonym1, 

@@ -178,6 +178,9 @@ selectBuildingsToShow = 0
 
 # show office_hour_labels like 'in the morning' and 'in the afternoon'
 showOhLabels = 1
+ 
+# orderby Criteria for the orgalist
+orderOrgalistBy = name
 
 # handling of navigation items with no related services
 no_link_empty_nv = 0

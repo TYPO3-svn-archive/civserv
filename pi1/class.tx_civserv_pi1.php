@@ -183,7 +183,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$accurate = $this->chooseCommunity($smartyObject);
 			$choose = true;
 	 	} elseif (($this->piVars['community_id'] != $_SESSION['community_id']) || ($_SESSION['community_name'] <= '')) {
-		#}elseif(1==1){
+		#} elseif (1==1){
 			if ($this->piVars['community_id'] > '') {
 				$community_id = intval($this->piVars['community_id']);
 			} else {
@@ -1014,57 +1014,66 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$regexp = $this->buildRegexp($char);
 			}
 			if ($count){
-				$query = 'Select count(*) 
-					from 
+				$query = 'SELECT count(*) 
+					FROM 
 						tx_civserv_organisation 
-					where 
+					WHERE 
 						tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ') AND 
 						tx_civserv_organisation.deleted=0 AND
 						tx_civserv_organisation.hidden=0 '.
 						($regexp?'AND or_name REGEXP "' . $regexp . '"':'') . ' ';		
 			} else {
-/*
-				$query = 'Select 
-						tx_civserv_organisation.uid as or_uid,
-						tx_civserv_organisation.or_name as name,
-						tx_civserv_organisation.or_name as realname
-					from 
-						tx_civserv_organisation
-					where 
-*/			
-				$query = 'Select 
-						tx_civserv_organisation.uid as or_uid,'.
-						($this->conf['displayOrganisationCode'] ? 'CONCAT(tx_civserv_organisation.or_name, \' [\', tx_civserv_organisation.or_code, \']\')' : 'tx_civserv_organisation.or_name ').'as name,'.
-						($this->conf['displayOrganisationCode'] ? 'CONCAT(tx_civserv_organisation.or_name, \' [\', tx_civserv_organisation.or_code, \']\')' : 'tx_civserv_organisation.or_name ').'as realname 
-					from 
-						tx_civserv_organisation
-					where 
-						tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ') '
-					    . ($regexp?'AND or_name REGEXP "' . $regexp . '"':'') . 'AND 
-						tx_civserv_organisation.deleted=0 AND
-						tx_civserv_organisation.hidden=0';
-			}
+				$query = 'SELECT 
+						tx_civserv_organisation.uid as or_uid,';
+						if($this->conf['displayOrganisationCode']){
+						#if(1==2){	
+							$query .= 'CONCAT(tx_civserv_organisation.or_name, \' [\', tx_civserv_organisation.or_code, \']\') AS name,';
+							$query .= 'CONCAT(tx_civserv_organisation.or_name, \' [\', tx_civserv_organisation.or_code, \']\') AS realname,';
+						}else{
+							$query .= 'tx_civserv_organisation.or_name AS name,';			
+							$query .= 'tx_civserv_organisation.or_name AS realname,';			
+						}
+				 		$query .= 'tx_civserv_organisation.or_code,
+						 		   tx_civserv_organisation.or_index ';
+					$query .= 'FROM 
+								tx_civserv_organisation
+							WHERE 
+								tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ') '
+								. ($regexp?'AND or_name REGEXP "' . $regexp . '"':'') . 'AND 
+								tx_civserv_organisation.deleted=0 AND
+								tx_civserv_organisation.hidden=0';
+			} //end else
+			
+			
+			
 			for ($synonymNr = 1; $synonymNr <= 3; $synonymNr++) {
-/*				$query .=	' UNION ALL
-						 SELECT ' . ($count?'count(*) ':'tx_civserv_organisation.uid as or_uid, 
-						 	or_synonym' . $synonymNr . ' AS name, 
-							or_name AS realname ') . '
-							 FROM tx_civserv_organisation
+				$query .=	"\n";
+				$query .=	' UNION ALL ';
+				$query .=	"\n";
+				$query .=	' SELECT ';
+				if($count){
+					$query .= 'count(*)';
+				}else{
+					$query .=  'tx_civserv_organisation.uid as or_uid,
+								or_synonym' . $synonymNr . ' AS name, ';
+					if($this->conf['displayOrganisationCode']){
+					#if(1==2){	
+						$query .= 'CONCAT(or_name, \' [\', tx_civserv_organisation.or_code, \']\') AS realname, '; //tut nicht mehr
+					}else{
+						$query .= 'or_name AS realname,';
+					}			
+					$query .= 	'tx_civserv_organisation.or_code,
+								 tx_civserv_organisation.or_index ';
+					$query .=	"\n";			 
+							$query .= 	'FROM tx_civserv_organisation
 							 WHERE 	tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ') '
 								. ($regexp?'AND or_synonym' . $synonymNr . ' REGEXP "' . $regexp . '"':'') .
 								'AND or_synonym' . $synonymNr . ' != "" ' . ' ';
-*/				
-				$query .=	' UNION ALL
-						 SELECT ' . ($count ? 'count(*) ' : 'tx_civserv_organisation.uid as or_uid, 
-						 				or_synonym' . $synonymNr . ' AS name, '.
-										($this->conf['displayOrganisationCode'] ? 'CONCAT(or_name, \' [\', tx_civserv_organisation.or_code, \']\')' : 'or_name' ).' AS realname ') . '
-							 FROM tx_civserv_organisation
-							 WHERE 	tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ') '
-								. ($regexp?'AND or_synonym' . $synonymNr . ' REGEXP "' . $regexp . '"':'') .
-								'AND or_synonym' . $synonymNr . ' != "" ' . ' ';
-			}
+				}
+			}//end for
+			debug($query);
 
-			$orderby =	$this->piVars['sort']?'name DESC':'name ASC';
+			$orderby =	$this->piVars['sort']? $this->conf['orderOrgalistBy'].' DESC': $this->conf['orderOrgalistBy'].' ASC';
 			
 			if (!$count) {
 			$query .= ' ORDER BY ' . $orderby . ' ';
