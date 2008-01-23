@@ -767,8 +767,9 @@ class tx_civserv_pi2 extends tslib_pibase {
 					    . ($regexp?'AND em_name REGEXP "' . $regexp . '"':'') . 'AND 
 						tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
 						tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
-						tx_civserv_employee.deleted=0 AND
-						tx_civserv_employee.hidden=0 ';
+						tx_civserv_employee.deleted = 0 AND
+						tx_civserv_employee.hidden = 0 AND
+						tx_civserv_employee.em_pseudo = 0 ';
 			}
 
 			$orderby =	$this->piVars[sort]?'name, em_firstname DESC':'name, em_firstname ASC';
@@ -838,7 +839,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 								tx_civserv_organisation.deleted = 0 AND
 								tx_civserv_organisation.hidden = 0 AND						
 								tx_civserv_employee.deleted = 0 AND
-								tx_civserv_employee.hidden = 0';		
+								tx_civserv_employee.hidden = 0 AND	
+								tx_civserv_employee.em_pseudo = 0 ';
 			}else{
 				$fields =  'tx_civserv_organisation.or_code,
 							tx_civserv_organisation.or_name,
@@ -1011,11 +1013,12 @@ class tx_civserv_pi2 extends tslib_pibase {
 						$actual?'</strong>':'');
 		*/				
 		
+		$abcBar .= "</p>\n";
+		
 		// adding additional_mode Link (in this case: link for filtering the employeelist by organisation)
 		if($additional_mode > ''){
-			$abcBar .= $this->make_mode_link($text, $additional_mode);
+			$abcBar .= "<p>".$this->make_mode_link($text, $additional_mode)."</p>\n";
 		}				
-		$abcBar .= "</p>\n";
 
 		return $abcBar;
 	}
@@ -1100,7 +1103,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			}
 			else {
 #				debug('no match');
-				$orcodeBar .= $orCodeArray[$i].' '.$this->conf['abcSpacer'].' ';
+				$orcodeBar .=  '<span class="empty">'.$orCodeArray[$i].'</span> '.$this->conf['abcSpacer'].' ';
 			}
 		}
 
@@ -1132,13 +1135,13 @@ class tx_civserv_pi2 extends tslib_pibase {
 						$actual ? '<strong>' : '',
 						$actual ? '</strong>' : '');
 						
-		// adding additional_mode Link (in this case: link for filtering the employeelist by employee-name)
-		if($additional_mode > ''){
-			$orcodeBar .= $this->make_mode_link($text, $additional_mode);
-		}				
-						
 		$orcodeBar .= "</p>\n";
 
+		
+		// adding additional_mode Link (in this case: link for filtering the employeelist by employee-name)
+		if($additional_mode > ''){
+			$orcodeBar .= "<p>".$this->make_mode_link($text, $additional_mode)."</p>";
+		}				
 		return $orcodeBar;
 	}
 			
@@ -1184,11 +1187,9 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @return	string		The regular expression.
 	 */
 	 function make_mode_link($text, $mode) {
-		$link = '<br /><br />';
 		$link .=  $this->pi_linkTP_keepPIvars($text, array('mode' => $mode),0,0,0);
 		return $link;
 	}
-
 
 
 

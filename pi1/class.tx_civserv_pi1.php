@@ -511,8 +511,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_service_sv_form_mm',
 						'tx_civserv_form',
 						'AND tx_civserv_service.uid = ' . $row['uid'] . '
-		 				 AND tx_civserv_form.hidden=0 
-						 AND tx_civserv_form.deleted=0
+		 				 AND tx_civserv_form.hidden = 0 
+						 AND tx_civserv_form.deleted = 0
 						 AND tx_civserv_form.fo_status >= 2',
 						'',
 						'');	
@@ -657,8 +657,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 	function makeServiceListQuery($char=all,$limit=true,$count=false) {
 		//for versioning we need the hidden records, will be dismissed from live-display in fct. service_list....
 		$from  =	'tx_civserv_service';
-		$where =	'tx_civserv_service.deleted=0';
-		$where .= 	$this->versioningEnabled? ' AND NOT (tx_civserv_service.t3ver_state=0 AND tx_civserv_service.hidden=1)':' AND tx_civserv_service.hidden=0';
+		$where =	'tx_civserv_service.deleted = 0';
+		$where .= 	$this->versioningEnabled? ' AND NOT (tx_civserv_service.t3ver_state=0 AND tx_civserv_service.hidden=1)':' AND tx_civserv_service.hidden = 0';
 		$where .=	$this->previewMode? ' AND (tx_civserv_service.t3ver_wsid = '.$this->current_ws.' OR tx_civserv_service.t3ver_wsid=0) ':' AND tx_civserv_service.t3ver_state !=1';
 		$where .= 	' AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime)
 					 	OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime = 0))
@@ -721,8 +721,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$from  .=	', tx_civserv_external_service';
 				$where .=	' ' .
 							'AND tx_civserv_external_service.es_external_service = tx_civserv_service.uid
-							 AND tx_civserv_external_service.deleted=0
-							 AND tx_civserv_external_service.hidden=0
+							 AND tx_civserv_external_service.deleted = 0
+							 AND tx_civserv_external_service.hidden = 0
 							 AND tx_civserv_external_service.pid IN (' . $this->community['pidlist'] . ')';
 				$query .= 'UNION ALL ';
 			}
@@ -1019,8 +1019,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						tx_civserv_organisation 
 					WHERE 
 						tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ') AND 
-						tx_civserv_organisation.deleted=0 AND
-						tx_civserv_organisation.hidden=0 '.
+						tx_civserv_organisation.deleted = 0 AND
+						tx_civserv_organisation.hidden = 0 '.
 						($regexp?'AND or_name REGEXP "' . $regexp . '"':'') . ' ';		
 			} else {
 				$query = 'SELECT 
@@ -1040,8 +1040,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 							WHERE 
 								tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ') '
 								. ($regexp?'AND or_name REGEXP "' . $regexp . '"':'') . 'AND 
-								tx_civserv_organisation.deleted=0 AND
-								tx_civserv_organisation.hidden=0';
+								tx_civserv_organisation.deleted = 0 AND
+								tx_civserv_organisation.hidden = 0';
 			} //end else
 			
 			
@@ -1133,10 +1133,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 					 tx_civserv_position_po_organisation_mm',
 					'tx_civserv_employee.uid = ' . $row['emp_uid'] . ' 
 					 AND tx_civserv_position.uid = '.$row['pos_uid'] .'
-					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
-					 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
-					 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
-					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
+					 AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
+					 AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
+					 AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
+					 AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
 					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
 					 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
@@ -1225,8 +1225,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 						tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') AND 
 						tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
 						tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
-						tx_civserv_employee.deleted=0 AND
-						tx_civserv_employee.hidden=0 '.
+						tx_civserv_employee.deleted = 0 AND
+						tx_civserv_employee.hidden = 0 AND
+						tx_civserv_employee.em_pseudo = 0'.
 						($regexp?'AND em_name REGEXP "' . $regexp . '"':'') . ' ';
 			} else {
 				$query = 'Select 
@@ -1246,8 +1247,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 					    . ($regexp?'AND em_name REGEXP "' . $regexp . '"':'') . 'AND 
 						tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
 						tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
-						tx_civserv_employee.deleted=0 AND
-						tx_civserv_employee.hidden=0 ';
+						tx_civserv_employee.deleted = 0 AND
+						tx_civserv_employee.hidden = 0 AND
+						tx_civserv_employee.em_pseudo = 0';
 			}
 
 			$orderby =	$this->piVars['sort']?'name, em_firstname DESC':'name, em_firstname ASC';
@@ -1316,8 +1318,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_form',
 						'tx_civserv_form_fo_category_mm',
 						'tx_civserv_category',
-						'AND tx_civserv_category.deleted=0 AND tx_civserv_category.hidden=0
-						 AND tx_civserv_form.deleted=0 AND tx_civserv_form.hidden=0
+						'AND tx_civserv_category.deleted = 0 AND tx_civserv_category.hidden = 0
+						 AND tx_civserv_form.deleted = 0 AND tx_civserv_form.hidden = 0
 						 AND tx_civserv_form.uid = ' . $form_row['uid'],
 						'',
 						'',
@@ -1399,8 +1401,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 				   tx_civserv_form,
 				   tx_civserv_service_sv_form_mm';
 				   
-			$where='tx_civserv_service.hidden=0 AND 
-					 tx_civserv_service.deleted=0 AND
+			$where='tx_civserv_service.hidden = 0 AND 
+					 tx_civserv_service.deleted = 0 AND
 					 ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime) OR
 					 ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime = 0)) OR
 					 (tx_civserv_service.starttime = 0 AND tx_civserv_service.endtime = 0)) AND
@@ -1411,8 +1413,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 			if ($single_form['typ'] == 'e'){
 				$from .= ',tx_civserv_external_service';
 				$where .= ' AND 
-						 tx_civserv_external_service.hidden=0 AND 
-						 tx_civserv_external_service.deleted=0 AND
+						 tx_civserv_external_service.hidden = 0 AND 
+						 tx_civserv_external_service.deleted = 0 AND
 						 tx_civserv_external_service.es_external_service = tx_civserv_service.uid AND 
 						 tx_civserv_external_service.pid IN ('.$this->community['pidlist'].')';
 			}
@@ -1542,15 +1544,15 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_organisation.uid AS uid, tx_civserv_organisation.or_name AS name',
 						'tx_civserv_form, tx_civserv_service, tx_civserv_organisation, tx_civserv_service_sv_form_mm, tx_civserv_service_sv_organisation_mm',
 						'tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ')
-					 	 AND tx_civserv_form.hidden=0 AND tx_civserv_form.deleted=0
+					 	 AND tx_civserv_form.hidden = 0 AND tx_civserv_form.deleted = 0
 						 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_form.starttime AND tx_civserv_form.endtime)
 					 	 OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_form.starttime) AND (tx_civserv_form.endtime = 0))
 					 	 OR (tx_civserv_form.starttime = 0 AND tx_civserv_form.endtime = 0))
-					 	 AND tx_civserv_service.hidden=0 AND tx_civserv_service.deleted=0
+					 	 AND tx_civserv_service.hidden = 0 AND tx_civserv_service.deleted = 0
 						 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime)
 					 	 OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime = 0))
 					 	 OR (tx_civserv_service.starttime = 0 AND tx_civserv_service.endtime = 0))
-					 	 AND tx_civserv_organisation.hidden=0 AND tx_civserv_organisation.deleted=0
+					 	 AND tx_civserv_organisation.hidden = 0 AND tx_civserv_organisation.deleted = 0
 					 	 AND tx_civserv_service.uid = tx_civserv_service_sv_form_mm.uid_local
 					 	 AND tx_civserv_form.uid = tx_civserv_service_sv_form_mm.uid_foreign
 					 	 AND tx_civserv_service.uid = tx_civserv_service_sv_organisation_mm.uid_local
@@ -1596,11 +1598,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 "i" as typ'; //pseudo-column for internal services
 		}
 		$from  =	'tx_civserv_form, tx_civserv_service, tx_civserv_service_sv_form_mm';
-		$where =	'tx_civserv_form.deleted=0 AND tx_civserv_form.hidden=0
+		$where =	'tx_civserv_form.deleted = 0 AND tx_civserv_form.hidden = 0
 					 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_form.starttime AND tx_civserv_form.endtime)
 					 OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_form.starttime) AND (tx_civserv_form.endtime = 0))
 					 OR (tx_civserv_form.starttime = 0 AND tx_civserv_form.endtime = 0))
-				 	 AND tx_civserv_service.hidden=0 AND tx_civserv_service.deleted=0
+				 	 AND tx_civserv_service.hidden = 0 AND tx_civserv_service.deleted = 0
 					 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime)
 				 	 OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime = 0))
 				 	 OR (tx_civserv_service.starttime = 0 AND tx_civserv_service.endtime = 0))
@@ -1608,7 +1610,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				 	 AND tx_civserv_form.uid = tx_civserv_service_sv_form_mm.uid_foreign';
 		if ($organisation_id != 0) {
 			$from  .=	', tx_civserv_organisation, tx_civserv_service_sv_organisation_mm';
-			$where .=	' AND tx_civserv_organisation.hidden=0 AND tx_civserv_organisation.deleted=0
+			$where .=	' AND tx_civserv_organisation.hidden = 0 AND tx_civserv_organisation.deleted = 0
 					 	 AND tx_civserv_service.uid = tx_civserv_service_sv_organisation_mm.uid_local
 					 	 AND tx_civserv_organisation.uid = tx_civserv_service_sv_organisation_mm.uid_foreign
 						 AND tx_civserv_organisation.uid = ' . $organisation_id;
@@ -1643,8 +1645,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$from  .=	', tx_civserv_external_service';
 				$where .=	' ' .
 							'AND tx_civserv_external_service.es_external_service = tx_civserv_service.uid
-							 AND tx_civserv_external_service.deleted=0
-							 AND tx_civserv_external_service.hidden=0
+							 AND tx_civserv_external_service.deleted = 0
+							 AND tx_civserv_external_service.hidden = 0
 							 AND tx_civserv_external_service.pid IN (' . $this->community['pidlist'] . ')';
 				$query .= 'UNION ALL ';
 			}
@@ -1734,7 +1736,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$res_searchword = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'uid',
 						'tx_civserv_search_word',
-						$querypart_where4 . ' AND deleted=0 AND hidden=0',
+						$querypart_where4 . ' AND deleted = 0 AND hidden = 0',
 						'',
 						'');
 
@@ -1775,13 +1777,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,
 					'SELECT sv.uid as uid, sv.sv_name as name
 					 FROM tx_civserv_service as sv
-					 WHERE sv.deleted=0 AND sv.hidden=0 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN sv.starttime AND sv.endtime) OR
+					 WHERE sv.deleted = 0 AND sv.hidden = 0 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN sv.starttime AND sv.endtime) OR
 														   ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > sv.starttime) AND (sv.endtime=0)) OR
 														   (sv.starttime=0 AND sv.endtime=0) ) AND ' . $querypart_where . ')
 					 UNION
 					 SELECT sv.uid as uid, sv.sv_name as name
 					 FROM tx_civserv_service as sv, tx_civserv_search_word as sw, tx_civserv_service_sv_searchword_mm
-					 WHERE sv.deleted=0 AND sv.hidden=0 AND sw.deleted=0 AND sw.hidden=0
+					 WHERE sv.deleted = 0 AND sv.hidden = 0 AND sw.deleted = 0 AND sw.hidden = 0
 					 								  AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN sv.starttime AND sv.endtime) OR
 														   ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > sv.starttime) AND (sv.endtime=0)) OR
 														   (sv.starttime=0 AND sv.endtime=0) )
@@ -1789,7 +1791,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					 UNION
 					 SELECT sv.uid as uid, sv.sv_name as name
 					 FROM tx_civserv_service as sv, tx_civserv_model_service as ms
-					 WHERE sv.deleted=0 AND sv.hidden=0 AND ms.deleted=0 AND ms.hidden=0
+					 WHERE sv.deleted = 0 AND sv.hidden = 0 AND ms.deleted = 0 AND ms.hidden = 0
 													  AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN sv.starttime AND sv.endtime) OR
 														   ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > sv.starttime) AND (sv.endtime=0)) OR
 														   (sv.starttime=0 AND sv.endtime=0) )
@@ -1798,8 +1800,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 					UNION
 					SELECT sv.uid as uid, sv.sv_name as name
 					FROM tx_civserv_service as sv, tx_civserv_external_service
-					WHERE sv.deleted=0 AND sv.hidden=0 AND
-  						  tx_civserv_external_service.hidden=0 AND tx_civserv_external_service.deleted=0 
+					WHERE sv.deleted = 0 AND sv.hidden = 0 AND
+  						  tx_civserv_external_service.hidden = 0 AND tx_civserv_external_service.deleted = 0 
 														AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN sv.starttime AND sv.endtime) OR
 														   ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > sv.starttime) AND (sv.endtime=0)) OR
 														   (sv.starttime=0 AND sv.endtime=0) ) 
@@ -1808,8 +1810,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 					UNION
 					SELECT sv.uid as uid, sv.sv_name as name 
 					FROM tx_civserv_service as sv, tx_civserv_search_word as sw, tx_civserv_service_sv_searchword_mm, tx_civserv_external_service
-					WHERE sv.deleted=0 AND sv.hidden=0 AND sw.deleted=0 AND sw.hidden=0 AND
-						  tx_civserv_external_service.hidden=0 AND tx_civserv_external_service.deleted=0  
+					WHERE sv.deleted = 0 AND sv.hidden = 0 AND sw.deleted = 0 AND sw.hidden = 0 AND
+						  tx_civserv_external_service.hidden = 0 AND tx_civserv_external_service.deleted = 0  
 													  AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN sv.starttime AND sv.endtime) OR
 														  ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > sv.starttime) AND (sv.endtime=0)) OR
 														  (sv.starttime=0 AND sv.endtime=0) )
@@ -1869,8 +1871,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 													   SUM(al.al_number) as number',	// SELECT
 													  'tx_civserv_accesslog as al,
 													   tx_civserv_service as sv',		// FROM
-													  'sv.deleted=0 
-													   AND sv.hidden=0 
+													  'sv.deleted = 0 
+													   AND sv.hidden = 0 
 													   AND sv.uid = al.al_service_uid 
 													   AND sv.pid IN (' . $this->community['pidlist'] . ')',		// WHERE
 														 'al.al_service_uid',									// GROUP BY
@@ -1965,7 +1967,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						$actual?'</strong>':'');
 			}
 			else{
-				$abcBar .= '<span>'.$alphabet[$i].'</span> '.$this->conf['abcSpacer'].' ';
+				$abcBar .= '<span class="empty">'.$alphabet[$i].'</span> '.$this->conf['abcSpacer'].' ';
 			}
 		}
 
@@ -2048,10 +2050,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 								'tx_civserv_navigation as nv1,
 								 tx_civserv_navigation_nv_structure_mm as nvmm,
 								 tx_civserv_navigation as nv2',
-								'nv1.deleted=0 
-								 AND nv1.hidden=0 
-								 AND nv2.deleted=0 
-								 AND nv2.hidden=0
+								'nv1.deleted = 0 
+								 AND nv1.hidden = 0 
+								 AND nv2.deleted = 0 
+								 AND nv2.hidden = 0
 								 AND nv1.uid = nvmm.uid_local 
 								 AND nv2.uid = nvmm.uid_foreign
 								 AND nv2.uid = ' . $uid ,
@@ -2073,10 +2075,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 								'tx_civserv_organisation as or1,
 								 tx_civserv_organisation_or_structure_mm as ormm,
 								 tx_civserv_organisation as or2',
-								'or1.deleted=0 
-								 AND or1.hidden=0 
-								 AND or2.deleted=0 
-								 AND or2.hidden=0
+								'or1.deleted = 0 
+								 AND or1.hidden = 0 
+								 AND or2.deleted = 0 
+								 AND or2.hidden = 0
 								 AND or1.uid = ormm.uid_local 
 								 AND or2.uid = ormm.uid_foreign
 								 AND or2.uid = ' . $uid ,
@@ -2285,7 +2287,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_service_sv_form_mm',
 						'tx_civserv_form',
 						'AND tx_civserv_service.uid = ' . $uid . '
-		 				 AND tx_civserv_form.hidden=0 AND tx_civserv_form.deleted=0
+		 				 AND tx_civserv_form.hidden = 0 AND tx_civserv_form.deleted = 0
 		 				 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_form.starttime AND tx_civserv_form.endtime)
 						 	  OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_form.starttime) AND (tx_civserv_form.endtime=0))
 						 	  OR (tx_civserv_form.starttime=0 AND tx_civserv_form.endtime=0) )',
@@ -2301,7 +2303,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_service_sv_organisation_mm',
 						'tx_civserv_organisation',
 						'AND tx_civserv_service.uid = ' . $uid . '
-		 				 AND tx_civserv_organisation.hidden=0 AND tx_civserv_organisation.deleted=0',
+		 				 AND tx_civserv_organisation.hidden = 0 AND tx_civserv_organisation.deleted = 0',
 						'',
 						'tx_civserv_service_sv_organisation_mm.sorting');	//ORDER BY
 						#'name');	//ORDER BY
@@ -2331,10 +2333,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 tx_civserv_employee, 
 						 tx_civserv_employee_em_position_mm',
 						'tx_civserv_service.uid = ' . $uid . '
-						 AND tx_civserv_service.deleted=0 AND tx_civserv_service.hidden=0
-						 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
-						 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
-						 AND tx_civserv_employee_em_position_mm.deleted=0 AND tx_civserv_employee_em_position_mm.hidden=0
+						 AND tx_civserv_service.deleted = 0 AND tx_civserv_service.hidden = 0
+						 AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
+						 AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
+						 AND tx_civserv_employee_em_position_mm.deleted = 0 AND tx_civserv_employee_em_position_mm.hidden = 0
 						 AND tx_civserv_service.uid = tx_civserv_service_sv_position_mm.uid_local
 						 AND tx_civserv_service_sv_position_mm.uid_foreign = tx_civserv_position.uid
 						 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
@@ -2348,7 +2350,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_service.uid as suid, tx_civserv_search_word.uid as wuid, tx_civserv_service.sv_name as sname, tx_civserv_search_word.sw_search_word as sword',
 						'tx_civserv_service, tx_civserv_search_word, tx_civserv_service_sv_searchword_mm',
 						'tx_civserv_service.uid = ' . $uid . '
-						AND tx_civserv_service.deleted=0 AND tx_civserv_service.hidden=0
+						AND tx_civserv_service.deleted = 0 AND tx_civserv_service.hidden = 0
 						AND tx_civserv_service.uid = tx_civserv_service_sv_searchword_mm.uid_local
 						AND tx_civserv_search_word.uid = tx_civserv_service_sv_searchword_mm.uid_foreign',
 						'',
@@ -2365,7 +2367,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 AND mm.uid_foreign = similar.uid 
 						 AND service.uid = ' . $uid . ' 
 						 AND service.uid != similar.uid 
-						 AND similar.deleted=0 AND similar.hidden=0 
+						 AND similar.deleted = 0 AND similar.hidden = 0 
 						 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN similar.starttime AND similar.endtime) OR
 								  ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > similar.starttime) AND (similar.endtime=0)) OR
 								  (similar.starttime=0 AND similar.endtime=0) )';
@@ -2468,7 +2470,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$res_model_service = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'ms_name, ms_descr_short, ms_descr_long, ms_image, ms_image_text, ms_fees, ms_documents, ms_legal_global',
 						'tx_civserv_model_service',
-						'deleted=0 AND hidden=0 AND uid = ' . intval($service_common[sv_model_service]) . '');
+						'deleted = 0 AND hidden = 0 AND uid = ' . intval($service_common[sv_model_service]) . '');
 
 			$model_service = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_model_service);
 		}
@@ -2648,7 +2650,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'uid, pid, sv_name, sv_descr_short, sv_descr_long, sv_image, sv_image_text, sv_fees, sv_documents, sv_legal_local, sv_legal_global, sv_region_checkbox, sv_region_link, sv_model_service',
 						'tx_civserv_service',
-						'deleted=0 AND hidden=0 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN starttime AND endtime) OR
+						'deleted = 0 AND hidden = 0 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN starttime AND endtime) OR
 												  ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > starttime) AND (endtime=0)) OR
 												  (starttime=0 AND endtime=0) ) AND uid = ' . $uid . '',
 						'',
@@ -2697,7 +2699,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 em_image, 
 						 em_datasec',
 						'tx_civserv_employee',
-						'deleted=0 AND hidden=0 AND uid='.$uid.' AND em_datasec=1',
+						'deleted = 0 AND hidden = 0 AND uid='.$uid.' AND em_datasec=1',
 						'',
 						'',
 						'');
@@ -2720,8 +2722,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 					'tx_civserv_employee',
 					'tx_civserv_employee_em_hours_mm',
 					'tx_civserv_officehours',
-					'AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
-					 AND tx_civserv_officehours.deleted=0 AND tx_civserv_officehours.hidden=0
+					'AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
+					 AND tx_civserv_officehours.deleted = 0 AND tx_civserv_officehours.hidden = 0
 					 AND tx_civserv_employee.uid = ' . $uid,
 					'',
 					'oh_weekday',
@@ -2744,9 +2746,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 					 tx_civserv_officehours, 
 					 tx_civserv_employee_em_position_mm, 
 					 tx_civserv_officehours_oep_employee_em_position_mm_mm',
-					'tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
-					 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
-					 AND tx_civserv_officehours.deleted=0 AND tx_civserv_officehours.hidden=0
+					'tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
+					 AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
+					 AND tx_civserv_officehours.deleted = 0 AND tx_civserv_officehours.hidden = 0
 					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 					 AND tx_civserv_position.uid = tx_civserv_employee_em_position_mm.uid_foreign
 					 AND tx_civserv_employee_em_position_mm.uid = tx_civserv_officehours_oep_employee_em_position_mm_mm.uid_local
@@ -2774,10 +2776,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 					 tx_civserv_employee_em_position_mm, 
 					 tx_civserv_position_po_organisation_mm, 
 					 tx_civserv_organisation_or_hours_mm',
-					'tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
-					 AND tx_civserv_officehours.deleted=0 AND tx_civserv_officehours.hidden=0
-					 AND tx_civserv_position.deleted=0 AND tx_civserv_organisation.hidden=0
-					 AND tx_civserv_employee.deleted=0 AND tx_civserv_officehours.hidden=0
+					'tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
+					 AND tx_civserv_officehours.deleted = 0 AND tx_civserv_officehours.hidden = 0
+					 AND tx_civserv_position.deleted = 0 AND tx_civserv_organisation.hidden = 0
+					 AND tx_civserv_employee.deleted = 0 AND tx_civserv_officehours.hidden = 0
 					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 					 AND tx_civserv_position.uid = tx_civserv_employee_em_position_mm.uid_foreign
 					 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
@@ -2813,9 +2815,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 				'tx_civserv_employee.uid='.$uid.' 
 				 AND em_datasec=1 
 				 AND tx_civserv_position.uid = '.$pos_id.'
-				 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
-				 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
-				 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
+				 AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
+				 AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
+				 AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
 				 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 				 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
 				 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
@@ -2839,10 +2841,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 					'tx_civserv_employee.uid='.$uid.' 
 					 AND em_datasec=1 
 					 AND tx_civserv_position.uid = '.$pos_id.'
-					 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
-					 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
-					 AND tx_civserv_room.deleted=0 AND tx_civserv_room.hidden=0
-					 AND tx_civserv_floor.deleted=0 AND tx_civserv_floor.hidden=0
+					 AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
+					 AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
+					 AND tx_civserv_room.deleted = 0 AND tx_civserv_room.hidden = 0
+					 AND tx_civserv_floor.deleted = 0 AND tx_civserv_floor.hidden = 0
 					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
 					 AND tx_civserv_employee_em_position_mm.ep_room = tx_civserv_room.uid
@@ -3019,7 +3021,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 or_addlocation,
 						 or_show_supervisor',
 						'tx_civserv_organisation',
-						'deleted=0 AND hidden=0 AND uid='.$uid,
+						'deleted = 0 AND hidden = 0 AND uid='.$uid,
 						'',
 						'',
 						'');
@@ -3028,8 +3030,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res_supervisor = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'tx_civserv_employee.uid as uid, em_title, em_name, em_firstname, em_address, em_datasec',
 						'tx_civserv_organisation, tx_civserv_employee',
-						'tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
-						 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
+						'tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
+						 AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
 						 AND tx_civserv_organisation.or_supervisor = tx_civserv_employee.uid
 						 AND tx_civserv_organisation.uid='.$uid,
 						'',
@@ -3040,9 +3042,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res_pos_supervisor = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'tx_civserv_employee.uid as uid, tx_civserv_position.uid as pos_uid, em_title, em_name, em_firstname, em_address, em_datasec',
 						'tx_civserv_organisation, tx_civserv_employee, tx_civserv_position, tx_civserv_employee_em_position_mm, tx_civserv_position_po_organisation_mm',
-						'tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
-						 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
-						 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
+						'tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
+						 AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
+						 AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
 						 AND tx_civserv_organisation.or_supervisor = tx_civserv_employee.uid
 						 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 						 AND tx_civserv_position.uid = tx_civserv_employee_em_position_mm.uid_foreign
@@ -3072,8 +3074,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_organisation',
 						'tx_civserv_organisation_or_building_mm',
 						'tx_civserv_building',
-						'AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
-						 AND tx_civserv_building.deleted=0 AND tx_civserv_building.hidden=0
+						'AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
+						 AND tx_civserv_building.deleted = 0 AND tx_civserv_building.hidden = 0
 						 AND tx_civserv_organisation.uid = ' . $uid,
 						'',
 						'',
@@ -3091,8 +3093,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_organisation',
 						'tx_civserv_organisation_or_hours_mm',
 						'tx_civserv_officehours',
-						'AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
-						 AND tx_civserv_officehours.deleted=0 AND tx_civserv_officehours.hidden=0
+						'AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
+						 AND tx_civserv_officehours.deleted = 0 AND tx_civserv_officehours.hidden = 0
 						 AND tx_civserv_organisation.uid = ' . $uid,
 						'',
 						'oh_weekday',
@@ -3108,8 +3110,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_organisation, tx_civserv_organisation_or_structure_mm',
 						'tx_civserv_organisation_or_structure_mm.uid_local = tx_civserv_organisation.uid and
 						 tx_civserv_organisation_or_structure_mm.uid_foreign = '.$organisation_rows['uid'].' and
-						 tx_civserv_organisation.deleted=0 and
-						 tx_civserv_organisation.hidden=0',
+						 tx_civserv_organisation.deleted = 0 and
+						 tx_civserv_organisation.hidden = 0',
 						'',
 						'tx_civserv_organisation.sorting', //Order by
 						'');				
@@ -3131,8 +3133,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_organisation_or_structure_mm.uid_local = '.$organisation_rows['uid'].' and
 						 tx_civserv_organisation_or_structure_mm.uid_foreign = tx_civserv_organisation.uid and
 						 tx_civserv_organisation.uid!='.$this->community['organisation_uid'].' AND
-						 tx_civserv_organisation.deleted=0 and
-						 tx_civserv_organisation.hidden=0',
+						 tx_civserv_organisation.deleted = 0 and
+						 tx_civserv_organisation.hidden = 0',
 						'',
 						'tx_civserv_organisation.sorting', //Order by
 						'');				
@@ -3190,12 +3192,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 						tx_civserv_building_bl_floor_mm',
 					'tx_civserv_organisation_or_building_mm.uid_local = tx_civserv_organisation.uid AND
 						tx_civserv_organisation_or_building_mm.uid_foreign = tx_civserv_building.uid AND
-						tx_civserv_organisation.deleted=0 AND 
-						tx_civserv_organisation.hidden=0 AND 
-						tx_civserv_building.deleted=0 AND 
-						tx_civserv_building.hidden=0 AND 
-						tx_civserv_employee_em_position_mm.deleted=0 AND 
-						tx_civserv_employee_em_position_mm.hidden=0 AND 
+						tx_civserv_organisation.deleted = 0 AND 
+						tx_civserv_organisation.hidden = 0 AND 
+						tx_civserv_building.deleted = 0 AND 
+						tx_civserv_building.hidden = 0 AND 
+						tx_civserv_employee_em_position_mm.deleted = 0 AND 
+						tx_civserv_employee_em_position_mm.hidden = 0 AND 
 						tx_civserv_organisation.or_supervisor = '.$organisation_supervisor['uid'].' AND
 						tx_civserv_employee_em_position_mm.uid_foreign = '.$pos_id.' AND
 						tx_civserv_employee_em_position_mm.ep_room = tx_civserv_room.uid AND
@@ -3221,8 +3223,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_organisation',
 						'tx_civserv_organisation_or_building_to_show_mm', //!!!
 						'tx_civserv_building',
-						'AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
-						 AND tx_civserv_building.deleted=0 AND tx_civserv_building.hidden=0
+						'AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
+						 AND tx_civserv_building.deleted = 0 AND tx_civserv_building.hidden = 0
 						 AND tx_civserv_organisation.uid = ' . $uid,
 						'',
 						'',
@@ -3381,7 +3383,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'*',
 						'tx_civserv_conf_mandant',
-						'deleted=0 AND hidden=0',
+						'deleted = 0 AND hidden = 0',
 						'',
 						'cm_community_name');
 
@@ -3440,7 +3442,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'cm_community_name',
 						'tx_civserv_conf_mandant',
-						'deleted=0 AND hidden=0
+						'deleted = 0 AND hidden = 0
 						 AND cm_community_id = '.$community_id);
 			if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$content = $row['cm_community_name'];
@@ -3483,7 +3485,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 								'cm_page_uid, cm_search_uid',
 								'tx_civserv_conf_mandant',
-								'deleted=0 AND hidden=0');
+								'deleted = 0 AND hidden = 0');
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
 			//feed the link with the id of the frontend-page (and never with the id of the search-page)!!
 			if ($pageid == $row['cm_search_uid']){
@@ -3718,7 +3720,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$res_organisation = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'or_name, or_email',
 					'tx_civserv_organisation',
-					'deleted=0 AND hidden=0 AND uid = ' . $this->piVars[org_id]);
+					'deleted = 0 AND hidden = 0 AND uid = ' . $this->piVars[org_id]);
 
 			//Check if query returned a result
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($res_organisation) == 1) {
@@ -3780,9 +3782,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$querypart_select = ', ep_email';
 			$querypart_from = ', tx_civserv_service, tx_civserv_service_sv_position_mm, tx_civserv_position, tx_civserv_employee_em_position_mm';
 			$querypart_where = ' AND tx_civserv_service.uid = ' . $sv_id . ' AND tx_civserv_employee.uid = ' . $emp_id . ' AND tx_civserv_position.uid = ' . $pos_id . '
-								AND tx_civserv_service.deleted=0 AND tx_civserv_service.hidden=0
-								AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
-								AND tx_civserv_employee_em_position_mm.deleted=0 AND tx_civserv_employee_em_position_mm.hidden=0
+								AND tx_civserv_service.deleted = 0 AND tx_civserv_service.hidden = 0
+								AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
+								AND tx_civserv_employee_em_position_mm.deleted = 0 AND tx_civserv_employee_em_position_mm.hidden = 0
 								AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime)
 						 	 		OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime=0))
 						 	  		OR (tx_civserv_service.starttime=0 AND tx_civserv_service.endtime=0) )
@@ -3800,8 +3802,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$querypart_select = ', ep_email';
 			$querypart_from = ', tx_civserv_position, tx_civserv_employee_em_position_mm';
 			$querypart_where = ' AND tx_civserv_employee.uid = ' . $emp_id . ' AND tx_civserv_position.uid = ' . $pos_id . '
-								AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
-								AND tx_civserv_employee_em_position_mm.deleted=0 AND tx_civserv_employee_em_position_mm.hidden=0
+								AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
+								AND tx_civserv_employee_em_position_mm.deleted = 0 AND tx_civserv_employee_em_position_mm.hidden = 0
 								AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 						 		AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid';
 		}
@@ -3809,7 +3811,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res_employee = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'em_email, em_datasec as datasec' . $querypart_select,
 						'tx_civserv_employee' . $querypart_from,
-						'tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0 '.$querypart_where,
+						'tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0 '.$querypart_where,
 						'',
 						'',
 						'');
@@ -3877,8 +3879,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 							'tx_civserv_service_sv_form_mm',
 							'tx_civserv_form',
 							'AND tx_civserv_form.uid = ' . $debit_form_uid . '
-							 AND tx_civserv_service.deleted=0 AND tx_civserv_service.hidden=0
-							 AND tx_civserv_form.deleted=0 AND tx_civserv_form.hidden=0
+							 AND tx_civserv_service.deleted = 0 AND tx_civserv_service.hidden = 0
+							 AND tx_civserv_form.deleted = 0 AND tx_civserv_form.hidden = 0
 							 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime)
 							 	  OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime=0))
 							 	  OR (tx_civserv_service.starttime=0 AND tx_civserv_service.endtime=0) )
@@ -4588,7 +4590,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'pid',			 							// SELECT ...
 			'pages',									// FROM ...
-			'uid = '.$pageid.' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+			'uid = '.$pageid.' AND deleted = 0 AND hidden = 0',	// AND title LIKE "%blabla%"', // WHERE...
 			'', 										// GROUP BY...
 			'',   										// ORDER BY...
 			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
@@ -4753,7 +4755,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$res2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'pid',			 							// SELECT ...
 				'pages',									// FROM ...
-				'uid = '.$row[0].' AND deleted=0 AND hidden=0',// AND title LIKE "%blabla%"', // WHERE...
+				'uid = '.$row[0].' AND deleted = 0 AND hidden = 0',// AND title LIKE "%blabla%"', // WHERE...
 				'', 										// GROUP BY...
 				'',   										// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)

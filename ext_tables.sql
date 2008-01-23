@@ -554,6 +554,7 @@ CREATE TABLE tx_civserv_employee (
 	em_email tinytext NOT NULL,
 	em_image blob NOT NULL,
 	em_datasec tinyint(3) unsigned DEFAULT '0' NOT NULL,
+	em_pseudo tinyint(3) unsigned DEFAULT '0' NOT NULL,
 	em_hours int(11) unsigned DEFAULT '0' NOT NULL,
 	em_position int(11) unsigned DEFAULT '0' NOT NULL,
 	em_position_PLACEHOLDER tinytext NOT NULL,

@@ -1953,6 +1953,13 @@ $TCA["tx_civserv_employee"] = Array (
 				"type" => "check",
 			)
 		),
+		"em_pseudo" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_employee.em_pseudo",
+			"config" => Array (
+				"type" => "check",
+			)
+		),
 		"em_hours" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_employee.em_hours",
@@ -2006,7 +2013,7 @@ $TCA["tx_civserv_employee"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, em_number, em_address, em_title, em_name, em_firstname, em_telephone, em_fax, em_mobile, em_email, em_image, em_datasec, em_hours, em_position_PLACEHOLDER, em_position")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, em_number, em_address, em_title, em_name, em_firstname, em_telephone, em_fax, em_mobile, em_email, em_image, em_datasec, em_pseudo, em_hours, em_position_PLACEHOLDER, em_position")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")
