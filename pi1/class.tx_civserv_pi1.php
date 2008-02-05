@@ -2381,7 +2381,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		  
 		
 		$res_similar = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'similar.uid AS uid, 
+						'DISTINCT similar.uid AS uid, 
 						 similar.sv_name AS name',
 						$from,
 						$where,
