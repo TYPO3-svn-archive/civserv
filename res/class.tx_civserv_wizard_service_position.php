@@ -357,7 +357,10 @@ function init() {
 			<a href="#" onclick="add_options_refresh(\'X\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">X</a>
 			<a href="#" onclick="add_options_refresh(\'Y\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">Y</a>
 			<a href="#" onclick="add_options_refresh(\'Z\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">Z</a>
+			- 
 			<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>
+			- 
+			<a href="#" onclick="add_options_refresh(\'any\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.any').'</a>
 		';
 
 		$this->content.='
@@ -377,7 +380,7 @@ function init() {
 		if ($letter=='') {
 			// do nothing
 		} else {
-			if ($letter != "other" and $letter != "search") {
+			if ($letter != "other" && $letter != "search" && $letter != "any") {
 				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_position.select_positions_text').''.$letter.':</h3>';
 			}else {
 				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_position.select_positions_text_no_abc').':</h3>';
@@ -476,7 +479,11 @@ function init() {
 		}
 		
 			//assemble bits and pieces for the requests		
-		$select_fields='tx_civserv_employee.em_name, tx_civserv_employee.em_firstname, tx_civserv_position.uid, tx_civserv_position.pid, tx_civserv_position.po_name';
+		$select_fields	=  'tx_civserv_employee.em_name, 
+							tx_civserv_employee.em_firstname, 
+							tx_civserv_position.uid, 
+							tx_civserv_position.pid, 
+							tx_civserv_position.po_name';
 		$local_table='tx_civserv_employee';
 		$mm_table='tx_civserv_employee_em_position_mm';
 		$foreign_table='tx_civserv_position';
@@ -487,7 +494,7 @@ function init() {
 			$where=$limited_visibility;
 		}
 
-		if ($letter != "other" and $letter != "search") {
+		if ($letter != "other" && $letter != "search" && $letter != "any") {
 				// Gets all positions with the selected letter at the
 				// beginning out of the database. Checks also if positions aren't hidden or
 				// deleted.
@@ -507,7 +514,47 @@ function init() {
 				// Gets all positions which don't begin with a letter
 				// out of the database. Checks also if positions aren't hidden or
 				// deleted.
-			$where .= ' AND !(upper(left(po_name,1))=\'A\') AND !(upper(left(po_name,1))=\'B\') AND !(upper(left(po_name,1))=\'C\') AND !(upper(left(po_name,1))=\'D\') AND !(upper(left(po_name,1))=\'E\') AND !(upper(left(po_name,1))=\'F\') AND !(upper(left(po_name,1))=\'G\') AND !(upper(left(po_name,1))=\'H\') AND !(upper(left(po_name,1))=\'I\') AND !(upper(left(po_name,1))=\'J\') AND !(upper(left(po_name,1))=\'K\') AND !(upper(left(po_name,1))=\'L\') AND !(upper(left(po_name,1))=\'M\') AND !(upper(left(po_name,1))=\'N\') AND !(upper(left(po_name,1))=\'O\') AND !(upper(left(po_name,1))=\'P\') AND !(upper(left(po_name,1))=\'Q\') AND !(upper(left(po_name,1))=\'R\') AND !(upper(left(po_name,1))=\'S\') AND !(upper(left(po_name,1))=\'T\') AND !(upper(left(po_name,1))=\'U\') AND !(upper(left(po_name,1))=\'V\') AND !(upper(left(po_name,1))=\'W\') AND !(upper(left(po_name,1))=\'X\') AND !(upper(left(po_name,1))=\'Y\') AND !(upper(left(po_name,1))=\'Z\')';
+			$where .= ' AND !(upper(left(po_name,1))=\'A\') 
+						AND !(upper(left(po_name,1))=\'B\') 
+						AND !(upper(left(po_name,1))=\'C\') 
+						AND !(upper(left(po_name,1))=\'D\') 
+						AND !(upper(left(po_name,1))=\'E\') 
+						AND !(upper(left(po_name,1))=\'F\') 
+						AND !(upper(left(po_name,1))=\'G\') 
+						AND !(upper(left(po_name,1))=\'H\') 
+						AND !(upper(left(po_name,1))=\'I\') 
+						AND !(upper(left(po_name,1))=\'J\') 
+						AND !(upper(left(po_name,1))=\'K\') 
+						AND !(upper(left(po_name,1))=\'L\') 
+						AND !(upper(left(po_name,1))=\'M\') 
+						AND !(upper(left(po_name,1))=\'N\') 
+						AND !(upper(left(po_name,1))=\'O\') 
+						AND !(upper(left(po_name,1))=\'P\') 
+						AND !(upper(left(po_name,1))=\'Q\') 
+						AND !(upper(left(po_name,1))=\'R\') 
+						AND !(upper(left(po_name,1))=\'S\') 
+						AND !(upper(left(po_name,1))=\'T\') 
+						AND !(upper(left(po_name,1))=\'U\') 
+						AND !(upper(left(po_name,1))=\'V\') 
+						AND !(upper(left(po_name,1))=\'W\') 
+						AND !(upper(left(po_name,1))=\'X\') 
+						AND !(upper(left(po_name,1))=\'Y\') 
+						AND !(upper(left(po_name,1))=\'Z\')';
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				$select_fields,		// SELECT
+				$local_table,		// FROM local
+				$mm_table,			// FROM mm
+				$foreign_table,		// FROM foreign
+				$where,				// WHERE
+				'', 				// GROUP BY...
+				'po_name',   		// ORDER BY...
+				'' 					// LIMIT...
+				);
+			}
+		if ($letter == "any") {
+				// Gets all positions which don't begin with a letter
+				// out of the database. Checks also if positions aren't hidden or
+				// deleted.
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 				$select_fields,		// SELECT
 				$local_table,		// FROM local

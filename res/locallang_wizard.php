@@ -42,6 +42,7 @@ $LOCAL_LANG = Array (
     'default' => Array (
 				// LOCAL_LANG for all abc-wizards
             'all_abc_wizards.other' => 'Other',
+            'all_abc_wizards.any' => 'Any',
 			'all_abc_wizards.search' => 'Search',
 			'all_category_wizards.search' => 'Search',
 			'all_wizards.search_warning' => 'Please enter a search item !',
@@ -200,6 +201,7 @@ $LOCAL_LANG = Array (
         'de' => Array (
 				// LOCAL_LANG for all abc-wizards
             'all_abc_wizards.other' => 'Sonstige',
+            'all_abc_wizards.any' => 'Alle',
 			'all_abc_wizards.search' => 'Suche',
 			'all_category_wizards.search' => 'Suche',
 			'all_wizards.search_warning' => 'Bitte geben Sie einen Suchbegriff ein !',
