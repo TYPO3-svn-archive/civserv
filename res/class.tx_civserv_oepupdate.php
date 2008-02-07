@@ -154,7 +154,35 @@ class tx_civserv_oepupdate {
 				);
 			}
 		}
+		
+		
+		// test test test
+		if (is_array($params) && ($params['table'] == 'tx_civserv_navigation')) {	
+		debug($params, 'class tx_civserv_oepupdate');
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'tx_civserv_navigation.pid, 
+				 tx_civserv_navigation.nv_name,
+				 tx_civserv_navigation.uid, 
+				 pages.title',			// SELECT
+				'tx_civserv_navigation, 
+				 pages',				// FROM
+				'pages.uid = tx_civserv_navigation.pid',										// WHERE
+				'',												// GROUP_BY
+				'', 					// ORDER BY
+				'' 												// LIMIT
+			);
+			
+			while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$GLOBALS['TYPO3_DB']->exec_UPDATEquery(		
+					'tx_civserv_navigation',
+					'uid = '.$GLOBALS['TYPO3_DB']->quoteStr($data['uid'], 'tx_civserv_navigation'),  // where
+					array ("nv_label" => $data['nv_name'].' ('.$data['title'].')')	// set... (array)
+				);
+			}
+		}
 	}
+	
+	
 	
 	/**
 	* Shows building and floor in the selectorbox for each room in the Employee-Position-Relationship (this version of
@@ -230,8 +258,30 @@ class tx_civserv_oepupdate {
 		);
 		
 		while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			if ($admin->get_mandant($data['pid'])==$uidAdministration)		
+			if ($admin->get_mandant($data['pid']) == $uidAdministration)		
 				$params['items'][++ $i] = Array ($data['ro_name'].' ('.$data['bl_name'].', '.$data['fl_descr'].')', $data['uid']);
+		}
+	}
+	
+	// test test test
+	function nv_category(&$params) {
+	
+		for ($i=0; $i<count($params['items']); $i++){
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+						'tx_civserv_navigation.pid, 
+						 pages.title',	// SELECT
+						'tx_civserv_navigation,
+						 pages',	// FROM
+						'tx_civserv_navigation.pid = pages.uid
+						 AND tx_civserv_navigation.uid = '.$params['items'][$i][1],	// WHERE
+						'',	// GROUP_BY
+						'', // ORDER BY
+						'' // LIMIT
+						);
+			while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				$nv_cat = explode(' ', $data['title']); //'Lebenslagen pflegen'
+				$params['items'][$i][0] .= ' ('.$nv_cat[0].')';	//'Lebenslagen'
+			}
 		}
 	}
 }

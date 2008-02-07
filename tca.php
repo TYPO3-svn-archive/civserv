@@ -2782,6 +2782,15 @@ $TCA["tx_civserv_navigation"] = Array (
 				"eval" => "required",
 			)
 		),
+		"nv_label" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_navigation.nv_label",
+			"config" => Array (
+				"type" => "input",
+				"size" => "30",
+				"max" => "255",
+			)
+		),
 		"nv_structure" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_navigation.nv_structure",

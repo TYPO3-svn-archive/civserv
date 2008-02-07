@@ -632,10 +632,14 @@ class tx_civserv_commit {
 		if($params['table']=='tx_civserv_conf_mandant' && substr($params['uid'],0,3)!='NEW'){
 			$this->makeDirs($params);
 		}
-		if($params['table']=='tx_civserv_navigation'){
+		if($params['table'] == 'tx_civserv_navigation'){
+			debug('commit.php: its a navigation!');
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local','tx_civserv_navigation_nv_structure_mm','uid_local = uid_foreign');
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
 				$del_result = $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_civserv_navigation_nv_structure_mm','uid_local = '.$row['uid_local'].' AND uid_foreign = '.$row['uid_local']);				
+				// test test test
+				$update_obj = t3lib_div::makeInstance('tx_civserv_oepupdate');
+				$update_obj->update_label($params);
 			}
 		}
 		if($params['table']=='tx_civserv_organisation'){

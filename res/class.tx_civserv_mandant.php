@@ -259,8 +259,15 @@ class tx_civserv_mandant{
 			$empty_entry=1;
 		} $empty_entry=0;
 		$params['items'] = $this->manipulate_array($mandant, $params,$table);	
-		if ($params['table']=='tx_civserv_navigation'){
-			$params['items']=$this->additional_remove($params['items'], $table, $pid);
+		if ($params['table'] == 'tx_civserv_navigation'){
+			$params['items'] = $this->additional_remove($params['items'], $table, $pid);
+		}
+		// test test test
+		if($params['table'] == 'tx_civserv_service' && $params['config']['foreign_table'] == 'tx_civserv_navigation'){
+			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_oepupdate.php']){
+				$update_obj = t3lib_div::makeInstance('tx_civserv_oepupdate');
+				$update_obj->nv_category($params);
+			}
 		}
 		if ($empty_entry) $params['items']=array_merge(Array(""),$params['items']);
 	}

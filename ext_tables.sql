@@ -790,6 +790,7 @@ CREATE TABLE tx_civserv_navigation (
 	hidden tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	fe_group int(11) DEFAULT '0' NOT NULL,
 	nv_name tinytext NOT NULL,
+	nv_label tinytext NOT NULL,
 	nv_structure int(11) unsigned DEFAULT '0' NOT NULL,
 	
 	PRIMARY KEY (uid),
