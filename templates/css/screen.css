@@ -1124,6 +1124,8 @@ input:focus, textarea:focus {
 }
 */
 
+
+
 .tx-civserv-pi2 #centrecontent table {
 	margin-left: 1em;
 	xborder: dashed red 2x;
@@ -1166,6 +1168,57 @@ input:focus, textarea:focus {
 
 .tx-civserv-pi2 #centrecontent table td img, 
 .tx-civserv-pi2 #centrecontent table th img{
+	border: 0;
+}
+
+
+
+
+
+
+
+.tx-civserv-pi3 #centrecontent table {
+	margin-left: 1em;
+	xborder: dashed red 2x;
+	xbackground-color: green;
+}
+
+
+.tx-civserv-pi3 #centrecontent table tr.tableheader {
+	margin: 0;
+	padding: 0;
+	padding-bottom: 1em;
+	background-color: red;
+	color: #fff;
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+
+.tx-civserv-pi3 #centrecontent table tr.tablerow_a, 
+.tx-civserv-pi3 #centrecontent table tr.tablerow_b {
+	margin: 0;
+	padding: 0;
+	padding-bottom: 5px;
+	background-color: #ddd;
+}
+.tx-civserv-pi3 #centrecontent table tr.tablerow_a {
+	background-color: #eee;
+}
+
+.tx-civserv-pi3 #centrecontent table th {
+	font-weight: bold;
+}
+
+.tx-civserv-pi3 #centrecontent table td, 
+.tx-civserv-pi3 #centrecontent table th {
+	border: solid white 1px;
+	padding-left: 1em;
+}
+
+
+.tx-civserv-pi3 #centrecontent table td img, 
+.tx-civserv-pi3 #centrecontent table th img{
 	border: 0;
 }
 
