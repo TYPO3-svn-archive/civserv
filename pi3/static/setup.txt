@@ -21,7 +21,7 @@ leftmenu {
 		menuFormList = 0
 		menuTop15 = 0
 		menuOnlineServices =  0
-		userFunc = tx_civserv_pi2->makeMenuArray
+		userFunc = tx_civserv_pi3->makeMenuArray
 	}
 	stdWrap.wrap = <div id="leftmenu"> | </div>
 	1 = TMENU
@@ -60,7 +60,7 @@ page.config {
 	#	RewriteRule   ^[^/]*\.html$  index.php
 #	simulateStaticDocuments = true
 #	simulateStaticDocuments_pEnc = md5
-#	simulateStaticDocuments_pEnc_onlyP = tx_civserv_pi2[mode],tx_civserv_pi2[community_id],tx_civserv_pi2[id],tx_civserv_pi2[pointer],tx_civserv_pi2[char],tx_civserv_pi2[sort],tx_civserv_pi2[pos_id],tx_civserv_pi2[sv_id],tx_civserv_pi2[sword],tx_civserv_pi2[org_id],cHash,tx_parkingzones_pi2[char],tx_parkingzones_pi2[mode],tx_parkingzones_pi2[pointer]
+#	simulateStaticDocuments_pEnc_onlyP = tx_civserv_pi3[mode],tx_civserv_pi3[community_id],tx_civserv_pi3[id],tx_civserv_pi3[pointer],tx_civserv_pi3[char],tx_civserv_pi3[sort],tx_civserv_pi3[pos_id],tx_civserv_pi3[sv_id],tx_civserv_pi3[sword],tx_civserv_pi3[org_id],cHash,tx_parkingzones_pi3[char],tx_parkingzones_pi3[mode],tx_parkingzones_pi3[pointer]
 	# XHTML
 	inlineStyle2TempFile = 1
 }
@@ -91,7 +91,7 @@ page.includeCSS {
 # Delete default styles for indexed search
 # plugin.tx_indexedsearch._CSS_DEFAULT_STYLE > 
 
-page.includeLibs.getCommunityName = typo3conf/ext/civserv/pi2/class.tx_civserv_pi2.php
+page.includeLibs.getCommunityName = typo3conf/ext/civserv/pi3/class.tx_civserv_pi3.php
 
 
 page.10 = TEMPLATE
@@ -108,16 +108,16 @@ page.10 {
 	
 	marks.COMMUNITY = USER
 	marks.COMMUNITY.community_id = {$community_id}
-	marks.COMMUNITY.userFunc = tx_civserv_pi2->getCommunityName
+	marks.COMMUNITY.userFunc = tx_civserv_pi3->getCommunityName
 	
 	marks.HOMEPAGE = USER
-	marks.HOMEPAGE.userFunc = tx_civserv_pi2->getHomepage
+	marks.HOMEPAGE.userFunc = tx_civserv_pi3->getHomepage
 	
 	marks.LISTPAGE = USER
-	marks.LISTPAGE.userFunc = tx_civserv_pi2->getListPage
+	marks.LISTPAGE.userFunc = tx_civserv_pi3->getListPage
 	
 	marks.ACTPAGE = USER
-	marks.ACTPAGE.userFunc = tx_civserv_pi2->getActualPage
+	marks.ACTPAGE.userFunc = tx_civserv_pi3->getActualPage
 
 }
 

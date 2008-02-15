@@ -25,7 +25,7 @@
  * Additional Plugin 'Civil Services employeelist extended' for the 'civserv' extension.
  * could be used in an intranet environment
  *
- * $Id: class.tx_civserv_pi2.php 5671 2007-06-12 13:10:15Z bkohorst $
+ * $Id: class.tx_civserv_pi3.php 5671 2007-06-12 13:10:15Z bkohorst $
  *
  * @author	Britta Kohorst <kohorst@citeq.de>
  * @package TYPO3
@@ -38,7 +38,7 @@
  *
  *
  *
- *  106: class tx_civserv_pi2 extends tslib_pibase
+ *  106: class tx_civserv_pi3 extends tslib_pibase
  *  117:     function main($content,$conf)
  *
  *              SECTION: Functions for the navigation:
@@ -97,16 +97,16 @@
 
 require_once(PATH_tslib . 'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('smarty') . 'class.tx_smarty.php');
-#require_once(t3lib_extMgm::extPath('civserv') . 'pi2/class.tx_civserv_accesslog.php');
+#require_once(t3lib_extMgm::extPath('civserv') . 'pi3/class.tx_civserv_accesslog.php');
 require_once(t3lib_extMgm::extPath('civserv') . 'res/class.tx_civserv_mandant.php');
 
 /**
  * Class for plugin 'Civil Services'
  *
  */
-class tx_civserv_pi2 extends tslib_pibase {
-	var $prefixId = 'tx_civserv_pi2';						// Same as class name
-	var $scriptRelPath = 'pi2/class.tx_civserv_pi2.php';	// Path to this script relative to the extension dir
+class tx_civserv_pi3 extends tslib_pibase {
+	var $prefixId = 'tx_civserv_pi3';						// Same as class name
+	var $scriptRelPath = 'pi3/class.tx_civserv_pi3.php';	// Path to this script relative to the extension dir
 	var $extKey = 'civserv';								// The extension key
 	var $pi_checkCHash = TRUE;
 	
@@ -122,7 +122,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 */
 	function main($content,$conf)	{
 #		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging - only on test-sites!
-		if (TYPO3_DLOG)  t3lib_div::devLog('function main of FE class pi2 entered', 'civserv extended ma list');
+		if (TYPO3_DLOG)  t3lib_div::devLog('function main of FE class pi3 entered', 'civserv extended ma list');
 
 		
 		// Load configuration array
@@ -190,7 +190,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			// Check if given community-id exists in the database
 			switch (count($community_data)) {
 				case '0':
-					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi2_error.wrong_community_id','Wrong community-id. The entered community is either invalid, the community is not in the current system or the system is misconfigured.');
+					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi3_error.wrong_community_id','Wrong community-id. The entered community is either invalid, the community is not in the current system or the system is misconfigured.');
 
 				case '1':
 					// Set session variables
@@ -214,7 +214,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 					break;
 				default:
-					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi2_error.community_id_twice','The current system seems to be misconfigured. The given community-id exists at least twice in the configuration table.');
+					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi3_error.community_id_twice','The current system seems to be misconfigured. The given community-id exists at least twice in the configuration table.');
 
 			}
 		}
@@ -242,20 +242,20 @@ class tx_civserv_pi2 extends tslib_pibase {
 			switch($this->piVars['mode'])	{
 				case 'employee_list_az':
 					$_SESSION['stored_mode'] = 'employee_list_az';
-					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_employee_list.az','Employees A - Z');
+					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi3_employee_list.az','Employees A - Z');
 					$template = $this->conf['tpl_employee_list_plus'];
 #					$accurate = $this->employee_list_az($smartyObject,$this->conf['abcBarAtEmployeeList'],$this->conf['searchAtEmployeeList'],$this->conf['topAtEmployeeList']);
 					$accurate = $this->employee_list($smartyObject,$this->conf['abcBarAtEmployeeList'], false, $this->conf['searchAtEmployeeList'],$this->conf['topAtEmployeeList']);
 					break;					
 				case 'employee_list_orcode':
 					$_SESSION['stored_mode'] = 'employee_list_orcode';
-					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_employee_list.orcode','Employees A - Z');
+					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi3_employee_list.orcode','Employees A - Z');
 					$template = $this->conf['tpl_employee_list_plus'];
 #					$accurate = $this->employee_list_orcode($smartyObject, $this->conf['orCodeBarAtEmployeeList'], $this->conf['searchAtEmployeeList'], $this->conf['topAtEmployeeList']);
 					$accurate = $this->employee_list($smartyObject, false, $this->conf['orCodeBarAtEmployeeList'], $this->conf['searchAtEmployeeList'], $this->conf['topAtEmployeeList']);
 					break;			
 				case 'organisation':
-					#$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_service_list.organisation','Organisation');
+					#$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi3_service_list.organisation','Organisation');
 					$template = $this->conf['tpl_organisation_plus'];
 					// test bk: continue the abcBar from the OrganisationList!!!
 					#$accurate = $this->organisationDetail($smartyObject, $this->conf['continueAbcBarFromOrganisationList']) && $this->serviceList($smartyObject,$this->conf['abcBarAtOrganisation'],$this->conf['searchAtOrganisation'],$this->conf['topAtOrganisation']);
@@ -279,13 +279,13 @@ class tx_civserv_pi2 extends tslib_pibase {
 					break;
 				default:
 					$accurate = false;
-					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi2_error.invalid_mode','Invalid mode');
+					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi3_error.invalid_mode','Invalid mode');
 			}
 		}
 
 		if (!$accurate) {
 			$template = $this->conf['tpl_error_page'];
-			$smartyObject->assign('error_message_label',$this->pi_getLL('tx_civserv_pi2_error.message_label','The following error occured'));
+			$smartyObject->assign('error_message_label',$this->pi_getLL('tx_civserv_pi3_error.message_label','The following error occured'));
 			$smartyObject->assign('error_message',$GLOBALS['error_message']);
 		}
 
@@ -293,7 +293,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		if ($smartyObject->template_exists($template)) {
 			$content = $smartyObject->fetch($template);
 		} else {
-			$content = str_replace('###TEMPLATE###',$template,$this->pi_getLL('tx_civserv_pi2_error.smarty','The Smarty template <i>###TEMPLATE###</i> does not exist.'));
+			$content = str_replace('###TEMPLATE###',$template,$this->pi_getLL('tx_civserv_pi3_error.smarty','The Smarty template <i>###TEMPLATE###</i> does not exist.'));
 			$content.="<br />was steht im templatepfad??: ".$template." got me???";
 		}
 
@@ -330,13 +330,13 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$query = $this->makeEmployeeListQueryAZ($this->piVars['char']);
 			$_SESSION['stored_filter_key'] = 'char';
 			$_SESSION['stored_filter_val'] = $this->piVars['char'];
-			$mode_text = $this->pi_getLL('tx_civserv_pi2_employee_list.by_name',' by names');
+			$mode_text = $this->pi_getLL('tx_civserv_pi3_employee_list.by_name',' by names');
 			debug($query, 'makeEmployeeListQueryAZ');
 		}elseif($this->piVars['mode'] == 'employee_list_orcode'){
 			$query = $this->makeEmployeeListQueryOrCode($this->piVars['orcode']);
 			$_SESSION['stored_filter_key'] = 'orcode';
 			$_SESSION['stored_filter_val'] = $this->piVars['orcode'];
-			$mode_text = $this->pi_getLL('tx_civserv_pi2_employee_list.by_organisation',' by department');
+			$mode_text = $this->pi_getLL('tx_civserv_pi3_employee_list.by_organisation',' by department');
 			debug($query, 'makeEmployeeListQueryOrCode');
 		}
 
@@ -354,9 +354,9 @@ class tx_civserv_pi2 extends tslib_pibase {
 			
 			// Anrede bestimmen
 			if($row['em_address']==2){
-				$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi2_organisation.address_female', 'Ms.');
+				$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi3_organisation.address_female', 'Ms.');
 			}elseif($row['em_address']==1){
-				$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi2_organisation.address_male', 'Mr.');
+				$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi3_organisation.address_male', 'Mr.');
 			}
 			
 			// Mitarbeiter-Daten
@@ -632,7 +632,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$row_counter++;
 		} // ende schleife über alle mitarbeiter
 		
-		// in pi2 irrelevant!
+		// in pi3 irrelevant!
 		foreach($kills as $kill){
 			unset($employees[$kill]);
 		}
@@ -661,8 +661,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 		
 
-		$smartyEmployeeList->assign('heading', str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'Employees '.$mode_text)));
-		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi2_employee_list.available_employees','Here you find the following employees'));
+		$smartyEmployeeList->assign('heading', str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi3_employee_list.heading', 'Employees '.$mode_text)));
+		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi3_employee_list.available_employees','Here you find the following employees'));
 		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true, '', ' '.$this->conf['abcSpacer'].' '));
 		$smartyEmployeeList->assign('employees',$employees);
 
@@ -1088,7 +1088,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$linkconf['ATagParams'] =' class="all"';
 		$linkconf['parameter'] = $url;
 		$orcodeBar .= 	sprintf(	'%s' .	
-									$this->local_cObj->typoLink($this->pi_getLL('tx_civserv_pi2_employee_list.orcode_all'), $linkconf) .
+									$this->local_cObj->typoLink($this->pi_getLL('tx_civserv_pi3_employee_list.orcode_all'), $linkconf) .
 									'%s' . "\n",
 									$actual?'<strong>':'',
 									$actual?'</strong>':''
@@ -1097,14 +1097,14 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 		
 		/*
-		$orcodeBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($this->pi_getLL('tx_civserv_pi2_employee_list.orcode_all', 'all'), array(orcode => 'all', pointer => 0, mode => 'employee_list_orcode'),1,0) . '%s' . "\n",
+		$orcodeBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($this->pi_getLL('tx_civserv_pi3_employee_list.orcode_all', 'all'), array(orcode => 'all', pointer => 0, mode => 'employee_list_orcode'),1,0) . '%s' . "\n",
 						$actual ? '<strong>' : '',
 						$actual ? '</strong>' : '');
 		*/						
 						
 		// adding link for head of Departmenst
 		$actual = ($this->piVars['orcode'] == 'hod' );
-		$orcodeBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($this->pi_getLL('tx_civserv_pi2_employee_list.orcode_hod', 'headofdepartment'), array(orcode => 'hod', pointer => 0, mode => 'employee_list_orcode'),1,0) . '%s' . "\n",
+		$orcodeBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($this->pi_getLL('tx_civserv_pi3_employee_list.orcode_hod', 'headofdepartment'), array(orcode => 'hod', pointer => 0, mode => 'employee_list_orcode'),1,0) . '%s' . "\n",
 						$actual ? '<strong>' : '',
 						$actual ? '</strong>' : '');
 						
@@ -1207,7 +1207,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		//Check if data security option is enabled
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($res_common) == 0) {
-			$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi2_employee.datasec','Datasec enabled! Employee is not shown.');
+			$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi3_employee.datasec','Datasec enabled! Employee is not shown.');
 			return false;
 		}
 
@@ -1319,7 +1319,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			//Assign employee-position working hours
 			$row_counter = 0;
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_pos_hours) ){	
-				$emp_pos_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi2_weekday_'.$row[oh_weekday]);
+				$emp_pos_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi3_weekday_'.$row[oh_weekday]);
 				$emp_pos_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
 				$emp_pos_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
 				$emp_pos_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
@@ -1332,7 +1332,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			//Assign employee-organisation working hours
 			$row_counter = 0;
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_org_hours) ){	
-				$emp_org_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi2_weekday_'.$row[oh_weekday]);
+				$emp_org_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi3_weekday_'.$row[oh_weekday]);
 				$emp_org_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
 				$emp_org_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
 				$emp_org_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
@@ -1353,9 +1353,9 @@ class tx_civserv_pi2 extends tslib_pibase {
 		//Assign employee data
 		$smartyEmployee->assign('title',$employee_rows[em_title]);
 		if (intval($employee_rows[em_address]) == 2) {
-			$smartyEmployee->assign('address',$this->pi_getLL('tx_civserv_pi2_organisation.address_female','Mrs.'));
+			$smartyEmployee->assign('address',$this->pi_getLL('tx_civserv_pi3_organisation.address_female','Mrs.'));
 		} else if (intval($employee_rows[em_address]) == 1) {
-			$smartyEmployee->assign('address',$this->pi_getLL('tx_civserv_pi2_organisation.address_male','Mr.'));
+			$smartyEmployee->assign('address',$this->pi_getLL('tx_civserv_pi3_organisation.address_male','Mr.'));
 		}
 		$smartyEmployee->assign('firstname',$employee_rows[em_firstname]);
 		$smartyEmployee->assign('name',$employee_rows[em_name]);
@@ -1378,7 +1378,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		//Assign employee working hours
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_hours) ){
-			$emp_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi2_weekday_'.$row[oh_weekday]);
+			$emp_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi3_weekday_'.$row[oh_weekday]);
 			$emp_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
 			$emp_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
 			$emp_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
@@ -1390,34 +1390,34 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		//Assign template labels
 		if (intval($employee_rows[em_address]) == 2) {
-			$smartyEmployee->assign('employee_label',$this->pi_getLL('tx_civserv_pi2_employee.employee_female','Employee'));
+			$smartyEmployee->assign('employee_label',$this->pi_getLL('tx_civserv_pi3_employee.employee_female','Employee'));
 		} else{ //1 for male or nothing
-			$smartyEmployee->assign('employee_label',$this->pi_getLL('tx_civserv_pi2_employee.employee_male','Employee'));
+			$smartyEmployee->assign('employee_label',$this->pi_getLL('tx_civserv_pi3_employee.employee_male','Employee'));
 		}	
-		$smartyEmployee->assign('phone_label',$this->pi_getLL('tx_civserv_pi2_organisation.phone','Phone'));
-		$smartyEmployee->assign('fax_label',$this->pi_getLL('tx_civserv_pi2_organisation.fax','Fax'));
-		$smartyEmployee->assign('email_label',$this->pi_getLL('tx_civserv_pi2_organisation.email','E-Mail'));
-		$smartyEmployee->assign('web_email_label',$this->pi_getLL('tx_civserv_pi2_organisation.web_email','E-Mail-Form'));
-		$smartyEmployee->assign('working_hours_label',$this->pi_getLL('tx_civserv_pi2_employee.hours','Working hours'));
-		$smartyEmployee->assign('office_hours_summary',str_replace('###EMPLOYEE###',$employee_rows[em_firstname] . ' ' . $employee_rows[em_name],$this->pi_getLL('tx_civserv_pi2_employee.officehours','In the table are the office hours of ###EMPLOYEE### shown.')));
+		$smartyEmployee->assign('phone_label',$this->pi_getLL('tx_civserv_pi3_organisation.phone','Phone'));
+		$smartyEmployee->assign('fax_label',$this->pi_getLL('tx_civserv_pi3_organisation.fax','Fax'));
+		$smartyEmployee->assign('email_label',$this->pi_getLL('tx_civserv_pi3_organisation.email','E-Mail'));
+		$smartyEmployee->assign('web_email_label',$this->pi_getLL('tx_civserv_pi3_organisation.web_email','E-Mail-Form'));
+		$smartyEmployee->assign('working_hours_label',$this->pi_getLL('tx_civserv_pi3_employee.hours','Working hours'));
+		$smartyEmployee->assign('office_hours_summary',str_replace('###EMPLOYEE###',$employee_rows[em_firstname] . ' ' . $employee_rows[em_name],$this->pi_getLL('tx_civserv_pi3_employee.officehours','In the table are the office hours of ###EMPLOYEE### shown.')));
 		if($this->conf['showOhLabels']){
 			//default
 		}else{
 			$smartyEmployee->assign('supress_labels', 'invisible');
 		}
-		$smartyEmployee->assign('weekday',$this->pi_getLL('tx_civserv_pi2_weekday','Weekday'));
-		$smartyEmployee->assign('morning',$this->pi_getLL('tx_civserv_pi2_organisation.morning','mornings'));
-		$smartyEmployee->assign('afternoon',$this->pi_getLL('tx_civserv_pi2_organisation.afternoon','in the afternoon'));
+		$smartyEmployee->assign('weekday',$this->pi_getLL('tx_civserv_pi3_weekday','Weekday'));
+		$smartyEmployee->assign('morning',$this->pi_getLL('tx_civserv_pi3_organisation.morning','mornings'));
+		$smartyEmployee->assign('afternoon',$this->pi_getLL('tx_civserv_pi3_organisation.afternoon','in the afternoon'));
 
-		$smartyEmployee->assign('organisation_label',$this->pi_getLL('tx_civserv_pi2_employee.organisation','Organisation'));
-		$smartyEmployee->assign('room_label',$this->pi_getLL('tx_civserv_pi2_employee.room','Room'));
+		$smartyEmployee->assign('organisation_label',$this->pi_getLL('tx_civserv_pi3_employee.organisation','Organisation'));
+		$smartyEmployee->assign('room_label',$this->pi_getLL('tx_civserv_pi3_employee.room','Room'));
 		//the image_employee_label is not being used yet
 		if (intval($employee_rows[em_address]) == 2) {
-			$smartyEmployee->assign('image_employee_label',$this->pi_getLL('tx_civserv_pi2_employee_female.image','Image of employee'));
+			$smartyEmployee->assign('image_employee_label',$this->pi_getLL('tx_civserv_pi3_employee_female.image','Image of employee'));
 		} else if (intval($employee_rows[em_address]) == 1) {
-			$smartyEmployee->assign('image_employee_label',$this->pi_getLL('tx_civserv_pi2_employee_male.image','Image of employee'));
+			$smartyEmployee->assign('image_employee_label',$this->pi_getLL('tx_civserv_pi3_employee_male.image','Image of employee'));
 		}
-		$smartyEmployee->assign('backlink', $this->pi_linkTP(	$this->pi_getLL('tx_civserv_pi2_organisation.backlink','backlink'), 
+		$smartyEmployee->assign('backlink', $this->pi_linkTP(	$this->pi_getLL('tx_civserv_pi3_organisation.backlink','backlink'), 
 																	array(	$this->prefixId . '[mode]' => $_SESSION['stored_mode'], 
 																			$this->prefixId . '[community_id]' => $this->community['id'],
 																			$this->prefixId . '['.$_SESSION['stored_filter_key'].']' => $_SESSION['stored_filter_val'],
@@ -1435,7 +1435,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array('mode' => 'search_result'),0,1); //dropped this according to instructions from security review
 			$smartyTop15->assign('searchbox', $this->pi_list_searchBox('',true));
 		}
-		$GLOBALS['TSFE']->page['title']=$this->pi_getLL('tx_civserv_pi2_employee.employee_plural','Employees');
+		$GLOBALS['TSFE']->page['title']=$this->pi_getLL('tx_civserv_pi3_employee.employee_plural','Employees');
 		return true;
 	}
 
@@ -1702,7 +1702,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		//Assign organisation office hours
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_hour) ){	
-			$organisation_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi2_weekday_'.$row[oh_weekday]);
+			$organisation_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi3_weekday_'.$row[oh_weekday]);
 			$organisation_hours[$row_counter]['start_morning'] = $row[oh_start_morning];
 			$organisation_hours[$row_counter]['end_morning'] = $row[oh_end_morning];
 			$organisation_hours[$row_counter]['start_afternoon'] = $row[oh_start_afternoon];
@@ -1714,7 +1714,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		// get Image code
 		$imagepath = $this->conf['folder_organisations'] . $this->community[id] . '/images/';
-		$imageCode = $this->getImageCode($organisation_rows[or_image],$imagepath,$this->conf['organisation-image.'],$this->pi_getLL('tx_civserv_pi2_organisation.image','Image of organisation'));
+		$imageCode = $this->getImageCode($organisation_rows[or_image],$imagepath,$this->conf['organisation-image.'],$this->pi_getLL('tx_civserv_pi3_organisation.image','Image of organisation'));
 
 		//Assign standard data
 		// test bk: include or_addinfo
@@ -1754,39 +1754,39 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$smartyOrganisation->assign('buildings',$organisation_buildings);
 		
 		//Assign template labels
-		$smartyOrganisation->assign('organisation_label',$this->pi_getLL('tx_civserv_pi2_organisation.organisation','Organisation'));
-		$smartyOrganisation->assign('sub_org_label',$this->pi_getLL('tx_civserv_pi2_organisation.sub_org_label','You can also visit us here:'));
-		$smartyOrganisation->assign('super_org_label',$this->pi_getLL('tx_civserv_pi2_organisation.super_org_label','next higher organisation level:'));
-		$smartyOrganisation->assign('postal_address_label',$this->pi_getLL('tx_civserv_pi2_organisation.postal_address','Postal address'));
-		$smartyOrganisation->assign('building_address_label',$this->pi_getLL('tx_civserv_pi2_organisation.building_address','Building address'));
-		$smartyOrganisation->assign('phone_label',$this->pi_getLL('tx_civserv_pi2_organisation.phone','Phone'));
-		$smartyOrganisation->assign('fax_label',$this->pi_getLL('tx_civserv_pi2_organisation.fax','Fax'));
-		$smartyOrganisation->assign('email_label',$this->pi_getLL('tx_civserv_pi2_organisation.email','E-Mail'));
-		$smartyOrganisation->assign('web_email_label',$this->pi_getLL('tx_civserv_pi2_organisation.web_email','E-Mail-Form'));
-		$smartyOrganisation->assign('office_hours_label',$this->pi_getLL('tx_civserv_pi2_organisation.office_hours','Office hours'));
-		$smartyOrganisation->assign('supervisor_label',$this->pi_getLL('tx_civserv_pi2_organisation.supervisor','Supervisor'));
-		$smartyOrganisation->assign('employee_details',$this->pi_getLL('tx_civserv_pi2_organisation.employee_details','Jumps to a page with details of this employee'));
-		$smartyOrganisation->assign('office_hours_summary',str_replace('###ORGANISATION###',$organisation_rows[or_name],$this->pi_getLL('tx_civserv_pi2_organisation.officehours','In the table are the office hours of ###ORGANISATION### shown.')));
+		$smartyOrganisation->assign('organisation_label',$this->pi_getLL('tx_civserv_pi3_organisation.organisation','Organisation'));
+		$smartyOrganisation->assign('sub_org_label',$this->pi_getLL('tx_civserv_pi3_organisation.sub_org_label','You can also visit us here:'));
+		$smartyOrganisation->assign('super_org_label',$this->pi_getLL('tx_civserv_pi3_organisation.super_org_label','next higher organisation level:'));
+		$smartyOrganisation->assign('postal_address_label',$this->pi_getLL('tx_civserv_pi3_organisation.postal_address','Postal address'));
+		$smartyOrganisation->assign('building_address_label',$this->pi_getLL('tx_civserv_pi3_organisation.building_address','Building address'));
+		$smartyOrganisation->assign('phone_label',$this->pi_getLL('tx_civserv_pi3_organisation.phone','Phone'));
+		$smartyOrganisation->assign('fax_label',$this->pi_getLL('tx_civserv_pi3_organisation.fax','Fax'));
+		$smartyOrganisation->assign('email_label',$this->pi_getLL('tx_civserv_pi3_organisation.email','E-Mail'));
+		$smartyOrganisation->assign('web_email_label',$this->pi_getLL('tx_civserv_pi3_organisation.web_email','E-Mail-Form'));
+		$smartyOrganisation->assign('office_hours_label',$this->pi_getLL('tx_civserv_pi3_organisation.office_hours','Office hours'));
+		$smartyOrganisation->assign('supervisor_label',$this->pi_getLL('tx_civserv_pi3_organisation.supervisor','Supervisor'));
+		$smartyOrganisation->assign('employee_details',$this->pi_getLL('tx_civserv_pi3_organisation.employee_details','Jumps to a page with details of this employee'));
+		$smartyOrganisation->assign('office_hours_summary',str_replace('###ORGANISATION###',$organisation_rows[or_name],$this->pi_getLL('tx_civserv_pi3_organisation.officehours','In the table are the office hours of ###ORGANISATION### shown.')));
 		if($this->conf['showOhLabels']){
 			//default
 		}else{
 			$smartyOrganisation->assign('supress_labels', 'invisible');
 		}			
-		$smartyOrganisation->assign('weekday',$this->pi_getLL('tx_civserv_pi2_weekday','Weekday'));
-		$smartyOrganisation->assign('morning',$this->pi_getLL('tx_civserv_pi2_organisation.morning','in the morning'));
-		$smartyOrganisation->assign('afternoon',$this->pi_getLL('tx_civserv_pi2_organisation.afternoon','in the afternoon'));
+		$smartyOrganisation->assign('weekday',$this->pi_getLL('tx_civserv_pi3_weekday','Weekday'));
+		$smartyOrganisation->assign('morning',$this->pi_getLL('tx_civserv_pi3_organisation.morning','in the morning'));
+		$smartyOrganisation->assign('afternoon',$this->pi_getLL('tx_civserv_pi3_organisation.afternoon','in the afternoon'));
 
 		if (intval($organisation_supervisor[em_address]) == 2) {
-			$smartyOrganisation->assign('su_address_label',$this->pi_getLL('tx_civserv_pi2_organisation.address_female','Mrs.'));
+			$smartyOrganisation->assign('su_address_label',$this->pi_getLL('tx_civserv_pi3_organisation.address_female','Mrs.'));
 		} else if (intval($organisation_supervisor[em_address]) == 1) {
-			$smartyOrganisation->assign('su_address_label',$this->pi_getLL('tx_civserv_pi2_organisation.address_male','Mr.'));
+			$smartyOrganisation->assign('su_address_label',$this->pi_getLL('tx_civserv_pi3_organisation.address_male','Mr.'));
 		}
-		$smartyOrganisation->assign('postbox_label',$this->pi_getLL('tx_civserv_pi2_organisation.postbox','Postbox'));
-		$smartyOrganisation->assign('pub_trans_info_label',$this->pi_getLL('tx_civserv_pi2_organisation.pub_trans_info','Public transport information'));
-		$smartyOrganisation->assign('pub_trans_stop_label',$this->pi_getLL('tx_civserv_pi2_organisation.pub_trans_stop','Stop'));
-		$smartyOrganisation->assign('available_services_label',$this->pi_getLL('tx_civserv_pi2_organisation.available_services','Here you find the following services'));
-		$smartyOrganisation->assign('infopage_label',$this->pi_getLL('tx_civserv_pi2_organisation.infopage','Info Page'));
-		$smartyOrganisation->assign('bl_citymap_label',$this->pi_getLL('tx_civserv_pi2_organisation.citymap_label','City Map Link'));
+		$smartyOrganisation->assign('postbox_label',$this->pi_getLL('tx_civserv_pi3_organisation.postbox','Postbox'));
+		$smartyOrganisation->assign('pub_trans_info_label',$this->pi_getLL('tx_civserv_pi3_organisation.pub_trans_info','Public transport information'));
+		$smartyOrganisation->assign('pub_trans_stop_label',$this->pi_getLL('tx_civserv_pi3_organisation.pub_trans_stop','Stop'));
+		$smartyOrganisation->assign('available_services_label',$this->pi_getLL('tx_civserv_pi3_organisation.available_services','Here you find the following services'));
+		$smartyOrganisation->assign('infopage_label',$this->pi_getLL('tx_civserv_pi3_organisation.infopage','Info Page'));
+		$smartyOrganisation->assign('bl_citymap_label',$this->pi_getLL('tx_civserv_pi3_organisation.citymap_label','City Map Link'));
 		$which = 'char';
 		$what = 'A';
 		
@@ -1804,7 +1804,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		// and the winner is:
 		// pi_linkTP($str,$urlParameters=array(),$cache=0,$altPageId=0)
-		$smartyOrganisation->assign('backlink', $this->pi_linkTP(	$this->pi_getLL('tx_civserv_pi2_organisation.backlink','backlink'), 
+		$smartyOrganisation->assign('backlink', $this->pi_linkTP(	$this->pi_getLL('tx_civserv_pi3_organisation.backlink','backlink'), 
 																	array(	$this->prefixId . '[mode]' => $_SESSION['stored_mode'], 
 																			$this->prefixId . '[community_id]' => $this->community['id'],
 																			$this->prefixId . '['.$_SESSION['stored_filter_key'].']' => $_SESSION['stored_filter_val'],
@@ -1856,10 +1856,10 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$row_counter++;
 		}
 		if ($row_counter == 0) {
-			$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi2_error.no_community','No community found. The system seems to be missconfigured or not configured yet.');
+			$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi3_error.no_community','No community found. The system seems to be missconfigured or not configured yet.');
 			return false;
 		}
-		$smartyCommunity->assign('community_choice_label',$this->pi_getLL('tx_civserv_pi2_community_search_label','You have not choosen a community yet. Please choose your community.'));
+		$smartyCommunity->assign('community_choice_label',$this->pi_getLL('tx_civserv_pi3_community_search_label','You have not choosen a community yet. Please choose your community.'));
 		$smartyCommunity->assign('communities',$community_data);
 		return true;
 	}
@@ -1876,8 +1876,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 */
 	function linkCommunityChoice($content,$conf) {
 		if ($this->conf['community_choice']) {
-			$notice = str_replace('###COMMUNITY_NAME###','<span class="community_name">' . $this->community['name'] . '</span>',$this->pi_getLL('tx_civserv_pi2_community_choice.notice','The following information is related to ###COMMUNITY_NAME###.'));
-			$link_text = $this->pi_getLL('tx_civserv_pi2_community_choice.link_text','Click here, to choose another community.');
+			$notice = str_replace('###COMMUNITY_NAME###','<span class="community_name">' . $this->community['name'] . '</span>',$this->pi_getLL('tx_civserv_pi3_community_choice.notice','The following information is related to ###COMMUNITY_NAME###.'));
+			$link_text = $this->pi_getLL('tx_civserv_pi3_community_choice.link_text','Click here, to choose another community.');
 			$link = $this->pi_linkTP_keepPIvars($link_text,array(community_id => 'choose',mode => 'service_list'),1,1);
 			return $notice . ' ' . $link;
 		}
@@ -1924,7 +1924,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * marks.CHOICE_LINK.community_id = {$community_id}
 	 * marks.CHOICE_LINK.pageid = {$pageid}
 	 * marks.CHOICE_LINK.fulltext_search_id ={$fulltext_search_id}
-	 * marks.CHOICE_LINK.userFunc = tx_civserv_pi2->getChoiceLink
+	 * marks.CHOICE_LINK.userFunc = tx_civserv_pi3->getChoiceLink
 	 * with the above scenario the id-switching would be as follows:
 	 * 		if($pageid == $conf['fulltext_search_id']){
 	 * 			$pageid = $conf['pageid'];
@@ -1988,26 +1988,26 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 			//Assign template labels
 			$hoster_email=$this->get_hoster_email();
-			$smartyEmailForm->assign('email_form_label',$this->pi_getLL('tx_civserv_pi2_email_form.email_form','E-Mail Form'));
-			$smartyEmailForm->assign('contact_form_label',str_replace('###HOSTER###', $hoster_email, $this->pi_getLL('tx_civserv_pi2_email_form.contact_form','Contact '.$hoster_email)));
-			$smartyEmailForm->assign('notice_label',$this->pi_getLL('tx_civserv_pi2_email_form.notice','Please enter your postal address oder email address, so that we can send you an answer'));
-			$smartyEmailForm->assign('title_label', $this->pi_getLL('tx_civserv_pi2_email_form.title','Title'));
-			$smartyEmailForm->assign('chose_option', $this->pi_getLL('tx_civserv_pi2_email_form.chose','Please chose'));
-			$smartyEmailForm->assign('female_option', $this->pi_getLL('tx_civserv_pi2_email_form.female','Ms.'));
-			$smartyEmailForm->assign('male_option', $this->pi_getLL('tx_civserv_pi2_email_form.male','Mr.'));
-			$smartyEmailForm->assign('firstname_label',$this->pi_getLL('tx_civserv_pi2_email_form.firstname','Firstname'));
-			$smartyEmailForm->assign('surname_label',$this->pi_getLL('tx_civserv_pi2_email_form.surname','Surname'));
-			$smartyEmailForm->assign('street_label',$this->pi_getLL('tx_civserv_pi2_email_form.street','Street, Nr.'));
-			$smartyEmailForm->assign('postcode_label',$this->pi_getLL('tx_civserv_pi2_email_form.postcode','Postcode'));
-			$smartyEmailForm->assign('city_label',$this->pi_getLL('tx_civserv_pi2_email_form.city','City'));
-			$smartyEmailForm->assign('email_label',$this->pi_getLL('tx_civserv_pi2_email_form.email','E-Mail'));
-			$smartyEmailForm->assign('phone_label',$this->pi_getLL('tx_civserv_pi2_email_form.phone','Phone'));
-			$smartyEmailForm->assign('fax_label',$this->pi_getLL('tx_civserv_pi2_email_form.fax','Fax'));
-			$smartyEmailForm->assign('subject_label',$this->pi_getLL('tx_civserv_pi2_email_form.subject','Subject'));
-			$smartyEmailForm->assign('bodytext_label',$this->pi_getLL('tx_civserv_pi2_email_form.bodytext','Your text'));
-			$smartyEmailForm->assign('submit_label',$this->pi_getLL('tx_civserv_pi2_email_form.submit','Send e-mail'));
-			$smartyEmailForm->assign('reset_label',$this->pi_getLL('tx_civserv_pi2_email_form.reset','Reset'));
-			$smartyEmailForm->assign('required_label',$this->pi_getLL('tx_civserv_pi2_email_form.required','required'));
+			$smartyEmailForm->assign('email_form_label',$this->pi_getLL('tx_civserv_pi3_email_form.email_form','E-Mail Form'));
+			$smartyEmailForm->assign('contact_form_label',str_replace('###HOSTER###', $hoster_email, $this->pi_getLL('tx_civserv_pi3_email_form.contact_form','Contact '.$hoster_email)));
+			$smartyEmailForm->assign('notice_label',$this->pi_getLL('tx_civserv_pi3_email_form.notice','Please enter your postal address oder email address, so that we can send you an answer'));
+			$smartyEmailForm->assign('title_label', $this->pi_getLL('tx_civserv_pi3_email_form.title','Title'));
+			$smartyEmailForm->assign('chose_option', $this->pi_getLL('tx_civserv_pi3_email_form.chose','Please chose'));
+			$smartyEmailForm->assign('female_option', $this->pi_getLL('tx_civserv_pi3_email_form.female','Ms.'));
+			$smartyEmailForm->assign('male_option', $this->pi_getLL('tx_civserv_pi3_email_form.male','Mr.'));
+			$smartyEmailForm->assign('firstname_label',$this->pi_getLL('tx_civserv_pi3_email_form.firstname','Firstname'));
+			$smartyEmailForm->assign('surname_label',$this->pi_getLL('tx_civserv_pi3_email_form.surname','Surname'));
+			$smartyEmailForm->assign('street_label',$this->pi_getLL('tx_civserv_pi3_email_form.street','Street, Nr.'));
+			$smartyEmailForm->assign('postcode_label',$this->pi_getLL('tx_civserv_pi3_email_form.postcode','Postcode'));
+			$smartyEmailForm->assign('city_label',$this->pi_getLL('tx_civserv_pi3_email_form.city','City'));
+			$smartyEmailForm->assign('email_label',$this->pi_getLL('tx_civserv_pi3_email_form.email','E-Mail'));
+			$smartyEmailForm->assign('phone_label',$this->pi_getLL('tx_civserv_pi3_email_form.phone','Phone'));
+			$smartyEmailForm->assign('fax_label',$this->pi_getLL('tx_civserv_pi3_email_form.fax','Fax'));
+			$smartyEmailForm->assign('subject_label',$this->pi_getLL('tx_civserv_pi3_email_form.subject','Subject'));
+			$smartyEmailForm->assign('bodytext_label',$this->pi_getLL('tx_civserv_pi3_email_form.bodytext','Your text'));
+			$smartyEmailForm->assign('submit_label',$this->pi_getLL('tx_civserv_pi3_email_form.submit','Send e-mail'));
+			$smartyEmailForm->assign('reset_label',$this->pi_getLL('tx_civserv_pi3_email_form.reset','Reset'));
+			$smartyEmailForm->assign('required_label',$this->pi_getLL('tx_civserv_pi3_email_form.required','required'));
 
 			//Set reset button type to reset functionality
 			$smartyEmailForm->assign('button_type','reset');
@@ -2049,50 +2049,50 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 			// Check submitted form fields
 			if (empty($surname)) {
-				$smartyEmailForm->assign('error_surname',$this->pi_getLL('tx_civserv_pi2_email_form.error_surname','Please enter your surname!'));
+				$smartyEmailForm->assign('error_surname',$this->pi_getLL('tx_civserv_pi3_email_form.error_surname','Please enter your surname!'));
 				$is_valid = false;
 			}
 
 			if (empty($firstname)) {
-				$smartyEmailForm->assign('error_firstname',$this->pi_getLL('tx_civserv_pi2_email_form.error_firstname','Please enter your firstname!'));
+				$smartyEmailForm->assign('error_firstname',$this->pi_getLL('tx_civserv_pi3_email_form.error_firstname','Please enter your firstname!'));
 				$is_valid = false;
 			}
 
 			if (!empty($postcode) && !is_numeric($postcode)) {
-				$smartyEmailForm->assign('error_postcode',$this->pi_getLL('tx_civserv_pi2_email_form.error_postcode','Please enter a valid postcode!'));
+				$smartyEmailForm->assign('error_postcode',$this->pi_getLL('tx_civserv_pi3_email_form.error_postcode','Please enter a valid postcode!'));
 				$is_valid = false;
 			}
 
 			if (!empty($email) && !t3lib_div::validEmail($email)) {
-				$smartyEmailForm->assign('error_email',$this->pi_getLL('tx_civserv_pi2_debit_form.error_email','Please enter a valid email address!'));
+				$smartyEmailForm->assign('error_email',$this->pi_getLL('tx_civserv_pi3_debit_form.error_email','Please enter a valid email address!'));
 				$is_valid = false;
 			}
 
 			if (empty($subject)) {
-				$smartyEmailForm->assign('error_subject',$this->pi_getLL('tx_civserv_pi2_email_form.error_subject','Please enter a subject!'));
+				$smartyEmailForm->assign('error_subject',$this->pi_getLL('tx_civserv_pi3_email_form.error_subject','Please enter a subject!'));
 				$is_valid = false;
 			}
 
 			if (empty($bodytext)) {
-				$smartyEmailForm->assign('error_bodytext',$this->pi_getLL('tx_civserv_pi2_email_form.error_bodytext','Please enter your text!'));
+				$smartyEmailForm->assign('error_bodytext',$this->pi_getLL('tx_civserv_pi3_email_form.error_bodytext','Please enter your text!'));
 				$is_valid = false;
 			}
 
 			if ($is_valid) {
 
 				// Format body of email message
-				$body = $this->pi_getLL('tx_civserv_pi2_email_form.title','Title') . ': ' . $title.
-				   "\n" . $this->pi_getLL('tx_civserv_pi2_email_form.firstname','Firstname') . ': ' . $firstname.
-				   "\n" . $this->pi_getLL('tx_civserv_pi2_email_form.surname','Surname') . ': ' . $surname.
-				   "\n" . $this->pi_getLL('tx_civserv_pi2_email_form.phone','Phone') . ': ' . $phone.
-				   "\n" . $this->pi_getLL('tx_civserv_pi2_email_form.fax','Fax') . ': ' . $fax.
-				   "\n" . $this->pi_getLL('tx_civserv_pi2_email_form.email','E-Mail') . ': ' . $email.
-				   "\n" . $this->pi_getLL('tx_civserv_pi2_email_form.street','Street, Nr.') . ': ' .$street.
-				   "\n" . $this->pi_getLL('tx_civserv_pi2_email_form.postcode','Postcode') . ': ' . $postcode.
-				   "\n" . $this->pi_getLL('tx_civserv_pi2_email_form.city','City') . ': ' . $city.
-				   "\n" . $this->pi_getLL('tx_civserv_pi2_email_form.subject','Subject') . ': ' . $subject.
+				$body = $this->pi_getLL('tx_civserv_pi3_email_form.title','Title') . ': ' . $title.
+				   "\n" . $this->pi_getLL('tx_civserv_pi3_email_form.firstname','Firstname') . ': ' . $firstname.
+				   "\n" . $this->pi_getLL('tx_civserv_pi3_email_form.surname','Surname') . ': ' . $surname.
+				   "\n" . $this->pi_getLL('tx_civserv_pi3_email_form.phone','Phone') . ': ' . $phone.
+				   "\n" . $this->pi_getLL('tx_civserv_pi3_email_form.fax','Fax') . ': ' . $fax.
+				   "\n" . $this->pi_getLL('tx_civserv_pi3_email_form.email','E-Mail') . ': ' . $email.
+				   "\n" . $this->pi_getLL('tx_civserv_pi3_email_form.street','Street, Nr.') . ': ' .$street.
+				   "\n" . $this->pi_getLL('tx_civserv_pi3_email_form.postcode','Postcode') . ': ' . $postcode.
+				   "\n" . $this->pi_getLL('tx_civserv_pi3_email_form.city','City') . ': ' . $city.
+				   "\n" . $this->pi_getLL('tx_civserv_pi3_email_form.subject','Subject') . ': ' . $subject.
 				   "\n" .
-				   "\n" . $this->pi_getLL('tx_civserv_pi2_email_form.bodytext','Your text') . ': ' .
+				   "\n" . $this->pi_getLL('tx_civserv_pi3_email_form.bodytext','Your text') . ': ' .
 				   "\n" . $bodytext;
 				//todo: check possibilities of header injection
 				#$headers = !empty($email)?	"From: ".$email."\r\nReply-To: ".$email."\r\n":"From: ".$email_address."\r\nReply-To: ".$email_address."\r\n";
@@ -2100,8 +2100,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 
 				t3lib_div::plainMailEncoded($email_address, $subject, $body, $headers);
-				$reply = $this->pi_getLL('tx_civserv_pi2_email_form.complete','Thank you! Your message has been sent successfully ');
-				$reply .= $this->pi_getLL('tx_civserv_pi2_email_form.to','to ');
+				$reply = $this->pi_getLL('tx_civserv_pi3_email_form.complete','Thank you! Your message has been sent successfully ');
+				$reply .= $this->pi_getLL('tx_civserv_pi3_email_form.to','to ');
 				$reply .= $email_address.".";
 				$smartyEmailForm->assign('complete',$reply);
 
@@ -2129,26 +2129,26 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 				// Assign template labels
 				$hoster_email=$this->get_hoster_email();
-				$smartyEmailForm->assign('email_form_label',$this->pi_getLL('tx_civserv_pi2_email_form.email_form','E-Mail Form'));
-				$smartyEmailForm->assign('contact_form_label',str_replace('###HOSTER###', $hoster_email, $this->pi_getLL('tx_civserv_pi2_email_form.contact_form','Contact '.$hoster_email)));
-				$smartyEmailForm->assign('notice_label',$this->pi_getLL('tx_civserv_pi2_email_form.notice','Please enter your postal address oder email address, so that we can send you an answer'));
-				$smartyEmailForm->assign('title_label', $this->pi_getLL('tx_civserv_pi2_email_form.title','Title'));
-				$smartyEmailForm->assign('chose_option', $this->pi_getLL('tx_civserv_pi2_email_form.chose','Please chose'));
-				$smartyEmailForm->assign('female_option', $this->pi_getLL('tx_civserv_pi2_email_form.female','Ms.'));
-				$smartyEmailForm->assign('male_option', $this->pi_getLL('tx_civserv_pi2_email_form.male','Mr.'));
-				$smartyEmailForm->assign('firstname_label',$this->pi_getLL('tx_civserv_pi2_email_form.firstname','Firstname'));
-				$smartyEmailForm->assign('surname_label',$this->pi_getLL('tx_civserv_pi2_email_form.surname','Surname'));
-				$smartyEmailForm->assign('street_label',$this->pi_getLL('tx_civserv_pi2_email_form.street','Street, Nr.'));
-				$smartyEmailForm->assign('postcode_label',$this->pi_getLL('tx_civserv_pi2_email_form.postcode','Postcode'));
-				$smartyEmailForm->assign('city_label',$this->pi_getLL('tx_civserv_pi2_email_form.city','City'));
-				$smartyEmailForm->assign('email_label',$this->pi_getLL('tx_civserv_pi2_email_form.email','E-Mail'));
-				$smartyEmailForm->assign('phone_label',$this->pi_getLL('tx_civserv_pi2_email_form.phone','Phone'));
-				$smartyEmailForm->assign('fax_label',$this->pi_getLL('tx_civserv_pi2_email_form.fax','Fax'));
-				$smartyEmailForm->assign('subject_label',$this->pi_getLL('tx_civserv_pi2_email_form.subject','Subject'));
-				$smartyEmailForm->assign('bodytext_label',$this->pi_getLL('tx_civserv_pi2_email_form.bodytext','Your text'));
-				$smartyEmailForm->assign('submit_label',$this->pi_getLL('tx_civserv_pi2_email_form.submit','Send e-mail'));
-				$smartyEmailForm->assign('reset_label',$this->pi_getLL('tx_civserv_pi2_email_form.reset','Reset'));
-				$smartyEmailForm->assign('required_label',$this->pi_getLL('tx_civserv_pi2_email_form.required','required'));
+				$smartyEmailForm->assign('email_form_label',$this->pi_getLL('tx_civserv_pi3_email_form.email_form','E-Mail Form'));
+				$smartyEmailForm->assign('contact_form_label',str_replace('###HOSTER###', $hoster_email, $this->pi_getLL('tx_civserv_pi3_email_form.contact_form','Contact '.$hoster_email)));
+				$smartyEmailForm->assign('notice_label',$this->pi_getLL('tx_civserv_pi3_email_form.notice','Please enter your postal address oder email address, so that we can send you an answer'));
+				$smartyEmailForm->assign('title_label', $this->pi_getLL('tx_civserv_pi3_email_form.title','Title'));
+				$smartyEmailForm->assign('chose_option', $this->pi_getLL('tx_civserv_pi3_email_form.chose','Please chose'));
+				$smartyEmailForm->assign('female_option', $this->pi_getLL('tx_civserv_pi3_email_form.female','Ms.'));
+				$smartyEmailForm->assign('male_option', $this->pi_getLL('tx_civserv_pi3_email_form.male','Mr.'));
+				$smartyEmailForm->assign('firstname_label',$this->pi_getLL('tx_civserv_pi3_email_form.firstname','Firstname'));
+				$smartyEmailForm->assign('surname_label',$this->pi_getLL('tx_civserv_pi3_email_form.surname','Surname'));
+				$smartyEmailForm->assign('street_label',$this->pi_getLL('tx_civserv_pi3_email_form.street','Street, Nr.'));
+				$smartyEmailForm->assign('postcode_label',$this->pi_getLL('tx_civserv_pi3_email_form.postcode','Postcode'));
+				$smartyEmailForm->assign('city_label',$this->pi_getLL('tx_civserv_pi3_email_form.city','City'));
+				$smartyEmailForm->assign('email_label',$this->pi_getLL('tx_civserv_pi3_email_form.email','E-Mail'));
+				$smartyEmailForm->assign('phone_label',$this->pi_getLL('tx_civserv_pi3_email_form.phone','Phone'));
+				$smartyEmailForm->assign('fax_label',$this->pi_getLL('tx_civserv_pi3_email_form.fax','Fax'));
+				$smartyEmailForm->assign('subject_label',$this->pi_getLL('tx_civserv_pi3_email_form.subject','Subject'));
+				$smartyEmailForm->assign('bodytext_label',$this->pi_getLL('tx_civserv_pi3_email_form.bodytext','Your text'));
+				$smartyEmailForm->assign('submit_label',$this->pi_getLL('tx_civserv_pi3_email_form.submit','Send e-mail'));
+				$smartyEmailForm->assign('reset_label',$this->pi_getLL('tx_civserv_pi3_email_form.reset','Reset'));
+				$smartyEmailForm->assign('required_label',$this->pi_getLL('tx_civserv_pi3_email_form.required','required'));
 
 				// Set reset button type to submit functionality (necessary for resetting email form in 'check_email_form'-mode)
 				$smartyEmailForm->assign('button_type','submit');
@@ -2186,7 +2186,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 				$email_address = $organisation[or_email];
 				return $email_address;
 			} else {
-				$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi2_email_form.error_org_id','Wrong organisation id or organisation does not exist!');
+				$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi3_email_form.error_org_id','Wrong organisation id or organisation does not exist!');
 				return false;
 			}
 
@@ -2199,7 +2199,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 				empty($employee[ep_email]) ? $email_address = $employee[em_email] : $email_address = $employee[ep_email];
 				return $email_address;
 			} else {
-				$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi2_email_form.error_sv_id','Wrong service id, employee id oder position id. No email address found!');
+				$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi3_email_form.error_sv_id','Wrong service id, employee id oder position id. No email address found!');
 				return false;
 			}
 		} elseif (!empty($emp_id) || (!empty($pos_id) && !empty($emp_id)) ) {  //Email form is called from organisation detail page (supervisor email)
@@ -2210,7 +2210,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 				empty($employee[ep_email]) ? $email_address = $employee[em_email] : $email_address = $employee[ep_email];
 				return $email_address;
 			} else {
-				$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi2_email_form.error_pos_id','Wrong employee id oder position id. No email address found!');
+				$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi3_email_form.error_pos_id','Wrong employee id oder position id. No email address found!');
 				return false;
 			}
 		} elseif ($this->piVars['mode']=='check_contact_form') {	//Email form ist called by the contact_link in the main Navigation
@@ -2218,7 +2218,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$hoster_email =$this->get_hoster_email();
 			return $hoster_email;
 		} else {
-			$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi2_email_form.error_general','Organisation id, employee id, position id and service id wrong or not set. No email address found!');
+			$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi3_email_form.error_general','Organisation id, employee id, position id and service id wrong or not set. No email address found!');
 			return false;
 		}
 	}
@@ -2442,7 +2442,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 		
 		
-		//  $this->pi_classParam('searchbox-sword') contains the markup for css: 'class="tx-civserv-pi2-searchbox-sword"'
+		//  $this->pi_classParam('searchbox-sword') contains the markup for css: 'class="tx-civserv-pi3-searchbox-sword"'
 		$search_word=$this->check_searchword(strip_tags($this->piVars['sword']));  //strip and check to avoid xss-exploits
 
 		$sBox = '
@@ -2585,7 +2585,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 *   menu.special = userfunction
 	 *   menu.special.pageid = {$pageid}
 	 *   menu.special.fulltext_search_id = {$fulltext_search_id}
-	 *   menu.special.userFunc = tx_civserv_pi2->makeMenuArray
+	 *   menu.special.userFunc = tx_civserv_pi3->makeMenuArray
 	 *   menu.stdWrap.wrap  = <ul> | </ul>
 	 *   menu.1 = TMENU
 	 *   menu.1.NO {
@@ -2624,58 +2624,58 @@ class tx_civserv_pi2 extends tslib_pibase {
 	/*	
 		if ($conf['menuServiceList']) {
 			$menuArray['menuServiceList'] = array(
-								'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.service_list','Services A - Z'),
+								'title' => $this->pi_getLL('tx_civserv_pi3_menuarray.service_list','Services A - Z'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array('mode' => 'service_list'),1,1,$pageid),
 								'ITEM_STATE' => ($this->piVars['mode']=='service_list')?'ACT':'NO');
 		}
 		if ($conf['menuCircumstanceTree']) {
 			$menuArray['menuCircumstanceTree'] = array(
-								'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.circumstance_tree','Circumstances'),
+								'title' => $this->pi_getLL('tx_civserv_pi3_menuarray.circumstance_tree','Circumstances'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array('mode' => 'circumstance_tree'),1,1,$pageid),
 								'ITEM_STATE' => (($this->piVars['mode']=='circumstance_tree') || ($this->piVars['mode']=='circumstance'))?'ACT':'NO');
 		}
 		if ($conf['menuUsergroupTree']) {
 			$menuArray['menuUsergroupTree'] = array(
-								'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.usergroup_tree','Usergroups'),
+								'title' => $this->pi_getLL('tx_civserv_pi3_menuarray.usergroup_tree','Usergroups'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array('mode' => 'usergroup_tree'),1,1,$pageid),
 								'ITEM_STATE' => (($this->piVars['mode']=='usergroup_tree') || ($this->piVars['mode']=='usergroup'))?'ACT':'NO');
 		}
 		if ($conf['menuOrganisationTree']) {
 			$menuArray['menuOrganisationTree'] = array(
-								'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.organisation_tree','Organisation'),
+								'title' => $this->pi_getLL('tx_civserv_pi3_menuarray.organisation_tree','Organisation'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array('mode' => 'organisation_tree'),1,1,$pageid),
 								'ITEM_STATE' => (($this->piVars['mode']=='organisation_tree') || ($this->piVars['mode']=='organisation'))?'ACT':'NO');
 		}
 		if ($conf['menuOrganisationList']) {
 			$menuArray['menuOrganisationList'] = array(
-								'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.organisation_list','Organisation A - Z'),
+								'title' => $this->pi_getLL('tx_civserv_pi3_menuarray.organisation_list','Organisation A - Z'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array('mode' => 'organisation_list'),1,1,$pageid),
 								'ITEM_STATE' => (($this->piVars['mode']=='organisation_list') || ($this->piVars['mode']=='organisation_list'))?'ACT':'NO');
 		}
 		*/
 		if ($conf['menuEmployeeList']) {
 			$menuArray['menuEmployeeList'] = array(
-								'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.employee_list','Employees A - Z'),
+								'title' => $this->pi_getLL('tx_civserv_pi3_menuarray.employee_list','Employees A - Z'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array('mode' => 'employee_list_az'),1,1,$pageid),
 								'ITEM_STATE' => ($this->piVars['mode']=='employee_list_az') ? 'ACT' : 'NO');
 		}
 		/*
 		if ($conf['menuFormList']) {
 			$menuArray['menuFormList'] = array(
-								'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.form_list','Forms'),
+								'title' => $this->pi_getLL('tx_civserv_pi3_menuarray.form_list','Forms'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array('mode' => 'form_list'),1,1,$pageid),
 								'ITEM_STATE' => ($this->piVars['mode']=='form_list')?'ACT':'NO');
 		}
 		if ($conf['menuTop15']) {
 			$menuArray['menuTop15'] = array(
-								'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.top15','Top 15'),
+								'title' => $this->pi_getLL('tx_civserv_pi3_menuarray.top15','Top 15'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array('mode' => 'top15'),0,1,$pageid),
 								'ITEM_STATE' => ($this->piVars['mode']=='top15')?'ACT':'NO');
 		}
 		// online services....
 		if ($conf['menuOnlineServices']) {
 			$menuArray['menuOnlineServices'] = array(
-								'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.online_services','Online Services'),
+								'title' => $this->pi_getLL('tx_civserv_pi3_menuarray.online_services','Online Services'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array('mode' => 'online_services'),0,1,$pageid),
 								'ITEM_STATE' => ($this->piVars['mode']=='online_services')?'ACT':'NO');
 		}
@@ -2683,14 +2683,14 @@ class tx_civserv_pi2 extends tslib_pibase {
 		// get full text search id from TSconfig
 		if ($conf['fulltext_search_id'] > '') {
 			$menuArray['menuFulltextSearch'] = array(
-							'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.fulltext_search','Fulltext Search'),
+							'title' => $this->pi_getLL('tx_civserv_pi3_menuarray.fulltext_search','Fulltext Search'),
 							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(),0,1,$conf['fulltext_search_id']),
 							'ITEM_STATE' => ($GLOBALS['TSFE']->id==$conf['fulltext_search_id'])?'ACT':'NO');
 		}
 		// get id for alternative language from TSconfig
 		if (intval($conf['alternative_page_id']) > 0) {
 			$menuArray[] = array(
-							'title' => $this->pi_getLL('tx_civserv_pi2_menuarray.alternative_language','Deutsche Inhalte'),
+							'title' => $this->pi_getLL('tx_civserv_pi3_menuarray.alternative_language','Deutsche Inhalte'),
 							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array('mode' => 'service_list'),0,1,$conf['alternative_page_id']),
 							'ITEM_STATE' => ($GLOBALS['TSFE']->id==$conf['alternative_page_id'])?'ACT':'NO');
 		}
@@ -2847,17 +2847,17 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$linkText=$GLOBALS['TSFE']->page['title']; //default
 		if($this->piVars['mode']=="organisation"){
 			$pageLink= parent::pi_linkTP_keepPIvars_url(array('mode' => 'organisation_list'),1,1,$pageid);
-			$linkText=$this->pi_getLL('tx_civserv_pi2_menuarray.organisation_list','Organisation A - Z'); 
+			$linkText=$this->pi_getLL('tx_civserv_pi3_menuarray.organisation_list','Organisation A - Z'); 
 		}elseif($this->piVars['mode']=="circumstance"){
 			$pageLink= parent::pi_linkTP_keepPIvars_url(array('mode' => 'circumstance_tree'),1,1,$pageid);
-			$linkText=$this->pi_getLL('tx_civserv_pi2_menuarray.circumstance_tree','Circumstances'); 
+			$linkText=$this->pi_getLL('tx_civserv_pi3_menuarray.circumstance_tree','Circumstances'); 
 		}elseif($this->piVars['mode']=="usergroup"){
 			$pageLink= parent::pi_linkTP_keepPIvars_url(array('mode' => 'usergroup_tree'),1,1,$pageid);
-			$linkText=$this->pi_getLL('tx_civserv_pi2_menuarray.usergroup_tree','Usergroups'); 
+			$linkText=$this->pi_getLL('tx_civserv_pi3_menuarray.usergroup_tree','Usergroups'); 
 		}elseif($this->piVars['mode']=="service"){
 			$_SESSION['stored_pagelink']=$this->getActualPage($content, $conf);
 			$pageLink= parent::pi_linkTP_keepPIvars_url(array('mode' => 'service_list'),1,1,$pageid);
-			$linkText=$this->pi_getLL('tx_civserv_pi2_service_list.service_list','Services A - Z');
+			$linkText=$this->pi_getLL('tx_civserv_pi3_service_list.service_list','Services A - Z');
 			$_SESSION['info_sites'] = $this->getCompletePageLink($pageLink, $linkText); //Variablen namen ändern?
 		}elseif($this->piVars['mode']=="employee"){
 			return $_SESSION['stored_pagelink'];
@@ -2894,7 +2894,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$linkText=$GLOBALS['TSFE']->page['title'];
 		 // mark: for organisations we need a different linktext
 		 
-		 //tx_civserv_pi2_organisation_list.organisation_list.heading
+		 //tx_civserv_pi3_organisation_list.organisation_list.heading
 
 		if($this->piVars['mode']=='service'){
 			$textArr=explode(":", $linkText);
@@ -3016,8 +3016,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 
 
-if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/civserv/pi2/class.tx_civserv_pi2.php"])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/civserv/pi2/class.tx_civserv_pi2.php"]);
+if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/civserv/pi3/class.tx_civserv_pi3.php"])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/civserv/pi3/class.tx_civserv_pi3.php"]);
 }
 
 ?>

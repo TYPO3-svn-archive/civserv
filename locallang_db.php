@@ -277,8 +277,9 @@ $LOCAL_LANG = Array (
 		"tx_civserv_weekday_401" => "Extra hours",
 		"tx_civserv_weekday_402" => "Please note",
 //		"tx_civserv_weekday_403" => "no Weekday specified",
-		"tt_content.list_type_pi1" => "Virtual Civil Services",	 // Name of Plug-in (for Flag)
-		"tt_content.list_type_pi2" => "Virtual Civil Services - extended employeelist",	 // Name of Plug-in (for Flag)
+		"tt_content.list_type_pi1" => "Virtual Civil Services (civserv)",	 // Name of Plug-in (for Flag)
+		"tt_content.list_type_pi2" => "civserv - pi2 extended employeelist",
+		"tt_content.list_type_pi3" => "civserv - pi3 extended employeelist",
 	),
 	"de" => Array (
 		"tx_civserv.doktype.model_service" => "Model Service Container",
@@ -517,8 +518,9 @@ $LOCAL_LANG = Array (
 		"tx_civserv_weekday_401" => "zusätzlich",
 		"tx_civserv_weekday_402" => "Hinweis",
 //		"tx_civserv_weekday_403" => "keine Wochentag-Angabe",
-		"tt_content.list_type_pi1" => "Virtuelle Verwaltung",	 // Name of Plug-in (for Flag)
-		"tt_content.list_type_pi2" => "Virtuelle Verwaltung - erweiterte Mitarbeiterliste",	 // Name of Plug-in (for Flag)
+		"tt_content.list_type_pi1" => "Virtuelle Verwaltung (civserv)",	 // Name of Plug-in (for Flag)
+		"tt_content.list_type_pi2" => "civserv - pi2 erweiterte Mitarbeiterliste",	 // Name of Plug-in (for Flag)
+		"tt_content.list_type_pi3" => "civserv - pi3 erweiterte Mitarbeiterliste",
 	),
 );
 ?>
