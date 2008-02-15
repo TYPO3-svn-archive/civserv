@@ -99,7 +99,6 @@ require_once(PATH_tslib . 'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('smarty') . 'class.tx_smarty.php');
 #require_once(t3lib_extMgm::extPath('civserv') . 'pi2/class.tx_civserv_accesslog.php');
 require_once(t3lib_extMgm::extPath('civserv') . 'res/class.tx_civserv_mandant.php');
-#debug(t3lib_extMgm::extPath('civserv'), 'extpath');
 
 /**
  * Class for plugin 'Civil Services'
@@ -332,17 +331,18 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$_SESSION['stored_filter_key'] = 'char';
 			$_SESSION['stored_filter_val'] = $this->piVars['char'];
 			$mode_text = $this->pi_getLL('tx_civserv_pi2_employee_list.by_name',' by names');
+			debug($query, 'makeEmployeeListQueryAZ');
 		}elseif($this->piVars['mode'] == 'employee_list_orcode'){
 			$query = $this->makeEmployeeListQueryOrCode($this->piVars['orcode']);
 			$_SESSION['stored_filter_key'] = 'orcode';
 			$_SESSION['stored_filter_val'] = $this->piVars['orcode'];
 			$mode_text = $this->pi_getLL('tx_civserv_pi2_employee_list.by_organisation',' by department');
+			debug($query, 'makeEmployeeListQueryOrCode');
 		}
-		debug($query, 'makeEmployeeListQuery');
 
 
 		//hier ist die musik!
-		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db, $query);
 		$row_counter = 0;
 		
 		$em_org_kombis=array(); // store all combinations of an employee and his/her employing organisation unit here
@@ -350,7 +350,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$kills=array(); // will be used to eleminate dublicates from the above list
 		
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
-#			debug($row, 'employees_row');
 			$employees[$row_counter]['em_uid']=$row['em_uid'];
 			
 			// Anrede bestimmen
@@ -390,30 +389,20 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$employees[$row_counter]['ep_label'] = $row['ep_label'];
 			
 			
-#			debug(t3lib_div::getIndpEnv(TYPO3_REQUEST_SCRIPT), 'TYPO3_REQUEST_SCRIPT');
-#			debug(t3lib_div::getIndpEnv(TYPO3_REQUEST_DIR), 'TYPO3_REQUEST_DIR');
-#			debug(t3lib_div::getIndpEnv(SCRIPT_NAME), 'SCRIPT_NAME');
-#			debug(t3lib_div::getIndpEnv(PATH_INFO), 'PATH_INFO');
-			#SCRIPT_NAME
-
-			
 			// Bild	holen
 			$employees[$row_counter]['em_imagecode']=""; // leere Initialisierung
 			if ($employees[$row_counter]['em_image'] != "") {
 				$image = $employees[$row_counter]['em_image'];
 				$imagepath = $this->conf['folder_organisations'] . $this->community['id'] . '/images/';
-#				debug($imagepath, '$imagepath');
 				$image_text = "blabalbal";
-#				debug($this->conf['service-image.'], 'conf');
 				$imageCode = $this->getImageCode($image,$imagepath,$this->conf['service-image.'],$image_text);
-#				debug($imageCode, '$imageCode Mitarbeiter 1');
 				$imageCode = preg_replace('/<img[^>]*>/', '<img src="'.t3lib_div::getIndpEnv(TYPO3_REQUEST_DIR).'typo3conf/ext/civserv/icon_tx_civserv_foto.gif" alt="click it like beckam" />', $imageCode);
-#				debug($imageCode, '$imageCode Mitarbeiter 2');
 				$employees[$row_counter]['em_imagecode'] = $imageCode;
 			}
 
 
-			if($this->piVars['orcode'] == 'hod'){
+			if($this->piVars['orcode'] == 'hod' && $this->piVars['mode'] == 'employee_list_orcode'){ //display all the head-of-departments
+				debug($row, 'row!');
 				$employees[$row_counter]['or_code'] = $row['or_code']; //delivered by makeemployeelistQuery....
 				$employees[$row_counter]['or_uid'] = $row['or_uid'];
 				$employees[$row_counter]['or_name'] = $row['organisation'];
@@ -502,7 +491,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 															),
 														1,1)
 													);
-	#			debug($employees[$row_counter]['or_url'], 'or_url');
 				}
 			}// end else
 
@@ -511,7 +499,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 				// dem Mitarbeiter wurde ein Raum zugewiesen, hol mir das passende Gebäude
 				// der Raum weiß über rbf_building_bl_floor zu welchem Gebäude er gehört und
 				// zu welcher Etage....
-#				debug($employees[$row_counter]['ep_room'], 'Raum:');
 				$res_building = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'tx_civserv_building.bl_mail_street, 
 					 tx_civserv_building.bl_mail_pob, 
@@ -612,7 +599,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 					}	
 				} // orga_bl_count nach erstem durchlauf auf 0
 				// jetzt sollten uns einige Gebäude zur Verfügung stehen....
-#				debug($organisation_buildings, '$organisation_buildings');
 				$or_bl_names=array();
 				foreach($organisation_buildings as $bl_data){
 					if ($bl_data['bl_name_to_show'] > ''){
@@ -634,7 +620,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 														),
 													1,1)
 												);
-#			debug($employees[$row_counter]['em_url'], 'em_url');
 			
 			// link zum email-client
 			$employees[$row_counter]['email_code'] = "";
@@ -682,7 +667,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$smartyEmployeeList->assign('employees',$employees);
 
 
-		//take care of abc - orCode - BAR
+		//take care of abc / orCode - BAR
 		if ($this->piVars['mode'] == 'employee_list_az') {
 			$query = $this->makeEmployeeListQueryAZ('all', false);
 			$smartyEmployeeList->assign('abcbar', $this->makeAbcBar($query, 'nach Ämtern', 'employee_list_orcode'));
@@ -803,7 +788,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @return	[type]		...
 	 */
 	function makeEmployeeListQueryOrCode($orcode='all', $limit=true, $count=false) { //do not put the orcode in quotation marks!!
-			if($orcode == 'hod'){ // head of Department
+			if($orcode == 'hod'){ // head-of-Department
 				$fields =  'tx_civserv_organisation.uid as or_uid, 
 						 	tx_civserv_organisation.or_name as organisation,
 						 	tx_civserv_organisation.or_code,
@@ -842,7 +827,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 								tx_civserv_employee.hidden = 0 AND	
 								tx_civserv_employee.em_pseudo = 0 ';
 			}else{
-				$fields =  'tx_civserv_organisation.or_code,
+				$fields =  'tx_civserv_organisation.uid as or_uid, 
+							tx_civserv_organisation.or_code,
 							tx_civserv_organisation.or_name,
 							tx_civserv_employee.em_address, 
 							tx_civserv_employee.em_title, 
@@ -966,10 +952,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$abcBar =  '<p id="abcbar">' . "\n\t";
 		for($i = 0; $i < sizeof($alphabet); $i++)	{
 			$thepivar = strtoupper($this->piVars['char']);
-#			debug($thepivar, 'pivars char');
-#			debug($alphabet[$i], 'Buchstabe');
 			$actual = (strtoupper($this->piVars['char']) == $alphabet[$i]);
-#			debug($actual, '$actual');
 			if($occuringInitials && in_array($alphabet[$i], $occuringInitials))	{
 				$abcBar .= sprintf(	'%s' . 
 									$this->pi_linkTP_keepPIvars(
@@ -1035,7 +1018,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 		// the resultset contains any organisation, that has a relation to one or more positions
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
-#			debug($row);
 			if($row['or_code'] > ''){
 				$namefield_arr = $row['or_code'];
 				
@@ -1046,7 +1028,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 	#			$occuringCodes[] = ucfirst($namefield_arr);
 				$occuringCodes[] = (string)str_replace(' ', '_', strtoupper($namefield_arr));
 	
-	#			debug($occuringCodes, 'occuringCodes');
 				$row_counter++;
 			}else{
 				//do nothing
@@ -1054,7 +1035,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 		}
 		if ($occuringCodes ) $occuringCodes = array_unique($occuringCodes);
 		
-#		debug($occuringCodes, 'occuringCodes unique');
 
 		// get all organisations which exist (no matter if they do or don't harbour any positions)
 		$orCodeArray = array();
@@ -1071,19 +1051,13 @@ class tx_civserv_pi2 extends tslib_pibase {
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$orCodeArray[] = str_replace(' ', '_', strtoupper($row['or_code']));
 		}
-#		debug($orCodeArray, 'orCodeArray');	
 
 		// build a string with the links to the orcode-sites
 		$orcodeBar =  '<p id="orcodebar">' . "\n\t";
 		for($i = 0; $i < sizeof($orCodeArray); $i++)	{
-#			debug($this->piVars['orcode'], 'pivars orcode');
-#			debug($orCodeArray[$i], '$orCodeArray[$i]');
 			// === !!! or else will take 001 and 01 for equal....
 			$actual = (strtoupper($this->piVars['orcode']) === strtoupper($orCodeArray[$i])); //flag, true or false
-#			debug($actual, '$actual');
 			if ($occuringCodes && in_array((string)$orCodeArray[$i], $occuringCodes, true)){ //true for check on data-type string! or else will set '001' and '01' equal
-#				debug('match');
-#				debug($orCodeArray[$i], 'amt....');
 
 				$orcodeBar .= sprintf(	'%s' . 
 										$this->pi_linkTP_keepPIvars(
@@ -1102,7 +1076,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 				
 			}
 			else {
-#				debug('no match');
 				$orcodeBar .=  '<span class="empty">'.$orCodeArray[$i].'</span> '.$this->conf['abcSpacer'].' ';
 			}
 		}
