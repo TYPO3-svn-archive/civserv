@@ -243,14 +243,14 @@ class tx_civserv_pi3 extends tslib_pibase {
 				case 'employee_list_az':
 					$_SESSION['stored_mode'] = 'employee_list_az';
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi3_employee_list.az','Employees A - Z');
-					$template = $this->conf['tpl_employee_list_plus'];
+					$template = $this->conf['tpl_employee_list_pi3'];
 #					$accurate = $this->employee_list_az($smartyObject,$this->conf['abcBarAtEmployeeList'],$this->conf['searchAtEmployeeList'],$this->conf['topAtEmployeeList']);
 					$accurate = $this->employee_list($smartyObject,$this->conf['abcBarAtEmployeeList'], false, $this->conf['searchAtEmployeeList'],$this->conf['topAtEmployeeList']);
 					break;					
 				case 'employee_list_orcode':
 					$_SESSION['stored_mode'] = 'employee_list_orcode';
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi3_employee_list.orcode','Employees A - Z');
-					$template = $this->conf['tpl_employee_list_plus'];
+					$template = $this->conf['tpl_employee_list_pi3'];
 #					$accurate = $this->employee_list_orcode($smartyObject, $this->conf['orCodeBarAtEmployeeList'], $this->conf['searchAtEmployeeList'], $this->conf['topAtEmployeeList']);
 					$accurate = $this->employee_list($smartyObject, false, $this->conf['orCodeBarAtEmployeeList'], $this->conf['searchAtEmployeeList'], $this->conf['topAtEmployeeList']);
 					break;			

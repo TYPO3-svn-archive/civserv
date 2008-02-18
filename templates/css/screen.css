@@ -1188,7 +1188,7 @@ input:focus, textarea:focus {
 	margin: 0;
 	padding: 0;
 	padding-bottom: 1em;
-	background-color: red;
+	background-color: green;
 	color: #fff;
 	font-size: 1.1em;
 	font-weight: bold;
