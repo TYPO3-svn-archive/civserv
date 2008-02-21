@@ -749,6 +749,7 @@ CREATE TABLE tx_civserv_position (
 	hidden tinyint(4) unsigned DEFAULT '0' NOT NULL,
 	fe_group int(11) DEFAULT '0' NOT NULL,
 	po_name tinytext NOT NULL,
+	po_nice_name tinytext NOT NULL,
 	po_number tinytext NOT NULL,
 	po_descr text NOT NULL,
 	po_organisation int(11) unsigned DEFAULT '0' NOT NULL,

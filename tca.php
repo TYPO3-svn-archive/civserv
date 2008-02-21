@@ -2688,6 +2688,15 @@ $TCA["tx_civserv_position"] = Array (
 				"eval" => "required",
 			)
 		),
+		"po_nice_name" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_position.po_nice_name",
+			"config" => Array (
+				"type" => "input",
+				"size" => "100",
+				"max" => "255",
+			)
+		),
 		"po_descr" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_position.po_descr",
@@ -2724,7 +2733,7 @@ $TCA["tx_civserv_position"] = Array (
 		),
 	),
 	"types" => Array (
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, po_number, po_name, po_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], po_organisation")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, po_number, po_name, po_nice_name, po_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], po_organisation")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "fe_group")

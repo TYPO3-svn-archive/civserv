@@ -1,0 +1,85 @@
+<!--TYPO3SEARCH_end-->
+<div id="right">
+	{include file=$right_searchbox_template}	
+	{* For the form list could be shown organisations with forms. *}	
+	<!--{if $organisations != "" }-->		
+		<h3 class="invisible">{$subnavigation_label}:</h3>
+		<div id="rightmenu">
+			<ul class="level1">
+				<!--{foreach from=$organisations item=organisation }-->
+					<li><a href="{$organisation.link}">{$organisation.name}</a></li>
+				<!--{/foreach}-->			
+			</ul><!-- level1 end -->
+		</div><!-- rightmenu end -->	
+	<!--{/if}-->
+	{include file=$right_top_template}
+	right_top
+</div><!-- right end -->
+<div id="centrecontent">	
+	<!--{if $heading != ""}-->		
+		<h1>{$heading}</h1>	
+	<!--{/if}-->	
+	<!--{if $abcbar != ""}-->		
+		{$abcbar}	
+	<!--{/if}-->		
+	<!--{if $orCodeBar != ""}-->		
+		{$orCodeBar}	
+	<!--{/if}-->		
+	<h2>{$subheading}:</h2>	
+		<table>
+			<tr class = "tableheader">
+				<th>&nbsp;</th>
+				<th>{$th_one}</th>
+				<th>{$th_two}</th>
+				<th>{$th_three}</th>
+				<th>{$th_foor}</th>
+				<th>{$th_five}</th>
+				<th>{$th_six}</th>
+			</tr>
+		<!--{foreach from=$employees item=employee}-->
+			<tr class = "tablerow_a">
+				<td>employee</td>
+				<td>{$employee.full_name}</td>	
+				<td><!--{if $employee.em_image > ''}-->{$employee.em_imagecode}<!--{/if}--></td>
+				<td><!--{if $employee.em_telephone > ''}-->{$employee.em_telephone}<!--{/if}--></td>	
+				<td><!--{if $employee.email_code > ''}-->{$employee.email_code}<!--{/if}--></td>	
+				<td><!--{if $employee.em_fax > ''}-->{$employee.em_fax}<!--{/if}--></td>
+				<td><!--{if $employee.em_mobile > ''}-->{$employee.em_mobile}<!--{/if}--></td>
+			</tr>
+			<!--{foreach from=$employee.em_organisations item=organisation}-->
+				<tr class = "tablerow_c">
+				<td>&nbsp;</td>
+					<td colspan = 6>
+						<!--{if $organisation.or_code > ''}-->&nbsp;({$organisation.or_code})<!--{/if}-->
+						<!--{if $organisation.or_name > ''}-->{$organisation.or_name}<!--{/if}-->
+						<!--{if $organisation.or_shorttitle > ''}-->{$organisation.or_shorttitle}<!--{/if}-->
+					</td>	
+				</tr>
+				<!--{foreach from=$organisation.positions item=position}-->
+					<tr class = "tablerow_d">
+						<td colspan>&nbsp;</td>
+						<td colspan colspan = 2>
+							<!--{if $position.po_nice_name > ''}-->{$position.po_nice_name}<!--{/if}-->
+							<!--{if $position.po_name > ''}--><br />({$position.po_name})<!--{/if}-->
+						</td>	
+						<td colspan>
+							<!--{if $position.po_phone > ''}-->{$position.po_phone}<!--{/if}-->
+						</td>
+						<td colspan colspan>
+							<!--{if $position.po_building > ''}-->{$position.po_building}:<!--{/if}-->
+							<!--{if $position.po_room > ''}-->&nbsp;{$position.po_room}<!--{/if}-->
+							<!--{if $position.po_floor > ''}-->&nbsp;({$position.po_floor})<!--{/if}-->
+						</td>	
+						<td>
+							<!--{if $position.po_fax > ''}-->{$position.po_fax}<!--{/if}-->
+						</td>
+						<td>
+							<!--{if $position.po_mobile > ''}-->&nbsp;({$position.po_mobile})<!--{/if}-->
+						</td>						
+					</tr>
+				<!--{/foreach}-->	<!--positions-->
+			<!--{/foreach}-->	<!--organisations-->
+		<!--{/foreach}-->	<!--employees-->
+		</table>
+		{$pagebar}
+</div><!-- centrecontent end -->

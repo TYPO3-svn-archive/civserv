@@ -1155,6 +1155,14 @@ input:focus, textarea:focus {
 	background-color: #eee;
 }
 
+.tx-civserv-pi2 #centrecontent table tr.tablerow_c {
+	background-color: pink;
+}
+
+.tx-civserv-pi2 #centrecontent table tr.tablerow_d {
+	background-color: lightblue;
+}
+
 .tx-civserv-pi2 #centrecontent table th {
 	font-weight: bold;
 }
@@ -1167,16 +1175,39 @@ input:focus, textarea:focus {
 
 
 .tx-civserv-pi2 #centrecontent table td img, 
-.tx-civserv-pi2 #centrecontent table th img{
+.tx-civserv-pi2 #centrecontent table th img {
 	border: 0;
+}
+
+
+.tx-civserv-pi2 #centrecontent #or_choice {
+	margin-left: 4px;
+	border: solid red 2px;
+}
+.tx-civserv-pi2 #centrecontent #or_choice .level_1 {
+	xcolor: red;
+}
+
+.tx-civserv-pi2 #centrecontent #or_choice .level_2 {
+	xcolor: green;
+	padding-left: 20px;
+}
+
+.tx-civserv-pi2 #centrecontent #or_choice .level_3 {
+	xcolor: green;
+	padding-left: 40px;
+}
+
+.tx-civserv-pi2 #centrecontent #or_choice .level_4 {
+	xcolor: green;
+	padding-left: 60px;
 }
 
 
 
 
 
-
-
+/*---------------------------*/
 .tx-civserv-pi3 #centrecontent table {
 	margin-left: 1em;
 	xborder: dashed red 2x;

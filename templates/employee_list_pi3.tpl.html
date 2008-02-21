@@ -1,0 +1,65 @@
+<!--TYPO3SEARCH_end-->
+<div id="right">
+	{include file=$right_searchbox_template}	
+	{* For the form list could be shown organisations with forms. *}	
+	<!--{if $organisations != "" }-->		
+		<h3 class="invisible">{$subnavigation_label}:</h3>
+		<div id="rightmenu">
+			<ul class="level1">
+				<!--{foreach from=$organisations item=organisation }-->
+					<li><a href="{$organisation.link}">{$organisation.name}</a></li>
+				<!--{/foreach}-->			
+			</ul><!-- level1 end -->
+		</div><!-- rightmenu end -->	
+	<!--{/if}-->
+	{include file=$right_top_template}
+	right_top
+</div><!-- right end -->
+<div id="centrecontent">	
+	<!--{if $heading != ""}-->		
+		<h1>{$heading}</h1>	
+	<!--{/if}-->	
+	<!--{if $abcbar != ""}-->		
+		{$abcbar}	
+	<!--{/if}-->		
+	<!--{if $orCodeBar != ""}-->		
+		{$orCodeBar}	
+	<!--{/if}-->		
+	<h2>{$subheading}:</h2>	
+		<table>
+			<tr class = "tableheader">
+				<th>{$th_department}</th>
+				<th>{$th_name}</th>
+				<th>{$th_photo}</th>
+				<th>{$th_phone}</th>
+				<th>{$th_remarks}</th>
+			</tr>
+		<!--{foreach from=$employees item=employee}-->
+			<tr class = "tablerow{cycle values=_a,_b}">
+				<td>
+					<!--{if $employee.or_code > ''}-->
+						{* {$employee.or_code} *}
+						<a href="{$employee.or_url}">{$employee.or_code}</a>&nbsp;
+					<!--{/if}-->
+				</td>
+				<td>
+					<!--{if $employee.em_datasec == "1"}-->
+						<a href="{$employee.em_url}">{$employee.full_name}</a>&nbsp;
+					<!--{else}-->	
+						{$employee.full_name}
+					<!--{/if}-->
+					<!--{if $employee.email_code > ''}--><br />{$employee.email_code}<!--{/if}-->
+					{* <br />({$employee.po_name}) *}
+				</td>	
+				<td><!--{if $employee.em_image > ''}-->{$employee.em_imagecode}<!--{/if}--></td>
+				<td><!--{if $employee.em_telephone > ''}-->{$employee.em_telephone}<!--{/if}--></td>	
+				<td>
+					<!--{if $employee.or_name > ''}-->{$employee.or_name}<!--{/if}-->
+					<!--{if $employee.po_descr > ''}--> - {$employee.po_descr}<!--{/if}-->
+					<!--{if $employee.or_buildings > ''}--> ({$employee.or_buildings})<!--{/if}-->
+				</td>	
+			</tr>
+		<!--{/foreach}-->	
+			</table>
+		{$pagebar}
+</div><!-- centrecontent end -->
