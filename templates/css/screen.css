@@ -1132,6 +1132,9 @@ input:focus, textarea:focus {
 	xbackground-color: green;
 }
 
+.tx-civserv-pi2 #centrecontent table td{
+	padding: 10px;
+}
 
 .tx-civserv-pi2 #centrecontent table tr.tableheader {
 	margin: 0;
@@ -1144,23 +1147,33 @@ input:focus, textarea:focus {
 }
 
 
-.tx-civserv-pi2 #centrecontent table tr.tablerow_a, 
-.tx-civserv-pi2 #centrecontent table tr.tablerow_b {
+.tx-civserv-pi2 #centrecontent table tr.tablerow_employee, 
+.tx-civserv-pi2 #centrecontent table tr.tablerow_organisation {
 	margin: 0;
 	padding: 0;
 	padding-bottom: 5px;
-	background-color: #ddd;
-}
-.tx-civserv-pi2 #centrecontent table tr.tablerow_a {
-	background-color: #eee;
 }
 
-.tx-civserv-pi2 #centrecontent table tr.tablerow_c {
+.tx-civserv-pi2 #centrecontent table tr.tablerow_organisation {
+	background-color: lightgrey;
+}
+
+.tx-civserv-pi2 #centrecontent table tr.tablerow_employee {
+	background-color: lightblue;
+}
+
+.tx-civserv-pi2 #centrecontent table tr.tablerow_position {
 	background-color: pink;
 }
 
-.tx-civserv-pi2 #centrecontent table tr.tablerow_d {
-	background-color: lightblue;
+.tx-civserv-pi2 #centrecontent table.employee_or tr.tablerow_organisation td{
+	border-top: solid lightgrey 10px;
+	border-bottom: solid lightgrey 10px;
+}
+
+.tx-civserv-pi2 #centrecontent table.employee_az tr.tablerow_employee td{
+	border-top: solid lightblue 10px;
+	border-bottom: solid lightblue 10px;
 }
 
 .tx-civserv-pi2 #centrecontent table th {

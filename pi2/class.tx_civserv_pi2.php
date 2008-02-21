@@ -544,9 +544,11 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$smartyEmployeeList->assign('employees',$employees);
 
 
-		//take care of abc BAR - anyhow?!
-		$query = $this->makeEmployeeListQueryAZ('all', false);
-		$smartyEmployeeList->assign('abcbar', $this->makeAbcBar($query, 'nach Ämtern', 'employee_list_or_uid'));
+
+
+//ABC-BAR
+		$query_abc = $this->makeEmployeeListQueryAZ('all', false);
+		$smartyEmployeeList->assign('abcbar', $this->makeAbcBar($query_abc, 'nach Ämtern', 'employee_list_or_uid'));
 
 		
 		if ($searchBox) {
@@ -577,7 +579,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 	function employee_list_or_uid(&$smartyEmployeeList, $abcBar=false, $orCodeBar=false, $searchBox=false, $topList=false){
 		// Die Funktion makeEmployeeListQueryAZ liefert alle Mitarbeiter, die eine Stelle besetzen
 		// die Query enthälten Daten über den Mitarbeiter, die Stelle und die Mitarbeiter_Stellen_zuordnung (raum etc)
-		debug('function employee_list_or_uid called with mode makeEmployeeListQueryOrCode');
 		debug($this->piVars, 'this->piVars');
 		$query = $this->makeEmployeeListQueryOrUid($this->piVars['or_uid']);//or_uid is transmitted by the select-box
 		$_SESSION['stored_filter_key'] = 'orcode';
@@ -587,188 +588,160 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		//hier ist die musik!
 		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db, $query);
-		$row_counter = 0;
-		$employees = array();
+		$organisations = array();
 
 		
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
-			$employees[$row_counter]['em_organisations'] = array();
-
-			$employees[$row_counter]['em_uid']=$row['em_uid'];
-			
-			// Anrede bestimmen
-			if($row['em_address']==2){
-				$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi2_organisation.address_female', 'Ms.');
-			}elseif($row['em_address']==1){
-				$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi2_organisation.address_male', 'Mr.');
-			}
-			
-			// Mitarbeiter-Daten
-			$employees[$row_counter]['title'] = $row['em_title'];
-			$employees[$row_counter]['name'] = $row['name']; //alias in makeEmployeeListQueryAZ, need for generic makeAbcBar
-			$employees[$row_counter]['firstname'] = $row['em_firstname'];
-			$employees[$row_counter]['full_name'] = $row['name'].", ".$row['em_firstname'];
-			$employees[$row_counter]['em_telephone'] = $row['em_telephone'];
-			$employees[$row_counter]['em_fax'] = $row['em_fax'];
-			$employees[$row_counter]['em_mobile'] = $row['em_mobile'];
-			$employees[$row_counter]['em_email'] = $row['em_email'];
-			$employees[$row_counter]['em_image'] = $row['em_image'];
-#			$employees[$row_counter]['em_datasec'] = $row['em_datasec'];
-			$employees[$row_counter]['em_uid'] = $row['em_uid'];
-			
-			
-			// Bild	holen
-			$employees[$row_counter]['em_imagecode']=""; // leere Initialisierung
-			if ($employees[$row_counter]['em_image'] != "") {
-				$image = $employees[$row_counter]['em_image'];
-				$imagepath = $this->conf['folder_organisations'] . $this->community['id'] . '/images/';
-				$image_text = "blabalbal";
-				$imageCode = $this->getImageCode($image,$imagepath,$this->conf['service-image.'],$image_text);
-				$imageCode = preg_replace('/<img[^>]*>/', '<img src="'.t3lib_div::getIndpEnv(TYPO3_REQUEST_DIR).'typo3conf/ext/civserv/icon_tx_civserv_foto.gif" alt="click it like beckam" />', $imageCode);
-				$employees[$row_counter]['em_imagecode'] = $imageCode;
+			//das funktioniert natürlich nur, wenn das resultset nach organisationen sortiert ist!!!
+			if(array_key_exists($row['or_uid'], $organisations)){
+				//duuno
+			}else{
+				$organisations[$row['or_uid']]['or_employees'] = array();
+				$organisations[$row['or_uid']]['or_uid'] = $row['or_uid'];
+				$organisations[$row['or_uid']]['or_index'] = $row['or_index'];
+				$organisations[$row['or_uid']]['or_code'] = $row['or_code'];
+				$organisations[$row['or_uid']]['or_name'] = $row['or_name'];
 			}
 			
 			
-			// is the actual employee head-of-department?
-			$emhod_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_civserv_organisation.uid as or_uid,
-				 tx_civserv_organisation.or_name',
-				'tx_civserv_organisation,
-				 tx_civserv_employee',
-				'tx_civserv_organisation.or_supervisor = '.$employees[$row_counter]['em_uid'].' 
-				 AND tx_civserv_employee.uid = '.$employees[$row_counter]['em_uid'].'
-				 AND tx_civserv_organisation.deleted = 0
-				 AND tx_civserv_organisation.hidden = 0
-				 AND tx_civserv_employee.deleted = 0
-				 AND tx_civserv_employee.hidden = 0',
-				 '',
-				 '',
-				 '');
-				 
-			while ($emhod_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($emhod_res) ) {
-				$employees[$row_counter]['em_organisations'][$emhod_row['or_uid']]['or_name'] = $emhod_row['or_name'];
-				$employees[$row_counter]['em_organisations'][$emhod_row['or_uid']]['or_code'] = $emhod_row['or_code'];
-				$employees[$row_counter]['em_organisations'][$emhod_row['or_uid']]['or_shorttitle'] = $emhod_row['or_index'];
-				$employees[$row_counter]['em_organisations'][$emhod_row['or_uid']]['positions'][0][po_name] = 'HOD';
-				$employees[$row_counter]['em_organisations'][$emhod_row['or_uid']]['positions'][0][po_nice_name] = 'head of department';
+			if(array_key_exists($row['em_uid'], $organisations[$row['or_uid']]['or_employees'])){
+				//still dunno
+			}else{
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'] = array();
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_uid'] = $row['em_uid'];
+				
+				// Anrede bestimmen
+				if($row['em_address']==2){
+					$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['address_long'] = $this->pi_getLL('tx_civserv_pi2_organisation.address_female', 'Ms.');
+				}elseif($row['em_address']==1){
+					$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['address_long'] = $this->pi_getLL('tx_civserv_pi2_organisation.address_male', 'Mr.');
+				}
+				
+				// Mitarbeiter-Daten
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['title'] = $row['em_title'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['name'] = $row['name']; //alias in makeEmployeeListQueryAZ, need for generic makeAbcBar
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['firstname'] = $row['em_firstname'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['full_name'] = $row['name'].", ".$row['em_firstname'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_telephone'] = $row['em_telephone'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_fax'] = $row['em_fax'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_mobile'] = $row['em_mobile'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_email'] = $row['em_email'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_image'] = $row['em_image'];
+	#			$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_datasec'] = $row['em_datasec'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_uid'] = $row['em_uid'];			
+				
+				// Bild	holen
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_imagecode']=""; // leere Initialisierung
+				if ($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_image'] != "") {
+					$image = $organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_image'];
+					$imagepath = $this->conf['folder_organisations'] . $this->community['id'] . '/images/';
+					$image_text = "blabalbal";
+					$imageCode = $this->getImageCode($image,$imagepath,$this->conf['service-image.'],$image_text);
+					$imageCode = preg_replace('/<img[^>]*>/', '<img src="'.t3lib_div::getIndpEnv(TYPO3_REQUEST_DIR).'typo3conf/ext/civserv/icon_tx_civserv_foto.gif" alt="click it like beckam" />', $imageCode);
+					$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_imagecode'] = $imageCode;
+				}
+				
+				
+				// is the actual employee head-of-department?
+				// todo
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['hod'] = 'HEAD of DEPARTMENT';
 			}
-
 			
-			//ignore ep_datasec!!!
-			$em_orgpos_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_civserv_organisation.uid as or_uid,
-					 tx_civserv_organisation.or_name,
-					 tx_civserv_organisation.or_code,
-					 tx_civserv_organisation.or_index,
-					 tx_civserv_position.uid as po_uid,
-					 tx_civserv_position.po_name,
-					 tx_civserv_position.po_nice_name,
-					 tx_civserv_position.po_descr,
-					 tx_civserv_employee_em_position_mm.uid as ep_uid,
-					 tx_civserv_employee_em_position_mm.ep_officehours,
-					 tx_civserv_employee_em_position_mm.ep_room,
-					 tx_civserv_employee_em_position_mm.ep_telephone,
-					 tx_civserv_employee_em_position_mm.ep_fax,
-					 tx_civserv_employee_em_position_mm.ep_mobile,
-					 tx_civserv_employee_em_position_mm.ep_email,
-					 tx_civserv_employee_em_position_mm.ep_label',
+			
+			//else: which positions does he occupie in that department?
+			// todo
+			if(array_key_exists($row['po_uid'], $organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'])){
+				//yet no idea
+			}else{
+				//arbeite mal die tapete ab!
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['po_uid'] = $row['po_uid'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['po_name'] = $row['po_name'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['po_nice_name'] = $row['po_nice_name'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['po_descr'] = $row['po_descr'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['ep_officehours'] = $row['ep_officehours'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['ep_room'] = $row['ep_room'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['ep_telephone'] = $row['ep_telephone'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['ep_fax'] = $row['ep_fax'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['ep_mobile'] = $row['ep_mobile'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['ep_email'] = $row['ep_email'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['ep_datasec'] = $row['ep_datasec'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['ep_label'] = $row['ep_label'];																												
+			}
+			
+			
+			// building and room for the position
+			// Query for organisation, building, floor and room (depending on position of employee)
+			// ignore em_datasec!!!
+			$bl_room_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'bl_name as building, 
+					 bl_name_to_show as building_to_show,
+					 fl_descr as floor, 
+					 ro_name as room, 
+					 ep_telephone as phone, 
+					 ep_fax as fax, 
+					 ep_email as email',
 					'tx_civserv_employee, 
 					 tx_civserv_position, 
-					 tx_civserv_employee_em_position_mm,
-					 tx_civserv_organisation,
+					 tx_civserv_room, 
+					 tx_civserv_floor, 
+					 tx_civserv_organisation, 
+					 tx_civserv_building, 
+					 tx_civserv_employee_em_position_mm, 
+					 tx_civserv_building_bl_floor_mm, 
 					 tx_civserv_position_po_organisation_mm',
-					'tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local 
-					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid 
-					 AND tx_civserv_employee.uid = '.$employees[$row_counter]['em_uid'].'
+					'tx_civserv_employee.uid = '.$row['em_uid'].'
+					 AND tx_civserv_position.uid = '.$row['po_uid'].'
+					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
+					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
+					 AND tx_civserv_employee_em_position_mm.ep_room = tx_civserv_room.uid
+					 AND tx_civserv_building.uid = tx_civserv_building_bl_floor_mm.uid_local
+					 AND tx_civserv_floor.uid = tx_civserv_building_bl_floor_mm.uid_foreign
+					 AND tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid
 					 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
-					 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign',
+					 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign
+					 AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
+					 AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
+					 AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
+					 AND tx_civserv_room.deleted = 0 AND tx_civserv_room.hidden = 0
+					 AND tx_civserv_floor.deleted = 0 AND tx_civserv_floor.hidden = 0
+					 AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0',
 					'',
 					'',
 					'');
-			while ($em_orgpos_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($em_orgpos_res) ) {
+			//hier kann eigentlich nur 1 Gebäude bei rauskommen!!!!		
+			while ($bl_room_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($bl_room_res) ) {
+				debug($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['po_name'], 'psitio');
+				debug($bl_room_row, 'building');
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['building'] = $bl_room_row['building'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['room'] = $bl_room_row['room'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['floor'] = $bl_room_row['floor'];
 				
-				if(array_key_exists($em_orgpos_row['or_uid'], $employees[$row_counter]['em_organisations'])){
-					//nada
-				}else{
-					$employees[$row_counter]['em_organisations'][$em_orgpos_row['or_uid']]['or_name'] = $em_orgpos_row['or_name'];
-					$employees[$row_counter]['em_organisations'][$em_orgpos_row['or_uid']]['or_code'] = $em_orgpos_row['or_code'];
-					$employees[$row_counter]['em_organisations'][$em_orgpos_row['or_uid']]['or_shorttitle'] = $em_orgpos_row['or_index'];
-
-				}
-				$employees[$row_counter]['em_organisations'][$em_orgpos_row['or_uid']]['positions'][ $em_orgpos_row['po_uid']]['po_name'] = $em_orgpos_row['po_name'];
-				$employees[$row_counter]['em_organisations'][$em_orgpos_row['or_uid']]['positions'][ $em_orgpos_row['po_uid']]['po_nice_name'] = $em_orgpos_row['po_nice_name'];
-				$employees[$row_counter]['em_organisations'][$em_orgpos_row['or_uid']]['positions'][ $em_orgpos_row['po_uid']]['po_descr'] = $em_orgpos_row['po_descr'];
+				/*
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['po_phone'] = $bl_room_row['phone'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['po_fax'] = $bl_room_row['fax'];
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']]['po_email'] = $bl_room_row['email'];
+				*/
 				
-				// building and room for the position
-				// Query for organisation, building, floor and room (depending on position of employee)
-				// ignore em_datasec!!!
-				$bl_room_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'bl_name as building, 
-						 bl_name_to_show as building_to_show,
-						 fl_descr as floor, 
-						 ro_name as room, 
-						 ep_telephone as phone, 
-						 ep_fax as fax, 
-						 ep_email as email',
-						'tx_civserv_employee, 
-						 tx_civserv_position, 
-						 tx_civserv_room, 
-						 tx_civserv_floor, 
-						 tx_civserv_organisation, 
-						 tx_civserv_building, 
-						 tx_civserv_employee_em_position_mm, 
-						 tx_civserv_building_bl_floor_mm, 
-						 tx_civserv_position_po_organisation_mm',
-						'tx_civserv_employee.uid = '.$employees[$row_counter]['em_uid'].'
-						 AND tx_civserv_position.uid = '.$em_orgpos_row['po_uid'].'
-						 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
-						 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
-						 AND tx_civserv_employee_em_position_mm.ep_room = tx_civserv_room.uid
-						 AND tx_civserv_building.uid = tx_civserv_building_bl_floor_mm.uid_local
-						 AND tx_civserv_floor.uid = tx_civserv_building_bl_floor_mm.uid_foreign
-						 AND tx_civserv_room.rbf_building_bl_floor = tx_civserv_building_bl_floor_mm.uid
-						 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
-						 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign
-						 AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
-						 AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
-						 AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
-						 AND tx_civserv_room.deleted = 0 AND tx_civserv_room.hidden = 0
-						 AND tx_civserv_floor.deleted = 0 AND tx_civserv_floor.hidden = 0
-						 AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0',
-						'',
-						'',
-						'');
-				//hier kann eigentlich nur 1 Gebäude bei rauskommen!!!!		
-				while ($bl_room_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($bl_room_res) ) {
-					$employees[$row_counter]['em_organisations'][$em_orgpos_row['or_uid']]['positions'][ $em_orgpos_row['po_uid']]['po_building'] = $bl_room_row['building'];
-					$employees[$row_counter]['em_organisations'][$em_orgpos_row['or_uid']]['positions'][ $em_orgpos_row['po_uid']]['po_room'] = $bl_room_row['room'];
-					$employees[$row_counter]['em_organisations'][$em_orgpos_row['or_uid']]['positions'][ $em_orgpos_row['po_uid']]['po_floor'] = $bl_room_row['floor'];
-					
-					$employees[$row_counter]['em_organisations'][$em_orgpos_row['or_uid']]['positions'][ $em_orgpos_row['po_uid']]['po_phone'] = $bl_room_row['phone'];
-					$employees[$row_counter]['em_organisations'][$em_orgpos_row['or_uid']]['positions'][ $em_orgpos_row['po_uid']]['po_fax'] = $bl_room_row['fax'];
-					$employees[$row_counter]['em_organisations'][$em_orgpos_row['or_uid']]['positions'][ $em_orgpos_row['po_uid']]['po_email'] = $bl_room_row['email'];
-				}
+			}
 
 	
-			}
 				
 			
 			// any positions without an Organisation??????????
 			// to do!!!	
 				
 			// link zum email-client
-			$employees[$row_counter]['email_code'] = "";
-			if($employees[$row_counter]['em_email'] > ''){
-				$employees[$row_counter]['email_code'] = $this->cObj->typoLink($employees[$row_counter]['em_email'],array(parameter => $employees[$row_counter]['em_email'],ATagParams => 'class="email"'));
+			$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['email_code'] = "";
+			if($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_email'] > ''){
+				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['email_code'] = $this->cObj->typoLink($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_email'],array(parameter => $organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_email'],ATagParams => 'class="email"'));
 			}
-			
+		} // ende schleife über alle organisationen / mitarbeiter
+#		debug($organisations, '$organisations');
 
-			
-			
-			$row_counter++;
-		} // ende schleife über alle mitarbeiter
-		
 
+
+
+//ab hier muss alles neu!!!
 
 		// Retrieve the employee count, take care of pi_list_browseresult, 
 		// 2nd Parameter false for: no_limit
@@ -792,15 +765,18 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 		
 
-		$smartyEmployeeList->assign('heading', str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'Employees '.$mode_text)));
+#		$smartyEmployeeList->assign('heading', str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'Employees '.$mode_text)));
 		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi2_employee_list.available_employees','Here you find the following employees'));
 		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true, '', ' '.$this->conf['abcSpacer'].' '));
-		$smartyEmployeeList->assign('employees',$employees);
+		$smartyEmployeeList->assign('organisations',$organisations);
 
-//no bar! merge
 
-#		$query = $this->makeEmployeeListQueryAZ('all', false);
-#		$smartyEmployeeList->assign('abcbar', $this->makeAbcBar($query, 'nach Ämtern', 'employee_list_or_uid'));
+
+//ABC-BAR:
+		$query_abc = $this->makeEmployeeListQueryAZ('all', false);
+		$smartyEmployeeList->assign('abcbar', $this->makeAbcBar($query_abc, 'nach Ämtern', 'employee_list_or_uid'));
+		
+		
 		
 		if ($searchBox) {
 			//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array('mode' => 'search_result'),0,1); //dropped this according to instructions from security review
@@ -904,11 +880,13 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	[type]		$count: ...
 	 * @return	[type]		...
 	 */
-	function makeEmployeeListQueryOrUid($or_uid=0, $limit=true, $count=false) { //do not put the orcode in quotation marks!!
+	function makeEmployeeListQueryOrUid($or_uid='all', $limit=true, $count=false) { //do not put the orcode in quotation marks!!
 			//diesmal werden die organisationen und die positionen mit abgefragt!!!
 			$fields =  'tx_civserv_organisation.uid as or_uid, 
+						tx_civserv_organisation.or_index,
 						tx_civserv_organisation.or_code,
 						tx_civserv_organisation.or_name,
+						tx_civserv_organisation.or_supervisor,
 						tx_civserv_employee.em_address, 
 						tx_civserv_employee.em_title, 
 						tx_civserv_employee.em_name as name, 
@@ -922,7 +900,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 						tx_civserv_employee.uid as em_uid, 
 						tx_civserv_position.uid as po_uid,
 						tx_civserv_position.po_name,
-						tx_civserv_position.po_name,
+						tx_civserv_position.po_nice_name,
 						tx_civserv_position.po_descr,
 						tx_civserv_employee_em_position_mm.uid as ep_uid,
 						tx_civserv_employee_em_position_mm.ep_officehours,
@@ -945,7 +923,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 							tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
 							tx_civserv_position_po_organisation_mm.uid_local = tx_civserv_position.uid AND
 							tx_civserv_position_po_organisation_mm.uid_foreign = tx_civserv_organisation.uid AND '.
-							($or_uid > '' && $or_uid != 0 ? 'tx_civserv_organisation.uid = '.intval($or_uid).' AND ' : '').
+							($or_uid > '' && $or_uid != 'all' ? 'tx_civserv_organisation.uid = '.intval($or_uid).' AND ' : '').
 						   'tx_civserv_organisation.deleted = 0 AND
 							tx_civserv_organisation.hidden = 0 AND						
 							tx_civserv_position.deleted = 0 AND
@@ -981,7 +959,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . $start . ',' . $max;
 					}
 			}
-			debug($query, 'orcode_query');
+#			debug($query, 'orcode_query');
 			return $query;
 		}
 		
@@ -1120,7 +1098,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . $start . ',' . $max;
 					}
 			}
-			debug($query, 'orcode_query');
 			return $query;
 		}
 
@@ -1246,6 +1223,9 @@ class tx_civserv_pi2 extends tslib_pibase {
 #		$abcBar .= '<select name = "'.$this->prefixId.'[or_uid][]">';	//multi-select
 		$abcBar .= '<select name = "'.$this->prefixId.'[or_uid]">';		//single-select
 		$abcBar .= $this->make_or_choice($this->community['organisation_uid'], $or_choice, 0);
+		//hier!
+		$abcBar .=  '<option class="level_1" selected="selected" value="all">alle Organisationen</option>';
+		$abcBar .= "\n";
 		$abcBar .= '</select>';
 		$abcBar .= '<input type="submit" value="senden" />';
 		$abcBar .= '</form>';

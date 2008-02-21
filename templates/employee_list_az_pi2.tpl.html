@@ -26,7 +26,7 @@
 		{$orCodeBar}	
 	<!--{/if}-->		
 	<h2>{$subheading}:</h2>	
-		<table>
+		<table class = "employee_az">
 			<tr class = "tableheader">
 				<th>&nbsp;</th>
 				<th>{$th_one}</th>
@@ -37,7 +37,7 @@
 				<th>{$th_six}</th>
 			</tr>
 		<!--{foreach from=$employees item=employee}-->
-			<tr class = "tablerow_a">
+			<tr class = "tablerow_employee">
 				<td>employee</td>
 				<td>{$employee.full_name}</td>	
 				<td><!--{if $employee.em_image > ''}-->{$employee.em_imagecode}<!--{/if}--></td>
@@ -47,7 +47,7 @@
 				<td><!--{if $employee.em_mobile > ''}-->{$employee.em_mobile}<!--{/if}--></td>
 			</tr>
 			<!--{foreach from=$employee.em_organisations item=organisation}-->
-				<tr class = "tablerow_c">
+				<tr class = "tablerow_organisation">
 				<td>&nbsp;</td>
 					<td colspan = 6>
 						<!--{if $organisation.or_code > ''}-->&nbsp;({$organisation.or_code})<!--{/if}-->
@@ -56,7 +56,7 @@
 					</td>	
 				</tr>
 				<!--{foreach from=$organisation.positions item=position}-->
-					<tr class = "tablerow_d">
+					<tr class = "tablerow_position">
 						<td colspan>&nbsp;</td>
 						<td colspan colspan = 2>
 							<!--{if $position.po_nice_name > ''}-->{$position.po_nice_name}<!--{/if}-->
