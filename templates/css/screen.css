@@ -1124,8 +1124,142 @@ input:focus, textarea:focus {
 }
 */
 
+/* inline elemente können keine feste breite haben */
+/* darum: display: block und float: left */
+
+.tx-civserv-pi2 #centrecontent #employee_az {
+	clear: both;
+	xborder: solid red 2px;
+}
 
 
+
+
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee {
+	xborder: solid lightgreen 2px;
+	clear:both;
+	float:none;
+	display:block;
+	margin-left: 0;
+	padding-left: 0;
+	overflow: hidden;
+	background-color:honeydew;
+}
+
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee li{
+	margin-left: 0;
+	margin-bottom: 0;
+	list-style: none;
+	display: block; /* !!! */
+	float: left; /* !!! */
+	xheight: 50px; /* don't!!! */
+	background-color:honeydew;
+}
+
+
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_pic,
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_phone,
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_email,
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_fax,
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_mobile {
+	padding-left:1em;
+	padding-top:0.7em;
+	overflow:hidden;
+	height:4em;
+	border-left: 3px solid #fff;
+}
+
+/*
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee span.employee{
+	padding-left:2em;
+}
+*/
+
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_name{
+	width: 15%;
+	padding-left:2em;
+	line-height:4em;
+	z-index:1000;
+}
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_pic{
+	width: 6%;
+}
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_phone{
+	width: 8%;
+}
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_email{
+	width: 25%;
+}
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_fax{
+	width: 8%;
+}
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_mobile{
+	width: 10%;
+}
+
+/*------------------------------------------------------------------------------------*/
+.tx-civserv-pi2 #centrecontent #employee_az ul.organisation {
+	clear:both;
+	float:none;
+	padding-left:0;
+	min-width: 600px;
+	margin-top:10px;
+	margin-left:2em;
+	border: solid #fff 2px;
+}
+
+
+.tx-civserv-pi2 #centrecontent #employee_az ul.organisation li{
+	clear:both;
+	float:none;
+	padding-left: 2em;
+	background-color: whitesmoke;
+}
+
+.tx-civserv-pi2 #centrecontent #employee_az ul.organisation li.or_name{
+	xwidth: 100%;
+	xbackground-color: lightgrey;
+}
+
+
+/*------------------------------------------------------------------------------------*/
+.tx-civserv-pi2 #centrecontent #employee_az ul.position {
+	clear:both;
+	float:none;
+	xmin-width: 600px;
+	margin-top:10px;
+	margin-left:2em;
+	padding-left:0;
+	line-height: 30px;
+	width:90%;
+	border: solid #fff 2px;
+}
+
+.tx-civserv-pi2 #centrecontent #employee_az ul.position li{
+	clear:both;
+	float:none;
+	height:30px;
+	border-top:1px solid #fff;
+	background-color: antiquewhite;
+}
+
+.tx-civserv-pi2 #centrecontent #employee_az ul.position li.po_name{
+	xwidth: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* table layout verworfen.....   */
 .tx-civserv-pi2 #centrecontent table {
 	margin-left: 1em;
 	xborder: dashed red 2x;
@@ -1164,6 +1298,7 @@ input:focus, textarea:focus {
 
 .tx-civserv-pi2 #centrecontent table tr.tablerow_position {
 	background-color: pink;
+
 }
 
 .tx-civserv-pi2 #centrecontent table.employee_or tr.tablerow_organisation td{
@@ -1195,7 +1330,7 @@ input:focus, textarea:focus {
 
 .tx-civserv-pi2 #centrecontent #or_choice {
 	margin-left: 4px;
-	border: solid red 2px;
+	xborder: solid red 2px;
 }
 .tx-civserv-pi2 #centrecontent #or_choice .level_1 {
 	xcolor: red;
