@@ -1112,6 +1112,13 @@ input:focus, textarea:focus {
 
 
 
+
+
+
+
+
+
+
 /* ---------------------------------------------- */
 /* ------------ begin plugin extended ma list---- */
 /* ---------------------------------------------- */
@@ -1124,17 +1131,25 @@ input:focus, textarea:focus {
 }
 */
 
+
+/*--------------------------------------------------------------------------------------------*/
+/*---------------------PI2 EMPLOYEELIST AZ----------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------*/
+
+
+
 /* inline elemente können keine feste breite haben */
 /* darum: display: block und float: left */
 
 .tx-civserv-pi2 #centrecontent #employee_az {
 	clear: both;
 	xborder: solid red 2px;
+	margin-left: 1em;
 }
 
 
 
-
+/*------------------------------------------------------------------------------------*/
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee {
 	xborder: solid lightgreen 2px;
 	clear:both;
@@ -1178,8 +1193,7 @@ input:focus, textarea:focus {
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_name{
 	width: 15%;
 	padding-left:2em;
-	line-height:4em;
-	z-index:1000;
+	line-height:3em;
 }
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_pic{
 	width: 6%;
@@ -1202,8 +1216,8 @@ input:focus, textarea:focus {
 	clear:both;
 	float:none;
 	padding-left:0;
-	min-width: 600px;
-	margin-top:10px;
+	min-width:60em;
+	margin-top:2em; /* abstand zum darüber liegenden element steuern, in kombination mit line-height beim darüber liegenden elem.*/
 	margin-left:2em;
 	border: solid #fff 2px;
 }
@@ -1246,6 +1260,199 @@ input:focus, textarea:focus {
 .tx-civserv-pi2 #centrecontent #employee_az ul.position li.po_name{
 	xwidth: 100%;
 }
+
+
+.tx-civserv-pi2 #centrecontent #employee_az ul.position ul.po_items{
+	background-color: antiquewhite;
+}
+
+
+
+
+/*--------------------------------------------------------------------------------------------*/
+/*---------------------PI2 EMPLOYEELIST OR----------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------*/
+
+
+
+/* inline elemente können keine feste breite haben */
+/* darum: display: block und float: left */
+
+.tx-civserv-pi2 #centrecontent #employee_or {
+	clear: both;
+	xborder: solid red 2px;
+	margin-left: 1em;
+}
+
+
+/*------------------------------------------------------------------------------------*/
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation {
+	clear:both;
+	float:none;
+	display:block;
+	margin-left: 0;
+	padding-left: 0;
+	overflow: hidden;
+	background-color: whitesmoke;
+}
+
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li{
+	margin-left: 0;
+	margin-bottom: 0;
+	list-style: none;
+	display: block; /* !!! */
+	float: left; /* !!! */
+	xheight: 50px; /* don't!!! */
+	background-color: whitesmoke;
+}
+
+
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_code,
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_name,
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_uid,
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_other,
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_sth {
+	padding-left:1em;
+	padding-top:0.7em;
+	overflow:hidden;
+	height:4em;
+	xborder-left: 3px solid red;
+}
+
+/*
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation span.organisation{
+	padding-left:2em;
+}
+*/
+
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_index{
+	width: 15%;
+	padding-left:2em;
+	padding-bottom:2em;
+	line-height:3em;
+}
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_code{
+	width: 12%;
+}
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_name{
+	width: 25%;
+}
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_uid{
+	width: 8%;
+}
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_other{
+	width: 8%;
+}
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_sth{
+	width: 10%;
+}
+
+
+/*------------------------------------------------------------------------------------*/
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee {
+	clear:both;
+	float:none;
+	width:60em;
+	display:block;
+	margin-top:1.8em; /* abstand zum darüber liegenden element steuern, in kombination mit line-height beim darüber liegenden elem.*/
+	margin-left: 0;
+	padding-left: 0;
+	overflow: hidden;
+	background-color:honeydew;
+	border: solid #fff 2px;
+	padding-bottom:2em;
+}
+
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee li{
+	margin-left: 0;
+	margin-bottom: 0;
+	list-style: none;
+	display: block; /* !!! */
+	float: left; /* !!! */
+	xheight: 50px; /* don't!!! */
+	background-color:honeydew;
+}
+
+
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_pic,
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_phone,
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_email,
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_fax,
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_mobile {
+	padding-left:1em;
+	padding-top:0.7em;
+	overflow:hidden;
+	height:4em;
+	border-left: 3px solid #fff;
+}
+
+/*
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee span.employee{
+	padding-left:2em;
+}
+*/
+
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_name{
+	width: 20%;
+	padding-left:2em;
+	line-height:4em;
+	z-index:1000;
+}
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_pic{
+	width: 6%;
+}
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_phone{
+	width: 8%;
+}
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_email{
+	width: 25%;
+}
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_fax{
+	width: 8%;
+}
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_mobile{
+	width: 10%;
+}
+
+
+
+
+
+/*------------------------------------------------------------------------------------*/
+.tx-civserv-pi2 #centrecontent #employee_or ul.position {
+	clear:both;
+	float:none;
+	margin-top:10px;
+	margin-left:2em;
+	padding-left:0;
+	line-height: 30px;
+	width:50em;
+	border: solid #fff 2px;
+}
+
+.tx-civserv-pi2 #centrecontent #employee_or ul.position li{
+	clear:both;
+	float:none;
+	height:30px;
+	border-top:1px solid #fff;
+	background-color: antiquewhite;
+}
+
+.tx-civserv-pi2 #centrecontent #employee_or ul.position li.po_name{
+	xwidth: 100%;
+}
+
+
+.tx-civserv-pi2 #centrecontent #employee_or ul.position ul.po_items{
+	background-color: antiquewhite;
+}
+
+
+
+
+
+
+
 
 
 
