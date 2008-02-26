@@ -1,37 +1,16 @@
 <!--TYPO3SEARCH_end-->
 <div id="right">
 	{include file=$right_searchbox_template}	
-	{* For the form list could be shown organisations with forms. *}	
-	<!--{if $organisations != "" }-->		
-		<h3 class="invisible">{$subnavigation_label}:</h3>
-		<div id="rightmenu">
-			<ul class="level1">
-				<!--{foreach from=$organisations item=organisation }-->
-					<li><a href="{$organisation.link}">{$organisation.name}</a></li>
-				<!--{/foreach}-->			
-			</ul><!-- level1 end -->
-		</div><!-- rightmenu end -->	
-	<!--{/if}-->
 	{include file=$right_top_template}
-	right_top
 </div><!-- right end -->
+
 <div id="centrecontent">	
-	<h2>employeelist or_uid</h2>
 	<!--{if $heading != ""}-->		
 		<h1>{$heading}</h1>	
 	<!--{/if}-->	
 	<!--{if $abcbar != ""}-->		
 		{$abcbar}	
-	<!--{/if}-->
-	
-	
-	<!--{if $orCodeBar != ""}-->		
-		{$orCodeBar}	
 	<!--{/if}-->		
-	
-	
-	
-	
 	<h2>{$subheading}:</h2>	
 		<div id="employee_or">
 			<!--{foreach from=$organisations item=organisation}-->
@@ -45,23 +24,23 @@
 											<li class="po_name">
 												<!--{if $position.po_nice_name > ''}-->{$position.po_nice_name}&nbsp;*&nbsp;<!--{/if}-->
 												<!--{if $position.po_name > ''}-->({$position.po_name})&nbsp;*&nbsp;<!--{/if}-->
-											</li>
-											<!--{if $position.po_descr > ''}-->
-												<ul class="po_items">	
-													<!--{if $position.po_descr > ''}--><li>{$position.po_descr}</li><!--{/if}-->
-													<!--{if $position.ep_phone > ''}--><li>{$position.ep_phone}</li><!--{/if}-->
-													<!--{if $position.ep_email > ''}--><li>{$position.ep_email}</li><!--{/if}-->
-													<!--{if $position.building > ''}-->
-														<li>{$position.building}:&nbsp;
-															<!--{if $position.room > ''}-->{$position.room}&nbsp;<!--{/if}-->
-															<!--{if $position.floor > ''}-->({$position.floor})</li><!--{/if}-->
-														</li>
-													<!--{/if}-->
-													<!--{if $position.ep_fax > ''}--><li>{$position.ep_fax}</li><!--{/if}-->
-													<!--{if $position.ep_mobile > ''}--><li>{$position.ep_mobile}</li><!--{/if}-->
-												</ul>{* ul class="po_items" *}					
-											<!--{/if}-->		
-										</ul>{* li class="po_name" *}
+												<!--{if $position.po_descr > ''}-->
+													<ul class="po_items">	
+														<!--{if $position.po_descr > ''}--><li>{$position.po_descr}</li><!--{/if}-->
+														<!--{if $position.ep_phone > ''}--><li>{$position.ep_phone}</li><!--{/if}-->
+														<!--{if $position.ep_email > ''}--><li>{$position.ep_email}</li><!--{/if}-->
+														<!--{if $position.building > ''}-->
+															<li>{$position.building}:&nbsp;
+																<!--{if $position.room > ''}-->{$position.room}&nbsp;<!--{/if}-->
+																<!--{if $position.floor > ''}-->({$position.floor})<!--{/if}-->
+															</li>
+														<!--{/if}-->
+														<!--{if $position.ep_fax > ''}--><li>{$position.ep_fax}</li><!--{/if}-->
+														<!--{if $position.ep_mobile > ''}--><li>{$position.ep_mobile}</li><!--{/if}-->
+													</ul>{* ul class="po_items" *}					
+												<!--{/if}-->		
+											</li>{* li class="po_name" *}
+										</ul>{* ul class="position" *}
 									<!--{/foreach}-->	<!--positions-->
 								</li>{* li class="em_name" *}	
 								<li class="em_pic"><!--{if $employee.em_image > ''}-->{$employee.em_imagecode}<!--{/if}--></li>
@@ -77,7 +56,6 @@
 					<li class="or_uid"><!--{if $organisation.or_uid > ''}-->({$organisation.or_uid})<!--{/if}--></li>
 					<li class="or_uid"><!--{if $organisation.or_other > ''}-->({$organisation.or_other})<!--{/if}--></li>
 					<li class="or_uid"><!--{if $organisation.or_sth > ''}-->({$organisation.or_sth})<!--{/if}--></li>
-					</li>	
 				</ul>{* ul class="organisations" *}
 			<!--{/foreach}-->	<!--organisations-->
 		</div>

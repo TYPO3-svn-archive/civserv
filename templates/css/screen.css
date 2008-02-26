@@ -1132,6 +1132,34 @@ input:focus, textarea:focus {
 */
 
 
+
+.tx-civserv-pi2 #centrecontent #or_choice {
+	margin-left: 4px;
+	xborder: solid red 2px;
+}
+.tx-civserv-pi2 #centrecontent #or_choice .level_1 {
+	xcolor: red;
+}
+
+.tx-civserv-pi2 #centrecontent #or_choice .level_2 {
+	xcolor: green;
+	padding-left: 20px;
+}
+
+.tx-civserv-pi2 #centrecontent #or_choice .level_3 {
+	xcolor: green;
+	padding-left: 40px;
+}
+
+.tx-civserv-pi2 #centrecontent #or_choice .level_4 {
+	xcolor: green;
+	padding-left: 60px;
+}
+
+
+
+
+
 /*--------------------------------------------------------------------------------------------*/
 /*---------------------PI2 EMPLOYEELIST AZ----------------------------------------------------*/
 /*--------------------------------------------------------------------------------------------*/
@@ -1252,7 +1280,7 @@ input:focus, textarea:focus {
 .tx-civserv-pi2 #centrecontent #employee_az ul.position li{
 	clear:both;
 	float:none;
-	height:30px;
+	xheight:30px; /* don't!! */
 	border-top:1px solid #fff;
 	background-color: antiquewhite;
 }
@@ -1266,7 +1294,10 @@ input:focus, textarea:focus {
 	background-color: antiquewhite;
 }
 
-
+.tx-civserv-pi2 #centrecontent #employee_az ul.position ul.po_items li{
+	xbackground-color: pink;
+	xborder: solid red 2px;
+}
 
 
 /*--------------------------------------------------------------------------------------------*/
@@ -1433,7 +1464,7 @@ input:focus, textarea:focus {
 .tx-civserv-pi2 #centrecontent #employee_or ul.position li{
 	clear:both;
 	float:none;
-	height:30px;
+	xheight:30px; /* don't !!!*/
 	border-top:1px solid #fff;
 	background-color: antiquewhite;
 }
@@ -1447,6 +1478,10 @@ input:focus, textarea:focus {
 	background-color: antiquewhite;
 }
 
+.tx-civserv-pi2 #centrecontent #employee_or ul.position ul.po_items li{
+	xbackground-color: blue;
+	xborder: solid red 2 px;
+}
 
 
 
@@ -1533,31 +1568,6 @@ input:focus, textarea:focus {
 .tx-civserv-pi2 #centrecontent table th img {
 	border: 0;
 }
-
-
-.tx-civserv-pi2 #centrecontent #or_choice {
-	margin-left: 4px;
-	xborder: solid red 2px;
-}
-.tx-civserv-pi2 #centrecontent #or_choice .level_1 {
-	xcolor: red;
-}
-
-.tx-civserv-pi2 #centrecontent #or_choice .level_2 {
-	xcolor: green;
-	padding-left: 20px;
-}
-
-.tx-civserv-pi2 #centrecontent #or_choice .level_3 {
-	xcolor: green;
-	padding-left: 40px;
-}
-
-.tx-civserv-pi2 #centrecontent #or_choice .level_4 {
-	xcolor: green;
-	padding-left: 60px;
-}
-
 
 
 

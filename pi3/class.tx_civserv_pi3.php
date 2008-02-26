@@ -972,7 +972,8 @@ class tx_civserv_pi3 extends tslib_pibase {
 									);
 			}
 			else	{
-				$abcBar .= $alphabet[$i].' '.$this->conf['abcSpacer'].' ';
+				#$abcBar .= $alphabet[$i].' '.$this->conf['abcSpacer'].' ';
+				$abcBar .= '<span class="nomatch">'.$alphabet[$i].'</span> '.$this->conf['abcSpacer'].' ';
 			}
 		}
 

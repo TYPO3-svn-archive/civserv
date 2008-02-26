@@ -1,19 +1,7 @@
 <!--TYPO3SEARCH_end-->
 <div id="right">
 	{include file=$right_searchbox_template}	
-	{* For the form list could be shown organisations with forms. *}	
-	<!--{if $organisations != "" }-->		
-		<h3 class="invisible">{$subnavigation_label}:</h3>
-		<div id="rightmenu">
-			<ul class="level1">
-				<!--{foreach from=$organisations item=organisation }-->
-					<li><a href="{$organisation.link}">{$organisation.name}</a></li>
-				<!--{/foreach}-->			
-			</ul><!-- level1 end -->
-		</div><!-- rightmenu end -->	
-	<!--{/if}-->
 	{include file=$right_top_template}
-	right_top
 </div><!-- right end -->
 <div id="centrecontent">	
 	<!--{if $heading != ""}-->		
@@ -21,9 +9,6 @@
 	<!--{/if}-->	
 	<!--{if $abcbar != ""}-->		
 		{$abcbar}	
-	<!--{/if}-->		
-	<!--{if $orCodeBar != ""}-->		
-		{$orCodeBar}	
 	<!--{/if}-->		
 	<h2>{$subheading}:</h2>	
 		<div id="employee_az">
@@ -41,22 +26,22 @@
 											<li class="po_name">
 												<!--{if $position.po_nice_name > ''}-->{$position.po_nice_name}<!--{/if}-->
 												<!--{if $position.po_name > ''}-->&nbsp;({$position.po_name})<!--{/if}-->
-											</li>	
-											<!--{if $position.po_phone > '' || $position.po_building > '' || $position.po_fax > '' || $position.po_mobile > ''}-->
-												<ul class="po_items">
-													<!--{if $position.po_phone > ''}--><li>{$position.po_phone}</li><!--{/if}-->
-													<!--{if $position.po_building > ''}-->
-														<li>
-															{$position.po_building}:
-															<!--{if $position.po_room > ''}-->&nbsp;{$position.po_room}<!--{/if}-->
-															<!--{if $position.po_floor > ''}-->&nbsp;({$position.po_floor})<!--{/if}-->
-														</li>
-													<!--{/if}-->	
-													<!--{if $position.po_fax > ''}--><li>{$position.po_fax}</li><!--{/if}-->
-													<!--{if $position.po_mobile > ''}--><li>({$position.po_mobile})</li><!--{/if}-->
-												</ul>
-											<!--{/if}-->	
-										</ul>
+												<!--{if $position.po_phone > '' || $position.po_building > '' || $position.po_fax > '' || $position.po_mobile > ''}-->
+													<ul class="po_items">
+														<!--{if $position.po_phone > ''}--><li>{$position.po_phone}</li><!--{/if}-->
+														<!--{if $position.po_building > ''}-->
+															<li>
+																{$position.po_building}:
+																<!--{if $position.po_room > ''}-->&nbsp;{$position.po_room}<!--{/if}-->
+																<!--{if $position.po_floor > ''}-->&nbsp;({$position.po_floor})<!--{/if}-->
+															</li>
+														<!--{/if}-->	
+														<!--{if $position.po_fax > ''}--><li>{$position.po_fax}</li><!--{/if}-->
+														<!--{if $position.po_mobile > ''}--><li>({$position.po_mobile})</li><!--{/if}-->
+													</ul>{* ul class="po_items" *}
+												<!--{/if}-->	
+											</li>{* li class = "po_name" *}		
+										</ul>{* ul class="position" *}
 									<!--{/foreach}-->
 								</li>{* li class = "or_name" *}	
 							</ul>{* ul class = "organisation" *}	

@@ -1967,7 +1967,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						$actual?'</strong>':'');
 			}
 			else{
-				$abcBar .= '<span class="empty">'.$alphabet[$i].'</span> '.$this->conf['abcSpacer'].' ';
+				$abcBar .= '<span class="nomatch">'.$alphabet[$i].'</span> '.$this->conf['abcSpacer'].' ';
 			}
 		}
 
