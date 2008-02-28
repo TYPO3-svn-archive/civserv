@@ -1132,11 +1132,26 @@ input:focus, textarea:focus {
 */
 
 
+.tx-civserv-pi2 #centrecontent .headofdepartment{
+	xborder: solid red 2px;
+	margin-left: 1em;
+}
+
+
+.tx-civserv-pi2 #centrecontent #or_choice {
+	margin-left: 1em;
+	xborder: solid yellow 2px;
+	xwidth: 65%;
+	width: 50em;
+	float:left; /* the empossearch will float to the right side of the or_choice */
+}
+
 
 .tx-civserv-pi2 #centrecontent #or_choice {
 	margin-left: 4px;
 	xborder: solid red 2px;
 }
+
 .tx-civserv-pi2 #centrecontent #or_choice .level_1 {
 	xcolor: red;
 }
@@ -1157,6 +1172,12 @@ input:focus, textarea:focus {
 }
 
 
+.tx-civserv-pi2 #centrecontent #empossearch{
+	xborder: solid blue 2px;
+	xwidth: 15%;
+	padding-left: 60em;
+	padding-left: 5em;
+}
 
 
 
