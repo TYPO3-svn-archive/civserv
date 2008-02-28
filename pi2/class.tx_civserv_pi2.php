@@ -349,10 +349,10 @@ class tx_civserv_pi2 extends tslib_pibase {
 		}elseif($this->piVars['mode'] == 'employee_list_search'){
 			debug($this->piVars, 'this->piVars');
 			if($this->piVars['empossearch'] <= ''){
+				//exit!
 				$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi2_error.nosearchstring','no search string');
 				return false;
 			}
-		
 			$query = $this->makeEmployeeListQuerySearch();
 			$_SESSION['stored_filter_key'] = 'empossearch';
 			$_SESSION['stored_filter_val'] = 'empossearch';
@@ -599,13 +599,25 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 
 		// Retrieve the employee count, take care of pi_list_browseresult, 
-		// 2nd Parameter false for: no_limit
-		// 3rd Parameter true for: select count(*)
 		$row_count = 0;
-		$query = $this->makeEmployeeListQueryAZ($this->piVars['char'],false,true);
+		if($this->piVars['mode'] == 'employee_list_az'){
+			// 1st Parameter for letter in question
+			// 2nd Parameter false for: no_limit
+			// 3rd Parameter true for: select count(*)
+			$query = $this->makeEmployeeListQueryAZ($this->piVars['char'],false,true);
+		}elseif($this->piVars['mode'] == 'employee_list_hod'){
+			// 1st Parameter false for: no_limit
+			// 2nd Parameter true for: select count(*)
+			$query = $this->makeEmployeeListQueryHOD(false, true);
+		}elseif($this->piVars['mode'] == 'employee_list_search'){
+			// 1st Parameter false for: no_limit
+			// 2nd Parameter true for: select count(*)
+			$query = $this->makeEmployeeListQuerySearch(false, true);
+		}
 
 
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+		// if there's a union in the SQL-query we have to add the count(*)-results
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$row_count += $row['count(*)'];
 		}
@@ -1157,6 +1169,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 				$query = 'Select count(*) from '.$tables1.' where '.$conditions1.'
 							union
 							Select count(*) from '.$tables2.' where '.$conditions2;
+							debug($query, 'query für count in fct makeEmployeeListQuerySearch');
 					
 			} else {
 				$query =   'Select '.$fields.' from '.$tables1.' where '.$conditions1.'
@@ -1317,14 +1330,13 @@ class tx_civserv_pi2 extends tslib_pibase {
 		if($this->piVars['mode'] == 'employee_list_search'){
 			$abcBar .= '<input type="text" name = "'.$this->prefixId.'[empossearch]" size="10" value="'.htmlentities($this->piVars['empossearch']).'" />';		//??
 		}else{
-			$abcBar .= '<input type="text" name = "'.$this->prefixId.'[empossearch]" size="10" value="" />';		//??
+		// labels pigetll
+			#$abcBar .= '<input type="text" value="" name = "'.$this->prefixId.'[empossearch]" title="Bitte hier Suchbegriff eingeben" size="10"  />';		//??
+			$abcBar .= '<input type="text" value="Suche..."  name = "'.$this->prefixId.'[empossearch]"  title="Bitte hier Suchbegriff eingeben" size="10"  onblur="if(this.value==\'\')this.value=\'Suche...\';" onfocus="if(this.value==\'Suche...\')this.value=\'\';" />';
 		}
 		$abcBar .= '<input type="submit" name="empossearch" value="go" />';
 		$abcBar .= '</form>';
 		$abcBar .= '</div>';	
-		
-
-		
 		
 		
 		return $abcBar;
