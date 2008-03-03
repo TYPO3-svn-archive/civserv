@@ -179,7 +179,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// database and store it in the session
 		if ((($this->piVars['community_id'] <= '') && ($_SESSION['community_id'] <= '')) || ($this->piVars['community_id'] == 'choose')) {
 		#if(1==2){
-			$template = $this->conf['tpl_community_choice'];
+			$template = $this->conf['tpl_community_choice']; //let them choose!
 			$accurate = $this->chooseCommunity($smartyObject);
 			$choose = true;
 	 	} elseif (($this->piVars['community_id'] != $_SESSION['community_id']) || ($_SESSION['community_name'] <= '')) {
@@ -1071,7 +1071,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 								'AND or_synonym' . $synonymNr . ' != "" ' . ' ';
 				}
 			}//end for
-			debug($query);
 
 			$orderby =	$this->piVars['sort']? $this->conf['orderOrgalistBy'].' DESC': $this->conf['orderOrgalistBy'].' ASC';
 			
@@ -1960,7 +1959,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$test = sprintf('%s' . $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . '%s '.$this->conf['abcSpacer'].' ',
 						$actual?'<strong>':'',
 						$actual?'</strong>':'');
-#				debug($test);				
 
 				$abcBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . '%s '.$this->conf['abcSpacer'].' ',
 						$actual?'<strong>':'',
@@ -2091,7 +2089,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$add_content = $add_content .  '<ul>';
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 				$uid = $row['uid']; // or1 res. nv1
-#				debug($uid, 'neue UID');
 				$makelink=false;
 				if($this->conf['no_link_empty_nv']){
 #					debug('no_link_empty_nv gesetzt!');
@@ -2108,7 +2105,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 				switch ($mode) {
 					case 'circumstance_tree':
 						$link_mode = 'circumstance';
-#						debug($GLOBALS['TYPO3_DB']->sql_num_rows($res_connected_services), 'anzahl verknüpfungen');
 						if(($GLOBALS['TYPO3_DB']->sql_num_rows($res_connected_services) < 1) && $this->conf['no_link_empty_nv']){
 							$makelink = false;
 						}else{
@@ -2117,7 +2113,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 						break;
 					case 'usergroup_tree':
 						$link_mode = 'usergroup';
-#						debug($GLOBALS['TYPO3_DB']->sql_num_rows($res_connected_services), 'anzahl verknüpfungen');
 						if(($GLOBALS['TYPO3_DB']->sql_num_rows($res_connected_services) < 1) && $this->conf['no_link_empty_nv']){
 							$makelink = false;
 						}else{
@@ -2140,12 +2135,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 						break;
 				}
 				if($this->conf['hide_empty_nv'] && $makelink == false){
-#					$add_content .= '<li>nixe</li>';
 					$this->makeTree($uid, $add_content, $mode);
 				}else{
 					$add_content .= '<li>';
 					$add_content .= $makelink ? '<a href="' . htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => $link_mode,id => $row['uid']),1,1)) . '">' : '';
-#					debug($makelink, 'makelink?');
 					// test bk: add organisational code
 					if($this->conf['displayOrganisationCode'] && !($mode=='usergroup_tree' || $mode=='circumstance_tree')){
 						$add_content .= $row['code'].' '.$row['name'];
@@ -2187,6 +2180,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
 	function serviceDetail(&$smartyService,$searchBox=false,$topList=false, $continueAbcBarFromServiceList=false) {
+		
+		debug($this->piVars, 'the ruddy pivars');
+		
+		
 		// first the basics:
 		// service_pidlist is needed for identifying the Employees: in case of an external service the employes have 
 		// to be retrieved from the pidlist of the community providing the service. 
@@ -3635,10 +3632,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 				//todo: check possibilities of header injection
 				if(!empty($email)){		// email given in contact-form is correct
 					$headers = "From: ".$email."\r\nReply-To: ".$email."\r\n";
-#					debug($headers, 'email aus kontaktform');
 				}else{ // set email retrieved via hoster_get_email
 					$headers = "From: ".$email_address."\r\nReply-To: ".$email_address."\r\n";
-#					debug($headers, 'email des hosters');
 				}
 
 				t3lib_div::plainMailEncoded($email_address, $subject, $body, $headers);
