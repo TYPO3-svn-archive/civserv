@@ -158,7 +158,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		#session_destroy();
 		
 		if($this->previewMode){
-			// nice try but doesn't work, probably too late.
+			// nice try, but doesn't work, probably too late.
 			// would have to manipulate this value before FE is rendered!!!
 			#$this->conf['_DEFAULT_PI_VARS.']['mode']='service_list';
 		}
@@ -179,7 +179,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// database and store it in the session
 		if ((($this->piVars['community_id'] <= '') && ($_SESSION['community_id'] <= '')) || ($this->piVars['community_id'] == 'choose')) {
 		#if(1==2){
-			$template = $this->conf['tpl_community_choice']; //let them choose!
+			$template = $this->conf['tpl_community_choice']; //let them choose! community has to be set in the pivars!!!
 			$accurate = $this->chooseCommunity($smartyObject);
 			$choose = true;
 	 	} elseif (($this->piVars['community_id'] != $_SESSION['community_id']) || ($_SESSION['community_name'] <= '')) {
@@ -242,6 +242,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 			// Set piVars['community_id'] because it could only be registered in the session and not in the URL
 			$this->piVars['community_id'] = $_SESSION['community_id'];
+			
+			
 			switch($this->piVars['mode'])	{
 				case 'service_list':
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_service_list.overview','Service list');
@@ -394,8 +396,28 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$accurate = false;
 					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi1_error.invalid_mode','Invalid mode');
 			}
-		}
+			
+			//now check if the community_id is truely correct and corresponds to the actual page_id / TS-Template
 
+/*		
+//nooooo!
+//we still want to be able to display a mandant's service_list by simply calling the FE-page 123.html
+			if(intval($this->piVars['community_id']) !== intval($this->conf['_DEFAULT_PI_VARS.']['community_id'])){
+				debug($this->piVars['community_id'], 'mismatch');
+				debug($this->conf['_DEFAULT_PI_VARS.']['community_id'], 'mismatch');
+				$accurate = false;
+				$GLOBALS['error_message'] = "Mismatch of community_ids";
+			}
+*/		
+			
+			if(intval($this->community['id']) !== intval($this->conf['_DEFAULT_PI_VARS.']['community_id'])){
+				debug($this->community['id'], 'mismatch');
+				debug($this->conf['_DEFAULT_PI_VARS.']['community_id'], 'mismatch');
+				$accurate = false;
+				$GLOBALS['error_message'] = "Mismatch of community_ids";
+			}
+		}
+		
 		if (!$accurate) {
 			$template = $this->conf['tpl_error_page'];
 			$smartyObject->assign('error_message_label',$this->pi_getLL('tx_civserv_pi1_error.message_label','The following error occured'));
@@ -502,7 +524,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				
 				
 				//for the online_service list we want form descr. and  service picture as well.
-				if($this->piVars['mode']=="online_services"){
+				if($this->piVars['mode'] == "online_services"){
 					$res_online_services = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 						'tx_civserv_form.fo_descr, 
 						 tx_civserv_service.sv_image, 
@@ -637,7 +659,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}
 		}
 		//test bk: the service_list template is being used by several modes, change the subheading in accordance with the modes!!!
-		if($this->piVars['mode']=='organisation')$smartyServiceList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_service_list.available_services','Here you find the following services'));
+		if($this->piVars['mode'] == 'organisation')$smartyServiceList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_service_list.available_services','Here you find the following services'));
 		$smartyServiceList->assign('pagebar',$this->pi_list_browseresults(true,'', ' '.$this->conf['abcSpacer'].' '));
 
 		return true;
@@ -1939,7 +1961,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		
 
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
-			$namefield_arr = ($this->previewMode && ($this->piVars['mode']=='service_list' || $this->piVars['mode']=='service'))? $row['sv_name'] : $row['name'];	//in previewMode we skip the synonyms of services! because the overlay-function can't handle aliases
+			$namefield_arr = ($this->previewMode && ($this->piVars['mode'] == 'service_list' || $this->piVars['mode'] == 'service'))? $row['sv_name'] : $row['name'];	//in previewMode we skip the synonyms of services! because the overlay-function can't handle aliases
 			$initial = str_replace(array('Ä','Ö','Ü'),array('A','O','U'),strtoupper($namefield_arr{0}));
 			$occuringInitials[] = $initial;
 			$row_counter++;
@@ -2180,9 +2202,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
 	function serviceDetail(&$smartyService,$searchBox=false,$topList=false, $continueAbcBarFromServiceList=false) {
-		
-		debug($this->piVars, 'the ruddy pivars');
-		
 		
 		// first the basics:
 		// service_pidlist is needed for identifying the Employees: in case of an external service the employes have 
@@ -3512,7 +3531,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function setEmailForm(&$smartyEmailForm) {
 		//Check if there is a valid email address in the database for the given combination of employee, service, position and organisation id
-		if ($this->getEmailAddress($smartyEmailForm) || $this->piVars['mode']=='set_contact_form') {
+		if ($this->getEmailAddress($smartyEmailForm) || $this->piVars['mode'] == 'set_contact_form') {
 			if($this->getEmailAddress($smartyEmailForm)){
 				//Assign action url of email form with mode 'check_email_form'
 				$smartyEmailForm->assign('action_url',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'check_email_form'),0,0)));
@@ -3644,7 +3663,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 				return true;
 			} else { //Return email form template with error markers
-				if($this->piVars['mode']=="check_contact_form"){
+				if($this->piVars['mode'] == "check_contact_form"){
 					// Assign action url of email form
 					$smartyEmailForm->assign('action_url',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'check_contact_form'),0,0)));
 				} else {
@@ -3750,7 +3769,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi1_email_form.error_pos_id','Wrong employee id oder position id. No email address found!');
 				return false;
 			}
-		} elseif ($this->piVars['mode']=='check_contact_form') {	//Email form ist called by the contact_link in the main Navigation
+		} elseif ($this->piVars['mode'] == 'check_contact_form') {	//Email form ist called by the contact_link in the main Navigation
 			$hoster_email =$this->get_hoster_email();
 			return $hoster_email;
 		} else {
@@ -4098,7 +4117,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	function getImageCode($image,$path,$conf,$altText)	{
 		$conf['file'] = $path . $image;
 		// for the online_service_list we want to display thumbnails of the service images!
-		if($this->piVars['mode']=='online_services'){
+		if($this->piVars['mode'] == 'online_services'){
 			$conf['file.'] = array('maxH' => 100, 'maxW' => 100);
 		}
 		$conf['altText'] = $altText;
@@ -4366,12 +4385,17 @@ class tx_civserv_pi1 extends tslib_pibase {
 		session_start();
 		#session_destroy();
 		// Save community id in session, to ensure that the id is also saved when vititing sites without the civserv extension (e.g. fulltext search)
-		if ($_SESSION['community_id'] <= '') {
-			$_SESSION['community_id'] = $this->piVars['community_id'];
+		if ($_SESSION['community_id'] <= '' || intval($_SESSION['community_id']) !== intval($this->conf['_DEFAULT_PI_VARS.']['community_id'])) {
+#			$_SESSION['community_id'] = $this->piVars['community_id'];
+			//we only really trust the value from the TS-Template:
+			$_SESSION['community_id'] = $this->conf['_DEFAULT_PI_VARS.']['community_id'];
+			
 		}
 		// Set piVars['community_id'], if not given from the URL. Necessary for the function pi_linkTP_keepPIvars_url.
-		if ($this->piVars['community_id'] <= '') {
-			$this->piVars['community_id'] = $_SESSION['community_id'];
+		if ($this->piVars['community_id'] <= '' || intval($this->piVars['community_id']) !== intval($this->conf['_DEFAULT_PI_VARS.']['community_id'])) {
+#			$this->piVars['community_id'] = $_SESSION['community_id'];
+			//we only really trust the value from the TS-Template:
+			$this->piVars['community_id'] = $this->conf['_DEFAULT_PI_VARS.']['community_id'];
 		}
 		
 		//test bk: you might want to control the display-order of menu (via $conf). Name them so you can sort them!
@@ -4379,56 +4403,56 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$menuArray['menuServiceList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.service_list','Services A - Z'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'service_list'),1,1,$pageid),
-								'ITEM_STATE' => ($this->piVars['mode']=='service_list')?'ACT':'NO');
+								'ITEM_STATE' => ($this->piVars['mode'] == 'service_list')?'ACT':'NO');
 		}
 		if ($conf['menuCircumstanceTree']) {
 			$menuArray['menuCircumstanceTree'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.circumstance_tree','Circumstances'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'circumstance_tree'),1,1,$pageid),
-								'ITEM_STATE' => (($this->piVars['mode']=='circumstance_tree') || ($this->piVars['mode']=='circumstance'))?'ACT':'NO');
+								'ITEM_STATE' => (($this->piVars['mode'] == 'circumstance_tree') || ($this->piVars['mode'] == 'circumstance'))?'ACT':'NO');
 		}
 		if ($conf['menuUsergroupTree']) {
 			$menuArray['menuUsergroupTree'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.usergroup_tree','Usergroups'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'usergroup_tree'),1,1,$pageid),
-								'ITEM_STATE' => (($this->piVars['mode']=='usergroup_tree') || ($this->piVars['mode']=='usergroup'))?'ACT':'NO');
+								'ITEM_STATE' => (($this->piVars['mode'] == 'usergroup_tree') || ($this->piVars['mode'] == 'usergroup'))?'ACT':'NO');
 		}
 		if ($conf['menuOrganisationTree']) {
 			$menuArray['menuOrganisationTree'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.organisation_tree','Organisation'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'organisation_tree'),1,1,$pageid),
-								'ITEM_STATE' => (($this->piVars['mode']=='organisation_tree') || ($this->piVars['mode']=='organisation'))?'ACT':'NO');
+								'ITEM_STATE' => (($this->piVars['mode'] == 'organisation_tree') || ($this->piVars['mode'] == 'organisation'))?'ACT':'NO');
 		}
 		if ($conf['menuOrganisationList']) {
 			$menuArray['menuOrganisationList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.organisation_list','Organisation A - Z'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'organisation_list'),1,1,$pageid),
-								'ITEM_STATE' => (($this->piVars['mode']=='organisation_list') || ($this->piVars['mode']=='organisation_list'))?'ACT':'NO');
+								'ITEM_STATE' => (($this->piVars['mode'] == 'organisation_list') || ($this->piVars['mode'] == 'organisation_list'))?'ACT':'NO');
 		}
 		if ($conf['menuEmployeeList']) {
 			$menuArray['menuEmployeeList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.employee_list','Employees A - Z'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'employee_list'),1,1,$pageid),
-								'ITEM_STATE' => ($this->piVars['mode']=='employee_list')?'ACT':'NO');
+								'ITEM_STATE' => ($this->piVars['mode'] == 'employee_list')?'ACT':'NO');
 		}
 		if ($conf['menuFormList']) {
 			$menuArray['menuFormList'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.form_list','Forms'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'form_list'),1,1,$pageid),
-								'ITEM_STATE' => ($this->piVars['mode']=='form_list')?'ACT':'NO');
+								'ITEM_STATE' => ($this->piVars['mode'] == 'form_list')?'ACT':'NO');
 		}
 		if ($conf['menuTop15']) {
 			$menuArray['menuTop15'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.top15','Top 15'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'top15'),0,1,$pageid),
-								'ITEM_STATE' => ($this->piVars['mode']=='top15')?'ACT':'NO');
+								'ITEM_STATE' => ($this->piVars['mode'] == 'top15')?'ACT':'NO');
 		}
 		// online services....
 		if ($conf['menuOnlineServices']) {
 			$menuArray['menuOnlineServices'] = array(
 								'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.online_services','Online Services'),
 								'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'online_services'),0,1,$pageid),
-								'ITEM_STATE' => ($this->piVars['mode']=='online_services')?'ACT':'NO');
+								'ITEM_STATE' => ($this->piVars['mode'] == 'online_services')?'ACT':'NO');
 		}
 
 		// get full text search id from TSconfig
@@ -4436,14 +4460,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$menuArray['menuFulltextSearch'] = array(
 							'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.fulltext_search','Fulltext Search'),
 							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(),0,1,$conf['fulltext_search_id']),
-							'ITEM_STATE' => ($GLOBALS['TSFE']->id==$conf['fulltext_search_id'])?'ACT':'NO');
+							'ITEM_STATE' => ($GLOBALS['TSFE']->id == $conf['fulltext_search_id'])?'ACT':'NO');
 		}
 		// get id for alternative language from TSconfig
 		if (intval($conf['alternative_page_id']) > 0) {
 			$menuArray[] = array(
 							'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.alternative_language','Deutsche Inhalte'),
 							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(mode => 'service_list'),0,1,$conf['alternative_page_id']),
-							'ITEM_STATE' => ($GLOBALS['TSFE']->id==$conf['alternative_page_id'])?'ACT':'NO');
+							'ITEM_STATE' => ($GLOBALS['TSFE']->id == $conf['alternative_page_id'])?'ACT':'NO');
 		}
 		
 		
@@ -4594,23 +4618,23 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$parent_list = $this->get_parent_list($this->res, $parent_list);
 
 		$linkText=$GLOBALS['TSFE']->page['title']; //default
-		if($this->piVars['mode']=="organisation"){
+		if($this->piVars['mode'] == "organisation"){
 			$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => 'organisation_list'),1,1,$pageid);
 			$linkText=$this->pi_getLL('tx_civserv_pi1_menuarray.organisation_list','Organisation A - Z'); 
-		}elseif($this->piVars['mode']=="circumstance"){
+		}elseif($this->piVars['mode'] == "circumstance"){
 			$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => 'circumstance_tree'),1,1,$pageid);
 			$linkText=$this->pi_getLL('tx_civserv_pi1_menuarray.circumstance_tree','Circumstances'); 
-		}elseif($this->piVars['mode']=="usergroup"){
+		}elseif($this->piVars['mode'] == "usergroup"){
 			$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => 'usergroup_tree'),1,1,$pageid);
 			$linkText=$this->pi_getLL('tx_civserv_pi1_menuarray.usergroup_tree','Usergroups'); 
-		}elseif($this->piVars['mode']=="service"){
+		}elseif($this->piVars['mode'] == "service"){
 			$_SESSION['stored_pagelink']=$this->getActualPage($content, $conf);
 			$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => 'service_list'),1,1,$pageid);
 			$linkText=$this->pi_getLL('tx_civserv_pi1_service_list.service_list','Services A - Z');
 			$_SESSION['info_sites'] = $this->getCompletePageLink($pageLink, $linkText); //Variablen namen ändern?
-		}elseif($this->piVars['mode']=="employee"){
+		}elseif($this->piVars['mode'] == "employee"){
 			return $_SESSION['stored_pagelink'];
-		}elseif($this->piVars['mode']==""){
+		}elseif($this->piVars['mode'] == ""){
 			// no mode means either it is a page outside the pagetree of civserv --> do not display custom breadcrumb!
 			// or else it is an Info-Page belonging to civserv --> do display custom breadcrumb! The pid of info-pages is available from tx_civserv_conf_mandant!
 			if(in_array($_SESSION['info_folder_uid'], $parent_list)){ 
@@ -4645,7 +4669,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		 
 		 //tx_civserv_pi1_organisation_list.organisation_list.heading
 
-		if($this->piVars['mode']=='service'){
+		if($this->piVars['mode'] == 'service'){
 			$textArr=explode(":", $linkText);
 			if(count($textArr)>1)unset($textArr[0]);
 			$linkText= implode(":", $textArr);//default
