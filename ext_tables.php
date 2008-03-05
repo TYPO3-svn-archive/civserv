@@ -336,7 +336,7 @@ $TCA["tx_civserv_service"] = Array (
 
 		
 		"label" => "sv_name",
-		"requestUpdate" => "sv_region_checkbox,sv_model_service",
+		"requestUpdate" => "sv_3rdparty_checkbox, sv_model_service",
 		"tstamp" => "tstamp",
 		"crdate" => "crdate",
 		"cruser_id" => "cruser_id",
@@ -358,7 +358,7 @@ $TCA["tx_civserv_service"] = Array (
 		"iconfile" => t3lib_extMgm::extRelPath($_EXTKEY)."icon_tx_civserv_service.gif",
 	),
 	"feInterface" => Array (
-		"fe_admin_fieldList" => "hidden, starttime, endtime, fe_group, sv_name, sv_synonym1, sv_synonym2, sv_synonym3, sv_descr_short, sv_descr_long, sv_image, sv_image_text, sv_fees, sv_documents, sv_legal_local, sv_legal_global, sv_model_service, sv_similar_services, sv_service_version, sv_form, sv_searchword, sv_position, sv_organisation, sv_navigation, sv_region_checkbox, sv_region_link, sv_region_name",
+		"fe_admin_fieldList" => "hidden, starttime, endtime, fe_group, sv_name, sv_synonym1, sv_synonym2, sv_synonym3, sv_descr_short, sv_descr_long, sv_image, sv_image_text, sv_fees, sv_documents, sv_legal_local, sv_legal_global, sv_model_service, sv_similar_services, sv_service_version, sv_form, sv_searchword, sv_position, sv_organisation, sv_navigation, sv_3rdparty_checkbox, sv_3rdparty_link, sv_3rdparty_name",
 	)
 );
 

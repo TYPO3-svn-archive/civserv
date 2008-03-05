@@ -2469,54 +2469,82 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 
 		//Query for model service
-		if ($service_common[sv_model_service] > 0) {
+		if ($service_common['sv_model_service'] > 0) {
 			$res_model_service = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'ms_name, ms_descr_short, ms_descr_long, ms_image, ms_image_text, ms_fees, ms_documents, ms_legal_global',
 						'tx_civserv_model_service',
-						'deleted = 0 AND hidden = 0 AND uid = ' . intval($service_common[sv_model_service]) . '');
+						'deleted = 0 AND hidden = 0 AND uid = ' . intval($service_common['sv_model_service']) . '');
 
 			$model_service = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_model_service);
 		}
 
 		//Check for external service flag
-		if ($service_common[sv_region_checkbox] > 0) {
-			$smartyService->assign('ext_link',$service_common[sv_region_link]);
+		if ($service_common['sv_3rdparty_checkbox'] > 0) {
+			$smartyService->assign('ext_link',$service_common[sv_3rdparty_link]);
 		}
 
 		//Service name
-		if ($service_common[sv_name] != "") {
-			$name = trim($service_common[sv_name]);
+		if ($service_common['sv_name'] != "") {
+			$name = trim($service_common['sv_name']);
 			// ATTENTION: Field-list is hardcoded, because there are problems with the image because of the upload folder
-			$name = $this->pi_getEditIcon($name,'fe_admin_fieldList" => "hidden, starttime, endtime, fe_group, sv_name, sv_synonym1, sv_synonym2, sv_synonym3, sv_descr_short, sv_descr_long, sv_fees, sv_documents, sv_legal_local, sv_legal_global, sv_model_service, sv_similar_services, sv_service_version, sv_form, sv_searchword, sv_position, sv_organisation, sv_navigation, sv_region_checkbox, sv_region_link, sv_region_name',$this->pi_getLL('tx_civserv_pi1_service.name','Service name'),$service_common,'tx_civserv_service');
+			$name = $this->pi_getEditIcon($name,	'fe_admin_fieldList" => "hidden, 
+																			 starttime, 
+																			 endtime, 
+																			 fe_group, 
+																			 sv_name, 
+																			 sv_synonym1, 
+																			 sv_synonym2, 
+																			 sv_synonym3, 
+																			 sv_descr_short, 
+																			 sv_descr_long, 
+																			 sv_fees, 
+																			 sv_documents, 
+																			 sv_legal_local, 
+																			 sv_legal_global, 
+																			 sv_model_service, 
+																			 sv_similar_services, 
+																			 sv_service_version, 
+																			 sv_form, 
+																			 sv_searchword, 
+																			 sv_position, 
+																			 sv_organisation, 
+																			 sv_navigation, 
+																			 sv_3rdparty_checkbox, 
+																			 sv_3rdparty_link, 
+																			 sv_3rdparty_name',
+																			 $this->pi_getLL('tx_civserv_pi1_service.name','Service name'),
+																			 $service_common,
+																			 'tx_civserv_service'
+																	);
 		} else {
 			$name = trim($model_service[ms_name]);
 		}
 		$smartyService->assign('name',$name);
 
 		//Short description
-		if ($service_common[sv_descr_short] != "") {
-			$descr_short = trim($service_common[sv_descr_short]);
+		if ($service_common['sv_descr_short'] != "") {
+			$descr_short = trim($service_common['sv_descr_short']);
 			$descr_short = $this->pi_getEditIcon($descr_short,'sv_descr_short',$this->pi_getLL('tx_civserv_pi1_service.description_short','short description'),$service_common,'tx_civserv_service');
 		} else {
-			$descr_short = trim($model_service[ms_descr_short]);
+			$descr_short = trim($model_service['ms_descr_short']);
 		}
 		$smartyService->assign('descr_short',$this->formatStr($this->local_cObj->stdWrap($descr_short,$this->conf['sv_descr_short_stdWrap.'])));
 
 		//Long description
 		$descr_long_ms = '';
 		if ($model_service[ms_descr_long] != "") {
-			$descr_long_ms = trim($model_service[ms_descr_long]) . '<br />';
+			$descr_long_ms = trim($model_service['ms_descr_long']) . '<br />';
 		}
-		$descr_long = trim($service_common[sv_descr_long]);
+		$descr_long = trim($service_common['sv_descr_long']);
 		$descr_long = $this->pi_getEditIcon($descr_long,'sv_descr_long',$this->pi_getLL('tx_civserv_pi1_service.description_long','Long description'),$service_common,'tx_civserv_service');
 		$descr_long = $descr_long_ms . $descr_long;
 		$smartyService->assign('descr_long',$this->formatStr($this->local_cObj->stdWrap($descr_long,$this->conf['sv_descr_long_stdWrap.'])));
 
 		//Image text
 		if ($service_common[sv_image_text] != "") {
-			$image_text = trim($service_common[sv_image_text]);
+			$image_text = trim($service_common['sv_image_text']);
 		} else {
-			$image_text = trim($model_service[ms_image_text]);
+			$image_text = trim($model_service['ms_image_text']);
 		}
 		$image_descr = $this->pi_getEditIcon($image_text,'image_text',$this->pi_getLL('tx_civserv_pi1_service.image_text','Image description'),$service_common,'tx_civserv_service');
 		$smartyService->assign('image_text',$image_descr);
@@ -2547,26 +2575,26 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 
 		//Documents
-		if ($service_common[sv_documents] != "") {
-			$documents = trim($service_common[sv_documents]);
+		if ($service_common['sv_documents'] != "") {
+			$documents = trim($service_common['sv_documents']);
 			$documents = $this->pi_getEditIcon($documents,'sv_documents',$this->pi_getLL('tx_civserv_pi1_service.description_documents','Necessary Documents'),$service_common,'tx_civserv_service');
 		} else {
-			$documents = trim($model_service[ms_documents]);
+			$documents = trim($model_service['ms_documents']);
 		}
 		if(strip_tags($documents) > '' && strip_tags($documents) != '&nbsp;'){
 			$smartyService->assign('documents',$this->formatStr($this->local_cObj->stdWrap($documents,$this->conf['sv_documents_general_stdWrap.'])));
 		}
 
 		//Legal local
-		$legal_local = $this->pi_getEditIcon($service_common[sv_legal_local],'sv_legal_local',$this->pi_getLL('tx_civserv_pi1_service.legal_local','Legal foundation (local)'),$service_common,'tx_civserv_service');
+		$legal_local = $this->pi_getEditIcon($service_common['sv_legal_local'],'sv_legal_local',$this->pi_getLL('tx_civserv_pi1_service.legal_local','Legal foundation (local)'),$service_common,'tx_civserv_service');
 		$smartyService->assign('legal_local',$this->formatStr($this->local_cObj->stdWrap($legal_local,$this->conf['sv_legel_local_general_stdWrap.'])));
 
 		//Legal global
 		if ($service_common[sv_legal_global] != "") {
-			$legal_global = trim($service_common[sv_legal_global]);
+			$legal_global = trim($service_common['sv_legal_global']);
 			$legal_global = $this->pi_getEditIcon($legal_global,'sv_legal_global',$this->pi_getLL('tx_civserv_pi1_service.legal_global','Legal foundation (global)'),$service_common,'tx_civserv_service');
 		} else {
-			$legal_global = trim($model_service[ms_legal_global]);
+			$legal_global = trim($model_service['ms_legal_global']);
 		}
 		$smartyService->assign('legal_global',$this->formatStr($this->local_cObj->stdWrap($legal_global,$this->conf['sv_legal_global_general_stdWrap.'])));
 
@@ -2630,12 +2658,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'',
 						'');
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-		$log_interval = intval($row[cf_value]);
+		$log_interval = intval($row['cf_value']);
 		$accesslog = t3lib_div::makeInstance('tx_civserv_accesslog');
 		$accesslog->update_log($uid,$log_interval, long2ip(ip2long($_SERVER['REMOTE_ADDR'])));
 
 		//Title for the Indexed Search Engine
-		$GLOBALS['TSFE']->indexedDocTitle = $service_common[sv_name];
+		$GLOBALS['TSFE']->indexedDocTitle = $service_common['sv_name'];
 		$GLOBALS['TSFE']->page['title']=$this->pi_getLL('tx_civserv_pi1_service.service','Service').": ".$name;
 		return true;
 	}
@@ -2651,7 +2679,20 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// VERSIONING:
 		// we need the hidden records as well!
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'uid, pid, sv_name, sv_descr_short, sv_descr_long, sv_image, sv_image_text, sv_fees, sv_documents, sv_legal_local, sv_legal_global, sv_region_checkbox, sv_region_link, sv_model_service',
+						'uid, 
+						 pid, 
+						 sv_name, 
+						 sv_descr_short, 
+						 sv_descr_long, 
+						 sv_image, 
+						 sv_image_text, 
+						 sv_fees, 
+						 sv_documents, 
+						 sv_legal_local, 
+						 sv_legal_global, 
+						 sv_3rdparty_checkbox, 
+						 sv_3rdparty_link, 
+						 sv_model_service',
 						'tx_civserv_service',
 						'deleted = 0 AND hidden = 0 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN starttime AND endtime) OR
 												  ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > starttime) AND (endtime=0)) OR
@@ -2672,7 +2713,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function employeeDetail(&$smartyEmployee,$searchBox) {
 		$uid = intval($this->piVars['id']);	//SQL-Injection!!!
-		$pos_id = intval($this->piVars[pos_id]); //must come from piVars -> need to know which one of several possible positions is to be displayed....
+		$pos_id = intval($this->piVars['pos_id']); //must come from piVars -> need to know which one of several possible positions is to be displayed....
 
 		// test bk: get position from Database
 		// a) employee is linked to position-record, could be > 1 !!!

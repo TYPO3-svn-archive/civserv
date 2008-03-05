@@ -178,7 +178,7 @@ if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
  *											class.tx_civserv_wizard_service_searchword.php
  *											class.tx_civserv_wizard_service_position.php
  *
- * Chekcboxes / Displayconditions:			sv_region_link is only displayed in the backend, if an external service should be integrated (sv_region_checkbox=true)
+ * Chekcboxes / Displayconditions:			sv_3rdparty_link is only displayed in the backend, if an external service should be integrated (sv_3rdparty_checkbox=true)
  *											if sv_model_service=true, only field which don't base on a model service are displayed
  *
  * Uploadfolder for images: "".$upload_folder."/images"
@@ -327,18 +327,18 @@ $TCA["tx_civserv_service"] = Array (
 				"max" => "255",
 			)
 		),
-		"sv_region_checkbox" => Array (
+		"sv_3rdparty_checkbox" => Array (
 			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_region_checkbox",
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_3rdparty_checkbox",
 			"displayCond" => "FIELD:sv_model_service:REQ:false",
 			"config" => Array (
 				"type" => "check",
 			)
 		),
-		"sv_region_link" => Array (
+		"sv_3rdparty_link" => Array (
 			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_region_link",
-			"displayCond" => "FIELD:sv_region_checkbox:REQ:true",
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_3rdparty_link",
+			"displayCond" => "FIELD:sv_3rdparty_checkbox:REQ:true",
 			"config" => Array (
 				"type" => "input",
 				"size" => "15",
@@ -357,10 +357,10 @@ $TCA["tx_civserv_service"] = Array (
 				)
 			)
 		),
-		"sv_region_name" => Array (
+		"sv_3rdparty_name" => Array (
 			"exclude" => 1,
-			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_region_name",
-			"displayCond" => "FIELD:sv_region_checkbox:REQ:true",
+			"label" => "LLL:EXT:civserv/locallang_db.php:tx_civserv_service.sv_3rdparty_name",
+			"displayCond" => "FIELD:sv_3rdparty_checkbox:REQ:true",
 			"config" => Array (
 				"type" => "input",
 				"size" => "30",
@@ -797,7 +797,7 @@ $TCA["tx_civserv_service"] = Array (
 	"types" => Array (
 #	to enable checkbox for intranet add 'sv_type' to show-item-array (ATTENTION: intranet feature is not yet fully implemented)	
 #		"0" => Array("showitem" => "hidden;;1;;1-1-1, sv_type, sv_model_service, sv_name, sv_synonym1, [....]
-		"0" => Array("showitem" => "hidden;;1;;1-1-1, sv_model_service,  sv_name, sv_synonym1, sv_synonym2, sv_synonym3, sv_region_checkbox, sv_region_link, sv_region_name, sv_descr_short;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_descr_long;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_image, sv_image_text, sv_fees;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_documents;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_legal_local;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_legal_global;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_similar_services_PLACEHOLDER, sv_similar_services, sv_service_version, sv_form_PLACEHOLDER, sv_form, sv_searchword_PLACEHOLDER, sv_searchword, sv_position_PLACEHOLDER, sv_position, sv_organisation_PLACEHOLDER, sv_organisation, sv_navigation_PLACEHOLDER, sv_navigation, sv_region_PLACEHOLDER_live, sv_region")
+		"0" => Array("showitem" => "hidden;;1;;1-1-1, sv_model_service,  sv_name, sv_synonym1, sv_synonym2, sv_synonym3, sv_3rdparty_checkbox, sv_3rdparty_link, sv_3rdparty_name, sv_descr_short;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_descr_long;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_image, sv_image_text, sv_fees;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_documents;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_legal_local;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_legal_global;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_similar_services_PLACEHOLDER, sv_similar_services, sv_service_version, sv_form_PLACEHOLDER, sv_form, sv_searchword_PLACEHOLDER, sv_searchword, sv_position_PLACEHOLDER, sv_position, sv_organisation_PLACEHOLDER, sv_organisation, sv_navigation_PLACEHOLDER, sv_navigation, sv_region_PLACEHOLDER_live, sv_region")
 	),
 	"palettes" => Array (
 		"1" => Array("showitem" => "starttime, endtime, fe_group")

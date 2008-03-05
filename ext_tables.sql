@@ -270,9 +270,9 @@ CREATE TABLE tx_civserv_service (
 	sv_organisation_PLACEHOLDER tinytext NOT NULL,
 	sv_navigation int(11) unsigned DEFAULT '0' NOT NULL,
 	sv_navigation_PLACEHOLDER tinytext NOT NULL,
-	sv_region_checkbox int(11) unsigned DEFAULT '0' NOT NULL,
-	sv_region_link tinytext NOT NULL,
-	sv_region_name tinytext NOT NULL,
+	sv_3rdparty_checkbox int(11) unsigned DEFAULT '0' NOT NULL,
+	sv_3rdparty_link tinytext NOT NULL,
+	sv_3rdparty_name tinytext NOT NULL,
 	sv_region int(11) unsigned DEFAULT '0' NOT NULL,
 	PRIMARY KEY (uid),
 	KEY parent (pid)
