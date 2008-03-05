@@ -26,9 +26,11 @@
 											<li class="po_name">
 												<!--{if $position.po_nice_name > ''}-->{$position.po_nice_name}<!--{/if}-->
 												<!--{if $position.po_name > ''}-->&nbsp;({$position.po_name})<!--{/if}-->
-												<!--{if $position.po_phone > '' || $position.po_building > '' || $position.po_fax > '' || $position.po_mobile > ''}-->
+												<!--{if $position.po_phone > '' || $position.po_building > '' || $position.po_fax > '' || $position.po_mobile > '' || po_descr > ''}-->
 													<ul class="po_items">
+														<!--{if $position.po_descr > ''}--><li>{$position.po_descr}</li><!--{/if}-->
 														<!--{if $position.po_phone > ''}--><li>{$position.po_phone}</li><!--{/if}-->
+														<!--{if $position.po_email > ''}--><li>{$position.po_email}</li><!--{/if}-->
 														<!--{if $position.po_building > ''}-->
 															<li>
 																{$position.po_building}:
