@@ -246,6 +246,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			// for some reason corrupted pages (wrong community_id) accumulate in the typo3 cache
 			// we must prevent that they get listed by search engines: strip off all content!
 			if(intval($this->community['id']) !== intval($this->conf['_DEFAULT_PI_VARS.']['community_id'])){
+				$GLOBALS['TSFE']->tmpl->setup['sitetitle'] = ''; //the less information the corrupted pages bear the better
 				$GLOBALS['TSFE']->page['title'] = ''; //the less information the corrupted pages bear the better
 				$this->piVars['mode'] = 'error';
 			}
