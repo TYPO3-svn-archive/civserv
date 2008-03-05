@@ -2471,7 +2471,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//Query for model service
 		if ($service_common['sv_model_service'] > 0) {
 			$res_model_service = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'ms_name, ms_descr_short, ms_descr_long, ms_image, ms_image_text, ms_fees, ms_documents, ms_legal_global',
+						'ms_name, 
+						 ms_descr_short, 
+						 ms_descr_long, 
+						 ms_image, 
+						 ms_image_text, 
+						 ms_fees, 
+						 ms_documents, 
+						 ms_legal_global',
 						'tx_civserv_model_service',
 						'deleted = 0 AND hidden = 0 AND uid = ' . intval($service_common['sv_model_service']) . '');
 
@@ -2480,7 +2487,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Check for external service flag
 		if ($service_common['sv_3rdparty_checkbox'] > 0) {
-			$smartyService->assign('ext_link',$service_common[sv_3rdparty_link]);
+			$smartyService->assign('ext_link', $service_common['sv_3rdparty_link']);
+			$smartyService->assign('ext_name', $service_common['sv_3rdparty_name']);
 		}
 
 		//Service name
@@ -2692,11 +2700,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 sv_legal_global, 
 						 sv_3rdparty_checkbox, 
 						 sv_3rdparty_link, 
+						 sv_3rdparty_name,
 						 sv_model_service',
 						'tx_civserv_service',
-						'deleted = 0 AND hidden = 0 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN starttime AND endtime) OR
-												  ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > starttime) AND (endtime=0)) OR
-												  (starttime=0 AND endtime=0) ) AND uid = ' . $uid . '',
+						'deleted = 0 
+						 AND hidden = 0 
+						 AND uid = ' . intval($uid) . '',
 						'',
 						'',
 						'');
