@@ -1,0 +1,3 @@
+update tx_civserv_service set sv_3rdparty_checkbox = sv_region_checkbox;
+update tx_civserv_service set sv_3rdparty_name = sv_region_name;
+update tx_civserv_service set sv_3rdparty_link = sv_region_link;
