@@ -243,6 +243,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 			// Set piVars['community_id'] because it could only be registered in the session and not in the URL
 			$this->piVars['community_id'] = $_SESSION['community_id'];
 			
+			// for some reason corrupted pages (wrong community_id) accumulate in the typo3 cache
+			// we must prevent that they get listed by search engines: strip off all content!
+			if(intval($this->community['id']) !== intval($this->conf['_DEFAULT_PI_VARS.']['community_id'])){
+				$GLOBALS['TSFE']->page['title'] = ''; //the less information the corrupted pages bear the better
+				$this->piVars['mode'] = 'error';
+			}
 			
 			switch($this->piVars['mode'])	{
 				case 'service_list':
@@ -396,27 +402,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$accurate = false;
 					$GLOBALS['error_message'] = $this->pi_getLL('tx_civserv_pi1_error.invalid_mode','Invalid mode');
 			}
-			
-			//now check if the community_id is truely correct and corresponds to the actual page_id / TS-Template
-
-/*		
-//nooooo!
-//we still want to be able to display a mandant's service_list by simply calling the FE-page 123.html
-			if(intval($this->piVars['community_id']) !== intval($this->conf['_DEFAULT_PI_VARS.']['community_id'])){
-				debug($this->piVars['community_id'], 'mismatch');
-				debug($this->conf['_DEFAULT_PI_VARS.']['community_id'], 'mismatch');
-				$accurate = false;
-				$GLOBALS['error_message'] = "Mismatch of community_ids";
-			}
-*/		
-			
-			if(intval($this->community['id']) !== intval($this->conf['_DEFAULT_PI_VARS.']['community_id'])){
-				debug($this->community['id'], 'mismatch');
-				debug($this->conf['_DEFAULT_PI_VARS.']['community_id'], 'mismatch');
-				$accurate = false;
-				$GLOBALS['error_message'] = "Mismatch of community_ids";
-			}
-		}
+		}// !choose
 		
 		if (!$accurate) {
 			$template = $this->conf['tpl_error_page'];
