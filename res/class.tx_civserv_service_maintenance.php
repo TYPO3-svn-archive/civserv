@@ -58,6 +58,8 @@ class tx_civserv_service_maintenance{
 		global $LANG;
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$LANG->includeLLFile("EXT:civserv/res/locallang_region_workflow.php");
+		$actual_site = stripslashes(str_replace(t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST'), '', t3lib_div::getIndpEnv('TYPO3_SITE_URL')));
+		
 		#debug($params, 'service-maintenance->transfer services, $params');
 		if ($params['table']=='tx_civserv_service' && substr($params['uid'],0,3)!='NEW')	{
 			// the query below collects the uids of the external-Service-Folders of all the communities 
@@ -193,7 +195,10 @@ class tx_civserv_service_maintenance{
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_civserv_external_service',$insert_row);
 				
 				//emails
-				$text = str_replace("###mandant_name###", $new_one['receiving_mandant_name'], $LANG->getLL("xyz.emailmessage.header"));
+				$search = array(	"site" => "###sitename###",		"mandant" => "###mandant_name###");
+				$replace = array(	"site" => $actual_site,			"mandant" => $new_one['receiving_mandant_name']);
+				$text = str_replace($search, $replace, $LANG->getLL("xyz.emailmessage.header"));
+
 				
 				$search = array(	"sv_name" => "###service_name###",	"sv_community" => "###service_community###",			"es_folder" => "###external_service_folder###",);
 				$replace = array(	"sv_name" => $new_one['es_name'],	"sv_community" => $new_one['service_community_name'],	"es_folder" => $new_one['es_folder_name']);
@@ -257,9 +262,11 @@ class tx_civserv_service_maintenance{
 					$old_one['service_community_name']=		substr($row['es_name'],strpos($row['es_name'],"(")+1, strlen($row['es_name'])-2);
 				}
 				$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_civserv_external_service','pid = '.$old[0].' AND es_external_service='.$old[1]); 
-			
+				
 				//emails
-				$text = str_replace("###mandant_name###", $old_one['receiving_mandant_name'], $LANG->getLL("xyz.emailmessage.header"));
+				$search = array(	"site" => "###sitename###",		"mandant" => "###mandant_name###");
+				$replace = array(	"site" => $actual_site,			"mandant" => $new_one['receiving_mandant_name']);
+				$text = str_replace($search, $replace, $LANG->getLL("xyz.emailmessage.header"));
 				
 				$search = array(	"sv_name" => "###service_name###",	"sv_community" => "###service_community###",			"es_folder" => "###external_service_folder###");
 				$replace = array(	"sv_name" => $old_one['es_name'],	"sv_community" => $old_one['service_community_name'],	"es_folder" => $old_one['es_folder_name']);
