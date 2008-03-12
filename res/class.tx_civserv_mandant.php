@@ -154,6 +154,25 @@ class tx_civserv_mandant{
 		} else return "";
 	}
 	
+	
+	/*
+	* Returns the uid of the previewpage
+	* @param	int	PID	is the node in the tree from where the mandant should be determined
+	* @return	string	community-name representing the mandant belonging to the given pid
+	* @see get_path
+	*/
+	function get_mandant_preview_page($pid){
+		if ($pid > 0) $mandant = $this->get_mandant($pid);
+		if ($mandant > 0) {
+			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cm_page_uid','tx_civserv_conf_mandant','cm_community_id = '.$GLOBALS['TYPO3_DB']->quoteStr($mandant,'tx_civserv_conf_mandant'),'','','',''); 
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
+			return $row['cm_page_uid'];
+		} else return "";
+	}
+	
+	
+	
+	
 	/*
 	* Returns the Community Name for a given PID
 	* @param	int	PID	is the node in the tree from where the mandant should be determined
