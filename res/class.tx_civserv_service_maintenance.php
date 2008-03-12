@@ -55,12 +55,12 @@ class tx_civserv_service_maintenance{
 	* @return	void
 	*/
 	function transfer_services($params){
+	echo "<script type=\"text/javascript\">alert('du eimer!');</script>";
 		global $LANG;
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$LANG->includeLLFile("EXT:civserv/res/locallang_region_workflow.php");
 		$actual_site = stripslashes(str_replace(t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST'), '', t3lib_div::getIndpEnv('TYPO3_SITE_URL')));
 		
-		#debug($params, 'service-maintenance->transfer services, $params');
 		if ($params['table']=='tx_civserv_service' && substr($params['uid'],0,3)!='NEW')	{
 			// the query below collects the uids of the external-Service-Folders of all the communities 
 			// that have been selected in the region-field of the service
@@ -98,6 +98,7 @@ class tx_civserv_service_maintenance{
 			}// end while
 			
 			//ercis: get _all_ already existing external services for _all_ mandants
+			//field es_external_service stores the uid of the service
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'external_service.pid, 
 				 external_service.es_external_service',													// select
@@ -115,8 +116,6 @@ class tx_civserv_service_maintenance{
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$old_services[]=$row['es_external_service'].$separator.$row['pid'];
 			}
-			#debug($new_services, '$new_services');
-			#debug($old_services, '$old_services');
 			// now I have two arrays which I can compare!
 			// new_ones are the ones which are in new_services but not in old_services
 			// old_ones are the ones which are in old_services but not in new_services
@@ -129,13 +128,11 @@ class tx_civserv_service_maintenance{
 			
 			$new_ones = array();
 			$new_ones = array_diff($new_services, $old_services);
-			#debug($new_ones, 'new_ones aus array_diff');
 			
 			foreach($new_ones as $value){
 				$new_one = array();
 				$insert_row =array();
 				$new = explode($separator,$value);
-				#debug($new, 'new aus explode');
 				
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'mandant.cm_community_name,
@@ -168,7 +165,6 @@ class tx_civserv_service_maintenance{
 				}
 				
 				$service_community_gkz = $mandantInst->get_mandant($new_one['es_original_pid']); //pid of the services where it originally resides
-				#debug($service_community_gkz, '$service_community_gkz');
 				$res_service_community = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'*',
 					'tx_civserv_conf_mandant',
@@ -199,7 +195,7 @@ class tx_civserv_service_maintenance{
 				$replace = array(	"site" => $actual_site,			"mandant" => $new_one['receiving_mandant_name']);
 				$text = str_replace($search, $replace, $LANG->getLL("xyz.emailmessage.header"));
 
-				
+				//servic_new
 				$search = array(	"sv_name" => "###service_name###",	"sv_community" => "###service_community###",			"es_folder" => "###external_service_folder###",);
 				$replace = array(	"sv_name" => $new_one['es_name'],	"sv_community" => $new_one['service_community_name'],	"es_folder" => $new_one['es_folder_name']);
 				$text .= str_replace($search, $replace, $LANG->getLL("xyz.emailmessage.service_new"));
@@ -212,14 +208,18 @@ class tx_civserv_service_maintenance{
 				$replace = array(	"es_folder" => $new_one['es_folder_name'],		"sv_community" => $new_one['service_community_name']);
 				$text .= str_replace($search, $replace, $LANG->getLL("xyz.emailmessage.order"));
 
+				//email_from
 				$fr_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('cf_value','tx_civserv_configuration','cf_key = "email_from"','','','');
 				$from_res = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($fr_res);
 				$from = "From: ".$from_res['cf_value'];
 				
+				//email subject
 				$subject = str_replace("###service_name###", $new_one['es_name'], $LANG->getLL("xyz.emailmessage.subject"));
 				$subject .= " (".$new_one['receiving_mandant_name'].")";		
+				
+				//send it
 				if (t3lib_div::validEmail($to=$new_one['receiving_mandant_email'])){
-					#debug($text);
+					//fix me! there's a bug in the email workflow - probably only with deleted external services though
 					t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
 				}
 			}
@@ -228,12 +228,10 @@ class tx_civserv_service_maintenance{
 			// old_services which are not in new_services
 			$old_ones = array();
 			$old_ones = array_diff($old_services, $new_services);
-			#debug($old_ones, 'old_ones aus array_diff');
 
 			foreach($old_ones as $value){
 				$old_one=array();
 				$old = explode($separator,$value);
-				#debug($old, 'old aus explode');
 				
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'service.es_name,
@@ -268,6 +266,8 @@ class tx_civserv_service_maintenance{
 				$replace = array(	"site" => $actual_site,			"mandant" => $new_one['receiving_mandant_name']);
 				$text = str_replace($search, $replace, $LANG->getLL("xyz.emailmessage.header"));
 				
+				
+				//service_deleted
 				$search = array(	"sv_name" => "###service_name###",	"sv_community" => "###service_community###",			"es_folder" => "###external_service_folder###");
 				$replace = array(	"sv_name" => $old_one['es_name'],	"sv_community" => $old_one['service_community_name'],	"es_folder" => $old_one['es_folder_name']);
 				$text .= str_replace($search, $replace, $LANG->getLL("xyz.emailmessage.service_deleted"));
@@ -279,12 +279,16 @@ class tx_civserv_service_maintenance{
 				$subject = str_replace("###service_name###", $old_one['es_name'], $LANG->getLL("xyz.emailmessage.subject"));
 				$subject .= " (".$old_one['receiving_mandant_name'].")";		
 				if (t3lib_div::validEmail($to=$old_one['receiving_mandant_email'])){
-					#debug($text);
-					t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
+					//fix me! there's a bug in the email workflow, especially with the deleted external services
+#					t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
 				}
 			}
 		}
 	}
+	
+	
+	
+	
 	
 	/**
 	* Updates the label of all service-position-relations to get a speaking name for mm-relation-entries
