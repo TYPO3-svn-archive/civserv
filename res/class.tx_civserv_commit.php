@@ -604,6 +604,7 @@ class tx_civserv_commit {
 		if ($params['table']=='tx_civserv_service')	{
 			if ($GLOBALS['GLOBALS']['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_service_maintenance.php']){
 				$update_obj = t3lib_div::makeInstance('tx_civserv_service_maintenance');
+#				debug('calling service maintenance');
 				//fix me! 
 				if($who == "processCmdmap_preProcess" || ($who == "update_postAction" && $GLOBALS['BE_USER']->workspace==0)) $update_obj->transfer_services($params);
 				if($who != "processCmdmap_preProcess") $update_obj->update_position($params); //in the event of publishing (processCmdmap_preProcess) we only want transfer_services to be executed!
@@ -633,7 +634,7 @@ class tx_civserv_commit {
 			$this->makeDirs($params);
 		}
 		if($params['table'] == 'tx_civserv_navigation'){
-			debug('commit.php: its a navigation!');
+#			debug('commit.php: its a navigation!');
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local','tx_civserv_navigation_nv_structure_mm','uid_local = uid_foreign');
 			while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)){
 				$del_result = $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_civserv_navigation_nv_structure_mm','uid_local = '.$row['uid_local'].' AND uid_foreign = '.$row['uid_local']);				
