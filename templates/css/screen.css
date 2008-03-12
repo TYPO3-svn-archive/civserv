@@ -1147,11 +1147,6 @@ input:focus, textarea:focus {
 }
 
 
-.tx-civserv-pi2 #centrecontent #or_choice {
-	margin-left: 4px;
-	xborder: solid red 2px;
-}
-
 .tx-civserv-pi2 #centrecontent #or_choice .level_1 {
 	xcolor: red;
 }
