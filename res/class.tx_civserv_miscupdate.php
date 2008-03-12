@@ -51,8 +51,6 @@ require_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_c
 * Updates some content for Employee-Position-Relationship which have to be made as a workaround for non-existing Typo3 functionality.
 */
 class tx_civserv_miscupdate {
-	
-	
 	/**
 	* FUNKTIONIRT NICHT!!!!
 	* Updates the label of all employee-position-relations to get a speaking name for mm-relation-entries
@@ -76,7 +74,6 @@ class tx_civserv_miscupdate {
 				''										// limit
 				);
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-				debug($this->replace_umlauts($row['or_code']), 'hömm???');
 				$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 					'tx_civserv_organisation', 	// update table
 					'uid = '.$GLOBALS['TYPO3_DB']->quoteStr($row['uid'], 'tx_civserv_organisation'),  // where
@@ -94,8 +91,8 @@ class tx_civserv_miscupdate {
 	function replace_umlauts($string){
 		// remove all kinds of umlauts
 		debug($string);
-		$umlaute = Array("/ä/","/ö/","/ü/","/Ä/","/Ö/","/Ü/","/ß/", "/é/"); //should use hexadecimal-code for é à etc????
-		$replace = Array("ae","oe","ue","Ae","Oe","Ue","ss", "e");
+		$umlaute = Array("/ä/", "/ö/", "/ü/", "/Ä/", "/Ö/", "/Ü/", "/ß/", "/é/"); //should use hexadecimal-code for é à etc????
+		$replace = Array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss", "e");
 		$string = preg_replace($umlaute, $replace, $string);
 		
 		//eliminate:
@@ -113,9 +110,6 @@ class tx_civserv_miscupdate {
 		$string=str_replace("\\", " ", $string);		// 'Eins\Zwei\Drei'
 		return $string;
 	}//end function replace_umlauts
-	
-	
-	
 }//end class	
 
 /**
