@@ -468,27 +468,23 @@ table.right {
 	border-bottom: 1px solid #000000;
 }
 
-#leftmenu ul li a:hover
-{
+#leftmenu ul li a:hover{
 	color: #000000;
 	background-color: #FFFFFF;
 }
 
-#leftmenu ul li .active
-{
+#leftmenu ul li .active{
 	background-color: #000000;
 	color: #FFFFFF;
 }
 
-#leftmenu .german
-{
+#leftmenu .german{
 	background: url(../images/bgs/d.gif); 
 	background-repeat: no-repeat;
 	background-position: 45px 5px;
 }
 
-#leftmenu .german a:hover
-{
+#leftmenu .german a:hover{
 	background: url(../images/bgs/d.gif); 
 	background-repeat: no-repeat;
 	background-position: 45px 5px;
@@ -497,15 +493,13 @@ table.right {
 }
 
 
-#leftmenu .english
-{
+#leftmenu .english{
 	background: url(../images/bgs/gb.gif);
 	background-repeat: no-repeat;
 	background-position: 45px 5px;
 }
 
-#leftmenu .english a:hover
-{
+#leftmenu .english a:hover{
 	background: url(../images/bgs/gb.gif); 
 	background-repeat: no-repeat;
 	background-position: 45px 5px;
@@ -531,8 +525,7 @@ table.right {
 	margin-top: 20px;
 }
 
-#rightmenu ul 
-{
+#rightmenu ul {
 	margin: 0;
 	padding: 0;
 	display: inline;
@@ -540,8 +533,7 @@ table.right {
 	list-style: none;
 }
 
-#rightmenu ul li
-{
+#rightmenu ul li{
 	width: 195px;
 	margin: 0;
 	padding: 0;
@@ -549,8 +541,7 @@ table.right {
 	list-style-type: none; /* duplicated for IE 5/Win */
 }
 
-#rightmenu ul li a
-{
+#rightmenu ul li a{
 	text-decoration: none;
 	padding-left: 10px;
 	padding-top: 1px;
@@ -561,36 +552,31 @@ table.right {
 	border-bottom: 1px solid #666666;
 }
 
-#rightmenu ul li a:hover
-{
+#rightmenu ul li a:hover{
 	color: #000000;
 	font-weight: bold;
 }
 
-#rightmenu .fees
-{
+#rightmenu .fees{
 	background-image: url(../images/menu/rightmenu/fees.gif);
 	background-repeat: no-repeat;
 	background-position: left center;
 }
 
-#rightmenu .fees:hover 
-{
+#rightmenu .fees:hover {
 	background-image: url(../images/menu/rightmenu/fees_f2.gif);
 	background-repeat: no-repeat;
 	background-position: left center;
 
 }
 
-#rightmenu .necessarydocuments
-{
+#rightmenu .necessarydocuments{
 	background-image: url(../images/menu/rightmenu/necessarydocuments.gif);
 	background-repeat: no-repeat;
 	background-position: left center;
 }
 
-#rightmenu .necessarydocuments:hover 
-{
+#rightmenu .necessarydocuments:hover {
 	background-image: url(../images/menu/rightmenu/necessarydocuments_f2.gif);
 	background-repeat: no-repeat;
 	background-position: left center;
@@ -603,29 +589,25 @@ table.right {
 	background-position: left center;
 }
 
-#rightmenu .forms:hover 
-{
+#rightmenu .forms:hover {
 	background-image: url(../images/menu/rightmenu/forms_f2.gif);
 	background-repeat: no-repeat;
 	background-position: left center;
 }
 
-#rightmenu .legals
-{
+#rightmenu .legals{
 	background-image: url(../images/menu/rightmenu/legals.gif);
 	background-repeat: no-repeat;
 	background-position: left center;
 }
 
-#rightmenu .legals:hover 
-{
+#rightmenu .legals:hover {
 	background-image: url(../images/menu/rightmenu/legals_f2.gif);
 	background-repeat: no-repeat;
 	background-position: left center;
 }
 
-#rightmenu .contactperson
-{
+#rightmenu .contactperson{
 	background-image: url(../images/menu/rightmenu/cantactperson.gif);
 	background-repeat: no-repeat;
 	background-position: left center;
@@ -656,8 +638,7 @@ table.right {
 	overflow: hidden;
 }
 
-#serviceinformation ul 
-{
+#serviceinformation ul {
 	margin: 0;
 	padding: 0;
 	display: inline;
@@ -665,8 +646,7 @@ table.right {
 	list-style: none;
 }
 
-#serviceinformation ul li
-{
+#serviceinformation ul li{
 	width: 195px; /* 195px */
 	margin: 0;
 	padding: 0;
@@ -717,8 +697,7 @@ table.right {
 	border-bottom: 1px solid #000000;
 }
 
-#globalenavigation ul 
-{	
+#globalenavigation ul {	
 	display: inline;
 	margin: 0;
 	padding: 0;
@@ -1131,6 +1110,16 @@ input:focus, textarea:focus {
 }
 */
 
+.tx-civserv-pi2 #centrecontent hr{
+	clear:both;
+	width: 100%;
+	height: 3px;
+	border:solid #00ffff 3px;
+	background-color:#0000ff;
+	text-align:left;
+}
+
+
 
 .tx-civserv-pi2 #centrecontent .headofdepartment{
 	xborder: solid red 2px;
@@ -1194,6 +1183,23 @@ input:focus, textarea:focus {
 
 
 /*------------------------------------------------------------------------------------*/
+
+
+/* 
+Organisations-ul verzweigt aus dem li.em_name
+
+strategie Firefox & Co:
+li.em_name ist nur 15 % breit und die Organisations-ul bricht aus ihrem Eltern-Element (dem li-Block) aus - per min-width=60em.
+
+
+strategie IE:
+li.em_name keine definierte breite, die folgenden lis brechen das left-float aus dem Eltern-Element per clear:left. 
+mit position:relative und float:right schieben sie sich von rechts aus über das li.em_name drüber....
+
+*/
+
+
+
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee {
 	xborder: solid lightgreen 2px;
 	clear:both;
@@ -1202,7 +1208,6 @@ input:focus, textarea:focus {
 	margin-left: 0;
 	padding-left: 0;
 	overflow: hidden;
-	background-color:honeydew;
 }
 
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee li{
@@ -1216,6 +1221,40 @@ input:focus, textarea:focus {
 }
 
 
+
+/* the first element of the employee-list is special as the organisation-ul opens in it */
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_name{
+	width: 15%;
+}
+
+
+.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_name{
+	padding-left:2em;
+	line-height:3em;
+}
+
+
+
+
+
+
+/* ie only */
+* html .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_pic,
+* html .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_phone,
+* html .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_email,
+* html .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_fax,
+* html .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_mobile {
+	position:relative;
+	clear:left;
+	float:right;
+	top:0 !important;
+	xborder:solid green 2px;
+}
+
+
+
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_pic,
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_phone,
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_email,
@@ -1225,35 +1264,73 @@ input:focus, textarea:focus {
 	padding-top:0.7em;
 	overflow:hidden;
 	height:4em;
-	border-left: 3px solid #fff;
+	xborder-left: 3px solid #fff;
 }
 
-/*
-.tx-civserv-pi2 #centrecontent #employee_az ul.employee span.employee{
-	padding-left:2em;
-}
-*/
 
-.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_name{
-	width: 15%;
-	padding-left:2em;
-	line-height:3em;
-}
-.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_pic{
+
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_pic{
 	width: 6%;
 }
-.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_phone{
+
+/* ie only */
+* html .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_pic{
+	width: 5em;
+	right: 65em;
+}
+
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_phone{
 	width: 8%;
 }
-.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_email{
+
+/* ie only */
+* html .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_phone{
+	width: 8em;
+	right: 53em;
+}
+
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_email{
 	width: 25%;
 }
-.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_fax{
+
+/* ie only */
+* html .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_email{
+	width: 25em;
+	right: 38em;
+}
+
+
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_fax{
 	width: 8%;
 }
-.tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_mobile{
+
+/* ie only */
+* html .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_fax{
+	width: 6em;
+	right: 16em;
+}
+
+
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_mobile{
 	width: 10%;
 }
+
+/* ie only */
+* html .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_mobile{
+	width: 10em;
+	right: 10em;
+}
+
 
 /*------------------------------------------------------------------------------------*/
 .tx-civserv-pi2 #centrecontent #employee_az ul.organisation {
@@ -1261,6 +1338,7 @@ input:focus, textarea:focus {
 	float:none;
 	padding-left:0;
 	min-width:60em;
+	width:60em; /* ie 6.x*/
 	margin-top:2em; /* abstand zum darüber liegenden element steuern, in kombination mit line-height beim darüber liegenden elem.*/
 	margin-left:2em;
 	border: solid #fff 2px;
@@ -1316,6 +1394,10 @@ input:focus, textarea:focus {
 }
 
 
+
+
+
+
 /*--------------------------------------------------------------------------------------------*/
 /*---------------------PI2 EMPLOYEELIST OR----------------------------------------------------*/
 /*--------------------------------------------------------------------------------------------*/
@@ -1340,6 +1422,9 @@ input:focus, textarea:focus {
 	margin-left: 0;
 	padding-left: 0;
 	overflow: hidden;
+}
+
+html>body .tx-civserv-pi2 #centrecontent #employee_or ul.organisation {
 	background-color: whitesmoke;
 }
 
@@ -1354,6 +1439,36 @@ input:focus, textarea:focus {
 }
 
 
+/* the first element of the organisation-list is special as it contains the emplyoee-ul */
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_index{
+	width: 15%;
+}
+
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_index{
+	padding-left:2em;
+	padding-bottom:2em;
+	line-height:3em;
+}
+
+
+
+/* ie only */
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_code,
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_name,
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_uid,
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_other,
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_sth {
+	position:relative;
+	clear:left;
+	float:right;
+	top:0;
+	xborder:solid green 2px;
+}
+
+
+
 .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_code,
 .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_name,
 .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_uid,
@@ -1366,32 +1481,67 @@ input:focus, textarea:focus {
 	xborder-left: 3px solid red;
 }
 
-/*
-.tx-civserv-pi2 #centrecontent #employee_or ul.organisation span.organisation{
-	padding-left:2em;
-}
-*/
 
-.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_index{
-	width: 15%;
-	padding-left:2em;
-	padding-bottom:2em;
-	line-height:3em;
-}
-.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_code{
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_code{
 	width: 12%;
 }
-.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_name{
+
+
+
+/* ie only */
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_code{
+	width: 10em;
+	right: 75em;
+}
+
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_name{
 	width: 25%;
 }
-.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_uid{
+
+/* ie only */
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_name{
+	width: 30em;
+	right: 50em;
+}
+
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_uid{
 	width: 8%;
 }
-.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_other{
+
+/* ie only */
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_uid{
+	width: 5em;
+	right: 25em;
+}
+
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_other{
 	width: 8%;
 }
-.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_sth{
+
+/* ie only */
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_other{
+	width: 10em;
+	right: 20em;
+}
+
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_sth{
 	width: 10%;
+}
+
+/* ie only */
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_sth{
+	width: 10em;
+	right: 10em;
 }
 
 
@@ -1421,6 +1571,34 @@ input:focus, textarea:focus {
 }
 
 
+/* the first element of the employee-list is special as it contains the position-ul */
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_name{
+	width: 20%;
+}
+
+.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_name{
+	padding-left:2em;
+	line-height:4em;
+}
+
+
+
+/* ie only */
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_pic,
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_phone,
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_email,
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_fax,
+* html .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_mobile {
+	position:relative;
+	clear:left;
+	float:right;
+	top:0;
+	xborder: 2px solid blue;
+}
+
+
 .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_pic,
 .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_phone,
 .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_email,
@@ -1433,34 +1611,67 @@ input:focus, textarea:focus {
 	border-left: 3px solid #fff;
 }
 
-/*
-.tx-civserv-pi2 #centrecontent #employee_or ul.employee span.employee{
-	padding-left:2em;
-}
-*/
 
-.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_name{
-	width: 20%;
-	padding-left:2em;
-	line-height:4em;
-	z-index:1000;
-}
-.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_pic{
+
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_pic{
 	width: 6%;
 }
-.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_phone{
+
+/* ie only */
+html * .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_pic{
+	width: 5em;
+	right: 40em;
+}
+
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_phone{
 	width: 8%;
 }
-.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_email{
+
+/* ie only */
+html * .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_phone{
+	width: 7em;
+	right: 35em;
+}
+
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_email{
 	width: 25%;
 }
-.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_fax{
+
+/* ie only */
+html * .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_email{
+	width: 20em;
+	right: 28em;
+}
+
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_fax{
 	width: 8%;
 }
-.tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_mobile{
+
+/* ie only */
+html * .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_fax{
+	width: 7em;
+	right: 8em;
+}
+
+
+/* all but ie */
+html>body .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_mobile{
 	width: 10%;
 }
 
+/* ie only */
+html * .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_mobile{
+	width: 8em;
+	right: 2.3em;
+}
 
 
 

@@ -53,11 +53,12 @@
 					</li>{* li class="or_index" *}
 					<li class="or_code"><!--{if $organisation.or_code > ''}-->{$organisation.or_code}<!--{/if}--></li>	
 					<li class="or_name"><!--{if $organisation.or_name > ''}-->{$organisation.or_name}<!--{/if}--></li>
-					{* <li class="or_uid"><!--{if $organisation.or_uid > ''}-->({$organisation.or_uid})<!--{/if}--></li> *}
-					<li class="or_uid"><!--{if $organisation.or_other > ''}-->({$organisation.or_other})<!--{/if}--></li>
-					<li class="or_uid"><!--{if $organisation.or_sth > ''}-->({$organisation.or_sth})<!--{/if}--></li>
+					<li class="or_uid"><!--{if $organisation.or_uid > ''}-->({$organisation.or_uid})<!--{/if}--></li>
+					<li class="or_other"><!--{if $organisation.or_other > ''}-->({$organisation.or_other})<!--{else}-->other<!--{/if}--></li>
+					<li class="or_sth"><!--{if $organisation.or_sth > ''}-->({$organisation.or_sth})<!--{else}-->sth<!--{/if}--></li>
 				</ul>{* ul class="organisations" *}
 			<!--{/foreach}-->
 		</div>
+		<hr />
 		{$pagebar}
 </div><!-- centrecontent end -->
