@@ -1207,7 +1207,7 @@ mit position:relative und float:right schieben sie sich von rechts aus über das 
 	display:block;
 	margin-left: 0;
 	padding-left: 0;
-	overflow: hidden;
+	xoverflow: hidden;
 }
 
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee li{
@@ -1262,7 +1262,7 @@ html>body .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_name{
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_mobile {
 	padding-left:1em;
 	padding-top:0.7em;
-	overflow:hidden;
+	xoverflow:hidden;
 	height:4em;
 	xborder-left: 3px solid #fff;
 }
@@ -1421,7 +1421,7 @@ html>body .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_mobile{
 	display:block;
 	margin-left: 0;
 	padding-left: 0;
-	overflow: hidden;
+	xoverflow: hidden;
 }
 
 html>body .tx-civserv-pi2 #centrecontent #employee_or ul.organisation {
@@ -1476,7 +1476,7 @@ html>body .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_inde
 .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_sth {
 	padding-left:1em;
 	padding-top:0.7em;
-	overflow:hidden;
+	xoverflow:hidden;
 	height:4em;
 	xborder-left: 3px solid red;
 }
@@ -1554,7 +1554,7 @@ html>body .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_sth{
 	margin-top:1.8em; /* abstand zum darüber liegenden element steuern, in kombination mit line-height beim darüber liegenden elem.*/
 	margin-left: 0;
 	padding-left: 0;
-	overflow: hidden;
+	xoverflow: hidden;
 	background-color:honeydew;
 	border: solid #fff 2px;
 	padding-bottom:2em;
@@ -1606,7 +1606,7 @@ html>body .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_name{
 .tx-civserv-pi2 #centrecontent #employee_or ul.employee li.em_mobile {
 	padding-left:1em;
 	padding-top:0.7em;
-	overflow:hidden;
+	xoverflow:hidden;
 	height:4em;
 	border-left: 3px solid #fff;
 }
