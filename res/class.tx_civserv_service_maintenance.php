@@ -333,6 +333,7 @@ class tx_civserv_service_maintenance{
 		$labels=array();
 		$i=0;
 		#if (is_array($params) && ($params['table']=='tx_civserv_service' || $params['table']=='tx_civserv_service_sv_position_mm')) {	
+
 		if (is_array($params) && ($params['table']=='tx_civserv_service' && substr($params['uid'],0,3)!='NEW')) {	
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 				'tx_civserv_service_sv_position_mm.uid as svpos_uid, 	
