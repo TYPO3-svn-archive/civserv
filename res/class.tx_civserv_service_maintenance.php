@@ -99,7 +99,6 @@ class tx_civserv_service_maintenance{
 			$new_services = array();
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				if($row['service_pid'] > 0){ // or else its a versioned service record
-#					debug($row, 'new service row'); //don't! there's too many of them!
 					$new_services[] = $row['service_uid'].$separator.$row['cm_external_service_folder_uid'];
 				}// end if
 			}// end while
@@ -129,8 +128,6 @@ class tx_civserv_service_maintenance{
 			// now we have two arrays which we may compare!
 			// new_ones are the ones which are in new_services but not in old_services
 			// old_ones are the ones which are in old_services but not in new_services
-			debug(count($old_services), 'old_services');
-			debug(count($new_services), 'new_services');
 			
 			
 			/*
@@ -172,7 +169,6 @@ class tx_civserv_service_maintenance{
 						'' 						// Optional LIMIT value ([begin,]max), if none, supply blank string.
 				);
 				while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) { // darf nur 1 bei rauskommen
-					debug('HURRAY');
 					$new_one['es_folder_uid'] =	$new[1];
 					$new_one['es_original_uid'] = $new[0];
 					$new_one['sv_name'] = $row['sv_name'];
@@ -181,15 +177,10 @@ class tx_civserv_service_maintenance{
 					$new_one['receiver_email'] = $row['receiver_email'];
 					$new_one['es_folder_name'] = $row['es_folder_name'];
 					$new_one['es_original_pid'] = $row['pid'];
-				
-				    debug($new_one, '$new_one SO FAR');
-				
 					$new_one['donator_community_id'] = $mandant_obj->get_mandant($new_one['es_original_pid']); //pid of the services where it originally resides
 					$new_one['donator_name'] = $mandant_obj->get_mandant_name($new_one['es_original_pid']);
 					$new_one['donator_previewpage'] = $mandant_obj->get_mandant_preview_page($new_one['es_original_pid']);
 					$new_one['es_name'] = $new_one['sv_name']." (".$new_one['donator_name'].")";
-					
-					debug($new_one, '$new_one');
 					
 					// we only need some of the above data for our insert (the rest goes into the emails)
 					$insert_row['hidden'] = 1;
@@ -248,8 +239,6 @@ class tx_civserv_service_maintenance{
 			// $old_ones[0] contains the original uid of the service!!
 			// $old_ones[1] contains the pid of the external service
 			$old_ones = array_diff($old_services, $new_services);
-			debug(count($old_ones), 'old_ones');
-
 
 			foreach($old_ones as $value){
 				$old_one=array();
@@ -297,7 +286,6 @@ class tx_civserv_service_maintenance{
 					$old_one['donator_name'] = $mandant_obj->get_mandant_name($row['donator_sv_pid']);		
 					$old_one['donator_community_id'] = $mandant_obj->get_mandant($row['donator_sv_pid']);					
 					
-					debug($old_one, 'Old external service to be deleted');
 					$GLOBALS['TYPO3_DB']->exec_DELETEquery(	'tx_civserv_external_service', 'pid = '.$old[1].' AND es_external_service='.$old[0]); 
 					
 					// write emails
