@@ -402,7 +402,7 @@ function init() {
 	 */
 	function getFormulars($letter)	{
 		global $LANG;
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$this->searchitem = $this->make_clean($this->searchitem);
 	

@@ -55,7 +55,6 @@ class tx_civserv_service_maintenance{
 	* @return	void
 	*/
 	function transfer_services($params){
-	echo "<script type=\"text/javascript\">alert('du eimer!');</script>";
 		global $LANG;
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$LANG->includeLLFile("EXT:civserv/res/locallang_region_workflow.php");
@@ -226,7 +225,7 @@ class tx_civserv_service_maintenance{
 					
 					// send it
 					if (t3lib_div::validEmail($to=$new_one['receiver_email'])){
-						t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
+#						t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
 					}
 				}// row new_one
 			}// foreach 
@@ -311,7 +310,7 @@ class tx_civserv_service_maintenance{
 					
 					// send it!
 					if (t3lib_div::validEmail($to=$old_one['receiver_email'])){
-						t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
+#							t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
 					}
 				}//row old_one
 			}// for each
