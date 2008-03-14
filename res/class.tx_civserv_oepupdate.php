@@ -158,7 +158,7 @@ class tx_civserv_oepupdate {
 		
 		// test test test
 		if (is_array($params) && ($params['table'] == 'tx_civserv_navigation')) {	
-		debug($params, 'class tx_civserv_oepupdate');
+#		debug($params, 'class tx_civserv_oepupdate');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'tx_civserv_navigation.pid, 
 				 tx_civserv_navigation.nv_name,

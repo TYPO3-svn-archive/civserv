@@ -48,7 +48,6 @@
 class tx_civserv_user_be_msg {
 	function user_TCAform_test($PA=array(), $fobj=array()) { //adding '=array()' to signature enabels calls to this function with no parameters (happens through "displayCond" => "REC:NEW:true")
 		global $LANG;
-#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$LANG->includeLLFile("EXT:civserv/res/locallang_user_be_msg.php");
 		
 		$table=$PA['table'];
@@ -121,18 +120,10 @@ class tx_civserv_user_be_msg {
 //	would prefer more speaking function-name but couldn't get typo3 to find the function then, see tca.php
 	function user_TCAform_test2(&$PA, &$fobj) {
 		global $LANG;
-#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$LANG->includeLLFile("EXT:civserv/res/locallang_user_be_msg.php");
-#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
-#		debug($PA, '$PA');
-		//new record --> no proper uid....
-#		debug($PA['row']['uid'], 'uid');
-#		debug($PA['row']['pid'], 'pid');
-
 		$ms_container_name='unbekannt'; //dummy 
 		$ms_container_pid = $PA['row']['pid'];
 		if(preg_match('/NEW/', $PA['row']['uid'])){
-#			debug('new Record!!!');
 			// select mandant-roles from table pages where the doktype is 'Model Service Container'
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'title, tx_civserv_ms_mandant, tx_civserv_ms_approver_one, tx_civserv_ms_approver_two',				// Field list for SELECT
@@ -145,7 +136,6 @@ class tx_civserv_user_be_msg {
 			$value=0;
 			$text='';
 			while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) { //precisely once......
-#				debug($data, '$data');
 				$ms_container_name = $data['title'];
 				switch ($PA['field']){
 					case 'ms_mandant':
@@ -159,7 +149,6 @@ class tx_civserv_user_be_msg {
 						break;
 				}
 			}
-#			debug($value, 'gemeindekennziffer');
 			if($value == 0){ // mandant roles not set in modelservice container? return!
 				$div_open= '
 					<div style="
@@ -193,7 +182,6 @@ class tx_civserv_user_be_msg {
 				$div_close='</div>';
 			} //mandant roles not set correctly!!!
 		}else{	// old record	
-#			debug('old Record!!!');
 			$value='';
 			$text='';
 			switch ($PA['field']){

@@ -90,7 +90,7 @@ class tx_civserv_miscupdate {
 	 *******************************/
 	function replace_umlauts($string){
 		// remove all kinds of umlauts
-		debug($string);
+#		debug($string);
 		$umlaute = Array("/ä/", "/ö/", "/ü/", "/Ä/", "/Ö/", "/Ü/", "/ß/", "/é/"); //should use hexadecimal-code for é à etc????
 		$replace = Array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss", "e");
 		$string = preg_replace($umlaute, $replace, $string);

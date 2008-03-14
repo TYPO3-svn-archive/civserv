@@ -49,7 +49,7 @@
 
 class tx_civserv_transfer_ms_approver {
 	function transfer_approver_pages2modelservice(&$PA, &$fobj) {
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 //		[...] see: class.tx_civserv_user_be_msg.php
 	}
 

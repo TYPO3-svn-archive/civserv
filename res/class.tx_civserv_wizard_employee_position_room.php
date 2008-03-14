@@ -537,7 +537,6 @@ function init() {
 	 */
 	function getBuilding(){
 		global $LANG;
-		#$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$this->searchitem = $this->make_clean($this->searchitem);
 		
@@ -612,7 +611,6 @@ function init() {
 	 */
 	function getFloors()	{
 		global $LANG;
-		#$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$mode = (string)t3lib_div::_GP('mode');
 		$this->searchitem = $this->make_clean($this->searchitem);
@@ -698,7 +696,6 @@ function init() {
 	 */
 	function getRoom()	{
 		global $LANG;
-		#$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$mode = (string)t3lib_div::_GP('mode');
 		$this->searchitem = $this->make_clean($this->searchitem);
