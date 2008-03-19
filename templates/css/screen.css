@@ -1104,8 +1104,8 @@ input:focus, textarea:focus {
 	clear:both;
 	width: 100%;
 	height: 3px;
-	border:solid #00ffff 3px;
-	background-color:#0000ff;
+	margin-left:2em;
+	border:solid #fff 3px;
 	text-align:left;
 }
 
@@ -1166,45 +1166,36 @@ input:focus, textarea:focus {
 
 .tx-civserv-pi2 #centrecontent #employee_az {
 	clear: both;
-	margin-left: 1em;
+	margin-left: 0.5em;
+	overflow:hidden;
 }
 
 
 
 /*------------------------------------------------------------------------------------*/
-
-/* all but ie */
-html>body .tx-civserv-pi2 #centrecontent #employee_az div.employee {
-	background-color:honeydew;
-	border-top: solid #fff 10px;
-}
-
-* html .tx-civserv-pi2 #centrecontent #employee_az div.employee {
-	position: relative;
-	background-color:honeydew;
-	border: solid honeydew 2px;
-	z-index: -1;
-}
-
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee {
 	clear:both;
 	float:none;
 	display:block;
-	margin-left: 0;
-	padding-left: 0;
+	margin-left:0;
+	width: 60em; /* !!! */
+	overflow: hidden; /* !!! */
+	background-color: honeydew;
+	border-top: solid #fff 10px;
 }
 
 
-
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee li{
-	margin-left: 0;
-	margin-bottom: 0;
 	list-style: none;
 	display: block; /* !!! */
 	float: left; /* !!! */
 	xheight: 50px; /* don't!!! */
+	background-color:honeydew;
 }
 
+* html .tx-civserv-pi2 #centrecontent #employee_az ul.employee li{
+	padding-left: 1.5em;
+}
 
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_name{
 	padding-left:1em;
@@ -1212,6 +1203,9 @@ html>body .tx-civserv-pi2 #centrecontent #employee_az div.employee {
 	width:70%
 }
 
+* html .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_name{
+	width:80%
+}
 
 
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee li.em_pic,
@@ -1263,26 +1257,20 @@ html>body .tx-civserv-pi2 #centrecontent #employee_az div.employee {
 .tx-civserv-pi2 #centrecontent #employee_az ul.organisation {
 	clear:both;
 	float:none;
-	padding-left:0;
+	padding-left:0; /* !!! */
+	margin-left:0; /* !!! */
 	min-width:60em;
 	width:60em; /* ie 6.x*/
-	margin-top:0; /* abstand zum darüber liegenden element steuern, in kombination mit line-height beim darüber liegenden elem.*/
-	margin-left:2em;
-	border: solid #fff 2px;
+	border-top: solid #fff 2px;
 }
 
 
 .tx-civserv-pi2 #centrecontent #employee_az ul.organisation li{
 	clear:both;
 	float:none;
-	padding-left: 2em;
 	background-color: whitesmoke;
 }
 
-.tx-civserv-pi2 #centrecontent #employee_az ul.organisation li.or_name{
-	xwidth: 100%;
-	xbackground-color: lightgrey;
-}
 
 
 /*------------------------------------------------------------------------------------*/

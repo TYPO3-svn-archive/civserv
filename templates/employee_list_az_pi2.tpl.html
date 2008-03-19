@@ -13,7 +13,6 @@
 	<h2>{$subheading}:</h2>	
 		<div id="employee_az">
 			<!--{foreach from=$employees item=employee}-->
-				<div class="employee">
 				<ul class="employee">
 					<li class="em_name">{$employee.full_name}</li>
 					<li class="em_pic"><!--{if $employee.em_image > ''}-->{$employee.em_imagecode}<!--{/if}--></li>
@@ -59,7 +58,6 @@
 						<!--{/foreach}-->
 					</li>{* li class = "em_positions" *}	
 				</ul>{* ul class = "employee" *}	
-				</div>
 			<!--{/foreach}-->
 		</div>
 		<hr />
