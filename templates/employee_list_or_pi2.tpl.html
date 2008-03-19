@@ -15,10 +15,21 @@
 		<div id="employee_or">
 			<!--{foreach from=$organisations item=organisation}-->
 				<ul class="organisation">
-					<li class="or_index"><!--{if $organisation.or_index > ''}-->{$organisation.or_index}<!--{/if}-->
+					<li class="or_code"><!--{if $organisation.or_code > ''}-->{$organisation.or_code}<!--{/if}--></li>	
+					<li class="or_name"><!--{if $organisation.or_name > ''}-->{$organisation.or_name}<!--{/if}--></li>
+					<li class="or_uid"><!--{if $organisation.or_uid > ''}-->({$organisation.or_uid})<!--{/if}--></li>
+					<li class="or_other"><!--{if $organisation.or_other > ''}-->({$organisation.or_other})<!--{else}-->other<!--{/if}--></li>
+					<li class="or_sth"><!--{if $organisation.or_sth > ''}-->({$organisation.or_sth})<!--{else}-->sth<!--{/if}--></li>
+					<li class="or_employees">
 						<!--{foreach from=$organisation.or_employees item=employee}-->
 							<ul class="employee">
-								<li class="em_name">{$employee.full_name}
+								<li class="em_name">{$employee.full_name}</li>
+								<li class="em_pic"><!--{if $employee.em_image > ''}-->{$employee.em_imagecode}<!--{/if}--></li>
+								<li class="em_email"><!--{if $employee.email_code > ''}-->{$employee.email_code}<!--{/if}--></li>	
+								<li class="em_phone"><!--{if $employee.em_telephone > ''}-->{$employee.em_telephone}<!--{/if}--></li>	
+								<li class="em_fax"><!--{if $employee.em_fax > ''}-->{$employee.em_fax}<!--{/if}--></li>
+								<li class="em_mobile"><!--{if $employee.em_mobile > ''}-->{$employee.em_mobile}<!--{/if}--></li>
+								<li class="em_positions">
 									<!--{foreach from=$employee.em_positions item=position}-->
 										<ul class="position">
 											<li class="po_name">
@@ -42,21 +53,11 @@
 											</li>{* li class="po_name" *}
 										</ul>{* ul class="position" *}
 									<!--{/foreach}-->
-								</li>{* li class="em_name" *}	
-								<li class="em_pic"><!--{if $employee.em_image > ''}-->{$employee.em_imagecode}<!--{/if}--></li>
-								<li class="em_phone"><!--{if $employee.em_telephone > ''}-->{$employee.em_telephone}<!--{/if}--></li>	
-								<li class="em_email"><!--{if $employee.email_code > ''}-->{$employee.email_code}<!--{/if}--></li>	
-								<li class="em_fax"><!--{if $employee.em_fax > ''}-->{$employee.em_fax}<!--{/if}--></li>
-								<li class="em_mobile"><!--{if $employee.em_mobile > ''}-->{$employee.em_mobile}<!--{/if}--></li>
-							</ul>{* ul class="employees" *}
+								</li>
+							</ul>{* ul class="employee" *}
 						<!--{/foreach}-->
-					</li>{* li class="or_index" *}
-					<li class="or_code"><!--{if $organisation.or_code > ''}-->{$organisation.or_code}<!--{/if}--></li>	
-					<li class="or_name"><!--{if $organisation.or_name > ''}-->{$organisation.or_name}<!--{/if}--></li>
-					<li class="or_uid"><!--{if $organisation.or_uid > ''}-->({$organisation.or_uid})<!--{/if}--></li>
-					<li class="or_other"><!--{if $organisation.or_other > ''}-->({$organisation.or_other})<!--{else}-->other<!--{/if}--></li>
-					<li class="or_sth"><!--{if $organisation.or_sth > ''}-->({$organisation.or_sth})<!--{else}-->sth<!--{/if}--></li>
-				</ul>{* ul class="organisations" *}
+					</li>
+				</ul>{* ul class="organisation" *}
 			<!--{/foreach}-->
 		</div>
 		<hr />

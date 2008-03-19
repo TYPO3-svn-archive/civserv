@@ -13,8 +13,17 @@
 	<h2>{$subheading}:</h2>	
 		<div id="employee_az">
 			<!--{foreach from=$employees item=employee}-->
+				<div class="employee">
 				<ul class="employee">
-					<li class="em_name"><span class="employee">{$employee.full_name}</span>
+					<li class="em_name">{$employee.full_name}</li>
+					<li class="em_pic"><!--{if $employee.em_image > ''}-->{$employee.em_imagecode}<!--{/if}--></li>
+					{* hier noch 'ne kleine abfrage drauf *}
+					<li class="em_email"><!--{if $employee.email_code > ''}-->{$employee.email_code}<!--{else}-->---<!--{/if}--></li>	
+					<li class="em_phone"><!--{if $employee.em_telephone > ''}-->{$employee.em_telephone}<!--{else}-->---<!--{/if}--></li>	
+					<li class="em_fax"><!--{if $employee.em_fax > ''}-->{$employee.em_fax}<!--{else}-->---<!--{/if}--></li>
+					<li class="em_mobile"><!--{if $employee.em_mobile > ''}-->{$employee.em_mobile}<!--{else}-->---<!--{/if}--></li>
+					{* hier noch 'ne kleine Abfrage *}
+					<li class="em_positions">						
 						<!--{foreach from=$employee.em_organisations item=organisation}-->
 							<ul class="organisation">
 								<li class="or_name">
@@ -48,13 +57,9 @@
 								</li>{* li class = "or_name" *}	
 							</ul>{* ul class = "organisation" *}	
 						<!--{/foreach}-->
-					</li>{* li class = "em_name" *}		
-					<li class="em_pic"><!--{if $employee.em_image > ''}-->{$employee.em_imagecode}<!--{/if}--></li>
-					<li class="em_phone"><!--{if $employee.em_telephone > ''}-->{$employee.em_telephone}<!--{/if}--></li>	
-					<li class="em_email"><!--{if $employee.email_code > ''}-->{$employee.email_code}<!--{/if}--></li>	
-					<li class="em_fax"><!--{if $employee.em_fax > ''}-->{$employee.em_fax}<!--{/if}--></li>
-					<li class="em_mobile"><!--{if $employee.em_mobile > ''}-->{$employee.em_mobile}<!--{/if}--></li>
+					</li>{* li class = "em_positions" *}	
 				</ul>{* ul class = "employee" *}	
+				</div>
 			<!--{/foreach}-->
 		</div>
 		<hr />
