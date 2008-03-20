@@ -507,24 +507,15 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$employees[$row['em_uid']]['em_organisations'][0]['or_name'] = $this->pi_getLL('tx_civserv_pi2_employee_list.no_organisation','no organisation');
 					$employees[$row['em_uid']]['em_organisations'][0]['or_code'] = 0;
 					$employees[$row['em_uid']]['em_organisations'][0]['or_index'] = $this->pi_getLL('tx_civserv_pi2_employee_list.no_department','no department');
+					
 					//attach postion to pseudo organisation
-					$employees[$row['em_uid']]['em_organisations'][0]['positions'][$em_pos_row['po_uid']]['po_name'] = $em_pos_row['po_name'];
-					$employees[$row['em_uid']]['em_organisations'][0]['positions'][$em_pos_row['po_uid']]['po_nice_name'] = $em_pos_row['po_nice_name'];
-					$employees[$row['em_uid']]['em_organisations'][0]['positions'][$em_pos_row['po_uid']]['po_descr'] = $em_pos_row['po_descr'];
-					$employees[$row['em_uid']]['em_organisations'][0]['positions'][$em_pos_row['po_uid']]['po_phone'] = $em_pos_row['ep_telephone'];
-					$employees[$row['em_uid']]['em_organisations'][0]['positions'][$em_pos_row['po_uid']]['po_email'] = $em_pos_row['ep_email'];
-					$employees[$row['em_uid']]['em_organisations'][0]['positions'][$em_pos_row['po_uid']]['po_fax'] = $em_pos_row['ep_fax'];																		
-					$employees[$row['em_uid']]['em_organisations'][0]['positions'][$em_pos_row['po_uid']]['po_mobile'] = $em_pos_row['ep_mobile'];																		
+					$this->assemblePositionData($employees[$row['em_uid']]['em_organisations'][0]['positions'][$em_pos_row['po_uid']], $em_pos_row);
+					$this->assembleEmployeePositionData($employees[$row['em_uid']]['em_organisations'][0]['positions'][$em_pos_row['po_uid']], $em_pos_row);
+					
 					//call for building (by reference)
 					$this->getBuildingRoomFloor($employees[$row['em_uid']]['em_organisations'][0]['positions'], $employees[$row['em_uid']]['em_uid'], $em_pos_row['po_uid']);
 				}	
 			}//while employee has positions.......			
-			
-			// link zum email-client
-			$employees[$row['em_uid']]['email_code'] = "";
-			if($employees[$row['em_uid']]['em_email'] > ''){
-				$employees[$row['em_uid']]['email_code'] = $this->cObj->typoLink($employees[$row['em_uid']]['em_email'],array(parameter => $employees[$row['em_uid']]['em_email'],ATagParams => 'class="email"'));
-			}
 		} // ende schleife über alle mitarbeiter
 		
 
@@ -620,14 +611,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 			
 			//Organisationsdaten aus dem Resultset holen
 			$this->assembleOrganisationData($employees[$row['em_uid']]['em_organisations'][$row['or_uid']], $row);
-			
-				
-			// link zum email-client
-			$employees[$row['em_uid']]['email_code'] = "";
-			if($employees[$row['em_uid']]['em_email'] > ''){
-				$employees[$row['em_uid']]['email_code'] = $this->cObj->typoLink($employees[$row['em_uid']]['em_email'],array(parameter => $employees[$row['em_uid']]['em_email'],ATagParams => 'class="email"'));
-			}
-#			$row_counter++;
 		} // ende schleife über alle mitarbeiter
 		
 
@@ -745,22 +728,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 			
 			//call for building (by reference)
 			$this->getBuildingRoomFloor($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'], $row['em_uid'], $row['po_uid']);
-
-
-
-
-
-			// any positions without an Organisation??????????
-			// to do!!!	
-			
-			
-			
-				
-			// link zum email-client
-			$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['email_code'] = "";
-			if($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_email'] > ''){
-				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['email_code'] = $this->cObj->typoLink($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_email'],array(parameter => $organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_email'],ATagParams => 'class="email"'));
-			}
 		} // ende schleife über alle organisationen / mitarbeiter
 
 
@@ -1183,17 +1150,21 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 		
 		// adding select for choice of organisatin
-		// das muss anderswo hin???:
 		$abcBar .= '<div id="or_choice">';
 		// Formular muss per post abgeschickt werden, sonst kommen die daten gar nicht erst an!!!
 		$abcBar .= '<form method="post" action="'.htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee_list_or_uid'),0,1)).'">';
 #		$abcBar .= '<select name = "'.$this->prefixId.'[or_uid][]">';	//multi-select
 		$abcBar .= '<select name = "'.$this->prefixId.'[or_uid]">';		//single-select
 		$abcBar .= $this->make_or_choice($this->community['organisation_uid'], $or_choice, 0);
-		//hier!
+		
 		//tx_civserv_pi2_organisation.all
-		$or_name = $this->pi_getLL('tx_civserv_pi2_organisation.all','all Organisations');
-		$or_uid = 'all';
+		if($this->conf['pi2orgaListItemAllOrganisations']){
+			$or_name = $this->pi_getLL('tx_civserv_pi2_organisation.all','all Organisations');
+			$or_uid = 'all';
+		}else{
+			$or_name = 'bitte wählen';
+			$or_uid = '';
+		}
 
 		if($this->piVars['or_uid'] > '' && $this->piVars['or_uid'] !== 'all'){
 			$or_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -1211,9 +1182,13 @@ class tx_civserv_pi2 extends tslib_pibase {
 				$or_uid = intval($this->piVars['or_uid']);
 			}
 		}
-		$abcBar .= '<option class="level_1" selected="selected" value="'.$or_uid.'">'.$or_name.'</option>';
+		if($or_name > '' && $or_uid > ''){
+			$abcBar .= '<option class="level_1" selected="selected" value="'.$or_uid.'">'.$or_name.'</option>';
+		}
 		$abcBar .= "\n";
-		$abcBar .= '<option class="level_1" value="all">'.$this->pi_getLL('tx_civserv_pi2_organisation.all','all Organisations').'</option>';
+		if(($this->piVars['or_uid'] > '' && $this->piVars['or_uid'] !== 'all') && $this->conf['pi2orgaListItemAllOrganisations']){
+			$abcBar .= '<option class="level_1" value="all">'.$this->pi_getLL('tx_civserv_pi2_organisation.all','all Organisations').'</option>';
+		}
 		$abcBar .= '</select>';
 		$abcBar .= '<input type="submit" value="senden" />';
 		$abcBar .= '</form>';
@@ -2077,7 +2052,13 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$employees['em_telephone'] = $row['em_telephone'];
 		$employees['em_fax'] = $row['em_fax'];
 		$employees['em_mobile'] = $row['em_mobile'];
+		
+		//email-link basteln
 		$employees['em_email'] = $row['em_email'];
+		$employees['email_code'] = '';
+		if($employees['em_email'] > ''){
+			$employees['email_code'] = $this->cObj->typoLink($employees['em_email'],array(parameter => $employees['em_email'], ATagParams => 'class="email"'));
+		}
 		$employees['em_image'] = $row['em_image'];
 		$employees['em_datasec'] = $row['em_datasec'];
 		$employees['em_uid'] = $row['em_uid'];
@@ -2093,7 +2074,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$imageCode = preg_replace('/<img[^>]*>/', '<img src="'.t3lib_div::getIndpEnv(TYPO3_REQUEST_DIR).'typo3conf/ext/civserv/icon_tx_civserv_foto.gif" alt="'.$this->pi_getLL('tx_civserv_pi2_employee.foto.alt_text','picture of the employee').'" />', $imageCode);
 			$employees['em_imagecode'] = $imageCode;
 		}
-		//use this to see which variables are available in the smarty-template
+		// use this to see which variables are available in the smarty-template
 #		debug($employees);
 	}
 	
@@ -2108,9 +2089,16 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$organisations['or_synonym2'] = $row['or_synonym2'];
 		$organisations['or_synonym3'] = $row['or_synonym3'];
 		$organisations['or_email'] = $row['or_email'];
+			
+		// link zum email-client
+		$organisations['email_code'] = "";
+		if($organisations['or_email'] > ''){
+			$organisations['email_code'] = $this->cObj->typoLink($organisations['or_email'],array(parameter => $organisations['or_email'],ATagParams => 'class="email"'));
+		}
+		
 		$organisations['or_fax'] = $row['or_fax'];
 		$organisations['or_telephone'] = $row['or_telephone'];
-		//use this to see which variables are available in the smarty-template
+		// use this to see which variables are available in the smarty-template
 #		debug($organisations);
 	}
  
@@ -2133,7 +2121,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$positions['po_nice_name'] = $po_nice_name;
 		$positions['po_descr'] = $row['po_descr'];
 		$positions['po_descr'] = $row['po_descr'];
-		//use this to see which variables are available in the smarty-template
+		// use this to see which variables are available in the smarty-template
 #		debug($positions);
 	}
  
@@ -2142,11 +2130,15 @@ class tx_civserv_pi2 extends tslib_pibase {
 		//for convenience we change the prefix ep_ to po_
 		$positions['po_phone'] = $row['ep_telephone'];
 		$positions['po_email'] = $row['ep_email'];
+		$positions['email_code'] = '';
+		if($positions['po_email'] > ''){
+			$positions['email_code'] = $this->cObj->typoLink($positions['po_email'],array(parameter => $positions['po_email'], ATagParams => 'class="email"'));
+		}
 		$positions['po_fax'] = $row['ep_fax'];																		
 		$positions['po_mobile'] = $row['ep_mobile'];	
 		$positions['po_datasec'] = $row['ep_datasec'];
 		$positions['po_label'] = $row['ep_label'];	
-		//use this to see which variables are available in the smarty-template
+		// use this to see which variables are available in the smarty-template
 #		debug($positions);
 	}
  

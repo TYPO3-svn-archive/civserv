@@ -15,11 +15,11 @@
 		<div id="employee_or">
 			<!--{foreach from=$organisations item=organisation}-->
 				<ul class="organisation">
-					<li class="or_code"><!--{if $organisation.or_code > ''}-->{$organisation.or_code}<!--{/if}--></li>	
-					<li class="or_name"><!--{if $organisation.or_name > ''}-->{$organisation.or_name}<!--{/if}--></li>
-					<li class="or_uid"><!--{if $organisation.or_uid > ''}-->({$organisation.or_uid})<!--{/if}--></li>
-					<li class="or_other"><!--{if $organisation.or_other > ''}-->({$organisation.or_other})<!--{else}-->other<!--{/if}--></li>
-					<li class="or_sth"><!--{if $organisation.or_sth > ''}-->({$organisation.or_sth})<!--{else}-->sth<!--{/if}--></li>
+					<li class="or_code"><!--{if $organisation.or_code > ''}-->{$organisation.or_code}<!--{else}-->no code<!--{/if}--></li>	
+					<li class="or_name"><!--{if $organisation.or_name > ''}-->{$organisation.or_name}<!--{else}-->no name<!--{/if}--></li>
+					<li class="or_email"><!--{if $organisation.email_code > ''}-->{$organisation.email_code}<!--{else}-->no email<!--{/if}--></li>
+					<li class="or_telephone"><!--{if $organisation.or_telephone > ''}-->{$organisation.or_telephone}<!--{else}-->no phone<!--{/if}--></li>
+					<li class="or_fax"><!--{if $organisation.or_fax > ''}-->({$organisation.or_fax})<!--{else}-->no fax<!--{/if}--></li>
 					<li class="or_employees">
 						<!--{foreach from=$organisation.or_employees item=employee}-->
 							<ul class="employee">
@@ -39,7 +39,7 @@
 													<ul class="po_items">	
 														<!--{if $position.po_descr > ''}--><li>{$position.po_descr}</li><!--{/if}-->
 														<!--{if $position.po_phone > ''}--><li>{$position.po_phone}</li><!--{/if}-->
-														<!--{if $position.po_email > ''}--><li>{$position.po_email}</li><!--{/if}-->
+														<!--{if $position.email_code > ''}--><li>{$position.email_code}</li><!--{/if}-->
 														<!--{if $position.po_building > ''}-->
 															<li>{$position.po_building}:&nbsp;
 																<!--{if $position.po_room > ''}-->{$position.po_room}&nbsp;<!--{/if}-->

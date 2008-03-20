@@ -185,6 +185,10 @@ selectBuildingsToShow = 0
 
 # show office_hour_labels like 'in the morning' and 'in the afternoon'
 showOhLabels = 1
+
+# pi2 only!!
+pi2orgaListItemAllOrganisations = 0
+
  
 # orderby Criteria for the orgalist
 orderOrgalistBy = name

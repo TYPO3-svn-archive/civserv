@@ -277,6 +277,9 @@ plugin.tx_civserv_pi2 {
 	showSuperOrganisation = {$showSuperOrganisation}
 	selectBuildingsToShow = {$selectBuildingsToShow}
 	showOhLabels = {$showOhLabels}
+	
+	# pi2 only!!
+	pi2orgaListItemAllOrganisations = {$pi2orgaListItemAllOrganisations}
 
 
 	general_stdWrap.parseFunc.nonTypoTagStdWrap.encapsLines { 

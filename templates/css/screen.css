@@ -1372,20 +1372,20 @@ input:focus, textarea:focus {
 
 
 
-.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_uid{
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_email{
 	clear: left;
-	width: 10%;
+	width: 50%;
 }
 
 
 
-.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_other{
-	width: 40%;
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_telephone{
+	width: 20%;
 }
 
 
-.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_sth{
-	width: 40%;
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_fax{
+	width: 20%;
 }
 
 
