@@ -15,8 +15,10 @@
 		<div id="employee_or">
 			<!--{foreach from=$organisations item=organisation}-->
 				<ul class="organisation">
-					<li class="or_code"><!--{if $organisation.or_code > ''}-->{$organisation.or_code}<!--{else}-->no code<!--{/if}--></li>	
-					<li class="or_name"><!--{if $organisation.or_name > ''}-->{$organisation.or_name}<!--{else}-->no name<!--{/if}--></li>
+					<li class="or_fullname">
+						<!--{if $organisation.or_code > ''}-->{$organisation.or_code}<!--{/if}-->
+						<!--{if $organisation.or_name > ''}-->{$organisation.or_name}<!--{else}-->no name!<!--{/if}--></li>
+					</li>	
 					<li class="or_email"><!--{if $organisation.email_code > ''}-->{$organisation.email_code}<!--{else}-->no email<!--{/if}--></li>
 					<li class="or_telephone"><!--{if $organisation.or_telephone > ''}-->{$organisation.or_telephone}<!--{else}-->no phone<!--{/if}--></li>
 					<li class="or_fax"><!--{if $organisation.or_fax > ''}-->({$organisation.or_fax})<!--{else}-->no fax<!--{/if}--></li>

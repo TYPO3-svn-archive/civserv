@@ -1355,6 +1355,7 @@ input:focus, textarea:focus {
 
 .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_code,
 .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_name,
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_fullname,
 .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_uid,
 .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_other,
 .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_sth {
@@ -1370,7 +1371,9 @@ input:focus, textarea:focus {
 	width: 70%;
 }
 
-
+.tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_fullname{
+	width: 70%;
+}
 
 .tx-civserv-pi2 #centrecontent #employee_or ul.organisation li.or_email{
 	clear: left;

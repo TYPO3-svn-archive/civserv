@@ -438,9 +438,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 				 '');
 				 
 			while ($emhod_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($emhod_res) ) {
-				$employees[$row['em_uid']]['em_organisations'][$emhod_row['or_uid']]['or_name'] = $emhod_row['or_name'];
-				$employees[$row['em_uid']]['em_organisations'][$emhod_row['or_uid']]['or_code'] = $emhod_row['or_code'];
-				$employees[$row['em_uid']]['em_organisations'][$emhod_row['or_uid']]['or_index'] = $emhod_row['or_index'];
+				$this->assembleOrganisationData($employees[$row['em_uid']]['em_organisations'][$emhod_row['or_uid']], $emhod_row);
+
 				// if we are explicitely looking for hods, we do not need pseudo - positions
 				if($this->piVars['mode'] !== 'employee_list_hod'){ //safety
 					$employees[$row['em_uid']]['em_organisations'][$emhod_row['or_uid']]['positions'][0][po_nice_name] = $this->pi_getLL('tx_civserv_pi2_employee_list.hod','Head(s) of Department');
@@ -486,9 +485,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 						if(array_key_exists($em_orpos_row['or_uid'], $employees[$row['em_uid']]['em_organisations'])){
 							//nada
 						}else{
-							$employees[$row['em_uid']]['em_organisations'][$em_orpos_row['or_uid']]['or_name'] = $em_orpos_row['or_name'];
-							$employees[$row['em_uid']]['em_organisations'][$em_orpos_row['or_uid']]['or_code'] = $em_orpos_row['or_code'];
-							$employees[$row['em_uid']]['em_organisations'][$em_orpos_row['or_uid']]['or_index'] = $em_orpos_row['or_index'];
+							$this->assembleOrganisationData($employees[$row['em_uid']]['em_organisations'][$em_orpos_row['or_uid']], $em_orpos_row);
 						}
 						
 						// hol die stellen-daten aus dem resultset
@@ -505,8 +502,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 				
 					//pseudo organisation for layout
 					$employees[$row['em_uid']]['em_organisations'][0]['or_name'] = $this->pi_getLL('tx_civserv_pi2_employee_list.no_organisation','no organisation');
-					$employees[$row['em_uid']]['em_organisations'][0]['or_code'] = 0;
-					$employees[$row['em_uid']]['em_organisations'][0]['or_index'] = $this->pi_getLL('tx_civserv_pi2_employee_list.no_department','no department');
+					$employees[$row['em_uid']]['em_organisations'][0]['or_code'] = ''; // !!!
+					$employees[$row['em_uid']]['em_organisations'][0]['or_index'] = ''; // !!!
 					
 					//attach postion to pseudo organisation
 					$this->assemblePositionData($employees[$row['em_uid']]['em_organisations'][0]['positions'][$em_pos_row['po_uid']], $em_pos_row);
@@ -595,7 +592,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		// hol das Mitararbeiter-Resultset aus dem query
 		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db, $query);
-#		$row_counter = 0;
 		$employees = array();
 
 		
@@ -2099,7 +2095,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$organisations['or_fax'] = $row['or_fax'];
 		$organisations['or_telephone'] = $row['or_telephone'];
 		// use this to see which variables are available in the smarty-template
-#		debug($organisations);
+		debug($organisations);
 	}
  
  
