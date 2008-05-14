@@ -413,35 +413,23 @@ function init() {
 
 			// Displays the abc to select all positions beginning with
 			// the selected letter.
-		$this->content.='
-			<a href="#" onclick="add_options_refresh(\'A\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">A</a>
-			<a href="#" onclick="add_options_refresh(\'B\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">B</a>
-			<a href="#" onclick="add_options_refresh(\'C\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">C</a>
-			<a href="#" onclick="add_options_refresh(\'D\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">D</a>
-			<a href="#" onclick="add_options_refresh(\'E\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">E</a>
-			<a href="#" onclick="add_options_refresh(\'F\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">F</a>
-			<a href="#" onclick="add_options_refresh(\'G\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">G</a>
-			<a href="#" onclick="add_options_refresh(\'H\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">H</a>
-			<a href="#" onclick="add_options_refresh(\'I\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">I</a>
-			<a href="#" onclick="add_options_refresh(\'J\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">J</a>
-			<a href="#" onclick="add_options_refresh(\'K\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">K</a>
-			<a href="#" onclick="add_options_refresh(\'L\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">L</a>
-			<a href="#" onclick="add_options_refresh(\'M\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">M</a>
-			<a href="#" onclick="add_options_refresh(\'N\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">N</a>
-			<a href="#" onclick="add_options_refresh(\'O\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">O</a>
-			<a href="#" onclick="add_options_refresh(\'P\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">P</a>
-			<a href="#" onclick="add_options_refresh(\'Q\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">Q</a>
-			<a href="#" onclick="add_options_refresh(\'R\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">R</a>
-			<a href="#" onclick="add_options_refresh(\'S\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">S</a>
-			<a href="#" onclick="add_options_refresh(\'T\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">T</a>
-			<a href="#" onclick="add_options_refresh(\'U\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">U</a>
-			<a href="#" onclick="add_options_refresh(\'V\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">V</a>
-			<a href="#" onclick="add_options_refresh(\'W\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">W</a>
-			<a href="#" onclick="add_options_refresh(\'X\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">X</a>
-			<a href="#" onclick="add_options_refresh(\'Y\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">Y</a>
-			<a href="#" onclick="add_options_refresh(\'Z\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">Z</a>
-			<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>
-		';
+			
+		debug(t3lib_div::_GET(), 'get');
+		debug(t3lib_div::_POST(), 'post');
+			
+		$arrAlphabet = array('A','B','C','D','E','F','G','H','I','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
+		
+		foreach($arrAlphabet as $char){
+			if($this->getBuildingByLetter($char)){
+				$this->content .= '<a href="#" onclick="add_options_refresh(\''.$char.'\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">'.$char.'</a>';
+			}else{
+				$this->content .= '<span style="color:#066">'.$char.'</span>';
+			}
+			$this->content .= ' ';
+		}
+		
+		// in any case:	
+		$this->content .= '<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&employee_pid='.htmlspecialchars($this->employee_pid).'\',\'&building_pid='.htmlspecialchars($this->building_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>';
 		//add search field:
 		$this->content.='
 					</td>
@@ -471,11 +459,11 @@ function init() {
 			';
 			
 			// Displays all buildings beginning with the chosen letter in the first selectorbox.
-			$this->content.=$this->getBuilding();
+			$this->content .= $this->getBuilding();
 		}
 
 			//2: Only display floor-selectorbox if a building is selected.
-		if ($this->building_uid=='') {
+		if ($this->building_uid == '') {
 			// do nothing
 		} else {
 			$this->content.='
@@ -486,14 +474,14 @@ function init() {
 			';
 
 				// Gets all floors for the chosen building and displays them in a selectorbox.
-			$this->content.=$this->getFloors();
+			$this->content .= $this->getFloors();
 			//this one is needed!!
 			$this->floor_uid = (string)t3lib_div::_GP('floor_uid');
 		}
 		
 		
 			//3: Only display room-selectorbox if a floor is selected.
-		if ($this->floor_uid=='') {
+		if ($this->floor_uid == '') {
 			// do nothing
 		} else {
 			$this->content.='
@@ -618,31 +606,30 @@ function init() {
 			// Gets all floors with the selected building_uid out of the database.
 			// Checks also if buildings aren't hidden or deleted.
 
-			// get all the child-folders to the chosen category (only 1 level recursion)
+			// get all the floors which belong to the chosen building and which do have rooms on them!
 		if ($mode == "normal") {
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'uid_foreign as uid',			 				// SELECT ...
-				'tx_civserv_building_bl_floor_mm',						// FROM ...
-				'uid_local='.$this->building_uid.' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-				'', 										// GROUP BY...
-				'',   										// ORDER BY...
-				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-				);
-			$floorList=array();
-			$floorList[0]=$this->building_uid;
-			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
-				$floorList[]=$row[uid];
-			}
-			$liste=implode(',',$floorList);
-			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'*',			 							// SELECT ...
-				'tx_civserv_floor',						// FROM ...
-				'uid in('.$liste.') AND !deleted AND !hidden',	// AND title LIKE "%blabla%"', // WHERE...
+				'distinct tx_civserv_floor.*',			// SELECT ...
+				'tx_civserv_floor,
+				 tx_civserv_building_bl_floor_mm, 
+				 tx_civserv_room,
+				 tx_civserv_building',						// FROM ...
+				'tx_civserv_building_bl_floor_mm.uid_foreign = tx_civserv_floor.uid
+				 AND tx_civserv_building_bl_floor_mm.uid_local = '.$this->building_uid.'
+				 AND tx_civserv_building_bl_floor_mm.uid = tx_civserv_room.rbf_building_bl_floor
+				 AND tx_civserv_floor.deleted = 0 AND tx_civserv_floor.hidden = 0
+				 AND tx_civserv_building.deleted = 0 AND tx_civserv_building.hidden = 0
+				 AND tx_civserv_room.deleted = 0 AND tx_civserv_room.hidden = 0',	// AND title LIKE "%blabla%"', // WHERE...
 				'', 										// GROUP BY...
 				'fl_descr',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 			);
 		} 
+
+
+
+//++++++++++++++++++++++++++++++++++++		
+		//this is no good
 		if ($this->searchitem != "" AND $mode == "search") {
 			$fliste = array();
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -657,6 +644,8 @@ function init() {
 			$fliste = $this->getlist($this->res, $fliste);
 			$fliste = implode(',',$fliste);
 			
+			
+			//dieses query ist krank
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',			 							// SELECT ...
 				'tx_civserv_floor',						// FROM ...
@@ -666,20 +655,23 @@ function init() {
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 			);
 		}
+//++++++++++++++++++++++++++++++++++++		
+		
 		$menuItems=array();
-		$menuItems[0] = '<option label="[ '.$LANG->getLL('tx_civserv_wizard_employee_position_room.floor_dummy').' ]" value="0">[ '.$LANG->getLL('tx_civserv_wizard_employee_position_room.floor_dummy').' ]</option>';		while ($floors = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
+		$menuItems[0] = '<option label="[ '.$LANG->getLL('tx_civserv_wizard_employee_position_room.floor_dummy').' ]" value="0">[ '.$LANG->getLL('tx_civserv_wizard_employee_position_room.floor_dummy').' ]</option>';		
+		while ($floors = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
 				// Checks if the uid is already selected.
-			if ($this->floor_selected($floors[uid])) {
+			if ($this->floor_selected($floors['uid'])) {
 				$selVal = 'selected="selected"';
 			} else {
 				$selVal = '';
 			}
-			$menuItems[]='<option label="'.htmlspecialchars($floors[fl_descr]).'" value="'.htmlspecialchars($floors[uid]).'"'.$selVal.'>'.htmlspecialchars($floors[fl_descr]).'</option>';
+			$menuItems[]='<option label="'.htmlspecialchars($floors['fl_descr']).'" value="'.htmlspecialchars($floors['uid']).'"'.$selVal.'>'.htmlspecialchars($floors['fl_descr']).'</option>';
 		}
 		$PItemName = "&PItemName=".$this->pArr[0];
 
 			// Displays the second selectorbox with the floors.
-		return '<select name="selectedFloor" 		onchange="changeFloor()">		'.implode('',$menuItems).'</select><br /><br />';
+		return '<select name="selectedFloor" onchange="changeFloor()"> '.implode('',$menuItems).'</select><br /><br />';
 	}//end getFloors
 
 	
@@ -689,7 +681,7 @@ function init() {
 
 
 	/**
-	 * Generates a selector box with the services from the selected category.
+	 * Generates a selector box with the rooms for the selected floor.
 	 *
 	 * @return	[type]		...
 	 * @@return	string		Selector box with services.
@@ -701,34 +693,41 @@ function init() {
 		$this->searchitem = $this->make_clean($this->searchitem);
 
 			// Gets all services with the selected building_uid out of the database.
-			// Checks also if positions aren't hidden or deleted.
 
 			// get all the child-folders to the chosen category (only 1 level recursion)
 		if ($mode == "normal") {
-		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'uid',			 				// SELECT ...
-			'tx_civserv_building_bl_floor_mm',						// FROM ...
-			'uid_local='.$this->building_uid.' AND uid_foreign='.$this->floor_uid.' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-			'', 										// GROUP BY...
-			'',   										// ORDER BY...
-			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-			);
-		$rblfl_list=array();
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
-			$rblfl_list[]=$row[uid];
-		}
-		$liste=implode(',',$rblfl_list);
-
-		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'*',			 							// SELECT ...
-			'tx_civserv_room',						// FROM ...
-			'rbf_building_bl_floor in('.$liste.') AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-			'', 										// GROUP BY...
-			'ro_name',   								// ORDER BY...
-			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-			);
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'uid',			 				// SELECT ...
+				'tx_civserv_building_bl_floor_mm',						// FROM ...
+				'uid_local='.$this->building_uid.' AND uid_foreign='.$this->floor_uid.' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+				'', 										// GROUP BY...
+				'',   										// ORDER BY...
+				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+				);
+			$rblfl_list = array();
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
+				$rblfl_list[] = $row[uid];
+			}
+			if(count($rblfl_list) > 0){
+				$liste = implode(',',$rblfl_list);
+				$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'*',			 							// SELECT ...
+					'tx_civserv_room',						// FROM ...
+					'rbf_building_bl_floor in('.$liste.') AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+					'', 										// GROUP BY...
+					'ro_name',   								// ORDER BY...
+					'' 											// LIMIT
+					);
+			}else{
+				$this->res = 0;
+			}
 		} 
-		if ($this->searchitem != "" AND $mode == "search") {
+		
+		
+		
+//++++++++++++++++++++++++++++++++++++		
+		//hallo, was ist hier los???
+		if ($this->searchitem != "" && $mode == "search") {
 			$fliste = array();
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid',			 							// SELECT ...
@@ -739,30 +738,42 @@ function init() {
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 				);
 			$fliste = $this->getlist($this->res, $fliste);
-			$fliste = implode(',',$fliste);
-			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'*',			 							// SELECT ...
-				'tx_civserv_service',						// FROM ...
-				'pid in('.$fliste.') AND sv_name like \'%'.$this->searchitem.'%\' AND !deleted AND !hidden',	// AND title LIKE "%blabla%"', // WHERE...
-				'', 										// GROUP BY...
-				'sv_name',   								// ORDER BY...
-				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-			);
-		}
-		$menuItems=array();
-		$menuItems[0] = '<option label="[ '.$LANG->getLL('tx_civserv_wizard_employee_position_room.room_dummy').' ]" value="0">[ '.$LANG->getLL('tx_civserv_wizard_employee_position_room.room_dummy').' ]</option>';
-		while ($rooms = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
-				// Checks if the uid is already selected.
-			if ($this->item_selected($rooms[uid])) {
-				$selVal = 'selected="selected"';
-			} else {
-				$selVal = '';
+			if(count($fliste) > 0){
+				$fliste = implode(',',$fliste);
+				$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'*',			 							// SELECT ...
+					'tx_civserv_service',						// FROM ...
+					'pid in('.$fliste.') AND sv_name like \'%'.$this->searchitem.'%\' AND !deleted AND !hidden',	// AND title LIKE "%blabla%"', // WHERE...
+					'', 										// GROUP BY...
+					'sv_name',   								// ORDER BY...
+					'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+				);
+			}else{
+				$this->res = 0;
 			}
-			$menuItems[]='<option label="'.htmlspecialchars($rooms[ro_name]).'" value="'.htmlspecialchars($rooms[uid]).'"'.$selVal.'>'.htmlspecialchars($rooms[ro_name]).'</option>';
 		}
+//++++++++++++++++++++++++++++++++++++		
+		
+		
+		
+		
+		$menuItems=array();
+		if($this->res){
+			$menuItems[0] = '<option label="[ '.$LANG->getLL('tx_civserv_wizard_employee_position_room.room_dummy').' ]" value="0">[ '.$LANG->getLL('tx_civserv_wizard_employee_position_room.room_dummy').' ]</option>';
+			while ($rooms = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
+					// Checks if the uid is already selected.
+				if ($this->item_selected($rooms[uid])) {
+					$selVal = 'selected="selected"';
+				} else {
+					$selVal = '';
+				}
+				$menuItems[]='<option label="'.htmlspecialchars($rooms[ro_name]).'" value="'.htmlspecialchars($rooms[uid]).'"'.$selVal.'>'.htmlspecialchars($rooms[ro_name]).'</option>';
+			}
+		}else{
+			$menuItems[0] = '<option label="[ '.$LANG->getLL('tx_civserv_wizard_employee_position_room.no_room_on_this_floor').' ]" value="0">[ '.$LANG->getLL('tx_civserv_wizard_employee_position_room.no_room_on_this_floor').' ]</option>';
+		}	
 		$PItemName = "&PItemName=".$this->pArr[0];
-
-			// Displays the second selectorbox with the services.
+			// Displays the third selectorbox with the rooms.
 		return '<select name="selectedRooms">'.implode('',$menuItems).'</select>';
 	}//end getRoom
 
@@ -777,7 +788,7 @@ function init() {
 	function item_selected($item_uid) {
 		$selected_uid = explode('|',(string)t3lib_div::_GP('selected_uid'));
 		foreach($selected_uid AS $key => $val) {
-			if ($val==$item_uid) {
+			if ($val == $item_uid) {
 				return true;
 			}
 		}
@@ -787,7 +798,7 @@ function init() {
 	function floor_selected($item_uid) {
 		$selected_uid = explode('|',(string)t3lib_div::_GP('floor_uid'));
 		foreach($selected_uid AS $key => $val) {
-			if ($val==$item_uid) {
+			if ($val == $item_uid) {
 				return true;
 			}
 		}
@@ -797,7 +808,7 @@ function init() {
 	function building_selected($item_uid) {
 		$selected_uid = explode('|',(string)t3lib_div::_GP('building_uid'));
 		foreach($selected_uid AS $key => $val) {
-			if ($val==$item_uid) {
+			if ($val == $item_uid) {
 				return true;
 			}
 		}
@@ -805,6 +816,24 @@ function init() {
 	}//end service_selected
 	
 
+	/**
+	 * Checks if a service is already selected by the user.
+	 *
+	 * @param	[type]		$char [string]: a letter from the alphabet
+	 * @return	[type]		...
+	 * @@return	boolean
+	 */
+	function getBuildingByLetter($char){
+		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'*',																	// SELECT ...
+			'tx_civserv_building',																// FROM ...
+			'pid = '.intval($this->building_pid).' AND upper(left(bl_name,1))=\''.$char.'\' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+			'', 																	// GROUP BY...
+			'',   																// ORDER BY...
+			'' 																		// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+		);
+		return $GLOBALS['TYPO3_DB']->sql_num_rows($this->res);
+	}
 	
 	/**
 	 * Gets pid by recursion.
