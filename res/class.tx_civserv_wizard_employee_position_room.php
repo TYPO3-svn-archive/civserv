@@ -817,7 +817,7 @@ function init() {
 	
 
 	/**
-	 * Checks if a service is already selected by the user.
+	 * Checks if there is a building beginning the the given letter, at all
 	 *
 	 * @param	[type]		$char [string]: a letter from the alphabet
 	 * @return	[type]		...

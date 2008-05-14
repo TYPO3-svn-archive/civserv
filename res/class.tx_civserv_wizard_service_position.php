@@ -327,36 +327,20 @@ function init() {
 		';
 
 		$script=basename(PATH_thisScript);
-
-			// Displays the abc to select all positions beginning with
-			// the selected letter.
-		$this->content.='
-			<a href="#" onclick="add_options_refresh(\'A\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">A</a>
-			<a href="#" onclick="add_options_refresh(\'B\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">B</a>
-			<a href="#" onclick="add_options_refresh(\'C\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">C</a>
-			<a href="#" onclick="add_options_refresh(\'D\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">D</a>
-			<a href="#" onclick="add_options_refresh(\'E\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">E</a>
-			<a href="#" onclick="add_options_refresh(\'F\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">F</a>
-			<a href="#" onclick="add_options_refresh(\'G\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">G</a>
-			<a href="#" onclick="add_options_refresh(\'H\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">H</a>
-			<a href="#" onclick="add_options_refresh(\'I\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">I</a>
-			<a href="#" onclick="add_options_refresh(\'J\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">J</a>
-			<a href="#" onclick="add_options_refresh(\'K\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">K</a>
-			<a href="#" onclick="add_options_refresh(\'L\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">L</a>
-			<a href="#" onclick="add_options_refresh(\'M\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">M</a>
-			<a href="#" onclick="add_options_refresh(\'N\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">N</a>
-			<a href="#" onclick="add_options_refresh(\'O\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">O</a>
-			<a href="#" onclick="add_options_refresh(\'P\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">P</a>
-			<a href="#" onclick="add_options_refresh(\'Q\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">Q</a>
-			<a href="#" onclick="add_options_refresh(\'R\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">R</a>
-			<a href="#" onclick="add_options_refresh(\'S\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">S</a>
-			<a href="#" onclick="add_options_refresh(\'T\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">T</a>
-			<a href="#" onclick="add_options_refresh(\'U\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">U</a>
-			<a href="#" onclick="add_options_refresh(\'V\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">V</a>
-			<a href="#" onclick="add_options_refresh(\'W\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">W</a>
-			<a href="#" onclick="add_options_refresh(\'X\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">X</a>
-			<a href="#" onclick="add_options_refresh(\'Y\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">Y</a>
-			<a href="#" onclick="add_options_refresh(\'Z\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">Z</a>
+		
+		//render A-Z list
+		$arrAlphabet = array('A','B','C','D','E','F','G','H','I','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
+		
+		foreach($arrAlphabet as $char){
+			if($this->getPositionByLetter($char)){
+				$this->content .= '<a href="#" onclick="add_options_refresh(\''.$char.'\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$char.'</a>';
+			}else{
+				$this->content .= '<span style="color:#066">'.$char.'</span>';
+			}
+			$this->content .= ' ';
+		}
+		
+		$this->content .= '
 			- 
 			<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>
 			- 
@@ -439,6 +423,7 @@ function init() {
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 		$this->limit_be_user = $row['limit_be_user'];
 		
+		//very special case
 		if($this->limit_be_user && !$BE_USER->user['admin']){
 				//get me the organisation_uids (contained in pages.subtitle)
 				// todo: make this a rekursive function!!!!
@@ -484,11 +469,17 @@ function init() {
 							tx_civserv_position.uid, 
 							tx_civserv_position.pid, 
 							tx_civserv_position.po_name';
+		
 		$local_table='tx_civserv_employee';
+		
 		$mm_table='tx_civserv_employee_em_position_mm';
+		
 		$foreign_table='tx_civserv_position';
+		
 		$where='AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0	
 				AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0';
+		
+		//very special case
 		$limited_visibility=' AND tx_civserv_position.uid in ('.implode(',', $this->visible_positions).')';				
 		if($this->limit_be_user && !$BE_USER->user['admin']){
 			$where=$limited_visibility;
@@ -631,6 +622,43 @@ function init() {
 		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
 		return $new_value;
 	}	
+
+
+	/**
+	 * Checks if there is a position beginning the the given letter, at all
+	 *
+	 * @param	[type]		$char [string]: a letter from the alphabet
+	 * @return	[type]		...
+	 * @@return	boolean
+	 */
+	function getPositionByLetter($char){
+		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
+		$mandant = $mandant_obj->get_mandant($this->service_pid);
+		// make sure only to collect those positions that are occupied by an employee
+		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+			'tx_civserv_position.*',																	// SELECT ...
+			'tx_civserv_employee',	//uid_local!!
+			'tx_civserv_employee_em_position_mm',
+			'tx_civserv_position',	//uid_foreign!!														// FROM ...
+			'AND upper(left(tx_civserv_position.po_name,1))=\''.$char.'\'
+			 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
+			 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
+			 AND tx_civserv_employee_em_position_mm.deleted=0 AND tx_civserv_employee_em_position_mm.hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+			'', 																	// GROUP BY...
+			'',   																// ORDER BY...
+			'' 																		// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+		);
+		while($positions = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)){
+			if ($mandant_obj->get_mandant($positions['pid']) == $mandant){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+
+
+
 
 	/**
 	 * Displays all of the content above in the browser window.
