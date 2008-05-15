@@ -139,6 +139,7 @@ $LOCAL_LANG = Array (
 			'tx_civserv_wizard_service_position_limited_sv_organisation.OK_Button' => 'OK',
 			'tx_civserv_wizard_service_position_limited_sv_organisation.warning_org' => 'please associatethis service with an organisation first!',
 			'tx_civserv_wizard_service_position_limited_sv_organisation.Cancel_Button' => 'Close Window',
+			'tx_civserv_wizard_service_position_limited_sv_organisation.no_position' => 'there is no position available at',
 			'tx_civserv_wizard_service_position_limited_sv_organisation.warning_msg_1' => 'Please enter position for which you whish to find the employee!',
 			'tx_civserv_wizard_service_position_limited_sv_organisation.warning_msg_2' => 'Error - reference to main window is not set properly!',
 				// LOCAL_LANG for class.tx_civserv_wizard_service_position_information.php
@@ -299,6 +300,7 @@ $LOCAL_LANG = Array (
             'tx_civserv_wizard_service_position_limited_sv_organisation.OK_Button' => 'OK',
 			'tx_civserv_wizard_service_position_limited_sv_organisation.warning_org' => 'Bitte verknüpfen Sie diese Dienstleistung zunächst mit einer Organisationseinheit!',
             'tx_civserv_wizard_service_position_limited_sv_organisation.Cancel_Button' => 'Abbrechen',
+			'tx_civserv_wizard_service_position_limited_sv_organisation.no_position' => 'Keine Stellen verfügbar in: ',
             'tx_civserv_wizard_service_position_limited_sv_organisation.warning_msg_1' => 'Bitte wählen Sie mindestens eine Stelle aus!',
             'tx_civserv_wizard_service_position_limited_sv_organisation.warning_msg_2' => 'FEHLER - Referenz auf das Hauptfenster nicht richtig gesetzt!',
 				// LOCAL_LANG for class.tx_civserv_wizard_service_position_information.php

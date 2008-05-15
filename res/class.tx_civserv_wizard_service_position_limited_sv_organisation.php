@@ -327,22 +327,28 @@ function init() {
 
 		$script=basename(PATH_thisScript);
 		
+		$temp_count_positions = 0;
+		
 		//render A-Z list
 		$arrAlphabet = array('A','B','C','D','E','F','G','H','I','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
 		
 		foreach($arrAlphabet as $char){
 			if($this->getPositionByLetter($char)){
 				$this->content .= '<a href="#" onclick="add_options_refresh(\''.$char.'\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$char.'</a>';
+				$temp_count_positions++;
 			}else{
 				$this->content .= '<span style="color:#066">'.$char.'</span>';
 			}
 			$this->content .= ' ';
 		}
 		
-		$this->content .= '
-			<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>
-		';
-
+		if($this->getPositionByLetter('other')){
+			$this->content .= '<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>';
+			$temp_count_positions++;
+		}else{
+			$this->content .= '<span style="color:#066">'.$LANG->getLL('all_abc_wizards.other').'</span>';
+		}
+		
 		$this->content.='
 					</td>
 					<td>
@@ -375,7 +381,8 @@ function init() {
 		}
 
 		
-		//attention: we want to choose a position even if the actual service is 'hidden', so we modify the standard where clause!!!
+		// attention: we want to choose a position even if the actual service 
+		// is 'hidden', so we modify the standard where clause!!!
 		$res_temp3=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 			'tx_civserv_organisation.uid as organisation',	// SELECT
 			'tx_civserv_service',							// FROM local
@@ -394,12 +401,10 @@ function init() {
 			}
 		}
 		
-		// 3: if there are any organisations available at all (in this limiting approach) try and get their positions!!!
-		// But only display second selectorbox if a letter is selected.
-		#if ($letter=='' || count($this->visible_organisations)<1){
-		#if(1==2 || $letter==''){ //i.o.
-		if(count($this->visible_organisations)<1){
-			$this->content.='<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
+		// 3: if there are any organisations available at all (in this limiting 
+		// approach) try and get their positions!!!
+		if(count($this->visible_organisations) < 1){
+			$this->content .= '<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
 				<tr class="bgColor">
 					<td width="100px">&nbsp;</td>
 					<td width="400px"><h1>'.$LANG->getLL('tx_civserv_wizard_service_position_limited_sv_organisation.warning_org').'</h1></td>
@@ -408,21 +413,33 @@ function init() {
 				</table>';
 		}
 		
+		// But only display second selectorbox if a letter is selected.
 		if($letter==''){
 			//do nothing
+			if($temp_count_positions == 0){
+				$this->content .= '<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
+					<tr class="bgColor">
+						<td nowrap="nowrap">';
+				$this->content .= '<p>'.$LANG->getLL('tx_civserv_wizard_service_position_limited_sv_organisation.no_position').' '.implode(', ', $this->getOrNames()).'!!!</p>';
+				$this->content .= '
+						</td>
+					</tr>
+				</table>';
+
+			}
 		} else {
 			if ($letter != "other" and $letter != "search") {
 				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_position_limited_sv_organisation.select_positions_text').''.$letter.':</h3>';
 			}else {
 				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_position_limited_sv_organisation.select_positions_text_no_abc').':</h3>';
 			}
-			$this->content.='<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
+			$this->content .= '<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
 				<tr class="bgColor">
 					<td nowrap="nowrap">
 			';
-
+			
 				// Gets all positions beginning with the chosen letter and displays them in a selectorbox.
-			$this->content.=$this->getPositions($letter, $this->visible_organisations);
+			$this->content .= $this->getPositions($letter, $this->visible_organisations);
 
 				// Displays a OK-Button to save the selected positions.
 			$this->content.='
@@ -431,7 +448,7 @@ function init() {
 			</table>
 
 			<input type="button" name="Return" value="'.$LANG->getLL('tx_civserv_wizard_service_position_limited_sv_organisation.OK_Button').'" onclick="return save_and_quit();">
-		';
+			';
 		}
 			// Displays a Cancel-Button at the end of the Page to exit the wizard without changing anything.
 		$this->content.='
@@ -455,36 +472,42 @@ function init() {
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$this->searchitem = $this->make_clean($this->searchitem);
 		
+		
 		//get me the positions per organisation
-			$res_temp2 = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-					'tx_civserv_position.uid',						// SELECT
-					'tx_civserv_position',							// FROM local
-					'tx_civserv_position_po_organisation_mm',		// FROM mm
-					'tx_civserv_organisation',						// FROM foreign
-					'AND tx_civserv_organisation.uid in('.implode(',',$visible_organisations).')
-					 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0	
-					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0', // WHERE...
-					'', 											// GROUP BY...
-					'',   											// ORDER BY...
-					'' 												// LIMIT...
-			);
-			while($row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_temp2)){
-				$this->visible_positions[]=$row2['uid'];
-			}
-		
-		
+		$res_temp2 = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+				'tx_civserv_position.uid',				// SELECT
+				'tx_civserv_position',							// FROM local
+				'tx_civserv_position_po_organisation_mm',		// FROM mm
+				'tx_civserv_organisation',						// FROM foreign
+				'AND tx_civserv_organisation.uid in('.implode(',',$visible_organisations).')
+				 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0	
+				 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0', // WHERE...
+				'', 											// GROUP BY...
+				'',   											// ORDER BY...
+				'' 												// LIMIT...
+		);
+		while($row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_temp2)){
+			$this->visible_positions[] = $row2['uid'];
+		}
+	
+	
 			//assemble bits and pieces for the requests		
 		$select_fields='tx_civserv_employee.em_name, tx_civserv_employee.em_firstname, tx_civserv_position.uid, tx_civserv_position.pid, tx_civserv_position.po_name';
 		$local_table='tx_civserv_employee';
 		$mm_table='tx_civserv_employee_em_position_mm';
 		$foreign_table='tx_civserv_position';
 		
-		
-		// aua! hier knallts, wenn bei der Organisation gar keine Positionen eingetragen sind
-		// bzw. wenn es keine Position gibt, bei die gewählte Organisation verknüpft ist!!!
-		$where='AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0	
+		if(count($this->visible_positions) > 0){
+			$where='AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0	
 				AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
 				AND tx_civserv_position.uid in ('.implode(',', $this->visible_positions).')';
+		}else{
+			//dirty but does the trick
+			$where='AND 1=2';
+			debug($this->visible_organisations, 'visible_organisations');
+			return '<p>'.$LANG->getLL('tx_civserv_wizard_service_position_limited_sv_organisation.no_position').' '.implode(', ', $this->getOrNames()).'!!!</p>';
+
+		}
 
 		if ($letter != "other" and $letter != "search") {
 				// Gets all positions with the selected letter at the
@@ -581,10 +604,13 @@ function init() {
 			}
 		}
 		$PItemName = "&PItemName=".$this->pArr[0];
+		
+		if(count($menuItems) > 0){
+						// Displays the second selectorbox with the positions.
+			return '<select name="selectedPositions" size="10" multiple="multiple">'.implode('',$menuItems).'</select>';
+		}else{
+		}
 
-			// Displays the second selectorbox with the positions.
-		return '<select name="selectedPositions" size="10" multiple="multiple">'.implode('',$menuItems).'</select>
-			   ';
 	}//end getPositions
 
 
@@ -632,6 +658,48 @@ function init() {
 			$itemname_array=explode('[',t3lib_div::_GP('PItemName'));
 			$this->service_uid=intval($itemname_array[2]);
 		}
+		
+		$where = 'tx_civserv_position.uid=tx_civserv_employee_em_position_mm.uid_local 
+			 AND tx_civserv_employee.uid=tx_civserv_employee_em_position_mm.uid_foreign 
+			 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
+			 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign
+			 AND tx_civserv_organisation.uid = tx_civserv_service_sv_organisation_mm.uid_foreign
+			 AND tx_civserv_service.uid = tx_civserv_service_sv_organisation_mm.uid_local
+			 AND tx_civserv_service_sv_organisation_mm.uid_local = '.$this->service_uid.'
+			 AND upper(left(tx_civserv_position.po_name,1))=\''.$char.'\'
+			 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
+			 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
+			 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0';
+			 
+		if($char == 'other'){
+			$where .= ' 
+					AND !(upper(left(po_name,1))=\'A\') 
+					AND !(upper(left(po_name,1))=\'B\') 
+					AND !(upper(left(po_name,1))=\'C\') 
+					AND !(upper(left(po_name,1))=\'D\') 
+					AND !(upper(left(po_name,1))=\'E\') 
+					AND !(upper(left(po_name,1))=\'F\') 
+					AND !(upper(left(po_name,1))=\'G\') 
+					AND !(upper(left(po_name,1))=\'H\') 
+					AND !(upper(left(po_name,1))=\'I\') 
+					AND !(upper(left(po_name,1))=\'J\') 
+					AND !(upper(left(po_name,1))=\'K\') 
+					AND !(upper(left(po_name,1))=\'L\') 
+					AND !(upper(left(po_name,1))=\'M\') 
+					AND !(upper(left(po_name,1))=\'N\') 
+					AND !(upper(left(po_name,1))=\'O\') 
+					AND !(upper(left(po_name,1))=\'P\') 
+					AND !(upper(left(po_name,1))=\'Q\') 
+					AND !(upper(left(po_name,1))=\'R\') 
+					AND !(upper(left(po_name,1))=\'S\') 
+					AND !(upper(left(po_name,1))=\'T\') 
+					AND !(upper(left(po_name,1))=\'U\') 
+					AND !(upper(left(po_name,1))=\'V\') 
+					AND !(upper(left(po_name,1))=\'W\') 
+					AND !(upper(left(po_name,1))=\'X\') 
+					AND !(upper(left(po_name,1))=\'Y\') 
+					AND !(upper(left(po_name,1))=\'Z\')';
+		}	 
 
 		
 		// make sure only to collect those positions that are occupied by an employee
@@ -644,17 +712,7 @@ function init() {
 			 tx_civserv_organisation,
 			 tx_civserv_service_sv_organisation_mm,		
 			 tx_civserv_service',							// SELECT
-			'tx_civserv_position.uid=tx_civserv_employee_em_position_mm.uid_local 
-			 AND tx_civserv_employee.uid=tx_civserv_employee_em_position_mm.uid_foreign 
-			 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
-			 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign
-			 AND tx_civserv_organisation.uid = tx_civserv_service_sv_organisation_mm.uid_foreign
-			 AND tx_civserv_service.uid = tx_civserv_service_sv_organisation_mm.uid_local
-			 AND tx_civserv_service_sv_organisation_mm.uid_local = '.$this->service_uid.'
-			 AND upper(left(tx_civserv_position.po_name,1))=\''.$char.'\'
-			 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
-			 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
-			 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+			 $where,	// AND title LIKE "%blabla%"', // WHERE...
 			'', 																	// GROUP BY...
 			'',   																// ORDER BY...
 			'' 																		// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
@@ -667,6 +725,23 @@ function init() {
 		return false;
 	}
 	
+	function getOrNames(){
+		$temp_arr_or_names = array();
+		//get me the name of the organisation(s)
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'tx_civserv_organisation.or_name',			 			// SELECT ...
+				'tx_civserv_organisation',			// FROM ...
+				'tx_civserv_organisation.uid in('.implode(',', $this->visible_organisations).')
+				 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+				'', 						// GROUP BY...
+				'or_name',   						// ORDER BY...
+				'' 							// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+		);
+		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
+			$temp_arr_or_names[] = '"'.$row['or_name'].'"';
+		}
+		return $temp_arr_or_names;
+	}
 	
 	
 
