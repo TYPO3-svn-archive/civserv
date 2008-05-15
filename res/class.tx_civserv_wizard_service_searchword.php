@@ -99,6 +99,7 @@ function init() {
 
 			// Find "mode"
 		$this->mode='db';
+		
 
 			// Is $P set? if not, read from URL. This is needed because otherwise
 			// the p-array will be lost and no data could be written back to the
@@ -106,9 +107,11 @@ function init() {
 		if ($this->P['itemName']) {
 			$this->pArr = array();
 			$this->pArr = explode('|',$this->P['itemName']);
+			$this->service_pid = $this->P['pid'];	// Gets parent id of service from p-array.
 		} else {
 			$this->pArr = array();
 			$this->pArr[0] = t3lib_div::_GP('PItemName');
+			$this->service_pid = t3lib_div::_GP('service_pid');	// Gets parent id of service from url.
 		}
 		$this->PItemName = "&PItemName=".$this->pArr[0];
 
@@ -294,37 +297,22 @@ function init() {
 
 		$script=basename(PATH_thisScript);
 
-			// Displays the abc to select all search words beginning with
-			// the selected letter.
-		$this->content.='
-			<a href="#" onclick="add_options_refresh(\'A\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">A</a>
-			<a href="#" onclick="add_options_refresh(\'B\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">B</a>
-			<a href="#" onclick="add_options_refresh(\'C\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">C</a>
-			<a href="#" onclick="add_options_refresh(\'D\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">D</a>
-			<a href="#" onclick="add_options_refresh(\'E\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">E</a>
-			<a href="#" onclick="add_options_refresh(\'F\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">F</a>
-			<a href="#" onclick="add_options_refresh(\'G\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">G</a>
-			<a href="#" onclick="add_options_refresh(\'H\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">H</a>
-			<a href="#" onclick="add_options_refresh(\'I\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">I</a>
-			<a href="#" onclick="add_options_refresh(\'J\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">J</a>
-			<a href="#" onclick="add_options_refresh(\'K\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">K</a>
-			<a href="#" onclick="add_options_refresh(\'L\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">L</a>
-			<a href="#" onclick="add_options_refresh(\'M\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">M</a>
-			<a href="#" onclick="add_options_refresh(\'N\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">N</a>
-			<a href="#" onclick="add_options_refresh(\'O\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">O</a>
-			<a href="#" onclick="add_options_refresh(\'P\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">P</a>
-			<a href="#" onclick="add_options_refresh(\'Q\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">Q</a>
-			<a href="#" onclick="add_options_refresh(\'R\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">R</a>
-			<a href="#" onclick="add_options_refresh(\'S\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">S</a>
-			<a href="#" onclick="add_options_refresh(\'T\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">T</a>
-			<a href="#" onclick="add_options_refresh(\'U\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">U</a>
-			<a href="#" onclick="add_options_refresh(\'V\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">V</a>
-			<a href="#" onclick="add_options_refresh(\'W\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">W</a>
-			<a href="#" onclick="add_options_refresh(\'X\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">X</a>
-			<a href="#" onclick="add_options_refresh(\'Y\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">Y</a>
-			<a href="#" onclick="add_options_refresh(\'Z\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">Z</a>
-			<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>
-		';
+
+		debug('hallo? ich mach jetzt die a-z liste');
+
+		//render A-Z list
+		$arrAlphabet = array('A','B','C','D','E','F','G','H','I','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
+		
+		foreach($arrAlphabet as $char){
+			if($this->getSearchwordByLetter($char)){
+				$this->content .= '<a href="#" onclick="add_options_refresh(\''.$char.'\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$char.'</a>';
+			}else{
+				$this->content .= '<span style="color:#066">'.$char.'</span>';
+			}
+			$this->content .= ' ';
+		}
+		
+		$this->content .= '<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>';
 
 		$this->content.='
 					</td>
@@ -354,10 +342,10 @@ function init() {
 			';
 
 				// Gets all search words beginning with the chosen letter and displays them in a selectorbox.
-			$this->content.=$this->getSearchwords($letter);
+			$this->content .= $this->getSearchwords($letter);
 
 				// Displays a OK-Button to save the selected search words.
-			$this->content.='
+			$this->content .= '
 					</td>
 				</tr>
 			</table>
@@ -409,12 +397,38 @@ function init() {
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',			 							// SELECT ...
 				'tx_civserv_search_word',					// FROM ...
-				'!(upper(left(sw_search_word,1))=\'A\') AND !(upper(left(sw_search_word,1))=\'B\') AND !(upper(left(sw_search_word,1))=\'C\') AND !(upper(left(sw_search_word,1))=\'D\') AND !(upper(left(sw_search_word,1))=\'E\') AND !(upper(left(sw_search_word,1))=\'F\') AND !(upper(left(sw_search_word,1))=\'G\') AND !(upper(left(sw_search_word,1))=\'H\') AND !(upper(left(sw_search_word,1))=\'I\') AND !(upper(left(sw_search_word,1))=\'J\') AND !(upper(left(sw_search_word,1))=\'K\') AND !(upper(left(sw_search_word,1))=\'L\') AND !(upper(left(sw_search_word,1))=\'M\') AND !(upper(left(sw_search_word,1))=\'N\') AND !(upper(left(sw_search_word,1))=\'O\') AND !(upper(left(sw_search_word,1))=\'P\') AND !(upper(left(sw_search_word,1))=\'Q\') AND !(upper(left(sw_search_word,1))=\'R\') AND !(upper(left(sw_search_word,1))=\'S\') AND !(upper(left(sw_search_word,1))=\'T\') AND !(upper(left(sw_search_word,1))=\'U\') AND !(upper(left(sw_search_word,1))=\'V\') AND !(upper(left(sw_search_word,1))=\'W\') AND !(upper(left(sw_search_word,1))=\'X\') AND !(upper(left(sw_search_word,1))=\'Y\') AND !(upper(left(sw_search_word,1))=\'Z\') AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+				'!(upper(left(sw_search_word,1))=\'A\') 
+				 AND !(upper(left(sw_search_word,1))=\'B\') 
+				 AND !(upper(left(sw_search_word,1))=\'C\') 
+				 AND !(upper(left(sw_search_word,1))=\'D\') 
+				 AND !(upper(left(sw_search_word,1))=\'E\') 
+				 AND !(upper(left(sw_search_word,1))=\'F\') 
+				 AND !(upper(left(sw_search_word,1))=\'G\') 
+				 AND !(upper(left(sw_search_word,1))=\'H\') 
+				 AND !(upper(left(sw_search_word,1))=\'I\') 
+				 AND !(upper(left(sw_search_word,1))=\'J\') 
+				 AND !(upper(left(sw_search_word,1))=\'K\') 
+				 AND !(upper(left(sw_search_word,1))=\'L\') 
+				 AND !(upper(left(sw_search_word,1))=\'M\') 
+				 AND !(upper(left(sw_search_word,1))=\'N\') 
+				 AND !(upper(left(sw_search_word,1))=\'O\') 
+				 AND !(upper(left(sw_search_word,1))=\'P\') 
+				 AND !(upper(left(sw_search_word,1))=\'Q\') 
+				 AND !(upper(left(sw_search_word,1))=\'R\') 
+				 AND !(upper(left(sw_search_word,1))=\'S\') 
+				 AND !(upper(left(sw_search_word,1))=\'T\') 
+				 AND !(upper(left(sw_search_word,1))=\'U\') 
+				 AND !(upper(left(sw_search_word,1))=\'V\') 
+				 AND !(upper(left(sw_search_word,1))=\'W\') 
+				 AND !(upper(left(sw_search_word,1))=\'X\') 
+				 AND !(upper(left(sw_search_word,1))=\'Y\') 
+				 AND !(upper(left(sw_search_word,1))=\'Z\') 
+				 AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
 				'', 										// GROUP BY...
 				'sw_search_word',   						// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-				);
-			}
+			);
+		}
 		if ($letter == "search" AND $this->searchitem != "") {
 				$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',			 							// SELECT ...
@@ -423,11 +437,12 @@ function init() {
 				'', 										// GROUP BY...
 				'sw_search_word',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-				);
-			} 
+			);
+		} 
 		$menuItems=array();
 
 		if ($this->res) {
+			// hier war doch sonst immer der mandanten-krams drinne?!!!
 			while ($searchwords = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
 					// Checks if the uid is already selected.
 				if ($this->searchword_selected($searchwords[uid])) {
@@ -435,7 +450,7 @@ function init() {
 				} else {
 					$selVal = '';
 				}
-				$menuItems[]='<option label="'.htmlspecialchars($searchwords[sw_search_word]).'" value="'.htmlspecialchars($searchwords[uid]).'"'.$selVal.'>'.htmlspecialchars($searchwords[sw_search_word]).'</option>';
+				$menuItems[]='<option label="'.htmlspecialchars($searchwords['sw_search_word']).'" value="'.htmlspecialchars($searchwords['uid']).'"'.$selVal.'>'.htmlspecialchars($searchwords['sw_search_word']).'</option>';
 			}
 		}
 		$PItemName = "&PItemName=".$this->pArr[0];
@@ -473,6 +488,41 @@ function init() {
 		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
 		return $new_value;
 	}	
+
+
+
+	/**
+	 * Checks if there is a position beginning the the given letter, at all
+	 *
+	 * @param	[type]		$char [string]: a letter from the alphabet
+	 * @return	[type]		...
+	 * @@return	boolean
+	 */
+	function getSearchwordByLetter($char){
+		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
+		$mandant = $mandant_obj->get_mandant($this->service_pid);
+		debug($this->service_pid, 'function getSearchwordByLetter: service_pid');
+		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'*',																	// SELECT ...
+			'tx_civserv_search_word',																// FROM ...
+			'upper(left(sw_search_word,1))=\''.$char.'\' 
+			 AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+			'', 																	// GROUP BY...
+			'',   																// ORDER BY...
+			'' 																		// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+		);
+		while($searchwords = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)){
+			debug($searchwords);
+			if ($mandant_obj->get_mandant($searchwords['pid']) == $mandant){
+				debug('es gehört dem Mandanten, gibs zurück');
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+
 
 	/**
 	 * Displays all of the content above in the browser window.
