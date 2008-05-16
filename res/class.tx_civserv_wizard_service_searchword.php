@@ -63,6 +63,8 @@ require_once ('conf.php');
 require_once ($BACK_PATH.'init.php');
 require_once ($BACK_PATH.'template.php');
 require_once (PATH_t3lib.'class.t3lib_scbase.php');
+require_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_mandant.php']);
+
 
 
 	// Initialization of language file
@@ -114,6 +116,24 @@ function init() {
 			$this->service_pid = t3lib_div::_GP('service_pid');	// Gets parent id of service from url.
 		}
 		$this->PItemName = "&PItemName=".$this->pArr[0];
+		
+		
+			// In case the parent id of service is still not set, try to
+			// get it out of the database. The service_pid is important because with it the uid of the mandant can be retrievied.
+		if (!intval($this->service_pid) > 0){
+			debug(t3lib_div::_GET(), 'GET');
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'pid',			 			// SELECT ...
+				$this->P['table'],			// FROM ...
+				'uid = '.$this->P['uid'],	// AND title LIKE "%blabla%"', // WHERE...
+				'', 						// GROUP BY...
+				'',   						// ORDER BY...
+				'' 							// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+			);
+			$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+			$this->service_pid = $row['pid'];
+		}
+
 
 		$formFieldName = 'data['.$this->pArr[0].']['.$this->pArr[1].']['.$this->pArr[2].']';
 
@@ -243,7 +263,7 @@ function init() {
 
 				// Adds selected items (=options) and refreshes the
 				// browser window.
-			function add_options_refresh(letter,cur_selected_uid,cur_selected_name,script,PItemName)	{	//
+			function add_options_refresh(letter,cur_selected_uid,cur_selected_name,script,PItemName,service_pid)	{	//
 				searchitem = document.serviceform.searchitem.value
 				if (document.serviceform.selectedSearchwords) {
 					options = returnOptions(cur_selected_uid,cur_selected_name);
@@ -253,7 +273,7 @@ function init() {
 				if (letter=="search" && searchitem=="") {
 					alert ("'.$LANG->getLL('all_wizards.search_warning').'");
 				} else {				
-					jumpToUrl(script+"?letter="+letter+options+PItemName+"&searchitem="+searchitem,this);
+					jumpToUrl(script+"?letter="+letter+options+PItemName+service_pid+"&searchitem="+searchitem,this);
 				}
 			}
 
@@ -297,9 +317,6 @@ function init() {
 
 		$script=basename(PATH_thisScript);
 
-
-		debug('hallo? ich mach jetzt die a-z liste');
-
 		//render A-Z list
 		$arrAlphabet = array('A','B','C','D','E','F','G','H','I','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
 		
@@ -312,13 +329,13 @@ function init() {
 			$this->content .= ' ';
 		}
 		
-		$this->content .= '<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>';
+		$this->content .= '<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>';
 
 		$this->content.='
 					</td>
 					<td>
 						<input type="text" size="20" name="searchitem" id="searchitem" value="'.$this->searchitem.'"> <br />
-						<a href="#" onclick="add_options_refresh(\'search\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\')">'.$LANG->getLL('all_abc_wizards.search').'</a>
+						<a href="#" onclick="add_options_refresh(\'search\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.search').'</a>
 					</td>
 				</tr>
 			</table>
@@ -382,10 +399,13 @@ function init() {
 				// beginning out of the database. Checks also if formulars aren't hidden or
 				// deleted.
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'*',			 							// SELECT ...
+				'uid,
+				 pid,
+				 sw_search_word',  			// SELECT...
 				'tx_civserv_search_word',					// FROM ...
-				'upper(left(sw_search_word,1))=\''.$letter.'\' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-				'', 										// GROUP BY...
+				'upper(left(sw_search_word,1))=\''.$letter.'\' 
+				 AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+				'sw_search_word', 										// GROUP BY...
 				'sw_search_word',   						// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 				);
@@ -395,7 +415,9 @@ function init() {
 				// out of the database. Checks also if formulars aren't hidden or
 				// deleted.
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'*',			 							// SELECT ...
+				'uid,
+				 pid,
+				 sw_search_word',  // SELECT...
 				'tx_civserv_search_word',					// FROM ...
 				'!(upper(left(sw_search_word,1))=\'A\') 
 				 AND !(upper(left(sw_search_word,1))=\'B\') 
@@ -424,33 +446,43 @@ function init() {
 				 AND !(upper(left(sw_search_word,1))=\'Y\') 
 				 AND !(upper(left(sw_search_word,1))=\'Z\') 
 				 AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-				'', 										// GROUP BY...
+				'sw_search_word', 										// GROUP BY...
 				'sw_search_word',   						// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 			);
 		}
 		if ($letter == "search" AND $this->searchitem != "") {
 				$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'*',			 							// SELECT ...
+				'uid,
+				 pid,
+				 sw_search_word',  // SELECT...
 				'tx_civserv_search_word',						// FROM ...
-				'sw_search_word like \'%'.$this->searchitem.'%\' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-				'', 										// GROUP BY...
+				'sw_search_word like \'%'.$this->searchitem.'%\' 
+				 AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+				'sw_search_word', 										// GROUP BY...
 				'sw_search_word',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 			);
 		} 
 		$menuItems=array();
 
+		//if you don't want to make search_words community-specific comment out the following 2 lines
+		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
+		$mandant = $mandant_obj->get_mandant($this->service_pid);
 		if ($this->res) {
 			// hier war doch sonst immer der mandanten-krams drinne?!!!
 			while ($searchwords = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
+				//if you don't want to make search_words community-specific swap the if-condition to 'always true'
+				if(1 == 1){
+				#if($mandant_obj->get_mandant($searchwords['pid']) == $mandant){
 					// Checks if the uid is already selected.
-				if ($this->searchword_selected($searchwords[uid])) {
-					$selVal = 'selected="selected"';
-				} else {
-					$selVal = '';
+					if ($this->searchword_selected($searchwords[uid])) {
+						$selVal = 'selected="selected"';
+					} else {
+						$selVal = '';
+					}
+					$menuItems[]='<option label="'.htmlspecialchars($searchwords['sw_search_word']).'" value="'.htmlspecialchars($searchwords['uid']).'"'.$selVal.'>'.htmlspecialchars($searchwords['sw_search_word']).'</option>';
 				}
-				$menuItems[]='<option label="'.htmlspecialchars($searchwords['sw_search_word']).'" value="'.htmlspecialchars($searchwords['uid']).'"'.$selVal.'>'.htmlspecialchars($searchwords['sw_search_word']).'</option>';
 			}
 		}
 		$PItemName = "&PItemName=".$this->pArr[0];
@@ -499,22 +531,24 @@ function init() {
 	 * @@return	boolean
 	 */
 	function getSearchwordByLetter($char){
+		//if you don't want to make search_words community-specific comment out the following 2 lines
 		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
 		$mandant = $mandant_obj->get_mandant($this->service_pid);
-		debug($this->service_pid, 'function getSearchwordByLetter: service_pid');
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'*',																	// SELECT ...
+			'uid,
+			 pid,
+			 sw_search_word',  // SELECT...
 			'tx_civserv_search_word',																// FROM ...
 			'upper(left(sw_search_word,1))=\''.$char.'\' 
 			 AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-			'', 																	// GROUP BY...
+			'sw_search_word', 																	// GROUP BY...
 			'',   																// ORDER BY...
 			'' 																		// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 		);
 		while($searchwords = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)){
-			debug($searchwords);
-			if ($mandant_obj->get_mandant($searchwords['pid']) == $mandant){
-				debug('es gehört dem Mandanten, gibs zurück');
+			//if you don't want to make search_words community-specific swap the if-condition to 'always true'
+			if(1 == 1){
+			#if ($mandant_obj->get_mandant($searchwords['pid']) == $mandant){
 				return true;
 			}
 		}
