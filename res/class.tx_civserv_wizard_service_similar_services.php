@@ -39,6 +39,14 @@
 * @@version 1.0
 *
 * Changes: 09.08.04, CR - Anpassung an Konventionen
+*
+*
+*
+* ATTENTION: you cannot include external services in this wizard, or else you would violate data consistency in
+* tx_civserv_service_sv_similar_services_mm !!!!
+*
+*
+*
 */
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
@@ -376,7 +384,7 @@ function init() {
 			';
 
 				// Gets all services beginning with the chosen category_uid and displays them in a selectorbox.
-			$this->content.=$this->getServices();
+			$this->content .= $this->getServices();
 
 				// Displays a OK-Button to save the selected services.
 			$this->content.='
@@ -407,12 +415,19 @@ function init() {
 	function getServiceCategories()	{
 		global $LANG;
 		//$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
+		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
+		$temp_arr_community_data = $mandant_obj->get_mandant_conf_all($this->service_pid);
+
+		
+		//only gets the 1 level below the service_folder from the mandant-configuration
 
 			// Gets all categories which aren't hidden or deleted out of the database.
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'*',																	// SELECT ...
 			'pages',																// FROM ...
-			'pid = '.intval($this->service_folder_uid).' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+			'pid = '.intval($this->service_folder_uid).' 
+			 AND uid <> '.$temp_arr_community_data['cm_external_service_folder_uid'].' 
+			 AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
 			'', 																	// GROUP BY...
 			'title',   																// ORDER BY...
 			'' 																		// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
@@ -423,12 +438,12 @@ function init() {
 
 		while ($categories = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
 				// Checks if the uid is already selected.
-			if ((string)$categories[uid] == $this->category_uid) {
+			if ((string)$categories['uid'] == $this->category_uid) {
 				$selVal = 'selected="selected"';
 			} else {
 				$selVal = '';
 			}
-			$menuItems[]='<option label="'.htmlspecialchars($categories[title]).'" value="'.htmlspecialchars($categories[uid]).'"'.$selVal.'>'.htmlspecialchars($categories[title]).'</option>';
+			$menuItems[]='<option label="'.htmlspecialchars($categories['title']).'" value="'.htmlspecialchars($categories['uid']).'"'.$selVal.'>'.htmlspecialchars($categories['title']).'</option>';
 		}
 
 		$PItemName = "&PItemName=".$this->pArr[0];
@@ -457,78 +472,79 @@ function init() {
 
 			// get all the child-folders to the chosen category (only 1 level recursion)
 		if ($mode == "normal") {
-		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'uid',			 				// SELECT ...
-			'pages',						// FROM ...
-			'pid='.$this->category_uid.' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-			'', 										// GROUP BY...
-			'',   										// ORDER BY...
-			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'uid',			 				// SELECT ...
+				'pages',						// FROM ...
+				'pid='.$this->category_uid.' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+				'', 										// GROUP BY...
+				'',   										// ORDER BY...
+				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+				);
+			$pidList=array();
+			$pidList[0]=$this->category_uid;
+			while ($uids = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
+				$pidList[] = $uids['uid'];
+			}
+	
+			$liste=implode(',',$pidList);
+			
+			$where="";
+			if (t3lib_extMgm::isLoaded('version')) {
+					$where='pid in('.$liste.') AND deleted=0 AND hidden=0 AND pid >0 AND t3ver_state!=1';
+			}else{
+					$where='pid in('.$liste.') AND deleted=0 AND hidden=0 AND pid >0';
+			}
+			
+			
+			#debug($where, 'tx_civserv_wizard_service_similar_services.php->getServices: where-clause');
+	
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'*',			 							// SELECT ...
+				'tx_civserv_service',						// FROM ...
+				$where,	// AND title LIKE "%blabla%"', // WHERE...
+				'', 										// GROUP BY...
+				'sv_name',   								// ORDER BY...
+				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 			);
-		$pidList=array();
-		$pidList[0]=$this->category_uid;
-		while ($uids = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
-			$pidList[]=$uids[uid];
-		}
-
-		$liste=implode(',',$pidList);
-		
-		$where="";
-		if (t3lib_extMgm::isLoaded('version')) {
-				$where='pid in('.$liste.') AND deleted=0 AND hidden=0 AND pid >0 AND t3ver_state!=1';
-		}else{
-				$where='pid in('.$liste.') AND deleted=0 AND hidden=0 AND pid >0';
-		}
-		
-		
-		#debug($where, 'tx_civserv_wizard_service_similar_services.php->getServices: where-clause');
-
-		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'*',			 							// SELECT ...
-			'tx_civserv_service',						// FROM ...
-			$where,	// AND title LIKE "%blabla%"', // WHERE...
-			'', 										// GROUP BY...
-			'sv_name',   								// ORDER BY...
-			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-			);
+			
 		} 
 		if ($this->searchitem != "" AND $mode == "search") {
 		
-		$fliste = array();
+			$fliste = array();
+				
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'uid',			 							// SELECT ...
+				'pages',									// FROM ...
+				'pid = '.$this->service_folder_uid.' AND deleted=0 AND hidden=0',			// AND title LIKE "%blabla%"', // WHERE...
+				'', 										// GROUP BY...
+				'',   										// ORDER BY...
+				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+				);
 			
-		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'uid',			 							// SELECT ...
-			'pages',									// FROM ...
-			'pid = '.$this->service_folder_uid.' AND deleted=0 AND hidden=0',			// AND title LIKE "%blabla%"', // WHERE...
-			'', 										// GROUP BY...
-			'',   										// ORDER BY...
-			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-			);
-		
-		$fliste = $this->getlist($this->res, $fliste);
-		$fliste = implode(',',$fliste);
-		
-		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'*',			 							// SELECT ...
-			'tx_civserv_service',						// FROM ...
-			'pid in('.$fliste.') AND sv_name like \'%'.$this->searchitem.'%\' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-			'', 										// GROUP BY...
-			'sv_name',   								// ORDER BY...
-			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+			$fliste = $this->getlist($this->res, $fliste);
+			$fliste = implode(',',$fliste);
+			
+			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'*',			 							// SELECT ...
+				'tx_civserv_service',						// FROM ...
+				'pid in('.$fliste.') AND sv_name like \'%'.$this->searchitem.'%\' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+				'', 										// GROUP BY...
+				'sv_name',   								// ORDER BY...
+				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 			);
 		}
 		$menuItems=array();
 
 		while ($services = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)) {
 				// Checks if the uid is already selected.
-			if ($this->service_selected($services[uid])) {
+			if ($this->service_selected($services['uid'])) {
 				$selVal = 'selected="selected"';
 			} else {
 				$selVal = '';
 			}
-			$menuItems[]='<option label="'.htmlspecialchars($services[sv_name]).'" value="'.htmlspecialchars($services[uid]).'"'.$selVal.'">'.htmlspecialchars($services[sv_name]).'</option>';
+			$menuItems[]='<option label="'.htmlspecialchars($services['sv_name']).'" value="'.htmlspecialchars($services['uid']).'"'.$selVal.'">'.htmlspecialchars($services['sv_name']).'</option>';
 		}
-
+		
 		$PItemName = "&PItemName=".$this->pArr[0];
 
 			// Displays the second selectorbox with the services.
