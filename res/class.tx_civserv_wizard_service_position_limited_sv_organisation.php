@@ -94,13 +94,15 @@ class tx_civserv_wizard_service_position_limited_sv_organisation extends t3lib_S
 	var $visible_organisations;			//the organisations tied to the actual service
 	var $subtitle_contains_organisation;					//true or false
 
+	var $arrAlphabet;
+
 	/**
 	 * Initializes the wizard by getting values out of the p-array.
 	 *
 	 * @return	[type]		Returns the HTML-Header including all JavaScript-Functions.
 	 * @@return	void
 	 */
-function init() {
+	function init() {
 		global $LANG;		// Has to be in every function which uses localization data.
 		$this->visible_positions=array();
 		$this->visible_organisations=array();
@@ -145,6 +147,8 @@ function init() {
 		}
 
 		$formFieldName = 'data['.$this->pArr[0].']['.$this->pArr[1].']['.$this->pArr[2].']';
+		$this->arrAlphabet = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
+		
 
             //get charset
         $charset = $GLOBALS['LANG']->charSet ? $GLOBALS['LANG']->charSet : 'iso-8859-1';
@@ -330,9 +334,7 @@ function init() {
 		$temp_count_positions = 0;
 		
 		//render A-Z list
-		$arrAlphabet = array('A','B','C','D','E','F','G','H','I','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
-		
-		foreach($arrAlphabet as $char){
+		foreach($this->arrAlphabet as $char){
 			if($this->getPositionByLetter($char)){
 				$this->content .= '<a href="#" onclick="add_options_refresh(\''.$char.'\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$char.'</a>';
 				$temp_count_positions++;
@@ -416,7 +418,7 @@ function init() {
 		// But only display second selectorbox if a letter is selected.
 		if($letter==''){
 			//do nothing
-			if($temp_count_positions == 0){
+			if($temp_count_positions == 0 && count($this->visible_organisations) > 0){
 				$this->content .= '<table border="0" cellpadding="0" cellspacing="0" id="typo3-tree">
 					<tr class="bgColor">
 						<td nowrap="nowrap">';
@@ -425,7 +427,6 @@ function init() {
 						</td>
 					</tr>
 				</table>';
-
 			}
 		} else {
 			if ($letter != "other" and $letter != "search") {
@@ -472,22 +473,23 @@ function init() {
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$this->searchitem = $this->make_clean($this->searchitem);
 		
-		
-		//get me the positions per organisation
-		$res_temp2 = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-				'tx_civserv_position.uid',				// SELECT
-				'tx_civserv_position',							// FROM local
-				'tx_civserv_position_po_organisation_mm',		// FROM mm
-				'tx_civserv_organisation',						// FROM foreign
-				'AND tx_civserv_organisation.uid in('.implode(',',$visible_organisations).')
-				 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0	
-				 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0', // WHERE...
-				'', 											// GROUP BY...
-				'',   											// ORDER BY...
-				'' 												// LIMIT...
-		);
-		while($row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_temp2)){
-			$this->visible_positions[] = $row2['uid'];
+		if(is_array($visible_organisations) && count($visible_organisations)>0){
+			//get me the positions per organisation
+			$res_temp2 = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
+					'tx_civserv_position.uid',				// SELECT
+					'tx_civserv_position',							// FROM local
+					'tx_civserv_position_po_organisation_mm',		// FROM mm
+					'tx_civserv_organisation',						// FROM foreign
+					'AND tx_civserv_organisation.uid in('.implode(',',$visible_organisations).')
+					 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0	
+					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0', // WHERE...
+					'', 											// GROUP BY...
+					'',   											// ORDER BY...
+					'' 												// LIMIT...
+			);
+			while($row2 = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_temp2)){
+				$this->visible_positions[] = $row2['uid'];
+			}
 		}
 	
 	
@@ -497,16 +499,14 @@ function init() {
 		$mm_table='tx_civserv_employee_em_position_mm';
 		$foreign_table='tx_civserv_position';
 		
-		if(count($this->visible_positions) > 0){
+		if(is_array($this->visible_positions) && count($this->visible_positions) > 0){
 			$where='AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0	
 				AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
 				AND tx_civserv_position.uid in ('.implode(',', $this->visible_positions).')';
 		}else{
 			//dirty but does the trick
 			$where='AND 1=2';
-			debug($this->visible_organisations, 'visible_organisations');
 			return '<p>'.$LANG->getLL('tx_civserv_wizard_service_position_limited_sv_organisation.no_position').' '.implode(', ', $this->getOrNames()).'!!!</p>';
-
 		}
 
 		if ($letter != "other" and $letter != "search") {
@@ -529,33 +529,9 @@ function init() {
 				// Gets all positions which don't begin with a letter
 				// out of the database. Checks also if positions aren't hidden or
 				// deleted.
-			$where .= ' 
-					AND !(upper(left(po_name,1))=\'A\') 
-					AND !(upper(left(po_name,1))=\'B\') 
-					AND !(upper(left(po_name,1))=\'C\') 
-					AND !(upper(left(po_name,1))=\'D\') 
-					AND !(upper(left(po_name,1))=\'E\') 
-					AND !(upper(left(po_name,1))=\'F\') 
-					AND !(upper(left(po_name,1))=\'G\') 
-					AND !(upper(left(po_name,1))=\'H\') 
-					AND !(upper(left(po_name,1))=\'I\') 
-					AND !(upper(left(po_name,1))=\'J\') 
-					AND !(upper(left(po_name,1))=\'K\') 
-					AND !(upper(left(po_name,1))=\'L\') 
-					AND !(upper(left(po_name,1))=\'M\') 
-					AND !(upper(left(po_name,1))=\'N\') 
-					AND !(upper(left(po_name,1))=\'O\') 
-					AND !(upper(left(po_name,1))=\'P\') 
-					AND !(upper(left(po_name,1))=\'Q\') 
-					AND !(upper(left(po_name,1))=\'R\') 
-					AND !(upper(left(po_name,1))=\'S\') 
-					AND !(upper(left(po_name,1))=\'T\') 
-					AND !(upper(left(po_name,1))=\'U\') 
-					AND !(upper(left(po_name,1))=\'V\') 
-					AND !(upper(left(po_name,1))=\'W\') 
-					AND !(upper(left(po_name,1))=\'X\') 
-					AND !(upper(left(po_name,1))=\'Y\') 
-					AND !(upper(left(po_name,1))=\'Z\')';
+			foreach($this->arrAlphabet as $char){		
+				$where .= ' AND !(upper(left(tx_civserv_position.po_name,1))=\''.$char.'\')'; 
+			}
 					
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 				$select_fields,		// SELECT
@@ -666,39 +642,16 @@ function init() {
 			 AND tx_civserv_organisation.uid = tx_civserv_service_sv_organisation_mm.uid_foreign
 			 AND tx_civserv_service.uid = tx_civserv_service_sv_organisation_mm.uid_local
 			 AND tx_civserv_service_sv_organisation_mm.uid_local = '.$this->service_uid.'
-			 AND upper(left(tx_civserv_position.po_name,1))=\''.$char.'\'
 			 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
 			 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
 			 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0';
-			 
+		if($char !== 'other' && $char > ''){
+			$where .= ' AND upper(left(tx_civserv_position.po_name,1))=\''.$char.'\'';
+		}	 
 		if($char == 'other'){
-			$where .= ' 
-					AND !(upper(left(po_name,1))=\'A\') 
-					AND !(upper(left(po_name,1))=\'B\') 
-					AND !(upper(left(po_name,1))=\'C\') 
-					AND !(upper(left(po_name,1))=\'D\') 
-					AND !(upper(left(po_name,1))=\'E\') 
-					AND !(upper(left(po_name,1))=\'F\') 
-					AND !(upper(left(po_name,1))=\'G\') 
-					AND !(upper(left(po_name,1))=\'H\') 
-					AND !(upper(left(po_name,1))=\'I\') 
-					AND !(upper(left(po_name,1))=\'J\') 
-					AND !(upper(left(po_name,1))=\'K\') 
-					AND !(upper(left(po_name,1))=\'L\') 
-					AND !(upper(left(po_name,1))=\'M\') 
-					AND !(upper(left(po_name,1))=\'N\') 
-					AND !(upper(left(po_name,1))=\'O\') 
-					AND !(upper(left(po_name,1))=\'P\') 
-					AND !(upper(left(po_name,1))=\'Q\') 
-					AND !(upper(left(po_name,1))=\'R\') 
-					AND !(upper(left(po_name,1))=\'S\') 
-					AND !(upper(left(po_name,1))=\'T\') 
-					AND !(upper(left(po_name,1))=\'U\') 
-					AND !(upper(left(po_name,1))=\'V\') 
-					AND !(upper(left(po_name,1))=\'W\') 
-					AND !(upper(left(po_name,1))=\'X\') 
-					AND !(upper(left(po_name,1))=\'Y\') 
-					AND !(upper(left(po_name,1))=\'Z\')';
+			foreach($this->arrAlphabet as $char){		
+				$where .= ' AND !(upper(left(tx_civserv_position.po_name,1))=\''.$char.'\')'; 
+			}
 		}	 
 
 		

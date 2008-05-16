@@ -414,9 +414,7 @@ function init() {
 			// Displays the abc to select all positions beginning with
 			// the selected letter.
 			
-		debug(t3lib_div::_GET(), 'get');
-		debug(t3lib_div::_POST(), 'post');
-			
+		//render A-Z list
 		$arrAlphabet = array('A','B','C','D','E','F','G','H','I','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
 		
 		foreach($arrAlphabet as $char){

@@ -86,6 +86,8 @@ class tx_civserv_wizard_service_searchword extends t3lib_SCbase {
 	var $pArr;			// contains parts of the $bparams
 	var $PItemName;
 	var $searchitem;
+	
+	var $arrAlphabet;
 
 	/**
 	 * Initializes the wizard by getting values out of the p-array.
@@ -93,7 +95,7 @@ class tx_civserv_wizard_service_searchword extends t3lib_SCbase {
 	 * @return	[type]		Returns the HTML-Header including all JavaScript-Functions.
 	 * @@return	void
 	 */
-function init() {
+	function init() {
 		global $LANG;		// Has to be in every function which uses localization data.
 
 			// Gets parameters out of the p-array.
@@ -136,6 +138,10 @@ function init() {
 
 
 		$formFieldName = 'data['.$this->pArr[0].']['.$this->pArr[1].']['.$this->pArr[2].']';
+
+		$this->arrAlphabet = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
+
+
 
             //get charset
         $charset = $GLOBALS['LANG']->charSet ? $GLOBALS['LANG']->charSet : 'iso-8859-1';
@@ -318,9 +324,8 @@ function init() {
 		$script=basename(PATH_thisScript);
 
 		//render A-Z list
-		$arrAlphabet = array('A','B','C','D','E','F','G','H','I','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
 		
-		foreach($arrAlphabet as $char){
+		foreach($this->arrAlphabet as $char){
 			if($this->getSearchwordByLetter($char)){
 				$this->content .= '<a href="#" onclick="add_options_refresh(\''.$char.'\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$char.'</a>';
 			}else{
@@ -328,8 +333,11 @@ function init() {
 			}
 			$this->content .= ' ';
 		}
-		
-		$this->content .= '<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>';
+		if($this->getSearchwordByLetter('other')){
+			$this->content .= '<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>';
+		}else{
+			$this->content .= '<span style="color:#066">'.$LANG->getLL('all_abc_wizards.other').'</span>';
+		}
 
 		$this->content.='
 					</td>
@@ -414,38 +422,18 @@ function init() {
 				// Gets all search words which don't begin with a letter
 				// out of the database. Checks also if formulars aren't hidden or
 				// deleted.
+				
+			$where = ' deleted=0 AND hidden=0';
+			foreach($this->arrAlphabet as $char){		
+				$where .= ' AND !(upper(left(tx_civserv_search_word.sw_search_word,1))=\''.$char.'\')'; 
+			}
+	
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid,
 				 pid,
 				 sw_search_word',  // SELECT...
 				'tx_civserv_search_word',					// FROM ...
-				'!(upper(left(sw_search_word,1))=\'A\') 
-				 AND !(upper(left(sw_search_word,1))=\'B\') 
-				 AND !(upper(left(sw_search_word,1))=\'C\') 
-				 AND !(upper(left(sw_search_word,1))=\'D\') 
-				 AND !(upper(left(sw_search_word,1))=\'E\') 
-				 AND !(upper(left(sw_search_word,1))=\'F\') 
-				 AND !(upper(left(sw_search_word,1))=\'G\') 
-				 AND !(upper(left(sw_search_word,1))=\'H\') 
-				 AND !(upper(left(sw_search_word,1))=\'I\') 
-				 AND !(upper(left(sw_search_word,1))=\'J\') 
-				 AND !(upper(left(sw_search_word,1))=\'K\') 
-				 AND !(upper(left(sw_search_word,1))=\'L\') 
-				 AND !(upper(left(sw_search_word,1))=\'M\') 
-				 AND !(upper(left(sw_search_word,1))=\'N\') 
-				 AND !(upper(left(sw_search_word,1))=\'O\') 
-				 AND !(upper(left(sw_search_word,1))=\'P\') 
-				 AND !(upper(left(sw_search_word,1))=\'Q\') 
-				 AND !(upper(left(sw_search_word,1))=\'R\') 
-				 AND !(upper(left(sw_search_word,1))=\'S\') 
-				 AND !(upper(left(sw_search_word,1))=\'T\') 
-				 AND !(upper(left(sw_search_word,1))=\'U\') 
-				 AND !(upper(left(sw_search_word,1))=\'V\') 
-				 AND !(upper(left(sw_search_word,1))=\'W\') 
-				 AND !(upper(left(sw_search_word,1))=\'X\') 
-				 AND !(upper(left(sw_search_word,1))=\'Y\') 
-				 AND !(upper(left(sw_search_word,1))=\'Z\') 
-				 AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+				$where,	// AND title LIKE "%blabla%"', // WHERE...
 				'sw_search_word', 										// GROUP BY...
 				'sw_search_word',   						// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
@@ -534,13 +522,24 @@ function init() {
 		//if you don't want to make search_words community-specific comment out the following 2 lines
 		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
 		$mandant = $mandant_obj->get_mandant($this->service_pid);
+		
+		$where = ' deleted=0 AND hidden=0';
+			 
+		if($char !== 'other' && $char > ''){
+			$where .= ' AND upper(left(sw_search_word,1))=\''.$char.'\'';
+		}	 
+		if($char == 'other'){
+			foreach($this->arrAlphabet as $char){		
+				$where .= ' AND !(upper(left(tx_civserv_search_word.sw_search_word,1))=\''.$char.'\')'; 
+			}
+		}	 
+		
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'uid,
 			 pid,
 			 sw_search_word',  // SELECT...
 			'tx_civserv_search_word',																// FROM ...
-			'upper(left(sw_search_word,1))=\''.$char.'\' 
-			 AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+			$where,
 			'sw_search_word', 																	// GROUP BY...
 			'',   																// ORDER BY...
 			'' 																		// LIMIT to 10 rows, starting with number 5 (MySQL compat.)

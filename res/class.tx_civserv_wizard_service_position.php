@@ -93,6 +93,9 @@ class tx_civserv_wizard_service_position extends t3lib_SCbase {
 	var $visible_positions; 			//the positions the actual be_user is allowed to see in accordance with his webmounts
 	var $visible_organisations;			//the organisations tied to the webmounts via the subtitle field
 	var $limit_be_user;					//true or false
+	
+	
+	var $arrAlphabet;
 
 	/**
 	 * Initializes the wizard by getting values out of the p-array.
@@ -100,7 +103,7 @@ class tx_civserv_wizard_service_position extends t3lib_SCbase {
 	 * @return	[type]		Returns the HTML-Header including all JavaScript-Functions.
 	 * @@return	void
 	 */
-function init() {
+	function init() {
 		global $LANG;		// Has to be in every function which uses localization data.
 		global $WEBMOUNTS;	// Variable from Typo3-Core init.php
 		$this->visible_positions=array();
@@ -147,6 +150,10 @@ function init() {
 		}
 
 		$formFieldName = 'data['.$this->pArr[0].']['.$this->pArr[1].']['.$this->pArr[2].']';
+
+
+		$this->arrAlphabet = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
+
 
 		    //get charset
         $charset = $GLOBALS['LANG']->charSet ? $GLOBALS['LANG']->charSet : 'iso-8859-1';
@@ -329,9 +336,7 @@ function init() {
 		$script=basename(PATH_thisScript);
 		
 		//render A-Z list
-		$arrAlphabet = array('A','B','C','D','E','F','G','H','I','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
-		
-		foreach($arrAlphabet as $char){
+		foreach($this->arrAlphabet as $char){
 			if($this->getPositionByLetter($char)){
 				$this->content .= '<a href="#" onclick="add_options_refresh(\''.$char.'\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$char.'</a>';
 			}else{
@@ -340,12 +345,15 @@ function init() {
 			$this->content .= ' ';
 		}
 		
-		$this->content .= '
-			- 
-			<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>
-			- 
-			<a href="#" onclick="add_options_refresh(\'any\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.any').'</a>
-		';
+		if($this->getPositionByLetter('other')){
+			$this->content .= '<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>';
+		}else{
+			$this->content .= '<span style="color:#066">'.$LANG->getLL('all_abc_wizards.other').'</span>';
+		}
+		$this->content .= ' ';
+
+
+		$this->content .= '<a href="#" onclick="add_options_refresh(\'any\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.any').'</a>';
 
 		$this->content.='
 					</td>
@@ -505,32 +513,10 @@ function init() {
 				// Gets all positions which don't begin with a letter
 				// out of the database. Checks also if positions aren't hidden or
 				// deleted.
-			$where .= ' AND !(upper(left(po_name,1))=\'A\') 
-						AND !(upper(left(po_name,1))=\'B\') 
-						AND !(upper(left(po_name,1))=\'C\') 
-						AND !(upper(left(po_name,1))=\'D\') 
-						AND !(upper(left(po_name,1))=\'E\') 
-						AND !(upper(left(po_name,1))=\'F\') 
-						AND !(upper(left(po_name,1))=\'G\') 
-						AND !(upper(left(po_name,1))=\'H\') 
-						AND !(upper(left(po_name,1))=\'I\') 
-						AND !(upper(left(po_name,1))=\'J\') 
-						AND !(upper(left(po_name,1))=\'K\') 
-						AND !(upper(left(po_name,1))=\'L\') 
-						AND !(upper(left(po_name,1))=\'M\') 
-						AND !(upper(left(po_name,1))=\'N\') 
-						AND !(upper(left(po_name,1))=\'O\') 
-						AND !(upper(left(po_name,1))=\'P\') 
-						AND !(upper(left(po_name,1))=\'Q\') 
-						AND !(upper(left(po_name,1))=\'R\') 
-						AND !(upper(left(po_name,1))=\'S\') 
-						AND !(upper(left(po_name,1))=\'T\') 
-						AND !(upper(left(po_name,1))=\'U\') 
-						AND !(upper(left(po_name,1))=\'V\') 
-						AND !(upper(left(po_name,1))=\'W\') 
-						AND !(upper(left(po_name,1))=\'X\') 
-						AND !(upper(left(po_name,1))=\'Y\') 
-						AND !(upper(left(po_name,1))=\'Z\')';
+			foreach($this->arrAlphabet as $char){		
+				$where .= ' AND !(upper(left(tx_civserv_position.po_name,1))=\''.$char.'\')'; 
+			}
+			
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 				$select_fields,		// SELECT
 				$local_table,		// FROM local
@@ -634,19 +620,33 @@ function init() {
 	function getPositionByLetter($char){
 		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
 		$mandant = $mandant_obj->get_mandant($this->service_pid);
+		
+		$where = ' AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
+			 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
+			 AND tx_civserv_employee_em_position_mm.deleted=0 AND tx_civserv_employee_em_position_mm.hidden=0';
+
+		if($char !== 'other' && $char > ''){
+			$where .= ' AND upper(left(tx_civserv_position.po_name,1))=\''.$char.'\'';
+
+		}	 
+		if($char == 'other'){
+			foreach($this->arrAlphabet as $char){		
+				$where .= ' AND !(upper(left(tx_civserv_position.po_name,1))=\''.$char.'\')'; 
+			}
+		}	 
+
+		
+		
 		// make sure only to collect those positions that are occupied by an employee
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			'tx_civserv_position.*',																	// SELECT ...
+			'tx_civserv_position.*',				// SELECT ...
 			'tx_civserv_employee',	//uid_local!!
 			'tx_civserv_employee_em_position_mm',
-			'tx_civserv_position',	//uid_foreign!!														// FROM ...
-			'AND upper(left(tx_civserv_position.po_name,1))=\''.$char.'\'
-			 AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
-			 AND tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0
-			 AND tx_civserv_employee_em_position_mm.deleted=0 AND tx_civserv_employee_em_position_mm.hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-			'', 																	// GROUP BY...
-			'',   																// ORDER BY...
-			'' 																		// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+			'tx_civserv_position',	//uid_foreign!!		
+			$where,												
+			'', 										// GROUP BY...
+			'',   										// ORDER BY...
+			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 		);
 		while($positions = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)){
 			if ($mandant_obj->get_mandant($positions['pid']) == $mandant){

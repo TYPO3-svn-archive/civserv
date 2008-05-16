@@ -85,6 +85,8 @@ class tx_civserv_wizard_service_form extends t3lib_SCbase {
 	var $pArr;			// contains parts of the $bparams
 	var $PItemName;
 	var $searchitem;
+	var $arrAlphabet;
+
 
 	/**
 	 * Initializes the wizard by getting values out of the p-array.
@@ -92,7 +94,7 @@ class tx_civserv_wizard_service_form extends t3lib_SCbase {
 	 * @return	[type]		Returns the HTML-Header including all JavaScript-Functions.
 	 * @@return	void
 	 */
-function init() {
+	function init() {
 		global $LANG;		// Has to be in every function which uses localization data.
 
 			// Gets parameters out of the p-array.
@@ -131,6 +133,8 @@ function init() {
 		}
 
 		$formFieldName = 'data['.$this->pArr[0].']['.$this->pArr[1].']['.$this->pArr[2].']';
+
+		$this->arrAlphabet = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
 
 		    //get charset
         $charset = $GLOBALS['LANG']->charSet ? $GLOBALS['LANG']->charSet : 'iso-8859-1';
@@ -313,9 +317,7 @@ function init() {
 		$script=basename(PATH_thisScript);
 		
 		//render A-Z list
-		$arrAlphabet = array('A','B','C','D','E','F','G','H','I','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
-		
-		foreach($arrAlphabet as $char){
+		foreach($this->arrAlphabet as $char){
 			if($this->getFormByLetter($char)){
 				$this->content .= '<a href="#" onclick="add_options_refresh(\''.$char.'\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$char.'</a>';
 			}else{
@@ -323,8 +325,13 @@ function init() {
 			}
 			$this->content .= ' ';
 		}
-	
-		$this->content .= '<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>';
+
+		if($this->getFormByLetter('other')){
+			$this->content .= '<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>';
+		}else{
+			$this->content .= '<span style="color:#066">'.$LANG->getLL('all_abc_wizards.other').'</span>';
+		}
+
 
 		$this->content.='
 					</td>
@@ -407,10 +414,14 @@ function init() {
 				// Gets all formulars which don't begin with a letter
 				// out of the database. Checks also if formulars aren't hidden or
 				// deleted.
+			$where = ' deleted=0 AND hidden=0';	
+			foreach($this->arrAlphabet as $char){		
+				$where .= ' AND !(upper(left(tx_civserv_form.fo_name,1))=\''.$char.'\')'; 
+			}
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',			 							// SELECT ...
 				'tx_civserv_form',							// FROM ...
-				'!(upper(left(fo_name,1))=\'A\') AND !(upper(left(fo_name,1))=\'B\') AND !(upper(left(fo_name,1))=\'C\') AND !(upper(left(fo_name,1))=\'D\') AND !(upper(left(fo_name,1))=\'E\') AND !(upper(left(fo_name,1))=\'F\') AND !(upper(left(fo_name,1))=\'G\') AND !(upper(left(fo_name,1))=\'H\') AND !(upper(left(fo_name,1))=\'I\') AND !(upper(left(fo_name,1))=\'J\') AND !(upper(left(fo_name,1))=\'K\') AND !(upper(left(fo_name,1))=\'L\') AND !(upper(left(fo_name,1))=\'M\') AND !(upper(left(fo_name,1))=\'N\') AND !(upper(left(fo_name,1))=\'O\') AND !(upper(left(fo_name,1))=\'P\') AND !(upper(left(fo_name,1))=\'Q\') AND !(upper(left(fo_name,1))=\'R\') AND !(upper(left(fo_name,1))=\'S\') AND !(upper(left(fo_name,1))=\'T\') AND !(upper(left(fo_name,1))=\'U\') AND !(upper(left(fo_name,1))=\'V\') AND !(upper(left(fo_name,1))=\'W\') AND !(upper(left(fo_name,1))=\'X\') AND !(upper(left(fo_name,1))=\'Y\') AND !(upper(left(fo_name,1))=\'Z\') AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
+				$where,										// WHERE...
 				'', 										// GROUP BY...
 				'fo_name',   								// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
@@ -494,14 +505,25 @@ function init() {
 	function getFormByLetter($char){
 		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
 		$mandant = $mandant_obj->get_mandant($this->service_pid);
+		
+		$where = ' deleted=0 AND hidden=0';
+		
+		if($char !== 'other' && $char > ''){
+			$where .= ' AND upper(left(tx_civserv_form.fo_name,1))=\''.$char.'\'';
+		}	 
+		if($char == 'other'){
+			foreach($this->arrAlphabet as $char){		
+				$where .= ' AND !(upper(left(tx_civserv_form.fo_name,1))=\''.$char.'\')'; 
+			}
+		}	 
+		
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'*',																	// SELECT ...
-			'tx_civserv_form',																// FROM ...
-			'upper(left(fo_name,1))=\''.$char.'\' 
-			 AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-			'', 																	// GROUP BY...
-			'',   																// ORDER BY...
-			'' 																		// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+			'*',															// SELECT ...
+			'tx_civserv_form',												// FROM ...
+			$where,															// WHERE ...
+			'', 															// GROUP BY...
+			'',   															// ORDER BY...
+			'' 																// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
 		);
 		while($forms = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res)){
 			if ($mandant_obj->get_mandant($forms['pid']) == $mandant){
