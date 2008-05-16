@@ -2371,10 +2371,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 AND mm.uid_foreign = similar.uid 
 						 AND service.uid = ' . $uid . ' 
 						 AND service.uid != similar.uid 
-						 AND similar.deleted = 0 AND similar.hidden = 0 
-						 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN similar.starttime AND similar.endtime) OR
-								  ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > similar.starttime) AND (similar.endtime=0)) OR
-								  (similar.starttime=0 AND similar.endtime=0) )';
+						 AND similar.deleted = 0 AND similar.hidden = 0';
 
 								  
 		if($service_common['typ'] == 'e'){
@@ -2526,7 +2523,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 																			 'tx_civserv_service'
 																	);
 		} else {
-			$name = trim($model_service[ms_name]);
+			$name = trim($model_service['ms_name']);
 		}
 		$smartyService->assign('name',$name);
 
@@ -2606,7 +2603,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$legal_global = trim($model_service['ms_legal_global']);
 		}
 		$smartyService->assign('legal_global',$this->formatStr($this->local_cObj->stdWrap($legal_global,$this->conf['sv_legal_global_general_stdWrap.'])));
-
+		debug($similar, '$similar');
 		//Similar services
 		if ($this->conf['relatedTopics']) {
 			$smartyService->assign('related_topics',$similar);
