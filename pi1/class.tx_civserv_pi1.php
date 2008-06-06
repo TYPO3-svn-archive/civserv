@@ -2034,7 +2034,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 			default :
 				$regexp = '^' . $char;
 		}
-		$regexp = $GLOBALS['LANG']->charSet == 'utf-8'? utf8_encode($regexp) : $regexp;
+#		$regexp = $GLOBALS['LANG']->charSet == 'utf-8'? utf8_encode($regexp) : $regexp;
+		if(		$TYPO3_CONF_VARS['BE']['forceCharset'] == 'utf-8' ||
+				$GLOBALS['TSFE']->metaCharset == 'utf-8' ||
+				$GLOBALS['TSFE']->renderCharset == 'utf-8' ){
+			$regexp = utf8_encode($regexp);
+		}
 		return $regexp;
 	}
 
