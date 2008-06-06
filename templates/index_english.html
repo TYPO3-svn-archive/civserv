@@ -47,20 +47,23 @@
 					<div id="servicenavigation">
 						<h3 class="invisible">service navigation:</h3>
 						<script type="text/javascript">
-							<!--
+							/*<![CDATA[*/
+								<!--
 							document.writeln('<ul>');
-							document.writeln('<li><a href="javascript:window.print()" rel="alternate" title="print page" class="printversion">print page</a></li>');
-							document.writeln('<li><a href="javascript:history.back()" rel="prev" title="go back to the previous page" class="back">back</a></li>');
+							document.writeln('<li><a href=\"javascript:window.print()\" rel=\"alternate\" title=\"Seite drucken\" class=\"printversion\">Seite drucken<\/a><\/li>');
+							document.writeln('<li><a href=\"javascript:history.back()\" rel=\"prev\" title=\"Hier gelangen Sie auf die vorherige Seite\" class=\"back\">Zur&uuml;ck<\/a><\/li>');
 							if ((navigator.appName == "Microsoft Internet Explorer") && (parseInt(navigator.appVersion) >= 4)) {
-								document.write('<li><a href="javascript:window.external.AddFavorite(window.location.href);" ');
-								document.write('onMouseOver="window.status=\'bookmark this page\'; return true;" ');
-								document.write('onMouseOut="window.status=\' \'; return true;"');
-								document.write(' class="bookmark">bookmark this page</a></li>');
+								document.write('<li><a href=\"javascript:window.external.AddFavorite(window.location.href);\" ');
+								document.write('onMouseOver=\"window.status=\'Lesezeichen setzen\'; return true;\" ');
+								document.write('onMouseOut=\"window.status=\' \'; return true;\"');
+								document.write(' class=\"bookmark\">Lesezeichen setzen<\/a><\/li>');
 							}
-							favsetz = '<li><a href="http://###HOMEPAGE###" onClick="this.style.behavior=\'url(#default#homepage)\';this.setHomePage(\'###HOMEPAGE###\');" rel="prev" title="make ###HOMEPAGE### your home page" class="home">make this your home page</a></li>';
+							favsetz = '<li><a href=\"http://###HOMEPAGE###\" onClick=\"this.style.behavior=\'url(#default#homepage)\';this.setHomePage(\'###HOMEPAGE###\');\" rel=\"prev\" title=\"Hier k&ouml;nnen Sie ###HOMEPAGE### als Startseite in Ihrem Browser festsetzen\" class=\"home\">Startseite festlegen<\/a><\/li>';
+						 
 							document.writeln( favsetz );
-							document.writeln('</ul>');
-							//-->
+							document.writeln('<\/ul>');
+								//-->
+							 /*]]>*/
 						</script>
 					</div><!-- servicenavigation end -->
 					<div id="validator">
