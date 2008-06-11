@@ -1220,67 +1220,67 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	[type]		$count: ...
 	 * @return	[type]		...
 	 */
-	function makeEmployeeListQuery($char=all,$limit=true,$count=false) {
-			if ($char != all) {
-				$regexp = $this->buildRegexp($char);
-			}
-			if ($count){
-				$query = 'Select count(*) 
-					from 
-						tx_civserv_employee, 
-						tx_civserv_position, 
-						tx_civserv_employee_em_position_mm 
-					where 
-						tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') AND 
-						tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
-						tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
-						tx_civserv_employee.deleted = 0 AND
-						tx_civserv_employee.hidden = 0 AND
-						tx_civserv_employee.em_pseudo = 0'.
-						($regexp?'AND em_name REGEXP "' . $regexp . '"':'') . ' ';
-			} else {
-				$query = 'Select 
-						tx_civserv_employee.em_address, 
-						tx_civserv_employee.em_title, 
-						tx_civserv_employee.em_name as name, 
-						tx_civserv_employee.em_firstname, 
-						tx_civserv_employee.em_datasec,
-						tx_civserv_employee.uid as emp_uid, 
-						tx_civserv_position.uid as pos_uid 
-				from 
-						tx_civserv_employee, 
-						tx_civserv_position, 
-						tx_civserv_employee_em_position_mm 
-					where 
-						tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') '
-					    . ($regexp?'AND em_name REGEXP "' . $regexp . '"':'') . 'AND 
-						tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
-						tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
-						tx_civserv_employee.deleted = 0 AND
-						tx_civserv_employee.hidden = 0 AND
-						tx_civserv_employee.em_pseudo = 0';
-			}
-
-			$orderby =	$this->piVars['sort']?'name, em_firstname DESC':'name, em_firstname ASC';
-
-
-			if (!$count) {
-			$orderby =	$this->piVars['sort']?'name, em_firstname DESC':'name, em_firstname ASC';
-			$query .= ' ORDER BY ' . $orderby . ' ';
-
-
-				if ($limit) {
-					if ($this->piVars['pointer'] > '') {
-						$start = $this->conf['employee_per_page'] * $this->piVars['pointer'];
-					} else {
-						$start = 0;
-					}
-					$max = $this->conf['employee_per_page'];
-					$query .= 'LIMIT ' . $start . ',' . $max;
-					}
-			}
-			return $query;
+	function makeEmployeeListQuery($char=all, $limit=true, $count=false) {
+		if ($char != all) {
+			$regexp = $this->buildRegexp($char);
 		}
+		if ($count){
+			$query = 'Select count(*) 
+				from 
+					tx_civserv_employee, 
+					tx_civserv_position, 
+					tx_civserv_employee_em_position_mm 
+				where 
+					tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') AND 
+					tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
+					tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
+					tx_civserv_employee.deleted = 0 AND
+					tx_civserv_employee.hidden = 0 AND
+					tx_civserv_employee.em_pseudo = 0'.
+					($regexp ? ' AND em_name REGEXP "'.$regexp.'"' : '').' ';
+		} else {
+			$query = 'Select 
+					tx_civserv_employee.em_address, 
+					tx_civserv_employee.em_title, 
+					tx_civserv_employee.em_name as name, 
+					tx_civserv_employee.em_firstname, 
+					tx_civserv_employee.em_datasec,
+					tx_civserv_employee.uid as emp_uid, 
+					tx_civserv_position.uid as pos_uid 
+			from 
+					tx_civserv_employee, 
+					tx_civserv_position, 
+					tx_civserv_employee_em_position_mm 
+				where 
+					tx_civserv_employee.pid IN (' .$this->community['pidlist']. ') '
+					.($regexp ? ' AND em_name REGEXP "'.$regexp.'"' : ''). 'AND 
+					tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
+					tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
+					tx_civserv_employee.deleted = 0 AND
+					tx_civserv_employee.hidden = 0 AND
+					tx_civserv_employee.em_pseudo = 0';
+		}
+
+		$orderby =	$this->piVars['sort'] ? 'name, em_firstname DESC' : 'name, em_firstname ASC';
+
+
+		if (!$count) {
+		$orderby =	$this->piVars['sort'] ? 'name, em_firstname DESC' : 'name, em_firstname ASC';
+		$query .= ' ORDER BY '.$orderby . ' ';
+
+
+			if ($limit) {
+				if ($this->piVars['pointer'] > '') {
+					$start = $this->conf['employee_per_page'] * $this->piVars['pointer'];
+				} else {
+					$start = 0;
+				}
+				$max = $this->conf['employee_per_page'];
+				$query .= 'LIMIT ' . $start . ',' . $max;
+			}
+		}
+		return $query;
+	}
 
 	
 	
