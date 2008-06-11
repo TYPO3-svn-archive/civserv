@@ -1167,7 +1167,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$employees[$row_counter]['em_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $row['emp_uid'],pos_id => $row['pos_uid']),1,1));
 					$row_counter++;
 		}
+		$bodycount=0;
 		foreach($kills as $kill){
+			$bodycount++;
 			unset($employees[$kill]);
 		}
 
@@ -1179,6 +1181,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$row_count += $row['count(*)'];
 		}
+		debug($row_count, 'with duplicates');
+		
+		//so long as we are not showing the same person (with 2 positions) twice, we have to correct the row_count by the bodycount:
+		$row_count -= $bodycount;
+		debug($row_count, 'row-conut minus bodycount');
 
 		$this->internal['res_count'] = $row_count;
 		$this->internal['results_at_a_time']= $this->conf['employee_per_page'];
