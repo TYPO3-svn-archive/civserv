@@ -23,6 +23,41 @@
 					<li class="or_telephone"><!--{if $organisation.or_telephone > ''}-->{$organisation.or_telephone}<!--{else}-->no phone<!--{/if}--></li>
 					<li class="or_fax"><!--{if $organisation.or_fax > ''}-->({$organisation.or_fax})<!--{else}-->no fax<!--{/if}--></li>
 					<li class="or_employees">
+						<!--{foreach from=$organisation.or_chief item=employee}-->
+							<ul class="employee">
+								<li class="em_name">{$employee.full_name}</li>
+								<li class="em_pic"><!--{if $employee.em_image > ''}-->{$employee.em_imagecode}<!--{/if}--></li>
+								<li class="em_email"><!--{if $employee.email_code > ''}-->{$employee.email_code}<!--{/if}--></li>	
+								<li class="em_phone"><!--{if $employee.em_telephone > ''}-->{$employee.em_telephone}<!--{/if}--></li>	
+								<li class="em_fax"><!--{if $employee.em_fax > ''}-->{$employee.em_fax}<!--{/if}--></li>
+								<li class="em_mobile"><!--{if $employee.em_mobile > ''}-->{$employee.em_mobile}<!--{/if}--></li>
+								<li class="em_positions">
+									<!--{foreach from=$employee.em_positions item=position}-->
+										<ul class="position">
+											<li class="po_name">
+												<!--{if $position.po_nice_name > ''}-->{$position.po_nice_name}&nbsp;<!--{/if}-->
+												<!--{if $position.po_name > ''}-->({$position.po_name})&nbsp;<!--{/if}-->
+												<!--{if $position.po_phone > '' || $position.po_building > '' || $position.po_fax > '' || $position.po_mobile > '' || po_descr > ''}-->
+													<ul class="po_items">	
+														<!--{if $position.po_descr > ''}--><li>{$position.po_descr}</li><!--{/if}-->
+														<!--{if $position.po_phone > ''}--><li>{$position.po_phone}</li><!--{/if}-->
+														<!--{if $position.email_code > ''}--><li>{$position.email_code}</li><!--{/if}-->
+														<!--{if $position.po_building > ''}-->
+															<li>{$position.po_building}:&nbsp;
+																<!--{if $position.po_room > ''}-->{$position.po_room}&nbsp;<!--{/if}-->
+																<!--{if $position.po_floor > ''}-->({$position.po_floor})<!--{/if}-->
+															</li>
+														<!--{/if}-->
+														<!--{if $position.po_fax > ''}--><li>{$position.po_fax}</li><!--{/if}-->
+														<!--{if $position.po_mobile > ''}--><li>{$position.po_mobile}</li><!--{/if}-->
+													</ul>{* ul class="po_items" *}					
+												<!--{/if}-->		
+											</li>{* li class="po_name" *}
+										</ul>{* ul class="position" *}
+									<!--{/foreach}-->
+								</li>
+							</ul>{* ul class="employee" *}
+						<!--{/foreach}-->
 						<!--{foreach from=$organisation.or_employees item=employee}-->
 							<ul class="employee">
 								<li class="em_name">{$employee.full_name}</li>
