@@ -216,3 +216,4 @@ content.RTE_compliant = 1
 pageid = 
 fulltext_search_id = 
 alternative_page_id =
+login_page_id =
