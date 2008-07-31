@@ -126,7 +126,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 	function main($content,$conf)	{
 #		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging - only on test-sites!
 		if (TYPO3_DLOG)  t3lib_div::devLog('function main of FE class entered', 'civserv');
-#		debug('hier spricht die frontend-klasse');
 
 		
 		// Load configuration array
@@ -520,10 +519,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_service',
 						'tx_civserv_service_sv_form_mm',
 						'tx_civserv_form',
-						'AND tx_civserv_service.uid = ' . $row['uid'] . '
-		 				 AND tx_civserv_form.hidden = 0 
-						 AND tx_civserv_form.deleted = 0
-						 AND tx_civserv_form.fo_status >= 2',
+						' AND tx_civserv_service.uid = ' . $row['uid'] . 
+		 				 $this->cObj->enableFields('tx_civserv_form'). 
+						' AND tx_civserv_form.fo_status >= 2',
 						'',
 						'');	
 						
@@ -633,7 +631,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$GLOBALS['TSFE']->page['title'] = $this->getServiceListHeading($this->piVars['mode'],$this->piVars['id']);
 		
 		if($this->piVars['char']>''){
-			 $GLOBALS['TSFE']->page['title'] .=': '.$this->pi_getLL('tx_civserv_pi1_service_list.abc_letter','Letter').' '.$this->piVars['char'];
+			 $GLOBALS['TSFE']->page['title'] .= ': '.$this->pi_getLL('tx_civserv_pi1_service_list.abc_letter','Letter').' '.$this->piVars['char'];
 		}
 		
 		if ($searchBox) {
@@ -667,12 +665,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 	function makeServiceListQuery($char=all,$limit=true,$count=false) {
 		//for versioning we need the hidden records, will be dismissed from live-display in fct. service_list....
 		$from  =	'tx_civserv_service';
-		$where =	'tx_civserv_service.deleted = 0';
-		$where .= 	$this->versioningEnabled? ' AND NOT (tx_civserv_service.t3ver_state=0 AND tx_civserv_service.hidden=1)':' AND tx_civserv_service.hidden = 0';
-		$where .=	$this->previewMode? ' AND (tx_civserv_service.t3ver_wsid = '.$this->current_ws.' OR tx_civserv_service.t3ver_wsid=0) ':' AND tx_civserv_service.t3ver_state !=1';
-		$where .= 	' AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime)
-					 	OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime = 0))
-					 	OR (tx_civserv_service.starttime = 0 AND tx_civserv_service.endtime = 0))';
+		$where =	' 1 '.
+					$this->cObj->enableFields('tx_civserv_service').
+					' ';
+		$where .= 	$this->versioningEnabled? ' AND NOT (tx_civserv_service.t3ver_state=0 AND tx_civserv_service.hidden=1)' : ' AND tx_civserv_service.hidden = 0 ';
+		$where .=	$this->previewMode? ' AND (tx_civserv_service.t3ver_wsid = '.$this->current_ws.' OR tx_civserv_service.t3ver_wsid=0) ' : ' AND tx_civserv_service.t3ver_state !=1 ';
+
 		$namefield_str = $this->previewMode? 'sv_name' : 'name';	//in previewMode we skip the synonyms!	
 		$orderby =	$this->piVars['sort']? $namefield_str.' DESC': $namefield_str.' ASC';
 		
@@ -683,20 +681,20 @@ class tx_civserv_pi1 extends tslib_pibase {
 			case 'circumstance':
 			case 'usergroup':
 				$from  .=	', tx_civserv_navigation, ###NAVIGATION_MM_TABLE###';
-				$where .= 	'AND ###SERVICE_TABLE###.uid = ###NAVIGATION_MM_TABLE###.uid_local
+				$where .= 	' AND ###SERVICE_TABLE###.uid = ###NAVIGATION_MM_TABLE###.uid_local
 							 AND ###NAVIGATION_MM_TABLE###.uid_foreign = tx_civserv_navigation.uid
 							 AND tx_civserv_navigation.uid = ' . intval($this->piVars['id']);	//SQL-Injection!!!
 				break;
 			case 'organisation':
 				$from  .=	', tx_civserv_organisation, tx_civserv_service_sv_organisation_mm';
-				$where .= 	'AND tx_civserv_service.uid =  tx_civserv_service_sv_organisation_mm.uid_local
+				$where .= 	' AND tx_civserv_service.uid =  tx_civserv_service_sv_organisation_mm.uid_local
 							 AND tx_civserv_service_sv_organisation_mm.uid_foreign = tx_civserv_organisation.uid
 							 AND tx_civserv_organisation.uid = ' . intval($this->piVars['id']);	//SQL-Injection!!!
 				break;
 			// not yet implemented in the main() function
 			case 'employee_service_list':
 				$from  .=	', tx_civserv_service_sv_position_mm, tx_civserv_position, tx_civserv_employee, tx_civserv_employee_em_position';
-				$where .=	'AND tx_civserv_service.uid = tx_civserv_service_sv_position_mm.uid_local
+				$where .=	' AND tx_civserv_service.uid = tx_civserv_service_sv_position_mm.uid_local
 							 AND tx_civserv_service_sv_position_mm.uid_foreign = tx_civserv_position.uid
 							 AND tx_civserv_employee_em_position.ep_position = tx_civserv_position.uid
 							 AND tx_civserv_employee_em_position.ep_employee = tx_civserv_employee.uid
@@ -704,7 +702,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				break;
 			case 'online_services':
 				$from  .=	', tx_civserv_service_sv_form_mm, tx_civserv_form';
-				$where .=	'AND tx_civserv_service.uid = tx_civserv_service_sv_form_mm.uid_local
+				$where .=	' AND tx_civserv_service.uid = tx_civserv_service_sv_form_mm.uid_local
 							 AND tx_civserv_service_sv_form_mm.uid_foreign = tx_civserv_form.uid
 							 AND tx_civserv_form.fo_status > 1';
 				break;	
@@ -729,11 +727,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$navigation_mm_table = 'tx_civserv_ext_service_esv_navigation_mm';
 				$service_table = 'tx_civserv_external_service';
 				$from  .=	', tx_civserv_external_service';
-				$where .=	' ' .
-							'AND tx_civserv_external_service.es_external_service = tx_civserv_service.uid
-							 AND tx_civserv_external_service.deleted = 0
-							 AND tx_civserv_external_service.hidden = 0
-							 AND tx_civserv_external_service.pid IN (' . $this->community['pidlist'] . ')';
+				$where .=	' AND tx_civserv_external_service.es_external_service = tx_civserv_service.uid '.
+							 $this->cObj->enableFields('tx_civserv_external_service'). 
+							 ' AND tx_civserv_external_service.pid IN (' . $this->community['pidlist'] . ')';
 				$query .= 'UNION ALL ';
 			}
 
@@ -760,22 +756,23 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}else{
 				$query .=	'SELECT ' . ($count?'count(*) ':'tx_civserv_service.uid, tx_civserv_service.pid, tx_civserv_service.hidden, sv_name AS name, sv_name AS realname, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state');
 			}
-			$query .=	' FROM ' . str_replace('###NAVIGATION_MM_TABLE###',$navigation_mm_table,$from) . '
-						 WHERE ' . str_replace('###SERVICE_TABLE###',$service_table,str_replace('###NAVIGATION_MM_TABLE###',$navigation_mm_table,$where)) . ' ' .
-							(($i==1)?'AND tx_civserv_service.pid IN (' . $this->community['pidlist'] . ') ':'') .
-							($regexp?'AND sv_name REGEXP "' . $regexp . '"':'') . ' ';
+			$query .=	' FROM ' . str_replace('###NAVIGATION_MM_TABLE###', $navigation_mm_table, $from) . '
+						 WHERE ' . str_replace('###SERVICE_TABLE###', $service_table, str_replace('###NAVIGATION_MM_TABLE###', $navigation_mm_table, $where)) . ' ' .
+							(($i==1) ? ' AND tx_civserv_service.pid IN (' . $this->community['pidlist'] . ') ':'') .
+							($regexp ? ' AND sv_name REGEXP "' . $regexp . '"':'') . ' ';
 
 			// services by synonyms
 			if(!$this->previewMode && $this->piVars['mode'] != 'online_services'){
 				for ($synonymNr = 1; $synonymNr <= 3; $synonymNr++) {
 	
-					$query .=	'UNION ALL
-								 SELECT ' . ($count?'count(*) ':'tx_civserv_service.uid, tx_civserv_service.pid, tx_civserv_service.hidden, sv_synonym' . $synonymNr . ' AS name, sv_name AS realname, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state') . '
-								 FROM ' . str_replace('###NAVIGATION_MM_TABLE###',$navigation_mm_table,$from) . '
-								 WHERE ' . str_replace('###SERVICE_TABLE###',$service_table,str_replace('###NAVIGATION_MM_TABLE###',$navigation_mm_table,$where)) . ' ' .
-									(($i==1)?'AND tx_civserv_service.pid IN (' . $this->community['pidlist'] . ') ':'') .
-									($regexp?'AND sv_synonym' . $synonymNr . ' REGEXP "' . $regexp . '"':'') .
-									'AND sv_synonym' . $synonymNr . ' != "" ' . ' ';
+					$query .=	' UNION ALL
+								 SELECT ' . ($count?'count(*) ' : 'tx_civserv_service.uid, tx_civserv_service.pid, tx_civserv_service.hidden, sv_synonym' . $synonymNr . ' AS name, sv_name AS realname, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state') . '
+								 FROM ' . str_replace('###NAVIGATION_MM_TABLE###', $navigation_mm_table, $from) . '
+								 WHERE ' . str_replace('###SERVICE_TABLE###', $service_table, str_replace('###NAVIGATION_MM_TABLE###', $navigation_mm_table, $where)) . ' ' .
+
+									(($i==1) ? ' AND tx_civserv_service.pid IN (' . $this->community['pidlist'] . ') ' : '') .
+									($regexp ? ' AND sv_synonym' . $synonymNr . ' REGEXP "' . $regexp . '"' : '') .
+									' AND sv_synonym' . $synonymNr . ' != "" ' . ' ';
 				}
 			}
 			//versioning:
@@ -786,7 +783,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$res_temp=$GLOBALS['TYPO3_DB']->exec_SELECTquery(
 							't3ver_oid',
 							'tx_civserv_service',
-							'pid = -1 and sv_name REGEXP "'.$regexp.'" AND t3ver_state != 2',
+							'pid = -1 and sv_name REGEXP "'.$regexp.'" AND t3ver_state != 2 ',
 							'',
 							'',
 							'');
@@ -799,10 +796,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 				}
 				// collect all NEW service records (name = [PLACEHOLDER], t3ver_state = 1)
 				$query .=	count($oid_list)>0 ?	'UNION ALL
-													 SELECT ' . ($count?'count(*) ':'tx_civserv_service.uid, tx_civserv_service.hidden, tx_civserv_service.sv_name, tx_civserv_service.pid, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state').'
-													 FROM ' . str_replace('###NAVIGATION_MM_TABLE###',$navigation_mm_table,$from).'
-													 WHERE ' . str_replace('###SERVICE_TABLE###',$service_table,str_replace('###NAVIGATION_MM_TABLE###',$navigation_mm_table,$where)).' '.
-													 	'AND tx_civserv_service.uid IN ('.implode(',', $oid_list).') AND tx_civserv_service.t3ver_state=1 ' : ''; //t3ver_state=1 means only the new ones!!!!
+													 SELECT ' . ($count ? ' count(*) ' : 'tx_civserv_service.uid, tx_civserv_service.hidden, tx_civserv_service.sv_name, tx_civserv_service.pid, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state').'
+													 FROM ' . str_replace('###NAVIGATION_MM_TABLE###', $navigation_mm_table, $from).'
+													 WHERE ' . str_replace('###SERVICE_TABLE###', $service_table, str_replace('###NAVIGATION_MM_TABLE###', $navigation_mm_table, $where)).' '.
+													 	' AND tx_civserv_service.uid IN ('.implode(',', $oid_list).') AND tx_civserv_service.t3ver_state=1 ' : ''; //t3ver_state=1 means only the new ones!!!!
 			}
 		}
 
@@ -1028,30 +1025,31 @@ class tx_civserv_pi1 extends tslib_pibase {
 					FROM 
 						tx_civserv_organisation 
 					WHERE 
-						tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ') AND 
-						tx_civserv_organisation.deleted = 0 AND
-						tx_civserv_organisation.hidden = 0 '.
-						($regexp?'AND or_name REGEXP "' . $regexp . '"':'') . ' ';		
+						tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ') '.
+						$this->cObj->enableFields('tx_civserv_organisation').
+						($regexp?'AND or_name REGEXP "' . $regexp . '"':'') . ' 
+						AND tx_civserv_organisation.uid <> '.$this->community['organisation_uid'];		
 			} else {
 				$query = 'SELECT 
 						tx_civserv_organisation.uid as or_uid,';
 						if($this->conf['displayOrganisationCode']){
 						#if(1==2){	
-							$query .= 'CONCAT(tx_civserv_organisation.or_name, \' [\', tx_civserv_organisation.or_code, \']\') AS name,';
-							$query .= 'CONCAT(tx_civserv_organisation.or_name, \' [\', tx_civserv_organisation.or_code, \']\') AS realname,';
+							$query .= ' CONCAT(tx_civserv_organisation.or_name, \' [\', tx_civserv_organisation.or_code, \']\') AS name,';
+							$query .= ' CONCAT(tx_civserv_organisation.or_name, \' [\', tx_civserv_organisation.or_code, \']\') AS realname,';
 						}else{
-							$query .= 'tx_civserv_organisation.or_name AS name,';			
-							$query .= 'tx_civserv_organisation.or_name AS realname,';			
+							$query .= ' tx_civserv_organisation.or_name AS name,';			
+							$query .= ' tx_civserv_organisation.or_name AS realname,';			
 						}
-				 		$query .= 'tx_civserv_organisation.or_code,
-						 		   tx_civserv_organisation.or_index ';
+				 		$query .= ' tx_civserv_organisation.or_code,
+						 		    tx_civserv_organisation.or_index ';
 					$query .= 'FROM 
 								tx_civserv_organisation
 							WHERE 
 								tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ') '
-								. ($regexp?'AND or_name REGEXP "' . $regexp . '"':'') . 'AND 
-								tx_civserv_organisation.deleted = 0 AND
-								tx_civserv_organisation.hidden = 0';
+								. ($regexp?' AND or_name REGEXP "' . $regexp . '"':'') . 
+								' AND tx_civserv_organisation.uid <> '.$this->community['organisation_uid'].
+								$this->cObj->enableFields('tx_civserv_organisation').
+								' ';
 			} //end else
 			
 			
@@ -1062,7 +1060,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$query .=	"\n";
 				$query .=	' SELECT ';
 				if($count){
-					$query .= 'count(*)';
+					$query .= ' count(*) ';
 				}else{
 					$query .=  'tx_civserv_organisation.uid as or_uid,
 								or_synonym' . $synonymNr . ' AS name, ';
@@ -1077,8 +1075,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$query .=	"\n";			 
 							$query .= 	'FROM tx_civserv_organisation
 							 WHERE 	tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ') '
-								. ($regexp?'AND or_synonym' . $synonymNr . ' REGEXP "' . $regexp . '"':'') .
-								'AND or_synonym' . $synonymNr . ' != "" ' . ' ';
+								. ($regexp? ' AND or_synonym' . $synonymNr . ' REGEXP "' . $regexp . '"':'') .
+								' AND or_synonym' . $synonymNr . ' != "" ' . ' ';
 				}
 			}//end for
 
@@ -1140,13 +1138,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 					 tx_civserv_organisation, 
 					 tx_civserv_employee_em_position_mm, 
 					 tx_civserv_position_po_organisation_mm',
-					'tx_civserv_employee.uid = ' . $row['emp_uid'] . ' 
-					 AND tx_civserv_position.uid = '.$row['pos_uid'] .'
-					 AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
-					 AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
-					 AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
-					 AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
-					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
+					'tx_civserv_employee.uid = ' . $row['emp_uid'] . 
+					 ' AND tx_civserv_position.uid = '.$row['pos_uid'] .
+					 $this->cObj->enableFields('tx_civserv_organisation') .
+					 $this->cObj->enableFields('tx_civserv_employee') .
+					 $this->cObj->enableFields('tx_civserv_position') . 
+					' AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
 					 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
 					 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign',
@@ -1181,11 +1178,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$row_count += $row['count(*)'];
 		}
-		debug($row_count, 'with duplicates');
 		
 		//so long as we are not showing the same person (with 2 positions) twice, we have to correct the row_count by the bodycount:
 		$row_count -= $bodycount;
-		debug($row_count, 'row-conut minus bodycount');
 
 		$this->internal['res_count'] = $row_count;
 		$this->internal['results_at_a_time']= $this->conf['employee_per_page'];
@@ -1228,6 +1223,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	[type]		...
 	 */
 	function makeEmployeeListQuery($char=all, $limit=true, $count=false) {
+		// fix me: query zusammenfassen!
 		if ($char != all) {
 			$regexp = $this->buildRegexp($char);
 		}
@@ -1238,12 +1234,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 					tx_civserv_position, 
 					tx_civserv_employee_em_position_mm 
 				where 
-					tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') AND 
-					tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
-					tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
-					tx_civserv_employee.deleted = 0 AND
-					tx_civserv_employee.hidden = 0 AND
-					tx_civserv_employee.em_pseudo = 0'.
+					tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') 
+					AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local 
+					AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid '.
+					$this->cObj->enableFields('tx_civserv_employee'). 
+					$this->cObj->enableFields('tx_civserv_position'). 
+					' AND tx_civserv_employee.em_pseudo = 0'.
 					($regexp ? ' AND em_name REGEXP "'.$regexp.'"' : '').' ';
 		} else {
 			$query = 'Select 
@@ -1260,12 +1256,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 					tx_civserv_employee_em_position_mm 
 				where 
 					tx_civserv_employee.pid IN (' .$this->community['pidlist']. ') '
-					.($regexp ? ' AND em_name REGEXP "'.$regexp.'"' : ''). 'AND 
-					tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
-					tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
-					tx_civserv_employee.deleted = 0 AND
-					tx_civserv_employee.hidden = 0 AND
-					tx_civserv_employee.em_pseudo = 0';
+					.($regexp ? ' AND em_name REGEXP "'.$regexp.'"' : ''). 
+					' AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local 
+					AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid '.
+					$this->cObj->enableFields('tx_civserv_employee'). 
+					$this->cObj->enableFields('tx_civserv_position'). 
+					' AND	tx_civserv_employee.em_pseudo = 0';
 		}
 
 		$orderby =	$this->piVars['sort'] ? 'name, em_firstname DESC' : 'name, em_firstname ASC';
@@ -1334,9 +1330,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_form',
 						'tx_civserv_form_fo_category_mm',
 						'tx_civserv_category',
-						'AND tx_civserv_category.deleted = 0 AND tx_civserv_category.hidden = 0
-						 AND tx_civserv_form.deleted = 0 AND tx_civserv_form.hidden = 0
-						 AND tx_civserv_form.uid = ' . $form_row['uid'],
+						$this->cObj->enableFields('tx_civserv_category').
+						$this->cObj->enableFields('tx_civserv_form').
+						' AND tx_civserv_form.uid = ' . $form_row['uid'],
 						'',
 						'',
 						'');
@@ -1405,34 +1401,42 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$actual_category =$single_form['cat'];
 			}
 			$forms[$actual_category][$form_row_counter]['name'] = $this->pi_getEditIcon(
-																				$single_form['name'],
-																				'fo_name',
-																				$this->pi_getLL('tx_civserv_pi1_form_list.name','form name'),
-																				$single_form,
-																				'tx_civserv_form');
-			$forms[$actual_category][$form_row_counter]['descr'] = $this->formatStr($this->local_cObj->stdWrap($this->pi_getEditIcon(trim($single_form['descr']),'fo_descr',$this->pi_getLL('tx_civserv_pi1_form_list.description','form description'),$single_form,'tx_civserv_form'),$this->conf['fo_name_stdWrap.']));
+								$single_form['name'],
+								'fo_name',
+								$this->pi_getLL('tx_civserv_pi1_form_list.name','form name'),
+								$single_form,
+								'tx_civserv_form');
+			$forms[$actual_category][$form_row_counter]['descr'] = $this->formatStr(
+								$this->local_cObj->stdWrap(
+									$this->pi_getEditIcon(
+										trim($single_form['descr']),
+										'fo_descr',
+										$this->pi_getLL('tx_civserv_pi1_form_list.description',
+										'form description'
+										),
+									$single_form,
+									'tx_civserv_form'
+								),
+								$this->conf['fo_name_stdWrap.']
+								));
 
 
 			$from='tx_civserv_service, 
 				   tx_civserv_form,
 				   tx_civserv_service_sv_form_mm';
 				   
-			$where='tx_civserv_service.hidden = 0 AND 
-					 tx_civserv_service.deleted = 0 AND
-					 ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime) OR
-					 ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime = 0)) OR
-					 (tx_civserv_service.starttime = 0 AND tx_civserv_service.endtime = 0)) AND
-					 tx_civserv_service.uid = tx_civserv_service_sv_form_mm.uid_local AND
-					 tx_civserv_form.uid = tx_civserv_service_sv_form_mm.uid_foreign AND
-					 tx_civserv_form.uid = '.$single_form['uid'];
+			$where= ' 1 '.
+					$this->cObj->enableFields('tx_civserv_service').
+					' AND tx_civserv_service.uid = tx_civserv_service_sv_form_mm.uid_local 
+					AND tx_civserv_form.uid = tx_civserv_service_sv_form_mm.uid_foreign 
+					AND tx_civserv_form.uid = '.$single_form['uid'];
 						 
 			if ($single_form['typ'] == 'e'){
 				$from .= ',tx_civserv_external_service';
-				$where .= ' AND 
-						 tx_civserv_external_service.hidden = 0 AND 
-						 tx_civserv_external_service.deleted = 0 AND
-						 tx_civserv_external_service.es_external_service = tx_civserv_service.uid AND 
-						 tx_civserv_external_service.pid IN ('.$this->community['pidlist'].')';
+				$where .= ''.
+						 $this->cObj->enableFields('tx_civserv_external_service').
+						 ' AND tx_civserv_external_service.es_external_service = tx_civserv_service.uid 
+						 AND tx_civserv_external_service.pid IN ('.$this->community['pidlist'].')';
 			}
 
 			// select the services assigned to the form
@@ -1557,19 +1561,18 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		if ($orgaList) {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'tx_civserv_organisation.uid AS uid, tx_civserv_organisation.or_name AS name',
-						'tx_civserv_form, tx_civserv_service, tx_civserv_organisation, tx_civserv_service_sv_form_mm, tx_civserv_service_sv_organisation_mm',
-						'tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ')
-					 	 AND tx_civserv_form.hidden = 0 AND tx_civserv_form.deleted = 0
-						 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_form.starttime AND tx_civserv_form.endtime)
-					 	 OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_form.starttime) AND (tx_civserv_form.endtime = 0))
-					 	 OR (tx_civserv_form.starttime = 0 AND tx_civserv_form.endtime = 0))
-					 	 AND tx_civserv_service.hidden = 0 AND tx_civserv_service.deleted = 0
-						 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime)
-					 	 OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime = 0))
-					 	 OR (tx_civserv_service.starttime = 0 AND tx_civserv_service.endtime = 0))
-					 	 AND tx_civserv_organisation.hidden = 0 AND tx_civserv_organisation.deleted = 0
-					 	 AND tx_civserv_service.uid = tx_civserv_service_sv_form_mm.uid_local
+						'tx_civserv_organisation.uid AS uid, 
+						 tx_civserv_organisation.or_name AS name',
+						'tx_civserv_form, 
+						 tx_civserv_service, 
+						 tx_civserv_organisation, 
+						 tx_civserv_service_sv_form_mm, 
+						 tx_civserv_service_sv_organisation_mm',
+						'tx_civserv_organisation.pid IN (' . $this->community['pidlist'] . ')'.
+						$this->cObj->enableFields('tx_civserv_form').
+						$this->cObj->enableFields('tx_civserv_service').
+						$this->cObj->enableFields('tx_civserv_organisation').
+					 	 ' AND tx_civserv_service.uid = tx_civserv_service_sv_form_mm.uid_local
 					 	 AND tx_civserv_form.uid = tx_civserv_service_sv_form_mm.uid_foreign
 					 	 AND tx_civserv_service.uid = tx_civserv_service_sv_organisation_mm.uid_local
 					 	 AND tx_civserv_organisation.uid = tx_civserv_service_sv_organisation_mm.uid_foreign' .
@@ -1613,21 +1616,20 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 tx_civserv_form.fo_formular_file AS file,
 						 "i" as typ'; //pseudo-column for internal services
 		}
-		$from  =	'tx_civserv_form, tx_civserv_service, tx_civserv_service_sv_form_mm';
-		$where =	'tx_civserv_form.deleted = 0 AND tx_civserv_form.hidden = 0
-					 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_form.starttime AND tx_civserv_form.endtime)
-					 OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_form.starttime) AND (tx_civserv_form.endtime = 0))
-					 OR (tx_civserv_form.starttime = 0 AND tx_civserv_form.endtime = 0))
-				 	 AND tx_civserv_service.hidden = 0 AND tx_civserv_service.deleted = 0
-					 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime)
-				 	 OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime = 0))
-				 	 OR (tx_civserv_service.starttime = 0 AND tx_civserv_service.endtime = 0))
-				 	 AND tx_civserv_service.uid = tx_civserv_service_sv_form_mm.uid_local
+		$from  =	'tx_civserv_form, 
+					 tx_civserv_service, 
+					 tx_civserv_service_sv_form_mm';
+		$where =	'1 '.
+					$this->cObj->enableFields('tx_civserv_form').
+					$this->cObj->enableFields('tx_civserv_service').
+				 	 ' AND tx_civserv_service.uid = tx_civserv_service_sv_form_mm.uid_local
 				 	 AND tx_civserv_form.uid = tx_civserv_service_sv_form_mm.uid_foreign';
 		if ($organisation_id != 0) {
-			$from  .=	', tx_civserv_organisation, tx_civserv_service_sv_organisation_mm';
-			$where .=	' AND tx_civserv_organisation.hidden = 0 AND tx_civserv_organisation.deleted = 0
-					 	 AND tx_civserv_service.uid = tx_civserv_service_sv_organisation_mm.uid_local
+			$from  .=	', tx_civserv_organisation, 
+						tx_civserv_service_sv_organisation_mm';
+			$where .=	'1 '.
+						$this->cObj->enableFields('tx_civserv_organisation').
+					 	' AND tx_civserv_service.uid = tx_civserv_service_sv_organisation_mm.uid_local
 					 	 AND tx_civserv_organisation.uid = tx_civserv_service_sv_organisation_mm.uid_foreign
 						 AND tx_civserv_organisation.uid = ' . $organisation_id;
 		}
@@ -1641,7 +1643,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$regexp = $this->buildRegexp($char);
 		}
 
-		$orderby = $this->piVars['sort']?'name DESC':'name ASC';
+		$orderby = $this->piVars['sort'] ? 'name DESC' : 'name ASC';
 		
 
 		// The first time the loop is executed, the part of the query for selecting the services which are located directly at the community is build.
@@ -1660,18 +1662,17 @@ class tx_civserv_pi1 extends tslib_pibase {
 				}
 				$from  .=	', tx_civserv_external_service';
 				$where .=	' ' .
-							'AND tx_civserv_external_service.es_external_service = tx_civserv_service.uid
-							 AND tx_civserv_external_service.deleted = 0
-							 AND tx_civserv_external_service.hidden = 0
-							 AND tx_civserv_external_service.pid IN (' . $this->community['pidlist'] . ')';
+							' AND tx_civserv_external_service.es_external_service = tx_civserv_service.uid '.
+							 $this->cObj->enableFields('tx_civserv_external_service').
+							' AND tx_civserv_external_service.pid IN (' . $this->community['pidlist'] . ')';
 				$query .= 'UNION ALL ';
 			}
 			//change proposed by Kreis Warendorf 24.01.05: we don't want double entries, so we go for DISTINCT
 			$query .=	'SELECT DISTINCT ' . $select . '
 						 FROM ' . $from . '
 						 WHERE ' . $where . ' ' .
-							(($i==1)?'AND tx_civserv_form.pid IN (' . $this->community['pidlist'] . ') ':' ') .
-							($regexp?'AND fo_name REGEXP "' . $regexp . '" ':' ');
+							(($i==1)? ' AND tx_civserv_form.pid IN (' . $this->community['pidlist'] . ') ' : ' ') .
+							($regexp? ' AND fo_name REGEXP "' . $regexp . '" ' : ' ');
 		}
 		if (!$count) {
 			$query .= 'ORDER BY ' . $orderby . ' ';
@@ -1704,11 +1705,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$sword = preg_split('/[\s,.\"]+/',$searchString);		//Split search string into multiple keywords and store them in an array
 
 		//Set initial where clauses
-		$querypart_where = ' pid IN (' . $this->community['pidlist'] . ')';
-		$querypart_where2 = ' sw.uid = tx_civserv_service_sv_searchword_mm.uid_foreign
-							 AND tx_civserv_service_sv_searchword_mm.uid_local = sv.uid';
+		$querypart_where = ' AND tx_civserv_service.pid IN (' . $this->community['pidlist'] . ')';
+		
+		$querypart_where2 = ' AND tx_civserv_search_word.uid = tx_civserv_service_sv_searchword_mm.uid_foreign
+							 AND tx_civserv_service_sv_searchword_mm.uid_local = tx_civserv_service.uid';
+							 
 		$querypart_where3 = '';
 		$querypart_where4 = '';
+		// count($sword) represents the number of search words entered by the user, i.e. 2 for "blue bird" and 3 for "big blue bird"
 
 		if (!empty($searchString)) {
 			// Because UNION is not yet implemented in the sql wrapper class, a lower
@@ -1720,39 +1724,57 @@ class tx_civserv_pi1 extends tslib_pibase {
 											  OR sv_synonym1 LIKE "%' . $sword[$i] . '%"
 											  OR sv_synonym2 LIKE "%' . $sword[$i] . '%"
 											  OR sv_synonym3 LIKE "%' . $sword[$i] . '%"';
-						$querypart_where2 .= ' AND (sw.sw_search_word LIKE "%' . $sword[$i] . '%" ';
-						$querypart_where3 .= ' ms_name LIKE "%' . $sword[$i] . '%"
+											  
+						$querypart_where2 .= ' AND (tx_civserv_search_word.sw_search_word LIKE "%' . $sword[$i] . '%"';
+						
+						$querypart_where3 .= ' AND (ms_name LIKE "%' . $sword[$i] . '%"
 											  OR ms_synonym1 LIKE "%' . $sword[$i] . '%"
 											  OR ms_synonym2 LIKE "%' . $sword[$i] . '%"
 											  OR ms_synonym3 LIKE "%' . $sword[$i] . '%"';
-						$querypart_where4 .= ' sw_search_word LIKE "%' . $sword[$i] . '%" ';
+											  
+						$querypart_where4 .= ' AND (sw_search_word LIKE "%' . $sword[$i] . '%" ';
+						
 						$querypart_where5 = ' AND (sv_name LIKE "%' . $sword[$i] . '%"
 											  OR sv_synonym1 LIKE "%' . $sword[$i] . '%"
 											  OR sv_synonym2 LIKE "%' . $sword[$i] . '%"
 											  OR sv_synonym3 LIKE "%' . $sword[$i] . '%"';	
-				} else {
+				} else { //the following are going to supplement the condition starting with 'AND....'
 					$querypart_where .= ' OR sv_name LIKE "%' . $sword[$i] . '%"
 										  OR sv_synonym1 LIKE "%' . $sword[$i] . '%"
 										  OR sv_synonym2 LIKE "%' . $sword[$i] . '%"
 										  OR sv_synonym3 LIKE "%' . $sword[$i] . '%"';
-					$querypart_where2 .= ' OR sw.sw_search_word LIKE "%' . $sword[$i] . '%" ';
+										  
+					$querypart_where2 .= ' OR tx_civserv_search_word.sw_search_word LIKE "%' . $sword[$i] . '%" ';
+					
 					$querypart_where3 .= ' OR ms_name LIKE "%' . $sword[$i] . '%"
 										  OR ms_synonym1 LIKE "%' . $sword[$i] . '%"
 										  OR ms_synonym2 LIKE "%' . $sword[$i] . '%"
 										  OR ms_synonym3 LIKE "%' . $sword[$i] . '%"';
+										  
 					$querypart_where4 .= ' OR sw_search_word LIKE "%' . $sword[$i] . '%" ';
+					
 					$querypart_where5 .= ' OR sv_name LIKE "%' . $sword[$i] . '%"
 										  OR sv_synonym1 LIKE "%' . $sword[$i] . '%"
 										  OR sv_synonym2 LIKE "%' . $sword[$i] . '%"
 										  OR sv_synonym3 LIKE "%' . $sword[$i] . '%"';
 				}
-			}
+			}// end for...
+			//all the prepared query-parts need to be finished by an ')'.
+			$querypart_where .= ')';
+			$querypart_where2 .= ')';
+			$querypart_where3 .= ')';
+			$querypart_where4 .= ')';
+			$querypart_where5 .= ')';
+
+
 
 			//Query for getting uid list of matching search words
 			$res_searchword = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'uid',
 						'tx_civserv_search_word',
-						$querypart_where4 . ' AND deleted = 0 AND hidden = 0',
+						'1 '.
+						$querypart_where4 .
+						$this->cObj->enableFields('tx_civserv_search_word'),
 						'',
 						'');
 
@@ -1764,7 +1786,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 			//Query for getting uid list of model services
 			$res_model_service = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'uid,ms_searchword',
+						'uid, ms_searchword',
 						'tx_civserv_model_service',
 						'ms_searchword != 0',
 						'',
@@ -1787,54 +1809,75 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$searchword_uid_list .= ')';
 
 			if ($searchword_uid_list != '()') {
-				$querypart_where3 .= ' OR (ms.uid IN ' . $searchword_uid_list . ')';
+				$querypart_where3 .= ' OR tx_civserv_model_service.uid IN ' . $searchword_uid_list;
 			}
 
 			$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,
-					'SELECT sv.uid as uid, sv.sv_name as name
-					 FROM tx_civserv_service as sv
-					 WHERE sv.deleted = 0 AND sv.hidden = 0 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN sv.starttime AND sv.endtime) OR
-														   ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > sv.starttime) AND (sv.endtime=0)) OR
-														   (sv.starttime=0 AND sv.endtime=0) ) AND ' . $querypart_where . ')
+					'SELECT 
+					 	tx_civserv_service.uid as uid, 
+					 	tx_civserv_service.sv_name as name
+					 FROM 
+					 	tx_civserv_service
+					 WHERE 1 ' .
+					 	 $this->cObj->enableFields('tx_civserv_service') .
+						$querypart_where . '
 					 UNION
-					 SELECT sv.uid as uid, sv.sv_name as name
-					 FROM tx_civserv_service as sv, tx_civserv_search_word as sw, tx_civserv_service_sv_searchword_mm
-					 WHERE sv.deleted = 0 AND sv.hidden = 0 AND sw.deleted = 0 AND sw.hidden = 0
-					 								  AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN sv.starttime AND sv.endtime) OR
-														   ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > sv.starttime) AND (sv.endtime=0)) OR
-														   (sv.starttime=0 AND sv.endtime=0) )
-													  AND sv.pid IN (' . $this->community['pidlist'] . ') AND ' . $querypart_where2 . ')
+					 SELECT 
+					 	tx_civserv_service.uid as uid, 
+						tx_civserv_service.sv_name as name
+					 FROM 
+					 	tx_civserv_service, 
+						tx_civserv_search_word, 
+						tx_civserv_service_sv_searchword_mm
+					 WHERE 1 ' . 
+					 	$this->cObj->enableFields('tx_civserv_service') .
+						$this->cObj->enableFields('tx_civserv_search_word') .
+						' AND tx_civserv_service.pid IN (' . $this->community['pidlist'] . ') 
+						 '. $querypart_where2 . '
 					 UNION
-					 SELECT sv.uid as uid, sv.sv_name as name
-					 FROM tx_civserv_service as sv, tx_civserv_model_service as ms
-					 WHERE sv.deleted = 0 AND sv.hidden = 0 AND ms.deleted = 0 AND ms.hidden = 0
-													  AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN sv.starttime AND sv.endtime) OR
-														   ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > sv.starttime) AND (sv.endtime=0)) OR
-														   (sv.starttime=0 AND sv.endtime=0) )
-													  AND sv.sv_model_service = ms.uid AND sv.pid IN (' . $this->community['pidlist'] . ')
-													  AND (' . $querypart_where3 . ')
+					 SELECT 
+					 	tx_civserv_service.uid as uid, 
+						tx_civserv_service.sv_name as name
+					 FROM 
+					 	tx_civserv_service, 
+						tx_civserv_model_service
+					 WHERE 1 ' . 
+					 	$this->cObj->enableFields('tx_civserv_service') .
+						$this->cObj->enableFields('tx_civserv_model_service') .
+						' AND tx_civserv_service.sv_model_service = tx_civserv_model_service.uid 
+						 AND tx_civserv_service.pid IN (' . $this->community['pidlist'] . ')
+						 '. $querypart_where3 .'
 					UNION
-					SELECT sv.uid as uid, sv.sv_name as name
-					FROM tx_civserv_service as sv, tx_civserv_external_service
-					WHERE sv.deleted = 0 AND sv.hidden = 0 AND
-  						  tx_civserv_external_service.hidden = 0 AND tx_civserv_external_service.deleted = 0 
-														AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN sv.starttime AND sv.endtime) OR
-														   ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > sv.starttime) AND (sv.endtime=0)) OR
-														   (sv.starttime=0 AND sv.endtime=0) ) 
-													   AND tx_civserv_external_service.pid  in (' . $this->community['pidlist'] . ')
-													   AND tx_civserv_external_service.es_external_service = sv.uid ' . $querypart_where5 . ')
+					SELECT 
+						tx_civserv_service.uid as uid, 
+						tx_civserv_service.sv_name as name
+					FROM 
+						tx_civserv_service, 
+						tx_civserv_external_service
+					WHERE 1 ' . 
+						$this->cObj->enableFields('tx_civserv_service') . 
+						$this->cObj->enableFields('tx_civserv_external_service') . 
+					   ' AND tx_civserv_external_service.pid  in (' . $this->community['pidlist'] . ')
+					   AND tx_civserv_external_service.es_external_service = tx_civserv_service.uid 
+					   '. $querypart_where5 .'
 					UNION
-					SELECT sv.uid as uid, sv.sv_name as name 
-					FROM tx_civserv_service as sv, tx_civserv_search_word as sw, tx_civserv_service_sv_searchword_mm, tx_civserv_external_service
-					WHERE sv.deleted = 0 AND sv.hidden = 0 AND sw.deleted = 0 AND sw.hidden = 0 AND
-						  tx_civserv_external_service.hidden = 0 AND tx_civserv_external_service.deleted = 0  
-													  AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN sv.starttime AND sv.endtime) OR
-														  ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > sv.starttime) AND (sv.endtime=0)) OR
-														  (sv.starttime=0 AND sv.endtime=0) )
-														  AND tx_civserv_external_service.pid IN (' . $this->community['pidlist'] . ') 
-														  AND ' . $querypart_where2 . ')
-														  AND tx_civserv_external_service.es_external_service = sv.uid			
-					ORDER BY name');
+					SELECT 
+						tx_civserv_service.uid as uid, 
+						tx_civserv_service.sv_name as name 
+					FROM 
+						tx_civserv_service, 
+						tx_civserv_search_word, 
+						tx_civserv_service_sv_searchword_mm, 
+						tx_civserv_external_service
+					WHERE 1 ' .
+						$this->cObj->enableFields('tx_civserv_service') .
+						$this->cObj->enableFields('tx_civserv_search_word') .
+						$this->cObj->enableFields('tx_civserv_external_service') . 
+						' AND tx_civserv_external_service.pid IN (' . $this->community['pidlist'] . ') 
+						 '. $querypart_where2 .'
+						AND tx_civserv_external_service.es_external_service = tx_civserv_service.uid			
+					ORDER BY name'
+			);
 
 			$rowcount = $GLOBALS['TYPO3_DB']->sql_num_rows($res);
 			// Check if query returned any results
@@ -1882,18 +1925,19 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
 	function calculate_top15(&$smartyTop15,$showCounts=1,$topN=15,$searchBox=false) {
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('sv.uid as uid,
-													   sv.sv_name as name,
-													   SUM(al.al_number) as number',	// SELECT
-													  'tx_civserv_accesslog as al,
-													   tx_civserv_service as sv',		// FROM
-													  'sv.deleted = 0 
-													   AND sv.hidden = 0 
-													   AND sv.uid = al.al_service_uid 
-													   AND sv.pid IN (' . $this->community['pidlist'] . ')',		// WHERE
-														 'al.al_service_uid',									// GROUP BY
-														 'number DESC',											// ORDER BY
-														 $topN); 												// LIMIT
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+							'tx_civserv_service.uid as uid,
+						     tx_civserv_service.sv_name as name,
+						     SUM(tx_civserv_accesslog.al_number) as number',	// SELECT
+						    'tx_civserv_accesslog,
+						     tx_civserv_service',		// FROM
+				  			'1 '.
+			 			    $this->cObj->enableFields('tx_civserv_service').	
+					        ' AND tx_civserv_service.uid = tx_civserv_accesslog.al_service_uid 
+						     AND tx_civserv_service.pid IN (' . $this->community['pidlist'] . ')',		// WHERE
+							'tx_civserv_accesslog.al_service_uid',									// GROUP BY
+							'number DESC',											// ORDER BY
+							$topN); 												// LIMIT
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$top15_data[$row_counter]['link'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $row['uid']),1,1));
@@ -1912,7 +1956,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1); //dropped this according to instructions from security review
 			$smartyTop15->assign('searchbox', $this->pi_list_searchBox('',true));
 		}
-
 		return true;
 	}
 
@@ -2064,22 +2107,27 @@ class tx_civserv_pi1 extends tslib_pibase {
 		global $add_content;
 		//Execute query depending on mode
 		if ($mode == 'circumstance_tree' || $mode == 'usergroup_tree') {
+			$temp_enablefields1 = str_replace('tx_civserv_navigation', 'nv1', $this->cObj->enableFields('tx_civserv_navigation'));
+	
+			$temp_enablefields2 = str_replace('tx_civserv_navigation', 'nv2', $this->cObj->enableFields('tx_civserv_navigation'));
+
+			// we need double quotation marks here!!! because of the single quotation marks within $temp_enablefields1 and $temp_enablefields2
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-								'nv1.uid as uid, 
-								 nv1.nv_name as name',
-								'tx_civserv_navigation as nv1,
+								"nv1.uid as uid, 
+								 nv1.nv_name as name",
+								"tx_civserv_navigation as nv1,
 								 tx_civserv_navigation_nv_structure_mm as nvmm,
-								 tx_civserv_navigation as nv2',
-								'nv1.deleted = 0 
-								 AND nv1.hidden = 0 
-								 AND nv2.deleted = 0 
-								 AND nv2.hidden = 0
+								 tx_civserv_navigation as nv2",
+								"1 ".
+								$temp_enablefields1.
+								$temp_enablefields2.
+								" AND nv1.uid = nvmm.uid_local 
 								 AND nv1.uid = nvmm.uid_local 
 								 AND nv2.uid = nvmm.uid_foreign
-								 AND nv2.uid = ' . $uid ,
-								'',
-								'name',
-								'');
+								 AND nv2.uid = " . $uid ,
+								"",
+								"name",
+								"");
 		}
 		// test bk: add organisational code
 		if($this->conf['displayOrganisationCode']){
@@ -2088,23 +2136,28 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$orderby='or1.sorting, or2.sorting';
 		}
 		if ($mode == 'organisation_tree') {
+			$temp_enablefields1 = str_replace('tx_civserv_organisation', 'or1', $this->cObj->enableFields('tx_civserv_organisation'));
+	
+			$temp_enablefields2 = str_replace('tx_civserv_organisation', 'or2', $this->cObj->enableFields('tx_civserv_organisation'));
+
+			// we need double quotation marks here!!! because of the single quotation marks within $temp_enablefields1 and $temp_enablefields2
 			$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-								'or1.uid as uid, 
+								"or1.uid as uid, 
 								 or1.or_code as code, 
-								 or1.or_name as name',
-								'tx_civserv_organisation as or1,
+								 or1.or_name as name",
+								"tx_civserv_organisation as or1,
 								 tx_civserv_organisation_or_structure_mm as ormm,
-								 tx_civserv_organisation as or2',
-								'or1.deleted = 0 
-								 AND or1.hidden = 0 
-								 AND or2.deleted = 0 
-								 AND or2.hidden = 0
-								 AND or1.uid = ormm.uid_local 
+								 tx_civserv_organisation as or2",
+								"1 ".
+								 $temp_enablefields1.
+								 $temp_enablefields2.
+								 " AND or1.uid = ormm.uid_local 
 								 AND or2.uid = ormm.uid_foreign
-								 AND or2.uid = ' . $uid ,
-								'',
+								 AND or2.uid = " . $uid ,
+								"",
 								$orderby,
-								'');
+								"");
+								
 		}
 		//Check if query returned any results
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
@@ -2143,6 +2196,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						break;
 					case 'organisation_tree':
 						$link_mode = 'organisation';
+
 						$makelink = true; // we want detail-information to all organisations 
 /*						
 // no! we want detail-information to all organisations - not only to those who offer services.....
@@ -2302,12 +2356,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_service',
 						'tx_civserv_service_sv_form_mm',
 						'tx_civserv_form',
-						'AND tx_civserv_service.uid = ' . $uid . '
-		 				 AND tx_civserv_form.hidden = 0 AND tx_civserv_form.deleted = 0
-		 				 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_form.starttime AND tx_civserv_form.endtime)
-						 	  OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_form.starttime) AND (tx_civserv_form.endtime=0))
-						 	  OR (tx_civserv_form.starttime=0 AND tx_civserv_form.endtime=0) )',
-						'',
+						' AND tx_civserv_service.uid = ' . $uid .
+		 				 $this->cObj->enableFields('tx_civserv_form'),
+						'', // GROUP BY
 						'tx_civserv_service_sv_form_mm.sorting');	//ORDER BY
 						#'name');	//ORDER BY
 
@@ -2318,9 +2369,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_service',
 						'tx_civserv_service_sv_organisation_mm',
 						'tx_civserv_organisation',
-						'AND tx_civserv_service.uid = ' . $uid . '
-		 				 AND tx_civserv_organisation.hidden = 0 AND tx_civserv_organisation.deleted = 0',
-						'',
+						' AND tx_civserv_service.uid = ' . $uid . 
+ 						$this->cObj->enableFields('tx_civserv_organisation'),
+						'', // GROUP BY
 						'tx_civserv_service_sv_organisation_mm.sorting');	//ORDER BY
 						#'name');	//ORDER BY
 
@@ -2348,31 +2399,44 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 tx_civserv_position, 
 						 tx_civserv_employee, 
 						 tx_civserv_employee_em_position_mm',
-						'tx_civserv_service.uid = ' . $uid . '
-						 AND tx_civserv_service.deleted = 0 AND tx_civserv_service.hidden = 0
-						 AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
-						 AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
-						 AND tx_civserv_employee_em_position_mm.deleted = 0 AND tx_civserv_employee_em_position_mm.hidden = 0
-						 AND tx_civserv_service.uid = tx_civserv_service_sv_position_mm.uid_local
+						' tx_civserv_service.uid = ' . $uid . 
+						 $this->cObj->enableFields('tx_civserv_service').
+						 $this->cObj->enableFields('tx_civserv_position').
+						 $this->cObj->enableFields('tx_civserv_employee').
+						 $this->cObj->enableFields('tx_civserv_employee_em_position_mm').
+						 ' AND tx_civserv_service.uid = tx_civserv_service_sv_position_mm.uid_local
 						 AND tx_civserv_service_sv_position_mm.uid_foreign = tx_civserv_position.uid
 						 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 						 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid 
 						 AND tx_civserv_employee.pid IN (' . $service_pidlist . ')', // in case of external service this is the pidlist of the community providing the service!!
 						'',
-						'tx_civserv_service_sv_position_mm.sorting, tx_civserv_employee_em_position_mm.sorting');	//ORDER BY
+						'tx_civserv_service_sv_position_mm.sorting, tx_civserv_employee_em_position_mm.sorting'
+						);	//ORDER BY
 
 		//Query for search words
 		$res_search_word = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'tx_civserv_service.uid as suid, tx_civserv_search_word.uid as wuid, tx_civserv_service.sv_name as sname, tx_civserv_search_word.sw_search_word as sword',
-						'tx_civserv_service, tx_civserv_search_word, tx_civserv_service_sv_searchword_mm',
-						'tx_civserv_service.uid = ' . $uid . '
-						AND tx_civserv_service.deleted = 0 AND tx_civserv_service.hidden = 0
-						AND tx_civserv_service.uid = tx_civserv_service_sv_searchword_mm.uid_local
-						AND tx_civserv_search_word.uid = tx_civserv_service_sv_searchword_mm.uid_foreign',
+						'tx_civserv_service.uid as suid, 
+						 tx_civserv_search_word.uid as wuid, 
+						 tx_civserv_service.sv_name as sname, 
+						 tx_civserv_search_word.sw_search_word as sword',
+						'tx_civserv_service, 
+						 tx_civserv_search_word, 
+						 tx_civserv_service_sv_searchword_mm',
+						' tx_civserv_service.uid = ' . $uid . 
+						 $this->cObj->enableFields('tx_civserv_service').
+						 $this->cObj->enableFields('tx_civserv_search_word').
+						' AND tx_civserv_service.uid = tx_civserv_service_sv_searchword_mm.uid_local
+						 AND tx_civserv_search_word.uid = tx_civserv_service_sv_searchword_mm.uid_foreign',
 						'',
 						'tx_civserv_search_word.sw_search_word'); //ORDER BY
 						
 		//Query for similar services
+			//service has been checked already
+			$temp_enablefields1 = str_replace('tx_civserv_service', 'service', $this->cObj->enableFields('tx_civserv_service'));
+#			debug($temp_enablefields1, '$temp_enablefields1');
+	
+			$temp_enablefields2 = str_replace('tx_civserv_service', 'similar', $this->cObj->enableFields('tx_civserv_service'));
+#			debug($temp_enablefields2, '$temp_enablefields2');
 		
 		// in case this is an external service the query must be asked differently!!!
 		// this is still a building site
@@ -2382,14 +2446,15 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$where= 'service.uid = mm.uid_local 
 						 AND mm.uid_foreign = similar.uid 
 						 AND service.uid = ' . $uid . ' 
-						 AND service.uid != similar.uid 
-						 AND similar.deleted = 0 AND similar.hidden = 0';
+						 AND service.uid != similar.uid '.
+						 $temp_enablefields1.
+					     $temp_enablefields2;
 
 								  
 		if($service_common['typ'] == 'e'){
 			$from .= ', tx_civserv_external_service';
-			$where .= ' AND tx_civserv_external_service.es_external_service = similar.uid 
-					    AND tx_civserv_external_service.hidden =0';
+			$where .= ' AND tx_civserv_external_service.es_external_service = similar.uid '.
+					    $this->cObj->enableFields('tx_civserv_external_service');
 		}
 		  
 		
@@ -2481,16 +2546,20 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//Query for model service
 		if ($service_common['sv_model_service'] > 0) {
 			$res_model_service = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'ms_name, 
-						 ms_descr_short, 
-						 ms_descr_long, 
-						 ms_image, 
-						 ms_image_text, 
-						 ms_fees, 
-						 ms_documents, 
-						 ms_legal_global',
+						'tx_civserv_model_service.ms_name, 
+						 tx_civserv_model_service.ms_descr_short, 
+						 tx_civserv_model_service.ms_descr_long, 
+						 tx_civserv_model_service.ms_image, 
+						 tx_civserv_model_service.ms_image_text, 
+						 tx_civserv_model_service.ms_fees, 
+						 tx_civserv_model_service.ms_documents, 
+						 tx_civserv_model_service.ms_legal_global',
 						'tx_civserv_model_service',
-						'deleted = 0 AND hidden = 0 AND uid = ' . intval($service_common['sv_model_service']) . '');
+						'1 '.
+						$this->cObj->enableFields('tx_civserv_model_service').
+						' AND uid = ' . intval($service_common['sv_model_service']),
+						'',
+						'');
 
 			$model_service = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_model_service);
 		}
@@ -2615,7 +2684,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$legal_global = trim($model_service['ms_legal_global']);
 		}
 		$smartyService->assign('legal_global',$this->formatStr($this->local_cObj->stdWrap($legal_global,$this->conf['sv_legal_global_general_stdWrap.'])));
-		debug($similar, '$similar');
 		//Similar services
 		if ($this->conf['relatedTopics']) {
 			$smartyService->assign('related_topics',$similar);
@@ -2697,25 +2765,25 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// VERSIONING:
 		// we need the hidden records as well!
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'uid, 
-						 pid, 
-						 sv_name, 
-						 sv_descr_short, 
-						 sv_descr_long, 
-						 sv_image, 
-						 sv_image_text, 
-						 sv_fees, 
-						 sv_documents, 
-						 sv_legal_local, 
-						 sv_legal_global, 
-						 sv_3rdparty_checkbox, 
-						 sv_3rdparty_link, 
-						 sv_3rdparty_name,
-						 sv_model_service',
+						'tx_civserv_service.uid, 
+						 tx_civserv_service.pid, 
+						 tx_civserv_service.sv_name, 
+						 tx_civserv_service.sv_descr_short, 
+						 tx_civserv_service.sv_descr_long, 
+						 tx_civserv_service.sv_image, 
+						 tx_civserv_service.sv_image_text, 
+						 tx_civserv_service.sv_fees, 
+						 tx_civserv_service.sv_documents, 
+						 tx_civserv_service.sv_legal_local, 
+						 tx_civserv_service.sv_legal_global, 
+						 tx_civserv_service.sv_3rdparty_checkbox, 
+						 tx_civserv_service.sv_3rdparty_link, 
+						 tx_civserv_service.sv_3rdparty_name,
+						 tx_civserv_service.sv_model_service',
 						'tx_civserv_service',
-						'deleted = 0 
-						 AND hidden = 0 
-						 AND uid = ' . intval($uid) . '',
+						'1 '.
+						$this->cObj->enableFields('tx_civserv_service').
+						' AND uid = ' . intval($uid),
 						'',
 						'',
 						'');
@@ -2751,18 +2819,21 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		// Standard query for employee details --> table tx_civserv_employee
 		$res_common = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'uid, 
-						 em_address, 
-						 em_title, 
-						 em_name, 
-						 em_firstname, 
-						 em_telephone, 
-						 em_fax, 
-						 em_email, 
-						 em_image, 
-						 em_datasec',
+						'tx_civserv_employee.uid, 
+						 tx_civserv_employee.em_address, 
+						 tx_civserv_employee.em_title, 
+						 tx_civserv_employee.em_name, 
+						 tx_civserv_employee.em_firstname, 
+						 tx_civserv_employee.em_telephone, 
+						 tx_civserv_employee.em_fax, 
+						 tx_civserv_employee.em_email, 
+						 tx_civserv_employee.em_image, 
+						 tx_civserv_employee.em_datasec',
 						'tx_civserv_employee',
-						'deleted = 0 AND hidden = 0 AND uid='.$uid.' AND em_datasec=1',
+						'1 '.
+						$this->cObj->enableFields('tx_civserv_employee').
+						' AND uid='.$uid.' 
+						AND em_datasec=1',
 						'',
 						'',
 						'');
@@ -2775,19 +2846,19 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Query for employee office hours
 		$res_emp_hours = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-					'oh_start_morning, 
-					 oh_end_morning, 
-					 oh_start_afternoon, 
-					 oh_end_afternoon, 
-					 oh_manual_checkbox,
-					 oh_freestyle, 
-					 oh_weekday',
+					'tx_civserv_officehours.oh_start_morning, 
+					 tx_civserv_officehours.oh_end_morning, 
+					 tx_civserv_officehours.oh_start_afternoon, 
+					 tx_civserv_officehours.oh_end_afternoon, 
+					 tx_civserv_officehours.oh_manual_checkbox,
+					 tx_civserv_officehours.oh_freestyle, 
+					 tx_civserv_officehours.oh_weekday',
 					'tx_civserv_employee',
 					'tx_civserv_employee_em_hours_mm',
 					'tx_civserv_officehours',
-					'AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
-					 AND tx_civserv_officehours.deleted = 0 AND tx_civserv_officehours.hidden = 0
-					 AND tx_civserv_employee.uid = ' . $uid,
+					$this->cObj->enableFields('tx_civserv_employee').
+					$this->cObj->enableFields('tx_civserv_officehours').
+					' AND tx_civserv_employee.uid = ' . $uid,
 					'',
 					'oh_weekday',
 					'');
@@ -2797,22 +2868,23 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 			// Query for employee-position office hours
 			$res_emp_pos_hours = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'oh_start_morning, 
-					 oh_end_morning, 
-					 oh_start_afternoon, 
-					 oh_end_afternoon, 
-					 oh_manual_checkbox,
-					 oh_freestyle, 
-					 oh_weekday',
+					'tx_civserv_officehours.oh_start_morning, 
+					 tx_civserv_officehours.oh_end_morning, 
+					 tx_civserv_officehours.oh_start_afternoon, 
+					 tx_civserv_officehours.oh_end_afternoon, 
+					 tx_civserv_officehours.oh_manual_checkbox,
+					 tx_civserv_officehours.oh_freestyle, 
+					 tx_civserv_officehours.oh_weekday',
 					'tx_civserv_employee, 
 					 tx_civserv_position, 
 					 tx_civserv_officehours, 
 					 tx_civserv_employee_em_position_mm, 
 					 tx_civserv_officehours_oep_employee_em_position_mm_mm',
-					'tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
-					 AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
-					 AND tx_civserv_officehours.deleted = 0 AND tx_civserv_officehours.hidden = 0
-					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
+					'1 '.
+					$this->cObj->enableFields('tx_civserv_employee').
+					$this->cObj->enableFields('tx_civserv_position').
+					$this->cObj->enableFields('tx_civserv_officehours').
+					' AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 					 AND tx_civserv_position.uid = tx_civserv_employee_em_position_mm.uid_foreign
 					 AND tx_civserv_employee_em_position_mm.uid = tx_civserv_officehours_oep_employee_em_position_mm_mm.uid_local
 					 AND tx_civserv_officehours.uid = tx_civserv_officehours_oep_employee_em_position_mm_mm.uid_foreign
@@ -2825,13 +2897,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 			// 1. will only return result if position occupied by employee has relation to organisation
 			// 2. ignores direct employee-organisation-relations (leader of the pack....)
 			$res_emp_org_hours = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'oh_start_morning, 
-					 oh_end_morning, 
-					 oh_start_afternoon, 
-					 oh_end_afternoon,
-					 oh_manual_checkbox, 
-					 oh_freestyle, 
-					 oh_weekday',
+					'tx_civserv_officehours.oh_start_morning, 
+					 tx_civserv_officehours.oh_end_morning, 
+					 tx_civserv_officehours.oh_start_afternoon, 
+					 tx_civserv_officehours.oh_end_afternoon,
+					 tx_civserv_officehours.oh_manual_checkbox, 
+					 tx_civserv_officehours.oh_freestyle, 
+					 tx_civserv_officehours.oh_weekday',
 					'tx_civserv_employee, 
 					 tx_civserv_organisation, 
 					 tx_civserv_position, 
@@ -2839,17 +2911,20 @@ class tx_civserv_pi1 extends tslib_pibase {
 					 tx_civserv_employee_em_position_mm, 
 					 tx_civserv_position_po_organisation_mm, 
 					 tx_civserv_organisation_or_hours_mm',
-					'tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
-					 AND tx_civserv_officehours.deleted = 0 AND tx_civserv_officehours.hidden = 0
-					 AND tx_civserv_position.deleted = 0 AND tx_civserv_organisation.hidden = 0
-					 AND tx_civserv_employee.deleted = 0 AND tx_civserv_officehours.hidden = 0
-					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
+					'1 '.
+					$this->cObj->enableFields('tx_civserv_organisation').
+					$this->cObj->enableFields('tx_civserv_officehours').
+					$this->cObj->enableFields('tx_civserv_position').
+					$this->cObj->enableFields('tx_civserv_officehours').
+					' AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 					 AND tx_civserv_position.uid = tx_civserv_employee_em_position_mm.uid_foreign
 					 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
 					 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign
 					 AND tx_civserv_organisation.uid = tx_civserv_organisation_or_hours_mm.uid_local
 					 AND tx_civserv_officehours.uid = tx_civserv_organisation_or_hours_mm.uid_foreign
-					 AND tx_civserv_employee.uid = ' . $uid . ' AND em_datasec = 1 AND tx_civserv_position.uid = ' . $pos_id,
+					 AND tx_civserv_employee.uid = ' . $uid . ' 
+					 AND em_datasec = 1 
+					 AND tx_civserv_position.uid = ' . $pos_id,
 					'',
 					'oh_weekday',
 					'');
@@ -2865,11 +2940,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 				'tx_civserv_position.uid as pos_uid, 
 				 tx_civserv_organisation.uid as or_uid, 
 				 tx_civserv_employee.uid as emp_uid, 
-				 po_name as position, 
-				 ep_telephone as phone, 
-				 ep_fax as fax, 
-				 ep_email as email, 
-				 or_name as organisation',
+				 tx_civserv_position.po_name as position, 
+				 tx_civserv_employee_em_position_mm.ep_telephone as phone, 
+				 tx_civserv_employee_em_position_mm.ep_fax as fax, 
+				 tx_civserv_employee_em_position_mm.ep_email as email, 
+				 tx_civserv_organisation.or_name as organisation',
 				'tx_civserv_employee, 
 				 tx_civserv_position, 
 				 tx_civserv_organisation, 
@@ -2877,11 +2952,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 				 tx_civserv_position_po_organisation_mm',
 				'tx_civserv_employee.uid='.$uid.' 
 				 AND em_datasec=1 
-				 AND tx_civserv_position.uid = '.$pos_id.'
-				 AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
-				 AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
-				 AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
-				 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
+				 AND tx_civserv_position.uid = '.$pos_id.
+				$this->cObj->enableFields('tx_civserv_organisation').
+				$this->cObj->enableFields('tx_civserv_employee').
+				$this->cObj->enableFields('tx_civserv_position').
+				 ' AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 				 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
 				 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
 				 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign',
@@ -2890,10 +2965,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 				'');
 
 			$res_room = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'bl_name as building, 
-					 bl_name_to_show as building_to_show,
-					 fl_descr as floor, 
-					 ro_name as room', 
+					'tx_civserv_building.bl_name as building, 
+					 tx_civserv_building.bl_name_to_show as building_to_show,
+					 tx_civserv_floor.fl_descr as floor, 
+					 tx_civserv_room.ro_name as room', 
 					'tx_civserv_employee, 
 					 tx_civserv_position, 
 					 tx_civserv_room, 
@@ -2903,12 +2978,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 					 tx_civserv_building_bl_floor_mm', 
 					'tx_civserv_employee.uid='.$uid.' 
 					 AND em_datasec=1 
-					 AND tx_civserv_position.uid = '.$pos_id.'
-					 AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
-					 AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
-					 AND tx_civserv_room.deleted = 0 AND tx_civserv_room.hidden = 0
-					 AND tx_civserv_floor.deleted = 0 AND tx_civserv_floor.hidden = 0
-					 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
+					 AND tx_civserv_position.uid = '.$pos_id.
+					$this->cObj->enableFields('tx_civserv_employee').
+					$this->cObj->enableFields('tx_civserv_position').
+					$this->cObj->enableFields('tx_civserv_room').
+					$this->cObj->enableFields('tx_civserv_floor').
+					 ' AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
 					 AND tx_civserv_employee_em_position_mm.ep_room = tx_civserv_room.uid
 					 AND tx_civserv_building.uid = tx_civserv_building_bl_floor_mm.uid_local
@@ -3073,29 +3148,38 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// Standard query for organisation details
 		// test bk: include or_show_supervisor
 		$res_common = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'uid, 
-						 or_name,
-						 or_telephone,
-						 or_fax,
-						 or_email,
-						 or_image,
-						 or_infopage,
-						 or_addinfo, 
-						 or_addlocation,
-						 or_show_supervisor',
+						'tx_civserv_organisation.uid, 
+						 tx_civserv_organisation.or_name,
+						 tx_civserv_organisation.or_telephone,
+						 tx_civserv_organisation.or_fax,
+						 tx_civserv_organisation.or_email,
+						 tx_civserv_organisation.or_image,
+						 tx_civserv_organisation.or_infopage,
+						 tx_civserv_organisation.or_addinfo, 
+						 tx_civserv_organisation.or_addlocation,
+						 tx_civserv_organisation.or_show_supervisor',
 						'tx_civserv_organisation',
-						'deleted = 0 AND hidden = 0 AND uid='.$uid,
+						'1 '.
+						$this->cObj->enableFields('tx_civserv_organisation').
+						' AND uid='.$uid,
 						'',
 						'',
 						'');
 
 		//Query for supervisor of organisation
 		$res_supervisor = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'tx_civserv_employee.uid as uid, em_title, em_name, em_firstname, em_address, em_datasec',
-						'tx_civserv_organisation, tx_civserv_employee',
-						'tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
-						 AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
-						 AND tx_civserv_organisation.or_supervisor = tx_civserv_employee.uid
+						'tx_civserv_employee.uid as uid, 
+						 tx_civserv_employee.em_title, 
+						 tx_civserv_employee.em_name, 
+						 tx_civserv_employee.em_firstname, 
+						 tx_civserv_employee.em_address, 
+						 tx_civserv_employee.em_datasec',
+						'tx_civserv_organisation, 
+						 tx_civserv_employee',
+						'1 '.
+						$this->cObj->enableFields('tx_civserv_organisation').
+						$this->cObj->enableFields('tx_civserv_employee').
+						 ' AND tx_civserv_organisation.or_supervisor = tx_civserv_employee.uid
 						 AND tx_civserv_organisation.uid='.$uid,
 						'',
 						'',
@@ -3103,12 +3187,23 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Query for supervisor of organisation (depending on position)
 		$res_pos_supervisor = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'tx_civserv_employee.uid as uid, tx_civserv_position.uid as pos_uid, em_title, em_name, em_firstname, em_address, em_datasec',
-						'tx_civserv_organisation, tx_civserv_employee, tx_civserv_position, tx_civserv_employee_em_position_mm, tx_civserv_position_po_organisation_mm',
-						'tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
-						 AND tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0
-						 AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
-						 AND tx_civserv_organisation.or_supervisor = tx_civserv_employee.uid
+						'tx_civserv_employee.uid as uid, 
+						 tx_civserv_position.uid as pos_uid, 
+						 em_title, 
+						 em_name, 
+						 em_firstname, 
+						 em_address, 
+						 em_datasec',
+						'tx_civserv_organisation, 
+						tx_civserv_employee, 
+						tx_civserv_position, 
+						tx_civserv_employee_em_position_mm, 
+						tx_civserv_position_po_organisation_mm',
+						'1 '.
+						$this->cObj->enableFields('tx_civserv_organisation').
+						$this->cObj->enableFields('tx_civserv_employee').
+						$this->cObj->enableFields('tx_civserv_position').
+						' AND tx_civserv_organisation.or_supervisor = tx_civserv_employee.uid
 						 AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 						 AND tx_civserv_position.uid = tx_civserv_employee_em_position_mm.uid_foreign
 						 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
@@ -3137,9 +3232,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_organisation',
 						'tx_civserv_organisation_or_building_mm',
 						'tx_civserv_building',
-						'AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
-						 AND tx_civserv_building.deleted = 0 AND tx_civserv_building.hidden = 0
-						 AND tx_civserv_organisation.uid = ' . $uid,
+						$this->cObj->enableFields('tx_civserv_organisation').
+						$this->cObj->enableFields('tx_civserv_building').
+						' AND tx_civserv_organisation.uid = ' . $uid,
 						'',
 						'',
 						'');
@@ -3156,9 +3251,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_organisation',
 						'tx_civserv_organisation_or_hours_mm',
 						'tx_civserv_officehours',
-						'AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
-						 AND tx_civserv_officehours.deleted = 0 AND tx_civserv_officehours.hidden = 0
-						 AND tx_civserv_organisation.uid = ' . $uid,
+						$this->cObj->enableFields('tx_civserv_organisation').
+						$this->cObj->enableFields('tx_civserv_officehours').
+						' AND tx_civserv_organisation.uid = ' . $uid,
 						'',
 						'oh_weekday',
 						'');
@@ -3169,12 +3264,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// they will be exposed somewhere in the organisation_detail page
 		$sub_organisations=array();
 		$res_sub_org = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'uid, or_name',
-						'tx_civserv_organisation, tx_civserv_organisation_or_structure_mm',
-						'tx_civserv_organisation_or_structure_mm.uid_local = tx_civserv_organisation.uid and
-						 tx_civserv_organisation_or_structure_mm.uid_foreign = '.$organisation_rows['uid'].' and
-						 tx_civserv_organisation.deleted = 0 and
-						 tx_civserv_organisation.hidden = 0',
+						'uid, 
+						 or_name',
+						'tx_civserv_organisation, 
+						 tx_civserv_organisation_or_structure_mm',
+						'tx_civserv_organisation_or_structure_mm.uid_local = tx_civserv_organisation.uid
+						 AND tx_civserv_organisation_or_structure_mm.uid_foreign = '.$organisation_rows['uid'].
+						 $this->cObj->enableFields('tx_civserv_organisation'),
 						'',
 						'tx_civserv_organisation.sorting', //Order by
 						'');				
@@ -3191,13 +3287,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// they will be exposed somewhere in the organisation_detail page
 		$super_organisation=array();
 		$res_super_org = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'uid, or_name',
-						'tx_civserv_organisation, tx_civserv_organisation_or_structure_mm',
-						'tx_civserv_organisation_or_structure_mm.uid_local = '.$organisation_rows['uid'].' and
-						 tx_civserv_organisation_or_structure_mm.uid_foreign = tx_civserv_organisation.uid and
-						 tx_civserv_organisation.uid!='.$this->community['organisation_uid'].' AND
-						 tx_civserv_organisation.deleted = 0 and
-						 tx_civserv_organisation.hidden = 0',
+						'uid, 
+						 or_name',
+						'tx_civserv_organisation, 
+						 tx_civserv_organisation_or_structure_mm',
+						'tx_civserv_organisation_or_structure_mm.uid_local = '.$organisation_rows['uid'].'
+						 AND tx_civserv_organisation_or_structure_mm.uid_foreign = tx_civserv_organisation.uid
+						 AND tx_civserv_organisation.uid!='.$this->community['organisation_uid'].
+						 $this->cObj->enableFields('tx_civserv_organisation'),
 						'',
 						'tx_civserv_organisation.sorting', //Order by
 						'');				
@@ -3231,6 +3328,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$pidListAll = $this->community['pidlist'];				//Get pidlist for current mandant
 		$pidListAll = t3lib_div::intExplode(',',$pidListAll);	//Parse pidlist and store int values in array
 		
+
 		$smartyOrganisation->assign('or_infopage',$this->cObj->typoLink_URL(array(parameter => $organisation_rows['or_infopage'])));
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($res_pos_supervisor) != 0) {
@@ -3244,28 +3342,28 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//test bk:
 		//if there is more than one building assigned to the organisation, try to single out the one where the supervisor 'lives'
 		//this is the default behaviour with more than one buildings, for the exception see below
+		
+		//knallt es hier???
+		
 		if($pos_id > '' && $orga_bl_count > 1 ){
 			$res_bl_supervisor = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					$select_building,
-					'tx_civserv_organisation, 
+					   'tx_civserv_organisation, 
 						tx_civserv_organisation_or_building_mm, 
 						tx_civserv_building,
 						tx_civserv_employee_em_position_mm,
 						tx_civserv_room,
 						tx_civserv_building_bl_floor_mm',
-					'tx_civserv_organisation_or_building_mm.uid_local = tx_civserv_organisation.uid AND
-						tx_civserv_organisation_or_building_mm.uid_foreign = tx_civserv_building.uid AND
-						tx_civserv_organisation.deleted = 0 AND 
-						tx_civserv_organisation.hidden = 0 AND 
-						tx_civserv_building.deleted = 0 AND 
-						tx_civserv_building.hidden = 0 AND 
-						tx_civserv_employee_em_position_mm.deleted = 0 AND 
-						tx_civserv_employee_em_position_mm.hidden = 0 AND 
-						tx_civserv_organisation.or_supervisor = '.$organisation_supervisor['uid'].' AND
-						tx_civserv_employee_em_position_mm.uid_foreign = '.$pos_id.' AND
-						tx_civserv_employee_em_position_mm.ep_room = tx_civserv_room.uid AND
-						tx_civserv_room.rbf_building_bl_floor =  tx_civserv_building_bl_floor_mm.uid AND
-						tx_civserv_building.uid = tx_civserv_building_bl_floor_mm.uid_local',
+					   'tx_civserv_organisation_or_building_mm.uid_local = tx_civserv_organisation.uid 
+					   AND tx_civserv_organisation_or_building_mm.uid_foreign = tx_civserv_building.uid '.
+						$this->cObj->enableFields('tx_civserv_organisation').
+						$this->cObj->enableFields('tx_civserv_building').
+						$this->cObj->enableFields('tx_civserv_employee_em_position_mm').		//aua???			   
+						' AND tx_civserv_organisation.or_supervisor = '.$organisation_supervisor['uid'].' 
+						AND	tx_civserv_employee_em_position_mm.uid_foreign = '.$pos_id.' 
+						AND	tx_civserv_employee_em_position_mm.ep_room = tx_civserv_room.uid 
+						AND	tx_civserv_room.rbf_building_bl_floor =  tx_civserv_building_bl_floor_mm.uid 
+						AND	tx_civserv_building.uid = tx_civserv_building_bl_floor_mm.uid_local',
 					'',
 					'',
 					'');
@@ -3286,9 +3384,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_organisation',
 						'tx_civserv_organisation_or_building_to_show_mm', //!!!
 						'tx_civserv_building',
-						'AND tx_civserv_organisation.deleted = 0 AND tx_civserv_organisation.hidden = 0
-						 AND tx_civserv_building.deleted = 0 AND tx_civserv_building.hidden = 0
-						 AND tx_civserv_organisation.uid = ' . $uid,
+						$this->cObj->enableFields('tx_civserv_organisation').
+						$this->cObj->enableFields('tx_civserv_building').
+						' AND tx_civserv_organisation.uid = ' . $uid,
 						'',
 						'',
 						'');
@@ -3446,7 +3544,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'*',
 						'tx_civserv_conf_mandant',
-						'deleted = 0 AND hidden = 0',
+						'1 '.
+						$this->cObj->enableFields('tx_civserv_conf_mandant'),
 						'',
 						'cm_community_name');
 
@@ -3505,8 +3604,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'cm_community_name',
 						'tx_civserv_conf_mandant',
-						'deleted = 0 AND hidden = 0
-						 AND cm_community_id = '.$community_id);
+						'1 '.
+						$this->cObj->enableFields('tx_civserv_conf_mandant').
+						' AND cm_community_id = '.$community_id,
+						'',
+						'');
 			if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$content = $row['cm_community_name'];
 			}
@@ -3548,7 +3650,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 								'cm_page_uid, cm_search_uid',
 								'tx_civserv_conf_mandant',
-								'deleted = 0 AND hidden = 0');
+								'1 '.
+								$this->cObj->enableFields('tx_civserv_conf_mandant'),
+								'',
+								'');
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
 			//feed the link with the id of the frontend-page (and never with the id of the search-page)!!
 			if ($pageid == $row['cm_search_uid']){
@@ -3779,9 +3884,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 		if (!empty($org_id)) {	//Email form is called from organisation detail page (organisation email)
 			//Standard query for organisation details
 			$res_organisation = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'or_name, or_email',
+					'or_name, 
+					 or_email',
 					'tx_civserv_organisation',
-					'deleted = 0 AND hidden = 0 AND uid = ' . $this->piVars[org_id]);
+					'1 '.
+					$this->cObj->enableFields('tx_civserv_organisation').
+					' AND uid = ' . $this->piVars[org_id],
+					'',
+					'');
 
 			//Check if query returned a result
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($res_organisation) == 1) {
@@ -3841,15 +3951,19 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		if (!empty($emp_id) && !empty($pos_id) && !empty($sv_id)) {	//Email form is called from service detail page
 			$querypart_select = ', ep_email';
-			$querypart_from = ', tx_civserv_service, tx_civserv_service_sv_position_mm, tx_civserv_position, tx_civserv_employee_em_position_mm';
-			$querypart_where = ' AND tx_civserv_service.uid = ' . $sv_id . ' AND tx_civserv_employee.uid = ' . $emp_id . ' AND tx_civserv_position.uid = ' . $pos_id . '
-								AND tx_civserv_service.deleted = 0 AND tx_civserv_service.hidden = 0
-								AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
-								AND tx_civserv_employee_em_position_mm.deleted = 0 AND tx_civserv_employee_em_position_mm.hidden = 0
-								AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime)
-						 	 		OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime=0))
-						 	  		OR (tx_civserv_service.starttime=0 AND tx_civserv_service.endtime=0) )
-						 	  	AND tx_civserv_service.uid = tx_civserv_service_sv_position_mm.uid_local
+			
+			$querypart_from = ', tx_civserv_service, 
+							   tx_civserv_service_sv_position_mm, 
+							   tx_civserv_position, 
+							   tx_civserv_employee_em_position_mm';
+							   
+			$querypart_where = ' AND tx_civserv_service.uid = ' . $sv_id . ' 
+								AND tx_civserv_employee.uid = ' . $emp_id . ' 
+								AND tx_civserv_position.uid = ' . $pos_id . 
+								$this->cObj->enableFields('tx_civserv_service').
+								$this->cObj->enableFields('tx_civserv_position').
+								$this->cObj->enableFields('tx_civserv_employee_em_position_mm'). //aua?
+						 	  	' AND tx_civserv_service.uid = tx_civserv_service_sv_position_mm.uid_local
 								AND tx_civserv_service_sv_position_mm.uid_foreign = tx_civserv_position.uid
 								AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 						 		AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid';
@@ -3861,18 +3975,23 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		if ((!empty($pos_id) && !empty($emp_id)) && empty($sv_id)) {  //Email form is called from organisation detail page (supervisor email)
 			$querypart_select = ', ep_email';
-			$querypart_from = ', tx_civserv_position, tx_civserv_employee_em_position_mm';
-			$querypart_where = ' AND tx_civserv_employee.uid = ' . $emp_id . ' AND tx_civserv_position.uid = ' . $pos_id . '
-								AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
-								AND tx_civserv_employee_em_position_mm.deleted = 0 AND tx_civserv_employee_em_position_mm.hidden = 0
-								AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
+			$querypart_from = ', tx_civserv_position, 
+							   tx_civserv_employee_em_position_mm';
+			$querypart_where = ' AND tx_civserv_employee.uid = ' . $emp_id . ' 
+								AND tx_civserv_position.uid = ' . $pos_id . 
+								$this->cObj->enableFields('tx_civserv_position').
+								$this->cObj->enableFields('tx_civserv_employee_em_position_mm'). //aua?								
+								' AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 						 		AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid';
 		}
 
 		$res_employee = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-						'em_email, em_datasec as datasec' . $querypart_select,
+						'em_email, 
+						 em_datasec as datasec' . $querypart_select,
 						'tx_civserv_employee' . $querypart_from,
-						'tx_civserv_employee.deleted = 0 AND tx_civserv_employee.hidden = 0 '.$querypart_where,
+						'1 '.
+						$this->cObj->enableFields('tx_civserv_employee').
+						$querypart_where,
 						'',
 						'',
 						'');
@@ -3939,15 +4058,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 							'tx_civserv_service',
 							'tx_civserv_service_sv_form_mm',
 							'tx_civserv_form',
-							'AND tx_civserv_form.uid = ' . $debit_form_uid . '
-							 AND tx_civserv_service.deleted = 0 AND tx_civserv_service.hidden = 0
-							 AND tx_civserv_form.deleted = 0 AND tx_civserv_form.hidden = 0
-							 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime)
-							 	  OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_service.starttime) AND (tx_civserv_service.endtime=0))
-							 	  OR (tx_civserv_service.starttime=0 AND tx_civserv_service.endtime=0) )
-							 AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_form.starttime AND tx_civserv_form.endtime)
-							 	  OR ((UNIX_TIMESTAMP(LOCALTIMESTAMP) > tx_civserv_form.starttime) AND (tx_civserv_form.endtime=0))
-							 	  OR (tx_civserv_form.starttime=0 AND tx_civserv_form.endtime=0) )',
+							'AND tx_civserv_form.uid = ' . $debit_form_uid . 
+							$this->cObj->enableFields('tx_civserv_service').
+							$this->cObj->enableFields('tx_civserv_form'),
 							'',
 							'name',	//ORDER BY
 							'');
@@ -4273,6 +4386,15 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//  $this->pi_classParam('searchbox-sword') contains the markup for css: 'class="tx-civserv-pi1-searchbox-sword"'
 		$search_word=$this->check_searchword(strip_tags($this->piVars['sword']));  //strip and check to avoid xss-exploits
 
+		if(		$TYPO3_CONF_VARS['BE']['forceCharset'] == 'utf-8' ||
+				$GLOBALS['TSFE']->metaCharset == 'utf-8' ||
+				$GLOBALS['TSFE']->renderCharset == 'utf-8' ){
+			$search_word = htmlentities($search_word, ENT_COMPAT, 'UTF-8');
+		}else{
+			$search_word = htmlentities($search_word);
+		}
+
+
 		$sBox = '
 
 		<!--
@@ -4287,7 +4409,7 @@ class tx_civserv_pi1 extends tslib_pibase {
             				<p><label for="query" title="' . $this->pi_getLL('pi_list_searchBox_searchkey','Please enter here your search key') . '">' .
             					($header?'<strong>' . $this->pi_getLL('pi_list_searchBox_header','Keyword search') . ':</strong><br />':'') .
             				'</label></p>
-           					<input type="text" name="' . $this->prefixId . '[sword]" id="query" class="searchkey" size="16" maxlength="60" value="' . htmlentities($search_word) . '"' . $this->pi_classParam('searchbox-sword') . ' onblur="if(this.value==\'\') this.value=\'' . htmlentities($search_word) . '\';" onfocus="if(this.value==\'' . $this->pi_getLL('pi_list_searchBox_defaultValue','search item') . '\') this.value=\'\';" />
+           					<input type="text" name="' . $this->prefixId . '[sword]" id="query" class="searchkey" size="16" maxlength="60" value="' . $search_word . '"' . $this->pi_classParam('searchbox-sword') . ' onblur="if(this.value==\'\') this.value=\'' . $search_word . '\';" onfocus="if(this.value==\'' . $this->pi_getLL('pi_list_searchBox_defaultValue','search item') . '\') this.value=\'\';" />
             				<input type="submit" value="' . $this->pi_getLL('pi_list_searchBox_search','Search',TRUE) . '"' . $this->pi_classParam('searchbox-button') . ' accesskey="S" title="' . $this->pi_getLL('pi_list_searchBox_submit','Klick here, to submit the search query') . '"/>
             				<input type="hidden" name="no_cache" value="1" />
             				<input type="hidden" name="'.$this->prefixId.'[pointer]" value="" />
@@ -4427,10 +4549,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$pageid = $GLOBALS['TSFE']->id;
 		}
 
+		debug($conf, 'bloody conf');
+
+
 		// Start or resume session
 		session_name($this->extKey);
 		session_start();
-		#session_destroy();
+#		session_destroy();
 		// Save community id in session, to ensure that the id is also saved when vititing sites without the civserv extension (e.g. fulltext search)
 		if ($_SESSION['community_id'] <= '' || intval($_SESSION['community_id']) !== intval($this->conf['_DEFAULT_PI_VARS.']['community_id'])) {
 #			$_SESSION['community_id'] = $this->piVars['community_id'];
@@ -4508,6 +4633,22 @@ class tx_civserv_pi1 extends tslib_pibase {
 							'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.fulltext_search','Fulltext Search'),
 							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(),0,1,$conf['fulltext_search_id']),
 							'ITEM_STATE' => ($GLOBALS['TSFE']->id == $conf['fulltext_search_id'])?'ACT':'NO');
+		}
+		// get id of login-page from TSconfig
+		#if (intval($conf['login_page_id']) > 0) {
+		if (1==1) {
+		/*
+			$menuArray['menuLogin'] = array(
+							'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.login','Login'),
+							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(),0,1,$conf['login_page_id']),
+							'ITEM_STATE' => ($GLOBALS['TSFE']->id == $conf['login_page_id'])?'ACT':'NO');
+		*/
+			$menuArray['menuLogin'] = array(
+							'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.login','Login'),
+							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(),0,1,1450),
+							'ITEM_STATE' => ($GLOBALS['TSFE']->id == 1450)?'ACT':'NO');
+		
+		
 		}
 		// get id for alternative language from TSconfig
 		if (intval($conf['alternative_page_id']) > 0) {
@@ -4654,9 +4795,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// try home-made getPidList-Funktion instead.
 		// identify it actual page is child of info_folder_uid
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'pid',			 							// SELECT ...
+			'pages.pid',			 							// SELECT ...
 			'pages',									// FROM ...
-			'uid = '.$pageid.' AND deleted = 0 AND hidden = 0',	// AND title LIKE "%blabla%"', // WHERE...
+			'pages.uid = '.$pageid.
+			$this->cObj->enableFields('pages'),			// WHERE
 			'', 										// GROUP BY...
 			'',   										// ORDER BY...
 			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
@@ -4748,7 +4890,15 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 ********************************************/
 	function check_searchword($string){
 		//white list
-		$searchword_pattern = '/^[A-Za-z0-9ÄäÖöÜüß\- ]*$/';
+		if(		$TYPO3_CONF_VARS['BE']['forceCharset'] == 'utf-8' ||
+				$GLOBALS['TSFE']->metaCharset == 'utf-8' ||
+				$GLOBALS['TSFE']->renderCharset == 'utf-8' ){
+			$searchword_pattern = utf8_encode('/^[A-Za-z0-9ÄäÖöÜüß\- ]*$/');
+		}else{
+			$searchword_pattern = '/^[A-Za-z0-9ÄäÖöÜüß\- ]*$/';
+		}
+		
+
 		if(!preg_match($searchword_pattern, $string)){
 			//collect all occurring illegal characters
 			#$arr_bad_chars=array();
@@ -4819,9 +4969,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 			while ($row = mysql_fetch_array($result, MYSQL_NUM)) {
 			$parent_list[]=$row[0];
 			$res2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'pid',			 							// SELECT ...
+				'pages.pid',			 							// SELECT ...
 				'pages',									// FROM ...
-				'uid = '.$row[0].' AND deleted = 0 AND hidden = 0',// AND title LIKE "%blabla%"', // WHERE...
+				'pages.uid = '.$row[0].
+				$this->cObj->enableFields('pages'),
 				'', 										// GROUP BY...
 				'',   										// ORDER BY...
 				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
