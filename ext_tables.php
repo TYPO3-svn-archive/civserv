@@ -134,6 +134,13 @@ t3lib_div::loadTCA("sys_action");
 $TCA['sys_action']['columns']['t1_allowed_groups']['config']['size'] = 10;
 
 
+// extend Typo3 Core:
+// take care that the editors / mandant admins can only choose their OWN fe_group(s), when they create new fe_users!!!
+// this does not really work?!
+t3lib_div::loadTCA("fe_users");
+$TCA['fe_users']['columns']['usergroup']['config']['foreign_table_where'] = "AND fe_groups.pid=###CURRENT_PID###";
+
+
 /**
 * Definition of plug-in "Virtual civil services" aka "Virtuelle Verwaltung".
 * Needed for integration in Frontend.
