@@ -295,6 +295,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			
 			switch($this->piVars['mode']){
 				case 'employee_list_az':
+					$this->piVars['or_uid'] = ''; //reset!
 					$_SESSION['stored_mode'] = 'employee_list_az';
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_employee_list.az','Employees A - Z');
 					$template = $this->conf['tpl_employee_list_az_pi2'];
@@ -307,12 +308,14 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$accurate = $this->employee_list_or_uid($smartyObject,$this->conf['abcBarAtEmployeeList'],$this->conf['searchAtEmployeeList'], $this->conf['topAtEmployeeList']);
 					break;	
 				case 'employee_list_hod':
+					$this->piVars['or_uid'] = ''; //reset!
 					$_SESSION['stored_mode'] = 'employee_list_hod';
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_employee_list.hod','Head(s) of Department');
 					$template = $this->conf['tpl_employee_list_az_pi2'];
 					$accurate = $this->employee_list_hod($smartyObject,$this->conf['abcBarAtEmployeeList'],$this->conf['searchAtEmployeeList'],$this->conf['topAtEmployeeList']);
 					break;				
 				case 'employee_list_search':
+					$this->piVars['or_uid'] = ''; //reset!
 					$_SESSION['stored_mode'] = 'employee_list_search';
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_employee_list.search','Employee-Search');
 					$template = $this->conf['tpl_employee_list_az_pi2'];
@@ -439,11 +442,19 @@ class tx_civserv_pi2 extends tslib_pibase {
 				 
 			while ($emhod_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($emhod_res) ) {
 				$this->assembleOrganisationData($employees[$row['em_uid']]['em_organisations'][$emhod_row['or_uid']], $emhod_row);
+				
+				//Memmingen did not like the pseudo-Positions, so we add the supervisor-Function to the name of the organisation instead
+				// fix me localisation!!!
+				$employees[$row['em_uid']]['em_organisations'][$emhod_row['or_uid']]['or_name'] .= '&nbsp;<span class="supervisor">LEI-TUNG!</span>';
 
+/*
+				// This section used provided pseudo-position for the supervisor-funkction
+				// keep this. we might want to toggle it with the above solution via $conf
 				// if we are explicitely looking for hods, we do not need pseudo - positions
 				if($this->piVars['mode'] !== 'employee_list_hod'){ //safety
 					$employees[$row['em_uid']]['em_organisations'][$emhod_row['or_uid']]['positions'][0][po_nice_name] = $this->pi_getLL('tx_civserv_pi2_employee_list.hod','Head(s) of Department');
 				}
+*/				
 			}
 		
 			// what positions does he occupy??
@@ -542,10 +553,13 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 		
 		
-
-		$smartyEmployeeList->assign('heading', str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list')));
-		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi2_employee_list.available_employees','Here you find the following employees'));
-		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true, '', ' '.$this->conf['abcSpacer'].' '));
+		if($this->piVars['empossearch'] > ''){
+			$smartyEmployeeList->assign('heading', str_replace('###SEARCHWORD###', $this->piVars['empossearch'], $this->pi_getLL('tx_civserv_pi2_employee_list.heading_searchmode', 'extended employee_list')));
+		}else{
+			$smartyEmployeeList->assign('heading', str_replace('###FILTER###', ', '.$this->piVars['char'], str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list'))));
+		}
+		$smartyEmployeeList->assign('subheading', $this->pi_getLL('tx_civserv_pi2_employee_list.available_employees','Here you find the following employees'));
+		$smartyEmployeeList->assign('pagebar', $this->pi_list_browseresults(true, '', ' '.$this->conf['abcSpacer'].' '));
 		// pass the employee-data to the template:
 		$smartyEmployeeList->assign('employees', $employees);
 
@@ -629,6 +643,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 
 		$smartyEmployeeList->assign('heading', str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list')));
+		$smartyEmployeeList->assign('heading', str_replace('###FILTER###', '', str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list'))));
+
 		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi2_employee_list.available_employees','Here you find the following employees'));
 		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true, '', ' '.$this->conf['abcSpacer'].' '));
 		// pass the employee-data to the template:
@@ -671,6 +687,9 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @return	[type]		...
 	 */
 	function employee_list_or_uid(&$smartyEmployeeList, $abcBar=false, $searchBox=false, $topList=false){
+		//don't act on wrong assumptions.....
+		#if($this->piVars['or_uid'] == '' || intval($this->piVars['or_uid']) <= 0) return true; // no error but no list either
+
 		// Die Funktion makeEmployeeListQueryAZ liefert alle Mitarbeiter, die.....
 		// die Query enthälten Daten über den Mitarbeiter, die Stelle und die Mitarbeiter_Stellen_zuordnung (raum etc)
 		$query = $this->makeEmployeeListQueryOrUid($this->piVars['or_uid']);//or_uid is transmitted by the select-box
@@ -681,8 +700,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		//hier ist die musik!
 		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db, $query);
+		#$res_employes = mysql_query($query);
 		$organisations = array();
-
 		
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
 			//das funktioniert natürlich nur, wenn das resultset nach organisationen sortiert ist!!!
@@ -690,6 +709,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 				//duuno
 			}else{
 				$organisations[$row['or_uid']]['or_employees'] = array();
+				$organisations[$row['or_uid']]['or_chief'] = array();
 				
 				//Organisationsdaten aus dem Resultset holen
 				$this->assembleOrganisationData($organisations[$row['or_uid']], $row);
@@ -697,23 +717,44 @@ class tx_civserv_pi2 extends tslib_pibase {
 			
 			
 			if(array_key_exists($row['em_uid'], $organisations[$row['or_uid']]['or_employees'])){
-				//still dunno
+				// do not overwrite it
+			}elseif($row['or_supervisor'] == $row['em_uid']){
+				// do nothing
 			}else{
 				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'] = array();
 		
 				// Mitarbeiter-Daten aus dem Resultset einlesen
 				$this->assembleEmployeeData($organisations[$row['or_uid']]['or_employees'][$row['em_uid']], $row);
-				
-				// is the actual employee head-of-department?
-				// todo
-				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['hod'] = 'HEAD of DEPARTMENT';
+			}
+			
+			if($row['em_uid'] == $row['or_supervisor']){
+				if(array_key_exists($row['em_uid'], $organisations[$row['or_uid']]['or_chief'])){
+					// do not overwrite it
+				}else{
+					//it is possible that the supervisor of an organisation also occupies another postion at this organisation
+					$organisations[$row['or_uid']]['or_chief'][$row['em_uid']]['em_positions'] = array();
+					$this->assembleEmployeeData($organisations[$row['or_uid']]['or_chief'][$row['em_uid']], $row);
+					//fix me localisation
+					$organisations[$row['or_uid']]['or_chief'][$row['em_uid']]['full_name'] .= '&nbsp;<span class="supervisor">LEI-TUNK!</span>';
+				}
+
+				if(array_key_exists($row['po_uid'], $organisations[$row['or_uid']]['or_chief'][$row['em_uid']]['em_positions'])){
+					// do not overwrite it
+				}else{
+					//it is possible that the supervisor of an organisation also occupies another postion at this organisation
+					$this->assemblePositionData($organisations[$row['or_uid']]['or_chief'][$row['em_uid']]['em_positions'][$row['po_uid']], $row);
+					$this->assembleEmployeePositionData($organisations[$row['or_uid']]['or_chief'][$row['em_uid']]['em_positions'][$row['po_uid']], $row);
+				}
+				$this->getBuildingRoomFloor($organisations[$row['or_uid']]['or_chief'][$row['em_uid']]['em_positions'], $row['em_uid'], $row['po_uid']);
 			}
 			
 			
-			//else: which positions does he occupie in that department?
+			//which positions does he occupie in that department?
 			// todo
-			if(array_key_exists($row['po_uid'], $organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'])){
+			if(($row['em_uid'] !== $row['or_supervisor']) && (array_key_exists($row['po_uid'], $organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions']))){
 				//yet no idea
+			}elseif($row['em_uid'] == $row['or_supervisor']){
+				// do nothing
 			}else{
 				// hol die stellen-daten aus dem resultset
 				$this->assemblePositionData($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']], $row);
@@ -723,7 +764,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			}
 			
 			//call for building (by reference)
-			$this->getBuildingRoomFloor($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'], $row['em_uid'], $row['po_uid']);
+			if($row['em_uid'] !== $row['or_supervisor']) $this->getBuildingRoomFloor($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'], $row['em_uid'], $row['po_uid']);
 		} // ende schleife über alle organisationen / mitarbeiter
 
 
@@ -731,22 +772,44 @@ class tx_civserv_pi2 extends tslib_pibase {
 		// 2nd Parameter false for: no_limit
 		// 3rd Parameter true for: select count(*)
 		$row_count = 0;
+		/*
 		$query = $this->makeEmployeeListQueryOrUid($this->piVars['or_uid'], false, true);
-		
-
-
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$row_count += $row['count(*)'];
 		}
+		*/
+		$temp_emp = array();
+		foreach($organisations as $org){
+			foreach($org as $emp){
+				if(is_array($emp) && count($emp) > 0){
+					$row_count += count($emp);
+				}
+			}
+		}
+
 
 		$this->internal['res_count'] = $row_count;
 		$this->internal['results_at_a_time']= $this->conf['employee_per_page'];
 		$this->internal['maxPages'] = $this->conf['max_pages_in_pagebar'];
 		
-		$smartyEmployeeList->assign('heading', str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employeelist')));
+		if($this->piVars['empossearch'] > ''){
+			$smartyEmployeeList->assign('heading', str_replace('###SEARCHWORD###', $this->piVars['empossearch'], $this->pi_getLL('tx_civserv_pi2_employee_list.heading_searchmode', 'extended employee_list')));
+		}elseif($this->piVars['or_uid'] > '' && $this->piVars['or_uid'] == 'all'){
+			//fix me: localisation!!!
+			$smartyEmployeeList->assign('heading', str_replace('###FILTER###', ', '.$this->pi_getLL('tx_civserv_pi2_employee_list.orcode_all_organisations','fucking all organisations'), str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list'))));
+		}elseif($this->piVars['or_uid'] > '' && intval($this->piVars['or_uid']) > 0){
+			$or_name = $this->getOrganisationName(intval($this->piVars['or_uid']));
+			$smartyEmployeeList->assign('heading', str_replace('###FILTER###', ', '.$or_name, str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list'))));
+		}else{
+			$smartyEmployeeList->assign('heading', str_replace('###FILTER###', 'nix ausgewählt', str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list'))));
+		}
 		$smartyEmployeeList->assign('subheading', $this->pi_getLL('tx_civserv_pi2_employee_list.available_employees','Here you find the following employees'));
 		$smartyEmployeeList->assign('pagebar', $this->pi_list_browseresults(true, '', ' '.$this->conf['abcSpacer'].' '));
+
+		debug($organisations, 'the lot');
+
+		
 		// pass the organisation-data to the template
 		$smartyEmployeeList->assign('organisations', $organisations);
 
@@ -845,6 +908,17 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @return	[type]		...
 	 */
 	function makeEmployeeListQueryOrUid($or_uid='all', $limit=true, $count=false) { //do not put the orcode in quotation marks!!
+			$temp_empty_pos = array();
+			foreach($this->basic_tx_civserv_position as $field){
+				#$temp_empty_pos[] = '\'nix\''; //dont't!
+				$temp_empty_pos[] = 0;
+			}
+			
+			$temp_empty_emppos = array();
+			foreach($this->basic_tx_civserv_employee_em_position_mm as $field){
+				#$temp_empty_emppos[] = '\'nix\''; //dont't!
+				$temp_empty_emppos[] = 0;
+			}
 			//diesmal werden die organisationen und die positionen mit abgefragt!!!
 			$fields =   implode(', ', $this->basic_tx_civserv_organisation).', '.
 					   'tx_civserv_organisation.or_supervisor, '.
@@ -875,8 +949,40 @@ class tx_civserv_pi2 extends tslib_pibase {
 			if ($count){
 				$or_code = $GLOBALS['TYPO3_DB']->quoteStr($or_code, 'tx_civserv_organisation');
 				$query = 'Select count(*) from '.$tables.' where '.$conditions;
+				$query .= ' UNION Select count(*)
+						FROM 
+						tx_civserv_employee,
+						tx_civserv_organisation
+						WHERE 
+						tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ')  
+						AND tx_civserv_employee.uid = tx_civserv_organisation.or_supervisor '.
+						($or_uid > '' && $or_uid != 'all' ? ' AND tx_civserv_organisation.uid = '.intval($or_uid).' ' : ''). '
+						AND tx_civserv_organisation.deleted = 0
+						AND tx_civserv_organisation.hidden = 0
+						AND tx_civserv_employee.deleted = 0
+						AND tx_civserv_employee.hidden = 0
+						AND tx_civserv_employee.em_pseudo = 0';
 			} else {
 				$query = 'SELECT '.$fields.' FROM '.$tables.' WHERE '.$conditions;
+				$query .= ' UNION 
+				SELECT '.
+						implode(', ', $this->basic_tx_civserv_organisation).', '.
+					   'tx_civserv_organisation.or_supervisor, '.
+						implode(', ', $this->basic_tx_civserv_employee).', '.
+						implode(', ', $temp_empty_pos).', '.
+						implode(', ', $temp_empty_emppos).'
+				FROM 
+				tx_civserv_employee,
+				tx_civserv_organisation
+				WHERE 
+				tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ')  
+				AND tx_civserv_employee.uid = tx_civserv_organisation.or_supervisor '.
+				($or_uid > '' && $or_uid != 'all' ? ' AND tx_civserv_organisation.uid = '.intval($or_uid).' ' : ''). '
+				AND tx_civserv_organisation.deleted = 0
+				AND tx_civserv_organisation.hidden = 0
+				AND tx_civserv_employee.deleted = 0
+				AND tx_civserv_employee.hidden = 0
+				AND tx_civserv_employee.em_pseudo = 0';
 			}
 
 			if (!$count) {
@@ -893,6 +999,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . $start . ',' . $max;
 				}
 			}
+#			debug($query, 'query aus makeEmployeeListQueryOrUid ');
 			return $query;
 		}
 		
@@ -1125,9 +1232,9 @@ class tx_civserv_pi2 extends tslib_pibase {
 												0
 											); 
 		$abcBar .= '<span class="headofdepartment">';
+		$abcBar .= "\n";
 		if($actual){
 			$abcBar .= '<strong>' .	$hodLink .  '</strong>';
-
 		}else{
 			$abcBar .= $hodLink;
 		}
@@ -1147,63 +1254,83 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 		// adding select for choice of organisatin
 		$abcBar .= '<div id="or_choice">';
+		$abcBar .= "\n";
 		// Formular muss per post abgeschickt werden, sonst kommen die daten gar nicht erst an!!!
 		$abcBar .= '<form method="post" action="'.htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee_list_or_uid'),0,1)).'">';
-#		$abcBar .= '<select name = "'.$this->prefixId.'[or_uid][]">';	//multi-select
-		$abcBar .= '<select name = "'.$this->prefixId.'[or_uid]">';		//single-select
-		$abcBar .= $this->make_or_choice($this->community['organisation_uid'], $or_choice, 0);
+		$abcBar .= "\n";
+		//$this->pi_getLL('tx_civserv_pi2_employee_list.hod','Head(s) of Department');
+		$abcBar .= '<label for="orga_dropdown" class="invisible">'.$this->pi_getLL('tx_civserv_pi2_employee_list.searchform_or_dropdown_label','organisation').'</label>';
+		$abcBar .= "\n";
+#		$abcBar .= '<select name = "'.$this->prefixId.'[or_uid][]" id="orga_dropdown">';	//multi-select
+		$abcBar .= '<select name = "'.$this->prefixId.'[or_uid]" id="orga_dropdown">';		//single-select
+		$abcBar .= "\n";
 		
-		//tx_civserv_pi2_organisation.all
-		if($this->conf['pi2orgaListItemAllOrganisations']){
-			$or_name = $this->pi_getLL('tx_civserv_pi2_organisation.all','all Organisations');
-			$or_uid = 'all';
+		
+		
+		
+		//decide which item to display on the first position
+		if(($this->conf['pi2orgaListItemAllOrganisations'] || $this->piVars['or_uid'] == 'all') && $this->piVars['mode'] == 'employee_list_or_uid' && !$actual){ //krücke
+			$abcBar .= '<option class="level_1" value="all">'.$this->pi_getLL('tx_civserv_pi2_organisation.all','all Organisations').'</option>';
+		}elseif(($this->piVars['or_uid'] > '' && $this->piVars['or_uid'] !== 'all') && $this->piVars['mode'] == 'employee_list_or_uid'){
+			$or_name = $this->getOrganisationName(intval($this->piVars['or_uid']));
+			$abcBar .= '<option class="level_1" selected="selected" value="'.intval($this->piVars['or_uid']).'">'.$or_name.'</option>';
 		}else{
-			$or_name = 'bitte wählen';
-			$or_uid = '';
-		}
-
-		if($this->piVars['or_uid'] > '' && $this->piVars['or_uid'] !== 'all'){
-			$or_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'tx_civserv_organisation.or_code,
-				 tx_civserv_organisation.or_name',
-				'tx_civserv_organisation',
-				'tx_civserv_organisation.uid = '.intval($this->piVars['or_uid'] ).' 
-				 AND tx_civserv_organisation.deleted = 0
-				 AND tx_civserv_organisation.hidden = 0',
-				 '',
-				 '',
-				 '');
-			if ($or_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($or_res) ) {
-				$or_name = $or_row['or_code'].' '.$or_row['or_name'];
-				$or_uid = intval($this->piVars['or_uid']);
-			}
-		}
-		if($or_name > '' && $or_uid > ''){
-			$abcBar .= '<option class="level_1" selected="selected" value="'.$or_uid.'">'.$or_name.'</option>';
+			$this->piVars['or_uid'] = 'mist'; //reset!
+			$abcBar .= '<option class="level_1" value="">'.$this->pi_getLL('tx_civserv_pi2_employee_list.searchform_choose','please choose').'</option>';
 		}
 		$abcBar .= "\n";
-		if(($this->piVars['or_uid'] > '' && $this->piVars['or_uid'] !== 'all') && $this->conf['pi2orgaListItemAllOrganisations']){
+		
+		//add all available options
+		$abcBar .= $this->make_or_choice($this->community['organisation_uid'], $or_choice, 0);
+
+		//add search-option 'all' in the end
+		if($this->piVars['or_uid'] !== 'all'){
 			$abcBar .= '<option class="level_1" value="all">'.$this->pi_getLL('tx_civserv_pi2_organisation.all','all Organisations').'</option>';
 		}
+
+		
 		$abcBar .= '</select>';
-		$abcBar .= '<input type="submit" value="senden" />';
+		$abcBar .= "\n";
+		$abcBar .= '<input type="submit" value="'.$this->pi_getLL('tx_civserv_pi2_employee_list.searchform_send','send').'" id="absenden" />';
+		$abcBar .= "\n";
 		$abcBar .= '</form>';
+		$abcBar .= "\n";
 		$abcBar .= '</div>';
+		$abcBar .= "\n";
 		
 		
 		// adding input for empossearch
+		$abcBar .= "\n";
 		$abcBar .= '<div id="empossearch">';
+		$abcBar .= "\n";
 		$abcBar .= '<form method="post" action="'.htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee_list_search'),0,1)).'">';
+		$abcBar .= "\n";
+		$abcBar .= '<label for="emloyee_searchfield" class="invisible">'.$this->pi_getLL('tx_civserv_pi2_employee_list.searchform_search_label','search employee').'</label>';
+		$abcBar .= "\n";
 		if($this->piVars['mode'] ==  'employee_list_search'){
-			$abcBar .= '<input type="text" name = "'.$this->prefixId.'[empossearch]" size="10" value="'.htmlentities($this->piVars['empossearch']).'" />';		//??
+			$abcBar .= '<input 	type="text" 
+								name = "'.$this->prefixId.'[empossearch]" 
+								id="emloyee_searchfield" 
+								size="10" 
+								title="'.$this->pi_getLL('tx_civserv_pi2_employee_list.searchform_title','enter searchword here').'" 
+								value="'.htmlentities($this->piVars['empossearch']).'" />';		//??
 		}else{
-		// labels pigetll
-			#$abcBar .= '<input type="text" value="" name = "'.$this->prefixId.'[empossearch]" title="Bitte hier Suchbegriff eingeben" size="10"  />';		//??
-			$abcBar .= '<input type="text" value="Suche..."  name = "'.$this->prefixId.'[empossearch]"  title="Bitte hier Suchbegriff eingeben" size="10"  onblur="if(this.value==\'\')this.value=\'Suche...\';" onfocus="if(this.value==\'Suche...\')this.value=\'\';" />';
+			$abcBar .= '<input	type="text" 
+								name = "'.$this->prefixId.'[empossearch]"
+								id="emloyee_searchfield" 
+								size="10"  
+								title="'.$this->pi_getLL('tx_civserv_pi2_employee_list.searchform_title','enter searchword here').'" 
+								value="'.$this->pi_getLL('tx_civserv_pi2_employee_list.searchform_search_text','search...').'"  
+								onblur="if(this.value==\'\')this.value=\''.$this->pi_getLL('tx_civserv_pi2_employee_list.searchform_search_text','search...').'\';" 
+								onfocus="if(this.value==\''.$this->pi_getLL('tx_civserv_pi2_employee_list.searchform_search_text','search...').'\')this.value=\'\';" />';
 		}
-		$abcBar .= '<input type="submit" name="empossearch" value="go" />';
+		$abcBar .= "\n";
+		$abcBar .= '<input type="submit" name="empossearch"  value="'.$this->pi_getLL('tx_civserv_pi2_employee_list.searchform_submit','go!').'" />';
+		$abcBar .= "\n";
 		$abcBar .= '</form>';
+		$abcBar .= "\n";
 		$abcBar .= '</div>';	
+		$abcBar .= "\n";
 		
 		
 		return $abcBar;
@@ -1272,13 +1399,26 @@ class tx_civserv_pi2 extends tslib_pibase {
 						 AND or2.uid = ormm.uid_foreign
 						 AND or2.uid = ' . intval($uid) ,
 						'',
-						'', //orderby
+						'or1.or_code', //orderby
 						'');
 		//Check if query returned any results
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) > 0) {
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
 				$uid = intval($row['uid']); // or1
-				$or_choice .=  '<option class="level_'.$level.'" value="'.$row['uid'].'">';
+				
+				//check if the given Organisation has any employees at all.....
+				$em_row_count = 0;
+				$em_query = $this->makeEmployeeListQueryOrUid($uid, false, true);
+				$em_res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db, $em_query);
+				while ($em_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($em_res)) {
+					$em_row_count += $em_row['count(*)'];
+				}
+				if($em_row_count > 0){
+					$or_choice .=  '<option class="level_'.$level.'" value="'.$row['uid'].'">';
+				}else{
+					$or_choice .=  '<option disabled="disabled" class="level_'.$level.'" value="'.$row['uid'].'">';
+				}
+				
 				$or_choice .= $row['code'].' '.$row['name'];
 				$or_choice .= "</option>\n";
 
@@ -1775,6 +1915,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		//if there is more than one building assigned to the organisation, try to single out the one where the supervisor 'lives'
 		//this is the default behaviour with more than one buildings, for the exception see below
 		if($pos_id > '' && $orga_bl_count > 1 ){
+
 			$res_bl_supervisor = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					$select_building,
 					'tx_civserv_organisation, 
@@ -2041,7 +2182,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 		#$searchString = ereg_replace('"', '', $searchString);	//Delete quotation marks from search value
 		$searchString = $this->check_searchword(strip_tags($searchString)); //strip and check to avoid xss-exploits
 		if($searchString > '' && preg_match('/'.$searchString.'/i', $row['name'])){ //fixme! nur wenn der mode auch auf suchen stehT
-			$employees['full_name'] = '<strong>'.$row['name'].", ".$row['em_firstname'].'</strong>';
+			//fix me css
+			$employees['full_name'] = '<span class="searchresult">'.$row['name'].", ".$row['em_firstname'].'</span>';
 		}else{
 			$employees['full_name'] = $row['name'].", ".$row['em_firstname'];
 		}
@@ -2095,28 +2237,30 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$organisations['or_fax'] = $row['or_fax'];
 		$organisations['or_telephone'] = $row['or_telephone'];
 		// use this to see which variables are available in the smarty-template
-		debug($organisations);
+#		debug($organisations);
 	}
  
  
  	function assemblePositionData(&$positions, $row){
-		$positions['po_uid'] = $row['po_uid'];
-		$searchString = $this->piVars['empossearch'];
-		$searchString = $this->check_searchword(strip_tags($searchString)); //strip and check to avoid xss-exploits
-		if($searchString > '' && preg_match('/'.$searchString.'/i', $row['po_name'])){
-			$po_name = '<strong>'.$row['po_name'].'</strong>';
-		}else{
-			$po_name = $row['po_name'];
+		if($row['po_uid'] > 0){
+			$positions['po_uid'] = $row['po_uid'];
+			$searchString = $this->piVars['empossearch'];
+			$searchString = $this->check_searchword(strip_tags($searchString)); //strip and check to avoid xss-exploits
+			if($searchString > '' && preg_match('/'.$searchString.'/i', $row['po_name'])){
+				$po_name = '<strong>'.$row['po_name'].'</strong>';
+			}else{
+				$po_name = $row['po_name'];
+			}
+			if($searchString > '' && preg_match('/'.$searchString.'/i', $row['po_nice_name'])){
+				$po_nice_name = '<strong>'.$row['po_nice_name'].'</strong>';
+			}else{
+				$po_nice_name = $row['po_nice_name'];
+			}
+			$positions['po_name'] = $po_name;
+			$positions['po_nice_name'] = $po_nice_name;
+			$positions['po_descr'] = $row['po_descr'];
+			$positions['po_descr'] = $row['po_descr'];
 		}
-		if($searchString > '' && preg_match('/'.$searchString.'/i', $row['po_nice_name'])){
-			$po_nice_name = '<strong>'.$row['po_nice_name'].'</strong>';
-		}else{
-			$po_nice_name = $row['po_nice_name'];
-		}
-		$positions['po_name'] = $po_name;
-		$positions['po_nice_name'] = $po_nice_name;
-		$positions['po_descr'] = $row['po_descr'];
-		$positions['po_descr'] = $row['po_descr'];
 		// use this to see which variables are available in the smarty-template
 #		debug($positions);
 	}
@@ -2124,23 +2268,42 @@ class tx_civserv_pi2 extends tslib_pibase {
  
 	function assembleEmployeePositionData(&$positions, $row){
 		//for convenience we change the prefix ep_ to po_
-		$positions['po_phone'] = $row['ep_telephone'];
-		$positions['po_email'] = $row['ep_email'];
-		$positions['email_code'] = '';
-		if($positions['po_email'] > ''){
-			$positions['email_code'] = $this->cObj->typoLink($positions['po_email'],array(parameter => $positions['po_email'], ATagParams => 'class="email"'));
+		if($row['ep_uid'] > 0){
+			$positions['po_phone'] = $row['ep_telephone'];
+			$positions['po_email'] = $row['ep_email'];
+			$positions['email_code'] = '';
+			if($positions['po_email'] > ''){
+				$positions['email_code'] = $this->cObj->typoLink($positions['po_email'],array(parameter => $positions['po_email'], ATagParams => 'class="email"'));
+			}
+			$positions['po_fax'] = $row['ep_fax'];																		
+			$positions['po_mobile'] = $row['ep_mobile'];	
+			$positions['po_datasec'] = $row['ep_datasec'];
+			$positions['po_label'] = $row['ep_label'];	
 		}
-		$positions['po_fax'] = $row['ep_fax'];																		
-		$positions['po_mobile'] = $row['ep_mobile'];	
-		$positions['po_datasec'] = $row['ep_datasec'];
-		$positions['po_label'] = $row['ep_label'];	
 		// use this to see which variables are available in the smarty-template
 #		debug($positions);
 	}
  
  
  
- 
+ 	function getOrganisationName($or_uid){
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'tx_civserv_organisation.or_name',
+			'tx_civserv_organisation',
+			'tx_civserv_organisation.uid = '.intval($or_uid),
+			'',
+			'',
+			''
+		);
+		if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			$or_name = $or_row['or_code'].' '.$row['or_name'];
+		}else{
+		//fix me localisation
+			$or_name = "unbekannt";
+		}
+		return $or_name;
+	}
+
  
  
  
@@ -2771,13 +2934,23 @@ class tx_civserv_pi2 extends tslib_pibase {
 		//  $this->pi_classParam('searchbox-sword') contains the markup for css: 'class="tx-civserv-pi2-searchbox-sword"'
 		$search_word=$this->check_searchword(strip_tags($this->piVars['sword']));  //strip and check to avoid xss-exploits
 
+		if(		$TYPO3_CONF_VARS['BE']['forceCharset'] == 'utf-8' ||
+				$GLOBALS['TSFE']->metaCharset == 'utf-8' ||
+				$GLOBALS['TSFE']->renderCharset == 'utf-8' ){
+			$search_word = htmlentities($search_word, ENT_COMPAT, 'UTF-8');
+		}else{
+			$search_word = htmlentities($search_word);
+		}
+
 		$sBox = '
 
 		<!--
 			List search box:
 		-->
 
-		<div' . $this->pi_classParam('searchbox') . '>
+		<div' . $this->pi_classParam('searchbox') . '>';
+			$sBox .= "\n";		
+			$sBox .= '		
 			<form method="post" action="'.htmlspecialchars($this->pi_linkTP_keepPIvars_url(array('mode' => 'search_result'),0,1)).'" style="margin: 0 0 0 0;" >
 				<fieldset>
         				<legend>' . $this->pi_getLL('pi_list_searchBox_searchform','Search form') . '</legend>
@@ -2785,8 +2958,8 @@ class tx_civserv_pi2 extends tslib_pibase {
             				<p><label for="query" title="' . $this->pi_getLL('pi_list_searchBox_searchkey','Please enter here your search key') . '">' .
             					($header?'<strong>' . $this->pi_getLL('pi_list_searchBox_header','Keyword search') . ':</strong><br />':'') .
             				'</label></p>
-           					<input type="text" name="' . $this->prefixId . '[sword]" id="query" class="searchkey" size="16" maxlength="60" value="' . htmlentities($search_word) . '"' . $this->pi_classParam('searchbox-sword') . ' onblur="if(this.value==\'\') this.value=\'' . htmlentities($search_word) . '\';" onfocus="if(this.value==\'' . $this->pi_getLL('pi_list_searchBox_defaultValue','search item') . '\') this.value=\'\';" />
-            				<input type="submit" value="' . $this->pi_getLL('pi_list_searchBox_search','Search',TRUE) . '"' . $this->pi_classParam('searchbox-button') . ' accesskey="S" title="' . $this->pi_getLL('pi_list_searchBox_submit','Klick here, to submit the search query') . '"/>
+           					<input type="text" name="' . $this->prefixId . '[sword]" id="query" class="searchkey" size="16" maxlength="60" value="' . $search_word . '"' . $this->pi_classParam('searchbox-sword') . ' onblur="if(this.value==\'\') this.value=\'' . $search_word . '\';" onfocus="if(this.value==\'' . $this->pi_getLL('pi_list_searchBox_defaultValue','search item') . '\') this.value=\'\';" />
+							<input type="submit" value="' . $this->pi_getLL('pi_list_searchBox_search','Search',TRUE) . '"' . $this->pi_classParam('searchbox-button') . ' accesskey="S" title="' . $this->pi_getLL('pi_list_searchBox_submit','Klick here, to submit the search query') . '"/>
             				<input type="hidden" name="no_cache" value="1" />
             				<input type="hidden" name="'.$this->prefixId.'[pointer]" value="" />
           				</div>
@@ -3255,7 +3428,13 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 ********************************************/
 	function check_searchword($string){
 		//white list
-		$searchword_pattern = '/^[A-Za-z0-9ÄäÖöÜüß\- ]*$/';
+		if(		$TYPO3_CONF_VARS['BE']['forceCharset'] == 'utf-8' ||
+				$GLOBALS['TSFE']->metaCharset == 'utf-8' ||
+				$GLOBALS['TSFE']->renderCharset == 'utf-8' ){
+			$searchword_pattern = utf8_encode('/^[A-Za-z0-9ÄäÖöÜüß\- ]*$/');
+		}else{
+			$searchword_pattern = '/^[A-Za-z0-9ÄäÖöÜüß\- ]*$/';
+		}
 		if(!preg_match($searchword_pattern, $string)){
 			//collect all occurring illegal characters
 			#$arr_bad_chars=array();
