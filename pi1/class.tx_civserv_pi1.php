@@ -4549,7 +4549,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$pageid = $GLOBALS['TSFE']->id;
 		}
 
-		debug($conf, 'bloody conf');
+#		debug($conf, 'bloody conf');
 
 
 		// Start or resume session
