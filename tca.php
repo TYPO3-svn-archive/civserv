@@ -800,7 +800,8 @@ $TCA["tx_civserv_service"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, sv_model_service,  sv_name, sv_synonym1, sv_synonym2, sv_synonym3, sv_3rdparty_checkbox, sv_3rdparty_link, sv_3rdparty_name, sv_descr_short;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_descr_long;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_image, sv_image_text, sv_fees;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_documents;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_legal_local;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_legal_global;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], sv_similar_services_PLACEHOLDER, sv_similar_services, sv_service_version, sv_form_PLACEHOLDER, sv_form, sv_searchword_PLACEHOLDER, sv_searchword, sv_position_PLACEHOLDER, sv_position, sv_organisation_PLACEHOLDER, sv_organisation, sv_navigation_PLACEHOLDER, sv_navigation, sv_region_PLACEHOLDER_live, sv_region")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "starttime, endtime, fe_group")
+#		"1" => Array("showitem" => "starttime, endtime, fe_group")
+		"1" => Array("showitem" => "starttime, endtime")
 	)
 );
 
@@ -1097,7 +1098,8 @@ $TCA["tx_civserv_model_service"] = Array (
 									ms_approver_two")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -1322,7 +1324,8 @@ $TCA["tx_civserv_form"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, fo_number, fo_orga_code, fo_codename, fo_name, fo_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], fo_category, fo_external_checkbox, fo_url, fo_formular_file, fo_created_date, fo_status,fo_target")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "starttime, endtime, fe_group")
+#		"1" => Array("showitem" => "starttime, endtime, fe_group")
+		"1" => Array("showitem" => "starttime, endtime")
 	)
 );
 
@@ -1608,7 +1611,8 @@ $TCA["tx_civserv_building"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, bl_number, bl_name_to_show, bl_name, bl_descr, bl_mail_street, bl_mail_pob, bl_mail_postcode, bl_mail_city, bl_building_street, bl_building_postcode, bl_building_city, bl_pubtrans_stop, bl_pubtrans_url, bl_citymap_url, bl_image, bl_telephone, bl_fax, bl_email, bl_floor_PLACEHOLDER, bl_floor")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -1730,7 +1734,8 @@ $TCA["tx_civserv_room"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, ro_number, ro_name, ro_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], ro_telephone, ro_fax, rbf_building_bl_floor")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -1794,7 +1799,8 @@ $TCA["tx_civserv_floor"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, fl_number, fl_descr")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -2016,7 +2022,8 @@ $TCA["tx_civserv_employee"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, em_number, em_address, em_title, em_name, em_firstname, em_telephone, em_fax, em_mobile, em_email, em_image, em_datasec, em_pseudo, em_hours, em_position_PLACEHOLDER, em_position")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -2348,7 +2355,8 @@ $TCA["tx_civserv_organisation"] = Array (
 										or_building")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -2570,7 +2578,8 @@ $TCA["tx_civserv_officehours"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, oh_name, oh_manual_checkbox, oh_start_morning, oh_end_morning, oh_start_afternoon, oh_end_afternoon, oh_freestyle, oh_weekday")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -2629,7 +2638,8 @@ $TCA["tx_civserv_search_word"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, sw_search_word")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -2739,7 +2749,8 @@ $TCA["tx_civserv_position"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, po_number, po_name, po_nice_name, po_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], po_organisation")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -2837,7 +2848,8 @@ $TCA["tx_civserv_navigation"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, nv_name, nv_structure")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -2894,7 +2906,8 @@ $TCA["tx_civserv_category"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, ca_name")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -2967,7 +2980,8 @@ $TCA["tx_civserv_building_bl_floor_mm"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, uid_local, uid_foreign")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 */
@@ -3144,7 +3158,8 @@ $TCA["tx_civserv_employee_em_position_mm"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, ep_officehours, ep_room, ep_telephone, ep_fax, ep_mobile, ep_email, ep_datasec")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -3262,7 +3277,8 @@ $TCA["tx_civserv_service_sv_position_mm"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, sp_descr_PLACEHOLDER, sp_descr;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts]")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -3533,7 +3549,8 @@ $TCA["tx_civserv_model_service_temp"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, ms_synonym1, ms_synonym2, ms_synonym3, ms_descr_short;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], ms_descr_long;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], ms_image, ms_image_text, ms_fees;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], ms_documents;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], ms_legal_global;;;richtext[paste|copy|bold|italic|underline|formatblock|class|left|center|right|orderedlist|unorderedlist|outdent|indent|link|image]:rte_transform[mode=ts], ms_searchword, ms_comment_approver_one, ms_comment_approver_two")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -3587,7 +3604,8 @@ $TCA["tx_civserv_region"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, re_name")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -3672,7 +3690,8 @@ $TCA["tx_civserv_external_service"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, es_navigation")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 
@@ -3905,7 +3924,8 @@ $TCA["tx_civserv_conf_mandant"] = Array (
 		"0" => Array("showitem" => "hidden;;1;;1-1-1, cm_community_name, cm_community_id, cm_uid, cm_circumstance_uid, cm_usergroup_uid, cm_organisation_uid, cm_service_folder_uid, cm_alternative_language_folder_uid, cm_external_service_folder_uid, cm_building_folder_uid, cm_model_service_temp_uid, cm_page_uid, cm_alternative_page_uid, cm_search_uid, cm_info_folder_uid, cm_target_email, cm_employeesearch, cm_page_subtitle_contains_organisation_uid, cm_community_type")
 	),
 	"palettes" => Array (
-		"1" => Array("showitem" => "fe_group")
+#		"1" => Array("showitem" => "fe_group")
+		"1" => Array("showitem" => "")
 	)
 );
 

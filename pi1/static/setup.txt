@@ -13,7 +13,6 @@ leftmenu {
 		pageid = {$pageid}
 		fulltext_search_id = {$fulltext_search_id}
 		alternative_page_id = {$alternative_page_id}
-		login_page_id = {$login_page_id}
 		menuServiceList = {$menuServiceList}
 		menuCircumstanceTree = {$menuCircumstanceTree}
 		menuUsergroupTree = {$menuUsergroupTree}

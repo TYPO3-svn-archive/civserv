@@ -485,6 +485,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			if(is_array($row)){
 				$services[$row_counter]['uid']=$row['uid']; //needed for preview-sorting see below
 				$services[$row_counter]['t3ver_state']=$row['t3ver_state'];
+				$services[$row_counter]['fe_group']=$row['fe_group'];
 				// customLinks will only work if there is an according rewrite-rule in action!!!!
 				if(!$this->conf['useCustomLinks_Services']){
 					$services[$row_counter]['link'] =  htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $row['uid']),$this->conf['cache_services'],1));
@@ -752,9 +753,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 			// services by realnames
 			if($this->previewMode){ // no aliases! (see above, versionOL can't handle aliases)
-				$query .=	'SELECT ' . ($count?'count(*) ':'tx_civserv_service.uid, tx_civserv_service.pid, tx_civserv_service.hidden, tx_civserv_service.sv_name, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state');
+				$query .=	'SELECT ' . ($count ? 'count(*) ' : 'tx_civserv_service.uid, tx_civserv_service.pid, tx_civserv_service.hidden, tx_civserv_service.sv_name, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state, tx_civserv_service.fe_group');
 			}else{
-				$query .=	'SELECT ' . ($count?'count(*) ':'tx_civserv_service.uid, tx_civserv_service.pid, tx_civserv_service.hidden, sv_name AS name, sv_name AS realname, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state');
+				$query .=	'SELECT ' . ($count ? 'count(*) ' : 'tx_civserv_service.uid, tx_civserv_service.pid, tx_civserv_service.hidden, sv_name AS name, sv_name AS realname, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state, tx_civserv_service.fe_group');
 			}
 			$query .=	' FROM ' . str_replace('###NAVIGATION_MM_TABLE###', $navigation_mm_table, $from) . '
 						 WHERE ' . str_replace('###SERVICE_TABLE###', $service_table, str_replace('###NAVIGATION_MM_TABLE###', $navigation_mm_table, $where)) . ' ' .
@@ -766,7 +767,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				for ($synonymNr = 1; $synonymNr <= 3; $synonymNr++) {
 	
 					$query .=	' UNION ALL
-								 SELECT ' . ($count?'count(*) ' : 'tx_civserv_service.uid, tx_civserv_service.pid, tx_civserv_service.hidden, sv_synonym' . $synonymNr . ' AS name, sv_name AS realname, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state') . '
+								 SELECT ' . ($count ? 'count(*) ' : 'tx_civserv_service.uid, tx_civserv_service.pid, tx_civserv_service.hidden, sv_synonym' . $synonymNr . ' AS name, sv_name AS realname, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state, tx_civserv_service.fe_group') . '
 								 FROM ' . str_replace('###NAVIGATION_MM_TABLE###', $navigation_mm_table, $from) . '
 								 WHERE ' . str_replace('###SERVICE_TABLE###', $service_table, str_replace('###NAVIGATION_MM_TABLE###', $navigation_mm_table, $where)) . ' ' .
 
@@ -796,7 +797,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				}
 				// collect all NEW service records (name = [PLACEHOLDER], t3ver_state = 1)
 				$query .=	count($oid_list)>0 ?	'UNION ALL
-													 SELECT ' . ($count ? ' count(*) ' : 'tx_civserv_service.uid, tx_civserv_service.hidden, tx_civserv_service.sv_name, tx_civserv_service.pid, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state').'
+													 SELECT ' . ($count ? ' count(*) ' : 'tx_civserv_service.uid, tx_civserv_service.hidden, tx_civserv_service.sv_name, tx_civserv_service.pid, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state, tx_civserv_service.fe_group').'
 													 FROM ' . str_replace('###NAVIGATION_MM_TABLE###', $navigation_mm_table, $from).'
 													 WHERE ' . str_replace('###SERVICE_TABLE###', $service_table, str_replace('###NAVIGATION_MM_TABLE###', $navigation_mm_table, $where)).' '.
 													 	' AND tx_civserv_service.uid IN ('.implode(',', $oid_list).') AND tx_civserv_service.t3ver_state=1 ' : ''; //t3ver_state=1 means only the new ones!!!!
@@ -4633,22 +4634,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 							'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.fulltext_search','Fulltext Search'),
 							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(),0,1,$conf['fulltext_search_id']),
 							'ITEM_STATE' => ($GLOBALS['TSFE']->id == $conf['fulltext_search_id'])?'ACT':'NO');
-		}
-		// get id of login-page from TSconfig
-		#if (intval($conf['login_page_id']) > 0) {
-		if (1==1) {
-		/*
-			$menuArray['menuLogin'] = array(
-							'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.login','Login'),
-							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(),0,1,$conf['login_page_id']),
-							'ITEM_STATE' => ($GLOBALS['TSFE']->id == $conf['login_page_id'])?'ACT':'NO');
-		*/
-			$menuArray['menuLogin'] = array(
-							'title' => $this->pi_getLL('tx_civserv_pi1_menuarray.login','Login'),
-							'_OVERRIDE_HREF' => $this->pi_linkTP_keepPIvars_url(array(),0,1,1450),
-							'ITEM_STATE' => ($GLOBALS['TSFE']->id == 1450)?'ACT':'NO');
-		
-		
 		}
 		// get id for alternative language from TSconfig
 		if (intval($conf['alternative_page_id']) > 0) {
