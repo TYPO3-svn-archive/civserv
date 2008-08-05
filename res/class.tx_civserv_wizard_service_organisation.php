@@ -86,6 +86,8 @@ class tx_civserv_wizard_service_organisation extends t3lib_SCbase {
 	var $PItemName;
 	var $searchitem;
 	var $arrAlphabet;
+	var $arrIneligible;
+
 	
 	
 	/**
@@ -121,7 +123,6 @@ class tx_civserv_wizard_service_organisation extends t3lib_SCbase {
 			// In case the parent id of service is still not set, try to
 			// get it out of the database. The service_pid is important because with it the uid of the mandant can be retrievied.
 		if (!intval($this->service_pid) > 0){
-			debug(t3lib_div::_GET(), 'GET');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'pid',			 			// SELECT ...
 				$this->P['table'],			// FROM ...
@@ -135,6 +136,25 @@ class tx_civserv_wizard_service_organisation extends t3lib_SCbase {
 		}
 
 		$formFieldName = 'data['.$this->pArr[0].']['.$this->pArr[1].']['.$this->pArr[2].']';
+
+
+
+		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
+		$mandant = $mandant_obj->get_mandant($this->service_pid);
+
+		$this->preres = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'*',			 							// SELECT ...
+			'tx_civserv_conf_mandant',					// FROM ...
+			'cm_community_id = '.$mandant .'
+			 AND tx_civserv_conf_mandant.deleted=0 AND tx_civserv_conf_mandant.hidden=0',// AND title LIKE "%blabla%"', // WHERE...
+			'', 										// GROUP BY...
+			'',   								// ORDER BY...
+			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+			);
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->preres)) {
+			$this->arrIneligible[] = $row['cm_organisation_uid'];
+		}
+
 
 		$this->arrAlphabet = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
 		
@@ -329,11 +349,16 @@ class tx_civserv_wizard_service_organisation extends t3lib_SCbase {
 			$this->content .= ' ';
 		}
 
+		// add other
 		if($this->getOrganisationByLetter('other')){
 			$this->content .= '<a href="#" onclick="add_options_refresh(\'other\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.other').'</a>';
 		}else{
 			$this->content .= '<span style="color:#066">'.$LANG->getLL('all_abc_wizards.other').'</span>';
 		}
+
+		//add any
+		$this->content .= '&nbsp;';
+		$this->content .= '<a href="#" onclick="add_options_refresh(\'any\',\''.(string)t3lib_div::_GP('selected_uid').'\',\''.(string)t3lib_div::_GP('selected_name').'\',\''.$script.'\',\''.$this->PItemName.'\',\'&service_pid='.htmlspecialchars($this->service_pid).'\')">'.$LANG->getLL('all_abc_wizards.any').'</a>';
 
 
 		$this->content.='
@@ -353,7 +378,7 @@ class tx_civserv_wizard_service_organisation extends t3lib_SCbase {
 		if ($letter=='') {
 			// do nothing
 		} else {
-			if ($letter != "other" and $letter != "search") {
+			if ($letter != "other" && $letter != "any" && $letter != "search") {
 				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_organisation.select_organisations_text').''.$letter.':</h3>';
 			}else {
 				$this->content.='<h3 class="bgColor5">'.$LANG->getLL('tx_civserv_wizard_service_organisation.select_organisations_text_no_abc').':</h3>';
@@ -364,10 +389,10 @@ class tx_civserv_wizard_service_organisation extends t3lib_SCbase {
 			';
 
 				// Gets all organisations beginning with the chosen letter and displays them in a selectorbox.
-			$this->content.=$this->getOrganisations($letter);
+			$this->content .= $this->getOrganisations($letter);
 
 				// Displays a OK-Button to save the selected organisations.
-			$this->content.='
+			$this->content .= '
 					</td>
 				</tr>
 			</table>
@@ -396,49 +421,38 @@ class tx_civserv_wizard_service_organisation extends t3lib_SCbase {
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$this->searchitem = $this->make_clean($this->searchitem);
-
-
-		if ($letter != "other" and $letter != "search") {
-				// Gets all organisations with the selected letter at the
-				// beginning out of the database. Checks also if organisations aren't hidden or
-				// deleted.
-			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'*',			 							// SELECT ...
-				'tx_civserv_organisation',					// FROM ...
-				'upper(left(or_name,1))=\''.$letter.'\' AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-				'', 										// GROUP BY...
-				'or_name',   								// ORDER BY...
-				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-			);
-		} 
-		if ($letter == "other") {
-				// Gets all organisations which don't begin with a letter
-				// out of the database. Checks also if organisations aren't hidden or
-				// deleted.
-			$where = ' deleted=0 AND hidden=0';	
+		
+		$where = 'tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0';	
+		if(count($this->arrIneligible) > 0){
+			$where .= ' AND tx_civserv_organisation.uid not in('.implode(',',$this->arrIneligible).')'; 
+		}
+		
+		if ($letter != "other" && $letter != "any" && $letter != "search") {
+		
+			$where .= ' AND upper(left(tx_civserv_organisation.or_name,1))=\''.$letter.'\'';
+		
+		} elseif ($letter == "other") {
+			
 			foreach($this->arrAlphabet as $char){		
 				$where .= ' AND !(upper(left(tx_civserv_organisation.or_name,1))=\''.$char.'\')'; 
 			}
-				
-			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'*',			 							// SELECT ...
-				'tx_civserv_organisation',						// FROM ...
-				$where,			// WHERE...
-				'', 										// GROUP BY...
-				'or_code',   								// ORDER BY...
-				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-			);
+		
+		}elseif ($letter == "search" && $this->searchitem != "") {
+			
+			$where .= ' AND (tx_civserv_organisation.or_name like \'%'.$this->searchitem.'%\' OR tx_civserv_organisation.or_code like \'%'.$this->searchitem.'%\')';
+		
 		}
-		if ($letter == "search" AND $this->searchitem != "") {
-				$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'*',			 							// SELECT ...
-				'tx_civserv_organisation',						// FROM ...
-				'(or_name like \'%'.$this->searchitem.'%\' or or_code like \'%'.$this->searchitem.'%\') AND deleted=0 AND hidden=0',	// AND title LIKE "%blabla%"', // WHERE...
-				'', 										// GROUP BY...
-				'or_name',   								// ORDER BY...
-				'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-			);
-		} 
+		debug($where, 'where clause service-organisation-wizard');
+				
+		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'*',			 							// SELECT ...
+			'tx_civserv_organisation',						// FROM ...
+			$where,			// WHERE...
+			'', 										// GROUP BY...
+			'tx_civserv_organisation.or_code, tx_civserv_organisation.or_name',   								// ORDER BY...
+			'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+		);
+		
 		$menuItems=array();
 
 			// Removes all organisations from other mandants so that only
@@ -509,9 +523,13 @@ class tx_civserv_wizard_service_organisation extends t3lib_SCbase {
 		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
 		$mandant = $mandant_obj->get_mandant($this->service_pid);
 		
-		$where = ' deleted=0 AND hidden=0';
+		$where = 'tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0';	
+		if(count($this->arrIneligible) > 0){
+			$where .= ' AND tx_civserv_organisation.uid not in('.implode(',',$this->arrIneligible).')'; 
+		}
 		
-		if($char !== 'other' && $char > ''){
+		
+		if($char !== 'other' &&  $char !== 'any' && $char > ''){
 			$where .= ' AND upper(left(tx_civserv_organisation.or_name,1))=\''.$char.'\'';
 
 		}	 
