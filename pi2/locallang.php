@@ -145,7 +145,10 @@ $LOCAL_LANG = Array (
 		'tx_civserv_pi2_employee_list.no_department' => 'No department',
 		'tx_civserv_pi2_employee_list.heading' => 'actual Filter: ###MODE###, ###FILTER###',
 		'tx_civserv_pi2_employee_list.heading_searchmode' => 'Search Result: ###SEARCHWORD###',		
+		'tx_civserv_pi2_employee_list.heading_hodmode' => 'actual Filter: ###MODE###',
 		'tx_civserv_pi2_employee_list.available_employees' => 'Here you find the following employees',
+		'tx_civserv_pi2_employee_list.non_selected' => 'None selected',
+
 		
 		'tx_civserv_pi2_employee_list.search' => 'Employee-Search',
 		'tx_civserv_pi2_employee_list.searchform_send' => 'send',
@@ -379,9 +382,13 @@ $LOCAL_LANG = Array (
 		'tx_civserv_pi2_employee_list.orcode_hod' => 'Leiter/innen',
 		'tx_civserv_pi2_employee_list.no_organisation' => 'Keine Organisation',
 		'tx_civserv_pi2_employee_list.no_department' => 'Kein Amt',
-		'tx_civserv_pi2_employee_list.heading' => 'aktuelle Sortierung: ###MODE### ###FILTER###', //will be replaced with em_by_name or with hod_by_name or with by_organisation
+		'tx_civserv_pi2_employee_list.heading' => 'aktuelle Sortierung: ###MODE###, ###FILTER###', //will be replaced with em_by_name or with hod_by_name or with by_organisation
 		'tx_civserv_pi2_employee_list.heading_searchmode' => 'Suchergebnis: ###SEARCHWORD###',		
+		'tx_civserv_pi2_employee_list.heading_hodmode' => 'aktuelle Sortierung: ###MODE###',
 		'tx_civserv_pi2_employee_list.available_employees' => 'Folgende Mitarbeiter(innen) finden Sie hier',
+		'tx_civserv_pi2_employee_list.non_selected' => 'Nichts ausgewählt',
+
+		
 		
 		'tx_civserv_pi2_employee_list.search' => 'Mitarbeiter-Suche',
 		'tx_civserv_pi2_employee_list.searchform_send' => 'senden',

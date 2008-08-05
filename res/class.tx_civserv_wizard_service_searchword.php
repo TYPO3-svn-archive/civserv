@@ -123,7 +123,7 @@ class tx_civserv_wizard_service_searchword extends t3lib_SCbase {
 			// In case the parent id of service is still not set, try to
 			// get it out of the database. The service_pid is important because with it the uid of the mandant can be retrievied.
 		if (!intval($this->service_pid) > 0){
-			debug(t3lib_div::_GET(), 'GET');
+#			debug(t3lib_div::_GET(), 'GET');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'pid',			 			// SELECT ...
 				$this->P['table'],			// FROM ...

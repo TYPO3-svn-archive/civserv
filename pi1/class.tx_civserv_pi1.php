@@ -2014,16 +2014,21 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$abcBar =  '<p id="abcbar">' . "\n\t";
 		for($i = 0; $i < sizeof($alphabet); $i++)	{
 			$actual = (strtoupper($this->piVars['char']) == $alphabet[$i]);
-			if($occuringInitials && in_array($alphabet[$i],$occuringInitials))	{
+			if($occuringInitials && in_array($alphabet[$i], $occuringInitials))	{
 			// Warning: sprintf(): Too few arguments in /html/typo3conf/ext/civserv/pi1/class.tx_civserv_pi1.php on line 1941
+			// failed to find out, when exactly sprintf() is underfed, chucked it out, anyhow
 
-				$test = sprintf('%s' . $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . '%s '.$this->conf['abcSpacer'].' ',
-						$actual?'<strong>':'',
-						$actual?'</strong>':'');
+				if($actual){
+					$abcBar .= '<strong>' . $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . '</strong>' . $this->conf['abcSpacer'] . ' ';
+				}else{
+					$abcBar .=  $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . $this->conf['abcSpacer'] . ' ';
+				}
 
+				/*
 				$abcBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . '%s '.$this->conf['abcSpacer'].' ',
 						$actual?'<strong>':'',
 						$actual?'</strong>':'');
+				*/		
 			}
 			else{
 				$abcBar .= '<span class="nomatch">'.$alphabet[$i].'</span> '.$this->conf['abcSpacer'].' ';

@@ -141,7 +141,7 @@ class tx_civserv_service_maintenance{
 			
 			$new_ones = array();
 			$new_ones = array_diff($new_services, $old_services);
-			debug(count($new_ones), 'new_ones');
+#			debug(count($new_ones), 'new_ones');
 			
 			foreach($new_ones as $value){
 				$new_one = array();

@@ -296,12 +296,14 @@ class tx_civserv_pi2 extends tslib_pibase {
 			switch($this->piVars['mode']){
 				case 'employee_list_az':
 					$this->piVars['or_uid'] = ''; //reset!
+					$this->piVars['empossearch'] = ''; //reset!
 					$_SESSION['stored_mode'] = 'employee_list_az';
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_employee_list.az','Employees A - Z');
 					$template = $this->conf['tpl_employee_list_az_pi2'];
 					$accurate = $this->employee_list_az($smartyObject,$this->conf['abcBarAtEmployeeList'],$this->conf['searchAtEmployeeList'],$this->conf['topAtEmployeeList']);
 					break;					
 				case 'employee_list_or_uid':
+					$this->piVars['empossearch'] = ''; //reset!
 					$_SESSION['stored_mode'] = 'employee_list_or_uid';
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_employee_list.orcode','Employees by Organisation');
 					$template = $this->conf['tpl_employee_list_or_pi2']; //different template!!
@@ -309,6 +311,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					break;	
 				case 'employee_list_hod':
 					$this->piVars['or_uid'] = ''; //reset!
+					$this->piVars['empossearch'] = ''; //reset!
 					$_SESSION['stored_mode'] = 'employee_list_hod';
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi2_employee_list.hod','Head(s) of Department');
 					$template = $this->conf['tpl_employee_list_az_pi2'];
@@ -444,8 +447,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 				$this->assembleOrganisationData($employees[$row['em_uid']]['em_organisations'][$emhod_row['or_uid']], $emhod_row);
 				
 				//Memmingen did not like the pseudo-Positions, so we add the supervisor-Function to the name of the organisation instead
-				// fix me localisation!!!
-				$employees[$row['em_uid']]['em_organisations'][$emhod_row['or_uid']]['or_name'] .= '&nbsp;<span class="supervisor">LEI-TUNG!</span>';
+				$employees[$row['em_uid']]['em_organisations'][$emhod_row['or_uid']]['or_name'] .= '&nbsp;(<span class="supervisor">'.$this->pi_getLL('tx_civserv_pi2_employee_list.hod','head of department').'</span>)';
 
 /*
 				// This section used provided pseudo-position for the supervisor-funkction
@@ -556,7 +558,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 		if($this->piVars['empossearch'] > ''){
 			$smartyEmployeeList->assign('heading', str_replace('###SEARCHWORD###', $this->piVars['empossearch'], $this->pi_getLL('tx_civserv_pi2_employee_list.heading_searchmode', 'extended employee_list')));
 		}else{
-			$smartyEmployeeList->assign('heading', str_replace('###FILTER###', ', '.$this->piVars['char'], str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list'))));
+			$letter = ($this->piVars['char'] >'') ? $this->piVars['char'] : 'A-Z';
+			$smartyEmployeeList->assign('heading', str_replace('###FILTER###', $letter, str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list'))));
 		}
 		$smartyEmployeeList->assign('subheading', $this->pi_getLL('tx_civserv_pi2_employee_list.available_employees','Here you find the following employees'));
 		$smartyEmployeeList->assign('pagebar', $this->pi_list_browseresults(true, '', ' '.$this->conf['abcSpacer'].' '));
@@ -642,8 +645,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 		
 
-		$smartyEmployeeList->assign('heading', str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list')));
-		$smartyEmployeeList->assign('heading', str_replace('###FILTER###', '', str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list'))));
+		$smartyEmployeeList->assign('heading', str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading_hodmode', 'extended employee_list')));
 
 		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi2_employee_list.available_employees','Here you find the following employees'));
 		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true, '', ' '.$this->conf['abcSpacer'].' '));
@@ -734,8 +736,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					//it is possible that the supervisor of an organisation also occupies another postion at this organisation
 					$organisations[$row['or_uid']]['or_chief'][$row['em_uid']]['em_positions'] = array();
 					$this->assembleEmployeeData($organisations[$row['or_uid']]['or_chief'][$row['em_uid']], $row);
-					//fix me localisation
-					$organisations[$row['or_uid']]['or_chief'][$row['em_uid']]['full_name'] .= '&nbsp;<span class="supervisor">LEI-TUNK!</span>';
+					$organisations[$row['or_uid']]['or_chief'][$row['em_uid']]['full_name'] .= '&nbsp;(<span class="supervisor">'.$this->pi_getLL('tx_civserv_pi2_employee_list.hod','head of department').'</span>)';
 				}
 
 				if(array_key_exists($row['po_uid'], $organisations[$row['or_uid']]['or_chief'][$row['em_uid']]['em_positions'])){
@@ -796,18 +797,17 @@ class tx_civserv_pi2 extends tslib_pibase {
 		if($this->piVars['empossearch'] > ''){
 			$smartyEmployeeList->assign('heading', str_replace('###SEARCHWORD###', $this->piVars['empossearch'], $this->pi_getLL('tx_civserv_pi2_employee_list.heading_searchmode', 'extended employee_list')));
 		}elseif($this->piVars['or_uid'] > '' && $this->piVars['or_uid'] == 'all'){
-			//fix me: localisation!!!
-			$smartyEmployeeList->assign('heading', str_replace('###FILTER###', ', '.$this->pi_getLL('tx_civserv_pi2_employee_list.orcode_all_organisations','fucking all organisations'), str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list'))));
+			$smartyEmployeeList->assign('heading', str_replace('###FILTER###', $this->pi_getLL('tx_civserv_pi2_employee_list.orcode_all_organisations', 'all organisations'), str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list'))));
 		}elseif($this->piVars['or_uid'] > '' && intval($this->piVars['or_uid']) > 0){
 			$or_name = $this->getOrganisationName(intval($this->piVars['or_uid']));
-			$smartyEmployeeList->assign('heading', str_replace('###FILTER###', ', '.$or_name, str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list'))));
+			$smartyEmployeeList->assign('heading', str_replace('###FILTER###', $or_name, str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list'))));
 		}else{
-			$smartyEmployeeList->assign('heading', str_replace('###FILTER###', 'nix ausgewählt', str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list'))));
+			$smartyEmployeeList->assign('heading', str_replace('###FILTER###', $this->pi_getLL('tx_civserv_pi2_employee_list.non_selected', 'None Selected'), str_replace('###MODE###', $mode_text, $this->pi_getLL('tx_civserv_pi2_employee_list.heading', 'extended employee_list'))));
 		}
 		$smartyEmployeeList->assign('subheading', $this->pi_getLL('tx_civserv_pi2_employee_list.available_employees','Here you find the following employees'));
 		$smartyEmployeeList->assign('pagebar', $this->pi_list_browseresults(true, '', ' '.$this->conf['abcSpacer'].' '));
 
-		debug($organisations, 'the lot');
+#		debug($organisations, 'the lot');
 
 		
 		// pass the organisation-data to the template
@@ -2181,7 +2181,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$searchString = $this->piVars['empossearch'];
 		#$searchString = ereg_replace('"', '', $searchString);	//Delete quotation marks from search value
 		$searchString = $this->check_searchword(strip_tags($searchString)); //strip and check to avoid xss-exploits
-		if($searchString > '' && preg_match('/'.$searchString.'/i', $row['name'])){ //fixme! nur wenn der mode auch auf suchen stehT
+		if($searchString > '' && preg_match('/'.$searchString.'/i', $row['name'])){ //fix me! nur wenn der mode auch auf suchen stehT
 			//fix me css
 			$employees['full_name'] = '<span class="searchresult">'.$row['name'].", ".$row['em_firstname'].'</span>';
 		}else{
@@ -2247,12 +2247,12 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$searchString = $this->piVars['empossearch'];
 			$searchString = $this->check_searchword(strip_tags($searchString)); //strip and check to avoid xss-exploits
 			if($searchString > '' && preg_match('/'.$searchString.'/i', $row['po_name'])){
-				$po_name = '<strong>'.$row['po_name'].'</strong>';
+				$po_name = '<span class="searchresult">'.$row['po_name'].'</span>';
 			}else{
 				$po_name = $row['po_name'];
 			}
 			if($searchString > '' && preg_match('/'.$searchString.'/i', $row['po_nice_name'])){
-				$po_nice_name = '<strong>'.$row['po_nice_name'].'</strong>';
+				$po_nice_name = '<span class="searchresult">'.$row['po_nice_name'].'</span>';
 			}else{
 				$po_nice_name = $row['po_nice_name'];
 			}

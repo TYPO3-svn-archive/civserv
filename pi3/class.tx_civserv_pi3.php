@@ -965,8 +965,8 @@ class tx_civserv_pi3 extends tslib_pibase {
 			$thepivar = strtoupper($this->piVars['char']);
 			$actual = (strtoupper($this->piVars['char']) == $alphabet[$i]);
 			if($occuringInitials && in_array($alphabet[$i], $occuringInitials))	{
-				$abcBar .= sprintf(	'%s' . 
-									$this->pi_linkTP_keepPIvars(
+			
+				$emLink =	$this->pi_linkTP_keepPIvars(
 											$alphabet[$i],	
 											array(
 												'char' => $alphabet[$i], 
@@ -975,12 +975,12 @@ class tx_civserv_pi3 extends tslib_pibase {
 											),
 											1,
 											0
-									) . 
-									'%s ' . 
-									$this->conf['abcSpacer'].' ',
-									$actual ? '<strong>' : '',
-									$actual ? '</strong>' : ''
 									);
+				if($actual){
+					$abcBar .= '<strong>' .	$emLink . '</strong>' . $this->conf['abcSpacer'].' ';
+				}else{
+					$abcBar .= $emLink . $this->conf['abcSpacer'].' ';
+				}									
 			}
 			else	{
 				#$abcBar .= $alphabet[$i].' '.$this->conf['abcSpacer'].' ';
