@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = Array (
 	'category' => 'plugin',
 	'shy' => 1,
 	'version' => '4.2.14',	// Don't modify this! Managed automatically during upload to repository.
-	'dependencies' => 'smarty <= 1.0.2',
+	'dependencies' => 'smarty',
 	'conflicts' => '',
 	'priority' => '',
 	'loadOrder' => '',
