@@ -2182,7 +2182,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 		#$searchString = ereg_replace('"', '', $searchString);	//Delete quotation marks from search value
 		$searchString = $this->check_searchword(strip_tags($searchString)); //strip and check to avoid xss-exploits
 		if($searchString > '' && preg_match('/'.$searchString.'/i', $row['name'])){ //fix me! nur wenn der mode auch auf suchen stehT
-			//fix me css
 			$employees['full_name'] = '<span class="searchresult">'.$row['name'].", ".$row['em_firstname'].'</span>';
 		}else{
 			$employees['full_name'] = $row['name'].", ".$row['em_firstname'];
@@ -2299,7 +2298,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$or_name = $or_row['or_code'].' '.$row['or_name'];
 		}else{
 		//fix me localisation
-			$or_name = "unbekannt";
+			$or_name = "unbekannt"; //should never occur
 		}
 		return $or_name;
 	}
