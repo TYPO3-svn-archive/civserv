@@ -1192,7 +1192,7 @@ input:focus, textarea:focus {
 
 
 
-/*------------------------------------------------------------------------------------*/
+/*------------Unordered List Layout UL EMPLOYEE------------------------------------------------------------------------*/
 .tx-civserv-pi2 #centrecontent #employee_az ul.employee {
 	clear:both;
 	float:none;
@@ -1273,7 +1273,7 @@ input:focus, textarea:focus {
 
 
 
-/*-----------------------------------UL ORGANISATION-------------------------------------------------*/
+/*-----------------------Unordered List Layout UL ORGANISATION-------------------------------------------------*/
 .tx-civserv-pi2 #centrecontent #employee_az ul.organisation {
 	clear:both;
 	float:none;
@@ -1293,7 +1293,7 @@ input:focus, textarea:focus {
 
 
 
-/*------------------------------------------------------------------------------------*/
+/*---------------------Unordered List Layout UL POSITION---------------------------------------------------------------*/
 .tx-civserv-pi2 #centrecontent #employee_az ul.position {
 	clear:both;
 	float:none;
@@ -1352,7 +1352,7 @@ input:focus, textarea:focus {
 }
 
 
-/*------------------------------------------------------------------------------------*/
+/*--------------------------Unordered List Layout UL ORGANISATION----------------------------------------------------------*/
 .tx-civserv-pi2 #centrecontent #employee_or ul.organisation {
 	clear:both;
 	float:none;
@@ -1413,7 +1413,7 @@ input:focus, textarea:focus {
 
 
 
-/*------------------------------UL EMPLOYEE------------------------------------------------------*/
+/*------------------------------Unordered List Layout UL EMPLOYEE------------------------------------------------------*/
 .tx-civserv-pi2 #centrecontent #employee_or ul.employee {
 	clear:both;
 	float:none;
@@ -1481,7 +1481,7 @@ input:focus, textarea:focus {
 
 
 
-/*------------------------------------------------------------------------------------*/
+/*-------------------------Unordered List Layout UL POSITION-----------------------------------------------------------*/
 .tx-civserv-pi2 #centrecontent #employee_or ul.position {
 	clear:both;
 	float:none;
@@ -1516,9 +1516,122 @@ input:focus, textarea:focus {
 }
 
 
+/*-------------------------Defition List Layout by Memmingen (Herr Haugg)-----------------------------------------------------------*/
 
 
-/* table layout verworfen.....   */
+.tx-civserv-pi2 dl {
+	min-width: 28em;
+}
+
+.tx-civserv-pi2 h3 {
+	font-size: 1.1em;
+	margin: 0 1em;
+	color: red;
+	clear: left;
+}
+
+/*nur für IE 7*/
+*+html .tx-civserv-pi2 dl {
+	padding-bottom: 1%;
+	min-width: 27em;
+}
+
+.tx-civserv-pi2 .employee {
+	padding: 1%;
+	margin: 0;
+	background: #eee;
+	display: block;
+	float: left;
+	width: 97.5%;
+}
+.tx-civserv-pi2 dl.employee {
+	border: 1px solid silver;
+	-moz-border-radius:10px;
+	background: none;
+	padding-bottom: 0;
+}
+.tx-civserv-pi2 dt.employee {
+	border-top: 1px solid silver;
+	border-left: 1px solid silver;
+	border-right: 1px solid silver;
+	border-bottom: none;
+	-moz-border-radius-topleft: 10px;
+	-moz-border-radius-topright: 10px;
+	-moz-border-radius-bottomleft: none;
+	-moz-border-radius-bottomright: none;	
+}
+.tx-civserv-pi2 dd.employee {
+	border-top: none;
+	border-left: 1px solid silver;
+	border-right: 1px solid silver;
+	border-bottom: 1px solid silver;
+	-moz-border-radius-topleft: none;
+	-moz-border-radius-topright: none;	
+	-moz-border-radius-bottomleft: 10px;
+	-moz-border-radius-bottomright: 10px;
+	padding-top: 0;
+	margin-bottom: 1%;
+	margin-top: -1px; /*behebt Rundungsfehler bei Firefox*/
+}
+.tx-civserv-pi2 .employee .em_contact {
+	border: 1px inset silver;
+	padding: 0.25em;
+	margin: 0 0.5em 0.5em 0;
+	float: left;
+	width: 35%;
+	background: white;
+	min-width: 15em;
+	min-height: 2.5em;
+}
+.tx-civserv-pi2 .employee .em_organisation,
+.tx-civserv-pi2 .employee .em_position {
+	padding: 0.25em;
+	margin: 0 0 0.25em 0;
+	float: left;
+	border: 1px inset silver;
+	background: white;
+	width: 60%;
+	min-width: 25em;
+	max-height: 15em;
+	min-height: 2.5em;
+	overflow: auto;
+}
+
+/* Liste mit rotem Aufzählungszeichen aber schwaruer Schrift*/
+.tx-civserv-pi2 .employee ul li {
+	list-style: square;
+	color: red;
+}
+.tx-civserv-pi2 .employee ul li span{
+	color: black;
+}
+
+.tx-civserv-pi2 span.em_pic {
+	float:right; 
+	margin-left:3px;
+}
+.tx-civserv-pi2 span.em_pic a img{
+	border: 2px solid white;
+}
+.tx-civserv-pi2 span.em_pic a:hover img{
+	border: 2px solid red;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*-------------------------Table Layout verworfen.....  -----------------------------------------------------------*/
 .tx-civserv-pi2 #centrecontent table {
 	margin-left: 1em;
 	xborder: dashed red 2x;

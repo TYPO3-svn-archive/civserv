@@ -28,6 +28,11 @@ tpl_none = typo3conf/ext/civserv/templates/none.tpl.html
 # Templates for extended employee_list (pi2)
 tpl_employee_list_az_pi2 = typo3conf/ext/civserv/templates/employee_list_az_pi2.tpl.html
 tpl_employee_list_or_pi2 = typo3conf/ext/civserv/templates/employee_list_or_pi2.tpl.html
+tpl_employee_list_az_deflist_pi2 = typo3conf/ext/civserv/templates/employee_list_az_deflist_pi2.tpl.html
+tpl_employee_list_or_deflist_pi2 = typo3conf/ext/civserv/templates/employee_list_or_deflist_pi2.tpl.html
+
+
+
 
 # Templates for extended employee_list (pi3)
 tpl_employee_list_pi3 = typo3conf/ext/civserv/templates/employee_list_pi3.tpl.html
