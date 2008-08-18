@@ -1,0 +1,251 @@
+/* ---------------------------------------------- */
+/* ------ Begin VSM search ---------------------- */
+/* ---------------------------------------------- */
+
+
+#right {
+	float: right;
+	width: 195px;
+	margin-right: -195px;
+	position: relative;
+	margin-top: 200px;
+}
+
+/* 
+* to use on pages without searchword or right menu
+* contact.tpl.html
+* email.tpl.html
+* in cases where you give a background-color to the #right area
+* else you would get an empty red, green, blue... box
+*/
+#right_dummy {
+	float: right;
+	width: 195px;
+	margin-right: -195px;
+	position: relative;
+	padding-top: 200px;
+}
+
+html #right {
+	padding-bottom: 4.5em; 
+	margin-right: -200px;
+}
+
+
+
+
+
+
+
+/* typo3-placeholder ###VSMSCRIPT### right after ###MENU### and inside of div=id"left" */
+/*
+#vsm_searchform{
+	position: relative;
+	top: 50px;
+	margin: 0;
+	margin-left: 10px;
+	margin-right: -10px;
+	text-align: left;
+	border: solid red 2px;
+}
+*/
+
+
+/* typo3-placeholder ###VSMSCRIPT### right before ###CONTENT### */
+
+#vsm_searchform {
+	float: right;
+	width: 195px;
+	margin-right: -195px;
+	position: relative;
+	xborder: solid red 2px;
+}
+
+
+
+#vsm_results {
+	padding-left: 1em;
+	background-color: pink;
+	xborder: solid red 2px;
+}
+
+/* hack für ie <= 6 */
+* html #vsm_results {
+	width:99%;
+}
+
+#vsm_results td,
+#vsm_results div,
+#vsm_results.p,
+#vsm_results a,
+#vsm_results.d,
+#vsm_results.single_hit {
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+#vsm_results td,
+#vsm_results div,
+#vsm_results.p,
+#vsm_results a,
+#vsm_results.d {
+	font-size: 1em;
+}
+
+* html #vsm_results td,
+* html #vsm_results div,
+* html #vsm_results.p,
+* html #vsm_results a,
+* html #vsm_results.d {
+	font-size: 0.9em;
+}
+
+* html #vsm_results.p{
+	padding: 10;
+}
+
+
+#vsm_results,
+#vsm_results div,
+#vsm_results td,
+#vsm_results.p,
+#vsm_results.single_hit {
+	color:#000;
+}
+
+#vsm_results,
+#vsm_results.d,
+#vsm_results.p,
+#vsm_results.single_hit {
+	background-color:#fff;
+}
+	
+#vsm_results.single_hit{
+	xfont-size: 
+}
+
+
+#vsm_results table.header{
+	width: 98%;
+	xborder: solid aqua 2px;
+}
+
+
+#vsm_results table.hits{
+	width: 98%;
+	xborder: solid deeppink 2px;
+}
+
+#vsm_results table.hits tr.single_header{
+	background-color: #e5ecf9;
+}
+
+
+
+#vsm_results.g{
+	margin-top: 1em; 
+	margin-bottom: 1em;
+}
+
+#vsm_results.single_hit td{
+	cwidth:34em;
+}
+
+#vsm_results.l{
+}
+
+#vsm_results.l{
+	color: #004AAF;
+}
+	
+#vsm_results a:link,
+#vsm_results.w,
+#vsm_results.w a:link{
+	color:#004AAF;
+}
+
+#vsm_results.f,
+#vsm_results.f:link,
+#vsm_results.f a:link{
+	color:#77c;
+}
+
+#vsm_results a:visited,
+#vsm_results.f a:visited{
+	color:#666;
+}
+
+#vsm_results a:active,
+#vsm_results.f a:active{
+	color:#630;
+}
+
+#vsm_results.t{
+	color:#000;
+}
+
+#vsm_results.t{
+	background-color:#e5ecf9;
+}
+
+#vsm_results.z{
+	display:none;
+}
+
+#vsm_results.i,
+#vsm_results.i:link{
+	color:#a90a08;
+}
+
+#vsm_results.a,
+#vsm_results.a:link{
+	color:#004AAF;
+}
+
+#vsm_results div.n {
+	margin-top: 1ex;
+}
+#vsm_results.n a{
+	color:#000;
+}
+
+#vsm_results.n .i{
+	font-weight:bold;
+}
+
+#vsm_results.q a:visited,
+#vsm_results.q a:link,
+#vsm_results.q a:active,
+#vsm_results.q {
+	color:#00c;
+}
+
+#vsm_results.b,
+#vsm_results.b a{
+	font-size: 12pt; 
+	color:#00c; 
+	font-weight:bold;
+}
+
+#vsm_results.d{
+	margin-right:1em; margin-left:1em;
+}
+
+#vsm_results div.oneboxResults {
+	max-height:150px;
+	overflow:hidden;
+}
+
+#vsm_results h1{
+	font: normal 1.4em/1.1em Verdana, Arial, Helvetica, sans-serif;
+	color: #630;
+	margin: 0 0 0.5em 0;
+	padding: 0;
+	text-transform: uppercase;
+}
+
+#vsm_results h3{
+	color: #630;
+}
+/* ---------------------------------------------- */
+/* ------ end VSM search ------------------------ */
+/* ---------------------------------------------- */

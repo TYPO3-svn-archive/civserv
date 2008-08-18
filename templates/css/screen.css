@@ -179,6 +179,7 @@ unknown {
 	margin-right: -3px;
 }
 
+
 #right {
 	float: right;
 	width: 195px;
@@ -206,6 +207,9 @@ html #right {
 	padding-bottom: 4.5em; 
 	margin-right: -200px;
 }
+
+
+
 
 #footer {
 	clear: both; 
@@ -294,12 +298,8 @@ html #centrecontent {
 	padding-left:100px;
 }
 
-#validator {
-	position: relative;
-	top: 90px;
-	margin: 0;
-	text-align: right;
-}
+
+
 
 
 /*---------------- Rendering for Online Services --------------------------*/
@@ -788,12 +788,11 @@ a:hover {
 	position: relative;
 	width: 200px;
 	font-size: 0.85em;
-	top: 60px;
+	top: 70px;
 	text-align: right;
 }
 
-#servicenavigation ul 
-{
+#servicenavigation ul {
 	top: 0;
 	left: 0;
 	margin: 0;
@@ -803,8 +802,7 @@ a:hover {
 	list-style: none;
 }
 
-#servicenavigation ul li
-{
+#servicenavigation ul li{
 	width: 200px;
 	margin: 0;
 	padding: 0;
@@ -812,8 +810,7 @@ a:hover {
 	list-style-type: none; /* duplicated for IE 5/Win */
 }
 
-#servicenavigation ul li a
-{
+#servicenavigation ul li a{
 	text-decoration: none;
 	padding-left: 5px;
 	padding-right: 10px;
@@ -887,6 +884,27 @@ a:hover {
 /* ---------------------------------------------- */
 /* ---------- End service navigation ------------ */
 /* ---------------------------------------------- */
+
+
+
+
+
+#vsm_search{
+	position: relative;
+	top: 50px;
+	margin: 0;
+	text-align: right;
+	border: solid red 2px;
+}
+
+
+
+#validator {
+	position: relative;
+	top: 90px;
+	margin: 0;
+	text-align: right;
+}
 
 
 

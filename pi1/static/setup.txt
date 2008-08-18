@@ -152,6 +152,9 @@ page.10 {
 	marks.CONTACT_LINK = USER
 	marks.CONTACT_LINK.community_id = {$community_id}
 	marks.CONTACT_LINK.userFunc = tx_civserv_pi1->getContactLink
+	
+	marks.VSMSCRIPT = TEXT
+	marks.VSMSCRIPT.value = 
 }
 
 
