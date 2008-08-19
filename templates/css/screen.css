@@ -243,6 +243,11 @@ html #footer {
 	height: 40px;
 }
 
+
+#clearer {
+	clear: both; 
+}
+
 html #centrecontent {
 	margin-bottom: 12px; 
 	height: 1%;
@@ -1026,24 +1031,24 @@ label {
 	text-align: right;
 	width: 8em;
 	margin-right: .3em;
-	}
+}
 
 /* Als nächstes werden die Text- und Auswahlboxen rechts daneben positioniert. Weil diese im HTML ohne einen erzwungenen Zeilenumbruch (z.B. durch <br /> oder die Grenzen einer <td>) nach den Labels kommen, ordnen sie sich durch das float:left; automatisch rechts neben die Beschriftungen ein: */
 #outer input[type=text], select {
 	float: left;
-	}
+}
 
 /* Aus unerfindlichen Gründen braucht der Mozilla eine Extrawurst in Form eines zusätzlichen em für den Abstand nach links: */
 #centrecontent input[type=checkbox].right,
 #centrecontent input[type=radio].right,
 #centrecontent input[type=submit].right {
 	margin-left: 7.5em;
-	}
+}
 
 /* Durch die folgende Deklaration werden die float-Zustände wieder aufgehoben, so dass es danach ganz normal im Fluss des Dokumentes weitergehen kann: */
 form br {
 	clear: both;
-	}
+}
 
 /* Nun wird die Hintergrundfarbe von Textfeldern , sobald diese aktiviert sind, geändert. Damit teilen Sie Ihrem Benutzer deutlich mit, in welchem Abschnitt des Formulares er sich zur Zeit befindet und welche Eingabe als nächstes erwartet wird. Hierzu müssen Sie zunächst einmal die Hintergrundfarbe der Textfelder definieren: */
 #centrecontent fieldset input, #centrecontent fieldset textarea {
@@ -1051,13 +1056,13 @@ form br {
 	background: #ddd;
 	border: solid 1px #696969;
 	width: 20em; 
-	}
+}
 
 /* Als nächstes werden die Textfelder beim Erreichen des Fokus (also durch das Setzen der Einfügemarke per Tabulator oder Maus, oder auch durch Anklicken des damit verbundenen Labels) farblich hervorgehoben: */
 input:focus, textarea:focus {
 	color: #000;
 	background: #fff;
-	}
+}
 
 /* ---------------------------------------------- */
 /* ------------ end formelements ----------- */

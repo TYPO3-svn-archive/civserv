@@ -1,7 +1,8 @@
-/* ---------------------------------------------- */
-/* ------ Begin VSM search ---------------------- */
-/* ---------------------------------------------- */
 
+
+#centrecontent {
+	width:99%;
+}
 
 #right {
 	float: right;
@@ -35,6 +36,9 @@ html #right {
 
 
 
+/* ---------------------------------------------- */
+/* ------ Begin VSM search ---------------------- */
+/* ---------------------------------------------- */
 
 
 /* typo3-placeholder ###VSMSCRIPT### right after ###MENU### and inside of div=id"left" */
@@ -58,12 +62,34 @@ html #right {
 	width: 195px;
 	margin-right: -195px;
 	position: relative;
-	xborder: solid red 2px;
+	border: solid red 2px;
+}
+
+#vsm_searchform input[type=text]{
+	width:12em; 
+	margin-bottom:0.9em;
+}
+
+* html #vsm_searchform input[type=text]{
+	margin-bottom:0;
+}
+
+#vsm_searchform select{
+	width:13em; 
+	margin-bottom:0.9em;
+}
+
+* html #vsm_searchform select{
+	margin-bottom:0;
 }
 
 
 
+
+
+
 #vsm_results {
+	margin-left:1em;
 	padding-left: 1em;
 	background-color: pink;
 	xborder: solid red 2px;
