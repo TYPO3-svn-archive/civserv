@@ -1628,8 +1628,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		if ($organisation_id != 0) {
 			$from  .=	', tx_civserv_organisation, 
 						tx_civserv_service_sv_organisation_mm';
-			$where .=	'1 '.
-						$this->cObj->enableFields('tx_civserv_organisation').
+			$where .=	$this->cObj->enableFields('tx_civserv_organisation').
 					 	' AND tx_civserv_service.uid = tx_civserv_service_sv_organisation_mm.uid_local
 					 	 AND tx_civserv_organisation.uid = tx_civserv_service_sv_organisation_mm.uid_foreign
 						 AND tx_civserv_organisation.uid = ' . $organisation_id;
