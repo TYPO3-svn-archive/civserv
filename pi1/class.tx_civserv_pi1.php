@@ -251,6 +251,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$this->piVars['mode'] = 'error';
 			}
 			
+			if(!$this->check_piVars($this->piVars)){
+				$this->piVars['mode'] = 'error';
+			}
+
+			
+			
+			
 			switch($this->piVars['mode'])	{
 				case 'service_list':
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_service_list.overview','Service list');
@@ -4971,6 +4978,61 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		return $parent_list;
 	}
+	
+	
+	/*********************************************************************************
+	 *
+	 * Function for excluding corrupted pages 
+	 *
+	 **********************************************************************************/
+	//get all the parents!!!! (inversion of pid_list which'll contain all the children)
+	function check_piVars($piVars){
+		debug($piVars, 'pivars delivered to method checkpiVars');
+		debug($this->community['pidlist'], 'community pidlist');
+		$check = false;
+		$table = '';
+		$pid=0;
+		switch($piVars['mode']){
+			case 'organisation':
+				$table = 'tx_civserv_organisation';
+				break;
+			case 'employee':
+				$table = 'tx_civserv_employee';
+				break;
+			default:
+				break;
+		}
+		if($table > ''){
+			$check = true;
+			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+					'pid',			 							// SELECT ...
+					$table,									// FROM ...
+					'uid = '.$piVars['id'],// AND title LIKE "%blabla%"', // WHERE...
+					'', 										// GROUP BY...
+					'',   										// ORDER BY...
+					'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
+					);
+				$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+				$pid = $row['pid'];
+			debug($pid, 'die gesuchte pid');
+		}else{
+			$check = false;
+		}
+		if($check){
+			$tempPidArr = explode(',', $this->community['pidlist']);
+#			debug($tempPidArr, '$tempPidArr');
+			if(in_array($pid, $tempPidArr)){
+				debug('checked! alls well');
+			}else{
+				debug('you bastard');
+#				return false; //noooo!
+			}						
+		}else{
+			debug('no check!');
+		}
+		return true;
+	}
+
 
 }//class end
 
