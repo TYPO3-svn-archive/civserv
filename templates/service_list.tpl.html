@@ -23,8 +23,12 @@
 		<div class="list">		
 			<ul>			
 			<!--{foreach from=$services item=service }-->				
-				<!--{if $service.preview == 1}-->	
+				<!--{if ($service.preview == 1) && ($service.fe_group > 0)}-->	
+					<li class="intern_preview"><a class="intern_preview" href="{$service.link}">{$service.name}</a></li>
+				<!--{elseif ($service.preview == 1) && ($service.fe_group <= 0)}-->
 					<li class="preview"><a class="preview" href="{$service.link}">{$service.name}</a></li>
+				<!--{elseif ($service.preview !== 1) && ($service.fe_group > 0)}-->
+					<li class="intern"><a class="intern" href="{$service.link}">{$service.name}</a></li>
 				<!--{else}-->
 					<li><a href="{$service.link}">{$service.name}</a></li>
 				<!--{/if}-->				

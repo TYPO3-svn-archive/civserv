@@ -41,11 +41,11 @@ leftmenu {
 }
 		
 		
+includeLibs.DEVELOPER_Functions =    typo3conf/ext/civserv/pi1/class.tx_civserv_pi1.php
 		
 # ************************************* #
 # ********** Define choice link ********* #
 # ************************************* #
-includeLibs.DEVELOPER_Functions =    typo3conf/ext/civserv/pi1/class.tx_civserv_pi1.php
 temp.choicelink = USER
 temp.choicelink {
 	community_id = {$community_id}
@@ -54,6 +54,17 @@ temp.choicelink {
 	userFunc = tx_civserv_pi1->getChoiceLink
 }
 
+# ************************************* #
+# ********** Define login link ********* #
+# ************************************* #
+temp.loginlink = USER
+temp.loginlink {
+	community_id = {$community_id}
+	pageid = {$pageid}
+	fulltext_search_id ={$fulltext_search_id}
+	login_pageid = {$login_pageid}
+	userFunc = tx_civserv_pi1->getLoginLink
+}
 
 
 
@@ -122,6 +133,12 @@ page.10 {
 	
 	marks.MENU < leftmenu
 	
+	marks.LOGIN = USER
+	marks.LOGIN.userFunc = tx_civserv_pi1->showLogin
+	
+	marks.FEUSER = USER
+	marks.FEUSER.userFunc = tx_civserv_pi1->showFeuser
+	
 	marks.COMMUNITY = USER
 	marks.COMMUNITY.community_id = {$community_id}
 	marks.COMMUNITY.userFunc = tx_civserv_pi1->getCommunityName
@@ -136,6 +153,8 @@ page.10 {
 	marks.ACTPAGE.userFunc = tx_civserv_pi1->getActualPage
 	
 	marks.CHOICE_LINK < temp.choicelink
+	
+	marks.LOGIN_LINK < temp.loginlink
 	
 	/*
 	marks.CHOICE_LINK = USER

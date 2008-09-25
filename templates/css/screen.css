@@ -130,10 +130,6 @@ a.extern{
 	padding-left: 1.2em;
 }
 
-a.intern{
-  text-decoration: none;
-  font-weight: bold;	
-}
 /* ---------------------------------------------- */
 /* ----------------- End RTE htmlArea ----------- */
 /* ---------------------------------------------- */
@@ -422,9 +418,24 @@ table.right {
 }
 
 
+li.intern{
+	background: url(../images/icons/user-red.gif) no-repeat;
+	padding-left: 1.4em;
+	background-position: 0em 0.2em;
+}
 
 
 
+li.intern_preview{
+	background: url(../images/icons/user-red.gif) no-repeat;
+	padding-left: 1.4em;
+}
+
+a.intern_preview{
+	font-size: 1.1em;
+	font-weight: bold;
+	background-color: #FFFFAA;
+}
 
 
 
@@ -660,7 +671,6 @@ table.right {
 	width: 195px; /* 195px */
 	margin: 0;
 	padding: 0;
-	color: red;
 	display: inline; /* duplicated for IE 5/Win */
 	list-style-type: none; /* duplicated for IE 5/Win */
 	xborder: solid red 1px;
@@ -673,6 +683,11 @@ table.right {
 	background-position: 0em 0.4em;
 	padding-left: 1.2em;
 	text-decoration: none;
+}
+
+#serviceinformation span.intern{
+	background: url(../images/icons/user-red.gif) no-repeat;
+	padding-left: 1.4em;
 }
 
 /* ---------------------------------------------- */
@@ -1150,13 +1165,13 @@ input:focus, textarea:focus {
 
 .tx-civserv-pi2 #centrecontent .supervisor{
 	font-weight: bold;
-	color: red;
+	color: green;
 }
 
 
 .tx-civserv-pi2 #centrecontent .searchresult{
 	font-weight: bold;
-	color: green;
+	color: blue;
 }
 
 
@@ -1539,6 +1554,10 @@ input:focus, textarea:focus {
 }
 
 
+
+
+
+
 /*-------------------------Defition List Layout by Memmingen (Herr Haugg)-----------------------------------------------------------*/
 
 
@@ -1596,7 +1615,7 @@ input:focus, textarea:focus {
 	margin-bottom: 1%;
 	margin-top: -1px; /*behebt Rundungsfehler bei Firefox*/
 }
-.tx-civserv-pi2 .employee .em_contact {
+.tx-civserv-pi2 dd.employee .em_contact {
 	border: 1px inset silver;
 	padding: 0.25em;
 	margin: 0 0.5em 0.5em 0;
@@ -1606,8 +1625,8 @@ input:focus, textarea:focus {
 	min-width: 15em;
 	min-height: 2.5em;
 }
-.tx-civserv-pi2 .employee .em_organisation,
-.tx-civserv-pi2 .employee .em_position {
+.tx-civserv-pi2 dd.employee .em_organisation,
+.tx-civserv-pi2 dd.employee .em_position {
 	padding: 0.25em;
 	margin: 0 0 0.25em 0;
 	float: left;
@@ -1620,12 +1639,12 @@ input:focus, textarea:focus {
 	overflow: auto;
 }
 
-/* Liste mit rotem Aufzählungszeichen aber schwaruer Schrift*/
-.tx-civserv-pi2 .employee ul li {
+/* Liste mit rotem Aufzählungszeichen aber schwarzer Schrift*/
+.tx-civserv-pi2 dd.employee ul li {
 	list-style: square;
 	color: red;
 }
-.tx-civserv-pi2 .employee ul li span{
+.tx-civserv-pi2 dd.employee ul li span{
 	color: black;
 }
 
@@ -1779,30 +1798,6 @@ input:focus, textarea:focus {
 
 
 
-/* ---------------------------------------------- */
-/* --------- Begin  service information --------- */
-/* ---------------------------------------------- */
-/*
-#serviceinformation {
-	margin: 0;
-	padding: 0;
-	width: 195px;
-	font-size: 0.85em;
-	margin-top: 20px;
-	overflow: hidden;
-}
-
-#serviceinformation a.link {
-	display: block;
-	background: url(../images/icons/link.gif) no-repeat;
-	background-position: 0em 0.4em;
-	padding-left: 1.2em;
-	text-decoration: none;
-}
-*/
-/* ---------------------------------------------- */
-/* ---------- End service information ----------- */
-/* ---------------------------------------------- */
 
 
 /* ---------------------------------------------- */

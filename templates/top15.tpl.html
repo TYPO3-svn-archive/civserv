@@ -7,15 +7,32 @@
 
 <div id="centrecontent">
 	<h1>{$top15_label}:</h1>
+	{* preview doesn't really exist in top15? *}
 	<div class="list">
 		<ul>
-			<!--{foreach from=$top15 item=service }-->
-				<li><a href="{$service.link}">{$service.name}</a>
-					<!--{if $service.number != ""}-->
-						({$service.number})	
-					<!--{/if}-->
-				</li>	
-			<!--{/foreach}-->
+			<!--{foreach from=$top15 item=service }-->				
+				<!--{if ($service.preview == 1) && ($service.fe_group > 0)}-->	
+					<li class="intern_preview">
+						<a class="intern_preview" href="{$service.link}">{$service.name}</a>
+						<!--{if $service.number != ""}-->({$service.number})<!--{/if}-->
+					</li>
+				<!--{elseif ($service.preview == 1) && ($service.fe_group <= 0)}-->
+					<li class="preview">
+						<a class="preview" href="{$service.link}">{$service.name}</a>
+						<!--{if $service.number != ""}-->({$service.number})<!--{/if}-->
+					</li>
+				<!--{elseif ($service.preview !== 1) && ($service.fe_group > 0)}-->
+					<li class="intern">
+						<a class="intern" href="{$service.link}">{$service.name}</a>
+						<!--{if $service.number != ""}-->({$service.number})<!--{/if}-->
+					</li>
+				<!--{else}-->
+					<li>
+						<a href="{$service.link}">{$service.name}</a>
+						<!--{if $service.number != ""}-->({$service.number})<!--{/if}-->
+					</li>
+				<!--{/if}-->				
+			<!--{/foreach}-->		
 		</ul>
 	</div>
 	{$pagebar}

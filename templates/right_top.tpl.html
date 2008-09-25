@@ -2,11 +2,29 @@
 <!--{if $top15 != ""}-->
 	<h3 class="invisible">{$serviceinformation_label}:</h3>
 	<div id="serviceinformation">
+		{* preview doesn't really exist in top15? *}
 		<strong>{$frequently_visited_label}:</strong><br /><br />
 		<ul>
-		<!--{foreach from=$top15 item=service }-->
-			<li><a href="{$service.link}" class="link">{$service.name}</a></li>
-		<!--{/foreach}-->
+			<!--{foreach from=$top15 item=service }-->				
+				<!--{if ($service.preview == 1) && ($service.fe_group > 0)}-->	
+					<li class="intern_preview">
+						<a class="intern_preview" href="{$service.link}">{$service.name}</a>
+					</li>
+				<!--{elseif ($service.preview == 1) && ($service.fe_group <= 0)}-->
+					<li class="preview">
+						<a class="preview" href="{$service.link}">{$service.name}</a>
+					</li>
+				<!--{elseif ($service.preview !== 1) && ($service.fe_group > 0)}-->
+					<li class="intern">
+						<a class="link" href="{$service.link}"><span class="intern">{$service.name}</span></a>
+					</li>
+				<!--{else}-->
+					<li>
+						<a class="link" href="{$service.link}">{$service.name}</a>
+					</li>
+				<!--{/if}-->				
+			<!--{/foreach}-->		
+
 		</ul><!-- level1 end -->
 		
 	</div><!-- serviceinformation end -->

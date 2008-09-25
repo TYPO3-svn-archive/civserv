@@ -773,22 +773,15 @@ class tx_civserv_pi2 extends tslib_pibase {
 		// 2nd Parameter false for: no_limit
 		// 3rd Parameter true for: select count(*)
 		$row_count = 0;
-		/*
+		
+		
+		//we need this! function makeEmployeeListQueryOrUid with second paramater false for limit generates pageBar!!!
 		$query = $this->makeEmployeeListQueryOrUid($this->piVars['or_uid'], false, true);
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$row_count += $row['count(*)'];
 		}
-		*/
-		$temp_emp = array();
-		foreach($organisations as $org){
-			foreach($org as $emp){
-				if(is_array($emp) && count($emp) > 0){
-					$row_count += count($emp);
-				}
-			}
-		}
-
+		
 
 		$this->internal['res_count'] = $row_count;
 		$this->internal['results_at_a_time']= $this->conf['employee_per_page'];
@@ -1239,14 +1232,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$abcBar .= $hodLink;
 		}
 		$abcBar .= "\n";
-											
-/*		
-		$abcBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($this->pi_getLL('tx_civserv_pi2_employee_list.orcode_hod', 'headofdepartment'), array(orcode => 'hod', pointer => 0, mode => 'employee_list_hod'),1,0) . '%s' . "\n",
-						$actual ? '<strong>' : '',
-						$actual ? '</strong>' : '');
-*/						
 		$abcBar .= '</span>';				
-		
 		$abcBar .= "</p>\n";
 
 		
@@ -2992,6 +2978,14 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$max = t3lib_div::intInRange(ceil($count/$results_at_a_time),1,$maxPages);
 		
 		
+		debug($pointer, 'pointer');
+		debug($count, 'count');
+		debug($results_at_a_time, 'results_at_a_time');
+		debug($maxPages, 'maxPages');
+		debug($pR1, 'pR1');
+		debug($pR2, 'pR2');
+		
+		
 		$links=array();
 
 			// Make browse-table/links:
@@ -3018,9 +3012,23 @@ class tx_civserv_pi2 extends tslib_pibase {
 				if($a*$results_at_a_time+1>$count){
 					$i=$max; //quitt!!!
 				}else{	
+				/*
 					$links[]=sprintf('%s'.$this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page','Page',TRUE).' '.($a+1)),array('pointer'=>($a?$a:'')),1).'%s',
 								($pointer==$a?'<span '.$this->pi_classParam('browsebox-SCell').'><strong>':''),
 								($pointer==$a?'</strong></span>':''));
+				*/
+				
+					$strLinks = '';
+					if($pointer == $a){
+						$strLinks .= '<span '.$this->pi_classParam('browsebox-SCell').'><strong>';
+					}
+					$strLinks .= $this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page','Page',TRUE).' '.($a+1)), array('pointer'=>( $a ? $a : '')), 1);
+					if($pointer == $a){
+						$strLinks .= '</strong></span>';
+					}
+					$links[] = $strLinks;
+					
+					
 				}
 				$a++;
 			}

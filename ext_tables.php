@@ -135,8 +135,9 @@ $TCA['sys_action']['columns']['t1_allowed_groups']['config']['size'] = 10;
 
 
 // extend Typo3 Core:
-// take care that the editors / mandant admins can only choose their OWN fe_group(s), when they create new fe_users!!!
-// this does not really work?!
+// take care that the mandant admins can only choose their OWN fe_group(s), when they CREATE new fe_users!!!
+// and take care that the mandant editors can only choose their OWN fe_group(s), when they edit services
+// the admin/editor needs to be logged into the be for this feature to work
 t3lib_div::loadTCA("fe_users");
 $TCA['fe_users']['columns']['usergroup']['config']['foreign_table_where'] = "AND fe_groups.pid=###CURRENT_PID###";
 

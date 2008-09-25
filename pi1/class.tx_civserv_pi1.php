@@ -625,7 +625,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$this->internal['maxPages'] = $this->conf['max_pages_in_pagebar'];
 		
 		
-		$smartyServiceList->assign('services',$services);
+		$smartyServiceList->assign('services', $services);
 		
 		if ($abcBar) {
 			$query = $this->makeServiceListQuery(all,false);
@@ -1935,6 +1935,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 							'tx_civserv_service.uid as uid,
 						     tx_civserv_service.sv_name as name,
+							 tx_civserv_service.t3ver_oid, 
+							 tx_civserv_service.t3ver_wsid, 
+							 tx_civserv_service.t3ver_state, 
+							 tx_civserv_service.fe_group,
 						     SUM(tx_civserv_accesslog.al_number) as number',	// SELECT
 						    'tx_civserv_accesslog,
 						     tx_civserv_service',		// FROM
@@ -1946,18 +1950,20 @@ class tx_civserv_pi1 extends tslib_pibase {
 							'number DESC',											// ORDER BY
 							$topN); 												// LIMIT
 		$row_counter = 0;
+		//not sure how to handle workspaces and preview here.....
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$top15_data[$row_counter]['link'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $row['uid']),1,1));
 			$top15_data[$row_counter]['name'] = $row['name'];
+			$top15_data[$row_counter]['fe_group'] = $row['fe_group'];
 			if ($showCounts) {
 				$top15_data[$row_counter]['number'] = $row['number'];
 			}
 			$row_counter++;
 		}
-		$smartyTop15->assign('top15',$top15_data);
-		$smartyTop15->assign('top15_label',$this->pi_getLL('tx_civserv_pi1_top15.top15','The 15 most frequently requested services'));
-		$smartyTop15->assign('serviceinformation_label',$this->pi_getLL('tx_civserv_pi1_common.serviceinformation','Service information'));
-		$smartyTop15->assign('frequently_visited_label',$this->pi_getLL('tx_civserv_pi1_common.frequently_visited','The following sites are visited frequently'));
+		$smartyTop15->assign('top15', $top15_data);
+		$smartyTop15->assign('top15_label', $this->pi_getLL('tx_civserv_pi1_top15.top15','The 15 most frequently requested services'));
+		$smartyTop15->assign('serviceinformation_label', $this->pi_getLL('tx_civserv_pi1_common.serviceinformation','Service information'));
+		$smartyTop15->assign('frequently_visited_label', $this->pi_getLL('tx_civserv_pi1_common.frequently_visited','The following sites are visited frequently'));
 
 		if ($searchBox) {
 			//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1); //dropped this according to instructions from security review
@@ -3596,6 +3602,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 	}
 
 
+
+
+
 	/**
 	 * Returns the community name of the sctive community.
 	 * Normaly used from a template userfunction.
@@ -3677,7 +3686,33 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 
 
-
+	/**
+	 * Returns link to login-page (if login-page is set in ts).
+	 * Normaly used from a template userfunction.
+	 *
+	 * @param	string		content
+	 * @param	array		configuration array
+	 * @return	string		The link
+	 */
+	function getLoginLink($content, $conf) {
+		debug($conf, 'conf von getLoginLink');
+		if ($conf['login_pageid'] > '') {
+			$login_pageid = $conf['login_pageid'];
+		} else {
+			$login_pageid = 0;
+		}
+		if ($conf['community_id'] > '') {
+			$community_id = $conf['community_id'];
+		}else{
+			$community_id = 'choose';
+		}
+		#return parent::pi_linkTP_keepPIvars_url(array(community_id => 'choose',mode => 'service_list'),1,1,$login_pageid);
+		$url = parent::pi_linkTP_keepPIvars_url(array(community_id => $community_id, mode => 'service_list'),0,1,$login_pageid);
+		if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
+			$url .= '&amp;logintype=logout';
+		}
+		return $url;
+	}
 
 
 	/******************************
@@ -4066,7 +4101,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 				//Retrieve all services associated with the debit authorisation form from database
 				$res_forms = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-							'tx_civserv_service.uid as uid, tx_civserv_service.sv_name as name',
+							'tx_civserv_service.uid as uid, 
+							 tx_civserv_service.sv_name as name',
 							'tx_civserv_service',
 							'tx_civserv_service_sv_form_mm',
 							'tx_civserv_form',
@@ -4758,6 +4794,43 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$pageid = $GLOBALS['TSFE']->id;
 		}
 		return  str_replace("http://", "", t3lib_div::getIndpEnv(TYPO3_SITE_URL).parent::pi_getPageLink($pageid));
+	}
+
+
+
+	/**
+	 * Returns 'Login' or 'Logout'
+	 * Normaly used from a template userfunction.
+	 *
+	 * @param	string		content
+	 * @param	array		configuration array
+	 * @return	string		The link
+	 */
+	function showLogin($content, $conf) {
+		$log = 'Login';
+		if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
+			$log = 'Logout';
+		}
+		return $log;
+	}
+
+
+
+	/**
+	 * Returns user_name of logged in FE-USER
+	 * Normaly used from a template userfunction.
+	 *
+	 * @param	string		content
+	 * @param	array		configuration array
+	 * @return	string		The link
+	 */
+	function showFeuser($content, $conf) {
+		$feuser = 'nobody';
+		debug($GLOBALS['TSFE']->fe_user->user, 'feuser');
+		if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
+			$feuser = $GLOBALS['TSFE']->fe_user->user['username'];
+		}
+		return $feuser;
 	}
 
 
