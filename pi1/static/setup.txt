@@ -134,9 +134,11 @@ page.10 {
 	marks.MENU < leftmenu
 	
 	marks.LOGIN = USER
+	marks.LOGIN.login_pageid = {$login_pageid}
 	marks.LOGIN.userFunc = tx_civserv_pi1->showLogin
 	
 	marks.FEUSER = USER
+	marks.FEUSER.login_pageid = {$login_pageid}
 	marks.FEUSER.userFunc = tx_civserv_pi1->showFeuser
 	
 	marks.COMMUNITY = USER

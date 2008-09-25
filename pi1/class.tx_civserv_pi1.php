@@ -3696,6 +3696,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function getLoginLink($content, $conf) {
 		debug($conf, 'conf von getLoginLink');
+		$url = '#';
 		if ($conf['login_pageid'] > '') {
 			$login_pageid = $conf['login_pageid'];
 		} else {
@@ -3706,10 +3707,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}else{
 			$community_id = 'choose';
 		}
-		#return parent::pi_linkTP_keepPIvars_url(array(community_id => 'choose',mode => 'service_list'),1,1,$login_pageid);
-		$url = parent::pi_linkTP_keepPIvars_url(array(community_id => $community_id, mode => 'service_list'),0,1,$login_pageid);
-		if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
-			$url .= '&amp;logintype=logout';
+		if($login_pageid > 0){
+			#return parent::pi_linkTP_keepPIvars_url(array(community_id => 'choose',mode => 'service_list'),1,1,$login_pageid);
+			$url = parent::pi_linkTP_keepPIvars_url(array(community_id => $community_id, mode => 'service_list'),0,1,$login_pageid);
+			if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
+				$url .= '&amp;logintype=logout';
+			}
 		}
 		return $url;
 	}
@@ -4807,9 +4810,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	string		The link
 	 */
 	function showLogin($content, $conf) {
-		$log = 'Login';
-		if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
-			$log = 'Logout';
+		$log = '';
+		debug($con, 'conf in showLogin');
+		if($conf['login_pageid'] > ''){ // check if login-page is configured at all!
+			if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
+				$log = 'Logout';
+			}else{
+				$log = 'Login';
+			}
 		}
 		return $log;
 	}
@@ -4825,10 +4833,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	string		The link
 	 */
 	function showFeuser($content, $conf) {
-		$feuser = 'nobody';
+		$feuser = '';
 		debug($GLOBALS['TSFE']->fe_user->user, 'feuser');
-		if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
-			$feuser = $GLOBALS['TSFE']->fe_user->user['username'];
+		if($conf['login_pageid'] > ''){ // check if login-page is configured at all!
+			if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
+				$feuser = $GLOBALS['TSFE']->fe_user->user['username'];
+			}else{
+				$feuser = 'nobody';
+			}
 		}
 		return $feuser;
 	}
@@ -5060,8 +5072,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 **********************************************************************************/
 	//get all the parents!!!! (inversion of pid_list which'll contain all the children)
 	function check_piVars($piVars){
-		debug($piVars, 'pivars delivered to method checkpiVars');
-		debug($this->community['pidlist'], 'community pidlist');
+#		debug($piVars, 'pivars delivered to method checkpiVars');
+#		debug($this->community['pidlist'], 'community pidlist');
 		$check = false;
 		$table = '';
 		$pid=0;
@@ -5095,13 +5107,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$tempPidArr = explode(',', $this->community['pidlist']);
 #			debug($tempPidArr, '$tempPidArr');
 			if(in_array($pid, $tempPidArr)){
-				debug('checked! alls well');
+#				debug('checked! alls well');
 			}else{
-				debug('you bastard');
+#				debug('you bastard');
 #				return false; //noooo!
 			}						
 		}else{
-			debug('no check!');
+#			debug('no check!');
 		}
 		return true;
 	}
