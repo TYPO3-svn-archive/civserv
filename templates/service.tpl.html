@@ -11,16 +11,16 @@
 					<li><a href="#fees" class="fees" title="{$link_to_section} {$fees_label}">{$fees_label}</a></li>
 				<!--{/if}-->
 				<!--{if $documents != ""}-->
-				<li><a href="#necessarydocuments" class="necessarydocuments" title="{$link_to_section} {$documents_label}">{$documents_label}</a></li>
+					<li><a href="#necessarydocuments" class="necessarydocuments" title="{$link_to_section} {$documents_label}">{$documents_label}</a></li>
 				<!--{/if}-->
 				<!--{if $forms != ""}-->
-				<li><a href="#forms" class="forms" title="{$link_to_section} {$forms_label}">{$forms_label}</a></li>
+					<li><a href="#forms" class="forms" title="{$link_to_section} {$forms_label}">{$forms_label}</a></li>
 				<!--{/if}-->
 				<!--{if $legal_local != "" OR $legal_global != ""}-->
-				<li><a href="#legal" class="legals" title="{$link_to_section} {$legal_label}">{$legal_label}</a></li>
+					<li><a href="#legal" class="legals" title="{$link_to_section} {$legal_label}">{$legal_label}</a></li>
 				<!--{/if}-->
 				<!--{if $employees != ""}-->
-				<li><a href="#contactperson" class="contactperson" title="{$link_to_section} {$contact_label}">{$contact_label}</a></li>
+					<li><a href="#contactperson" class="contactperson" title="{$link_to_section} {$contact_label}">{$contact_label}</a></li>
 				<!--{/if}-->
 			</ul><!-- level1 end -->
 		</div><!-- rightmenu end -->
@@ -46,8 +46,12 @@
 
 	<!--TYPO3SEARCH_begin-->
 	
-	<!--{if $preview != ""}-->	
+	<!--{if ($preview == 1) && ($fe_group > 0)}-->	
+		<h1 class="intern_preview">{$service_label}:&nbsp;{$name}</h1>
+	<!--{elseif ($preview == 1) && ($fe_group <= 0)}-->
 		<h1 class="preview">{$service_label}:&nbsp;{$name}</h1>
+	<!--{elseif ($preview !== 1) && ($fe_group > 0)}-->
+		<h1 class="intern">{$service_label}:&nbsp;{$name}</h1>
 	<!--{else}-->
 		<h1>{$service_label}:&nbsp;{$name}</h1>
 	<!--{/if}-->

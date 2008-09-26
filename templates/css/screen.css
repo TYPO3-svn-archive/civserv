@@ -432,6 +432,11 @@ li.intern{
 	background-position: 0em 0.2em;
 }
 
+h1.intern{
+	background: url(../images/icons/user-red.gif) no-repeat;
+	margin-left:1.1em;
+	background-position: 0em 1.1em;
+}
 
 
 li.intern_preview{

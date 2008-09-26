@@ -2711,7 +2711,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		
 		
 		// Check if this service is subject to restricted fe_user access
-		$smartyService->assign($service_common['fe_group']);
+		$smartyService->assign('fe_group', $service_common['fe_group']);
 		
 
 		//Assign template labels
