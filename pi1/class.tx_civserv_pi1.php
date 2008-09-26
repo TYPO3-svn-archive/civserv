@@ -2323,7 +2323,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		
 		
-		
 		//Check if service is an external service and swap the pid_list if it is! so you can show the right contact persons!!
 		if (!array_key_exists($service_common['pid'],array_flip(explode(',',$this->community['pidlist'])))) {
 			$article='';
@@ -2637,7 +2636,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Long description
 		$descr_long_ms = '';
-		if ($model_service[ms_descr_long] != "") {
+		if ($model_service['ms_descr_long'] != "") {
 			$descr_long_ms = trim($model_service['ms_descr_long']) . '<br />';
 		}
 		$descr_long = trim($service_common['sv_descr_long']);
@@ -2646,7 +2645,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyService->assign('descr_long',$this->formatStr($this->local_cObj->stdWrap($descr_long,$this->conf['sv_descr_long_stdWrap.'])));
 
 		//Image text
-		if ($service_common[sv_image_text] != "") {
+		if ($service_common['sv_image_text'] != "") {
 			$image_text = trim($service_common['sv_image_text']);
 		} else {
 			$image_text = trim($model_service['ms_image_text']);
@@ -2695,19 +2694,25 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyService->assign('legal_local',$this->formatStr($this->local_cObj->stdWrap($legal_local,$this->conf['sv_legel_local_general_stdWrap.'])));
 
 		//Legal global
-		if ($service_common[sv_legal_global] != "") {
+		if ($service_common['sv_legal_global'] != "") {
 			$legal_global = trim($service_common['sv_legal_global']);
 			$legal_global = $this->pi_getEditIcon($legal_global,'sv_legal_global',$this->pi_getLL('tx_civserv_pi1_service.legal_global','Legal foundation (global)'),$service_common,'tx_civserv_service');
 		} else {
 			$legal_global = trim($model_service['ms_legal_global']);
 		}
 		$smartyService->assign('legal_global',$this->formatStr($this->local_cObj->stdWrap($legal_global,$this->conf['sv_legal_global_general_stdWrap.'])));
+
 		//Similar services
 		if ($this->conf['relatedTopics']) {
-			$smartyService->assign('related_topics',$similar);
+			$smartyService->assign('related_topics', $similar);
 		} else {
-			$smartyService->assign('similar_services',$similar);
+			$smartyService->assign('similar_services', $similar);
 		}
+		
+		
+		// Check if this service is subject to restricted fe_user access
+		$smartyService->assign($service_common['fe_group']);
+		
 
 		//Assign template labels
 		$smartyService->assign('service_label',$this->pi_getLL('tx_civserv_pi1_service.service','Service'));
@@ -2797,7 +2802,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 tx_civserv_service.sv_3rdparty_checkbox, 
 						 tx_civserv_service.sv_3rdparty_link, 
 						 tx_civserv_service.sv_3rdparty_name,
-						 tx_civserv_service.sv_model_service',
+						 tx_civserv_service.sv_model_service,
+						 tx_civserv_service.fe_group',
 						'tx_civserv_service',
 						'1 '.
 						$this->cObj->enableFields('tx_civserv_service').

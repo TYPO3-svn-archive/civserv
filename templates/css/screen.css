@@ -263,6 +263,14 @@ html #centrecontent {
 	padding-right: 15px;
 }
 
+/* header of felogin */
+#centrecontent b {
+	padding-left: 20px;
+	padding-right: 15px;
+	display: block;
+	margin-top: 15px;
+}
+
 #centrecontent div.content p{
 	padding-left: 0px;
 }
@@ -1921,4 +1929,26 @@ input:focus, textarea:focus {
 
 /* ---------------------------------------------- */
 /* ------- End indexed search extention --------- */
+/* ---------------------------------------------- */
+
+
+
+/* ---------------------------------------------- */
+/* ------ Begin sysext felogin ------------------ */
+/* ---------------------------------------------- */
+
+.tx-felogin-pi1,
+.tx-felogin-pi1 h3,
+.tx-felogin-pi1 div{
+	margin-left: 1em;
+	xborder: solid red 2px;
+}
+
+.tx-felogin-pi1 form div{
+	display: block;
+	margin-top: 2em;
+	xborder: solid red 2px;
+}
+/* ---------------------------------------------- */
+/* ------- End sysext felogin ------------------- */
 /* ---------------------------------------------- */
