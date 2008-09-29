@@ -1,0 +1,85 @@
+<!--TYPO3SEARCH_end-->
+<div id="right">
+	{include file=$right_searchbox_template}
+	{include file=$right_top_template}
+</div><!-- right end -->
+<div id="centrecontent">
+	<!--{if $heading != ""}-->
+		<!-- <h3>{$heading}</h3>-->
+	<!--{/if}-->
+	<!--{if $abcbar != ""}-->
+	{$abcbar}
+	<!--{/if}-->
+	<p class="heading">{$heading}</p>
+	<!-- <h4>{$subheading}:</h4> -->
+	 <dl class="employee">
+	 	<!--{foreach from=$employees item=employee}-->
+    	<dt class="employee">
+			<strong>{$employee.full_name}</strong>
+		</dt>
+		<dd class="employee">
+        	<div class="em_contact">
+            <!--{if $employee.em_image > ''}--><span class="em_pic">{$employee.em_imagecode}</span><!--{/if}-->
+            <!--{if $employee.em_telephone > ''}-->Tel. {$employee.em_telephone}<br /><!--{/if}-->
+            <!--{if $employee.em_mobile > ''}-->Mob. {$employee.em_mobile}<br /><!--{/if}-->
+            <!--{if $employee.em_fax > ''}-->Fax {$employee.em_fax}<br /><!--{/if}-->
+            <!--{if $employee.email_code > ''}-->{$employee.email_code}<!--{/if}-->
+         </div>
+         <div class="em_organisation">
+                <!--{foreach from=$employee.em_organisations item=organisation}-->
+                <!--{if $organisation.or_name > ''}-->
+                <strong>{$organisation.or_name}</strong>
+                <!--{/if}-->
+                <!--{if $organisation.or_code > ''}-->
+                ({$organisation.or_code})
+                <!--{/if}-->
+                <!--{if $organisation.or_shorttitle > ''}-->
+                <!-- {$organisation.or_shorttitle} -->
+                <!--{/if}-->
+                    <!--{foreach from=$organisation.positions item=position}-->
+                    <ul class="position">
+                        <li class="po_name">
+                        	<span>
+                            <!--{if $position.po_nice_name > ''}-->
+                            {$position.po_nice_name}&nbsp;
+                            <!--{/if}-->
+                            <!--{if $position.po_name > ''}-->
+                            {$position.po_name}
+                            <!--{/if}-->
+                            <!--{if $position.po_building > '' || $position.po_phone > '' || $position.po_fax > '' || $position.po_mobile > '' || po_descr > ''}-->
+                                <!--{if $position.po_building > ''}-->
+                                <br />{$position.po_building}:
+                                    <!--{if $position.po_room > ''}-->
+                                    &nbsp;{$position.po_room}
+                                    <!--{/if}-->
+                                    <!--{if $position.po_floor > ''}-->
+                                    &nbsp;({$position.po_floor})
+                                    <!--{/if}-->
+                                <!--{/if}-->
+                                <!--{if $position.po_descr > ''}-->
+                                <br />{$position.po_descr}
+                                <!--{/if}-->
+                                <!--{if $position.po_phone > ''}-->
+                                <br />Tel. {$position.po_phone}
+                                <!--{/if}-->
+                                <!--{if $position.po_fax > ''}-->
+                                <br />{$position.po_fax}
+                                <!--{/if}-->
+                                <!--{if $position.po_mobile > ''}-->
+                                <br />({$position.po_mobile})
+                                <!--{/if}-->
+                                <!--{if $position.po_email > ''}-->
+                                <br />{$position.po_email}
+                                <!--{/if}-->
+                            <!--{/if}-->
+                        	</span>
+                        </li>
+                    </ul>
+                    <!--{/foreach}-->
+                <!--{/foreach}-->
+            </div>
+        </dd>
+     <!--{/foreach}-->
+	</dl><!-- Ende dl class="employee_az" -->
+	{$pagebar}
+</div><!-- centrecontent end -->
