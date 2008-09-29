@@ -426,25 +426,27 @@ table.right {
 }
 
 
-li.intern{
+
+
+#centrecontent li.intern{
 	background: url(../images/icons/user-red.gif) no-repeat;
 	padding-left: 1.4em;
 	background-position: 0em 0.2em;
 }
 
-h1.intern{
+#centrecontent h1.intern{
 	background: url(../images/icons/user-red.gif) no-repeat;
 	margin-left:1.1em;
 	background-position: 0em 1.1em;
 }
 
 
-li.intern_preview{
+#centrecontent li.intern_preview{
 	background: url(../images/icons/user-red.gif) no-repeat;
 	padding-left: 1.4em;
 }
 
-a.intern_preview{
+#centrecontent a.intern_preview{
 	font-size: 1.1em;
 	font-weight: bold;
 	background-color: #FFFFAA;

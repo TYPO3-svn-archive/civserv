@@ -1,8 +1,7 @@
 <div id="right">
 	{include file=$right_searchbox_template}
 	
-	{* If a service with at least one of the following sections is shown,
-		the subnavigation is shown here. *}
+	{* If a service with at least one of the following sections is shown, the subnavigation is shown here. *}
 	<!--{if $fees != "" OR $documents != "" OR $forms != "" OR $legal_local != "" OR $legal_global != "" OR $employees != ""}-->
 		<h3 class="invisible">{$subnavigation_label}:</h3>
 		<div id="rightmenu">
@@ -27,14 +26,30 @@
 	<!--{/if}-->
 
 	{* If defined, here are shown related topics (similar services) to the current service. *}
-	<!--{if $related_topics != ""}-->
+	<!--{if !empty($related_topics)}-->
 		<h3 class="invisible">{$serviceinformation_label}:</h3>
 		<div id="serviceinformation">
 			<strong>{$pages_related_topics_label}:</strong><br /><br />
 			<ul>
-			<!--{foreach from=$related_topics item=service }-->
-				<li><a href="{$service.link}" class="link">{$service.name}</a></li>
-			<!--{/foreach}-->
+				<!--{foreach from=$related_topics item=service }-->				
+					<!--{if ($service.preview == 1) && ($service.fe_group > 0)}-->	
+						<li class="intern_preview">
+							<a class="intern_preview" href="{$service.link}">{$service.name}</a>
+						</li>
+					<!--{elseif ($service.preview == 1) && ($service.fe_group <= 0)}-->
+						<li class="preview">
+							<a class="preview" href="{$service.link}">{$service.name}</a>
+						</li>
+					<!--{elseif ($service.preview !== 1) && ($service.fe_group > 0)}-->
+						<li class="intern">
+							<a class="link" href="{$service.link}"><span class="intern">{$service.name}</span></a>
+						</li>
+					<!--{else}-->
+						<li>
+							<a class="link" href="{$service.link}">{$service.name}</a>
+						</li>
+					<!--{/if}-->				
+				<!--{/foreach}-->		
 			</ul><!-- level1 end -->
 		</div><!-- serviceinformation end -->
 	<!--{/if}-->

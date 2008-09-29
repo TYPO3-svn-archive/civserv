@@ -468,7 +468,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// to the very end of the list through the order by clause in function makeServiceListQuery....
 		$eleminated_rows=0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
-			
+#			debug($row, 'service_list row');
 			// WS-VERSIONING: get the Preview from the Core!!!!
 			// copied from tt_news
 			// the function versionOL() in /t3lib/class.t3lib_page.php does 
@@ -827,6 +827,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$query .= 'LIMIT ' . $start . ',' . $count;
 			}
 		}
+		debug($query, 'query serviclist');
 		return $query;
 	}
 
@@ -2477,7 +2478,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 		
 		$res_similar = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'DISTINCT similar.uid AS uid, 
-						 similar.sv_name AS name',
+						 similar.sv_name AS name,
+						 similar.fe_group',
 						$from,
 						$where,
 						'',						// GROUP BY
@@ -2498,11 +2500,18 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$service_employees = $this->sql_fetch_array_r($res_employees);
 
 		$row_counter = 0;
+		$similar = array();
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_similar))	{
+			debug($row, 'row similar');
 			$similar[$row_counter]['link'] =  htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $row['uid']),$this->conf['cache_services'],1));
 			$similar[$row_counter]['name'] = $row['name'];
+			$similar[$row_counter]['fe_group'] = $row['fe_group'];
+			if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
+				$similar[$row_counter]['logged_in'] = 1;
+			}
 			$row_counter++;
 		}
+		debug($similar);
 
 		//Add coloumns with url for email form and employee page to array $service_employees and format position description string
 		for ($i = 0; $i < count($service_employees); $i++) {
