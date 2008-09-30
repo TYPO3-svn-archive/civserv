@@ -4854,7 +4854,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
 				$feuser = $GLOBALS['TSFE']->fe_user->user['username'];
 			}else{
-				$feuser = 'nobody';
+				$feuser = $this->pi_getLL('tx_civserv_pi1_feuser.text_nobody','no user logged in at the frontend');
 			}
 		}
 		return $feuser;

@@ -244,6 +244,7 @@ $LOCAL_LANG = Array (
 		'tx_civserv_pi1_weekday_403' => '',
 		'tx_civserv_pi1_community_choice.notice' => 'The following information is related to ###COMMUNITY_NAME###.',
 		'tx_civserv_pi1_community_choice.link_text' => 'Click here, to choose another community.',
+		'tx_civserv_pi1_feuser.text_nobody' => 'nobody',
 	),
 	'de' => Array (
 		'pi_list_browseresults_prev' => '< zurück',
@@ -463,6 +464,7 @@ $LOCAL_LANG = Array (
 		'tx_civserv_pi1_weekday_403' => '',
 		'tx_civserv_pi1_community_choice.notice' => 'Die folgenden Informationen beziehen sich auf: ###COMMUNITY_NAME###.',
 		'tx_civserv_pi1_community_choice.link_text' => 'Klicken Sie hier, um einen anderen Ort einzustellen.',
+		'tx_civserv_pi1_feuser.text_nobody' => 'kein User am Frontend angemeldet',
 	),
 );
 ?>
