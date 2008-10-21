@@ -23,32 +23,38 @@
 	<!--{/if}-->		
 	<h2>{$subheading}:</h2>		
 	<!--{if $form_list != ""}-->
-		<!--{foreach from=$form_list key=category item=cat}-->
-			<!--{if $category != ""}-->		
-				<h2 class="category">{$category}</h2>
+		<!--{assign var="category" value=""}-->
+		<!--{if $category_count == 0}-->	
+			<ul class="formlist">
+		<!--{/if}-->
+		<!--{foreach from=$form_list item=form}-->
+			<!--{if $form.ca_name!= "" && $form.ca_name!= $category}-->		
+				<!--{if $category !=""}-->
+					</ul>
+				<!--{/if}-->
+				<h2 class="category">{$form.ca_name}</h2>
+				<ul class="formlist">
 			<!--{/if}-->
-				<ul class="formlist">		
-				<!--{foreach from=$cat item=form}-->			
-					<li><img src="{$form.icon}" class="fileicon"/><a href="{$form.url}" target="_blank">{$form.name}&nbsp;</a><br />		
-					{*<li><strong>{$form.url}</strong><br />*}
-					<!--{if $form.descr != ""}-->					
-						{$form.descr}				
-					<!--{/if}-->									
-					<!--{if $form.services != ""}-->					
-						{$assigned_services}:<br />					
-						<ul>					
-						<!--{foreach from=$form.services item=service}-->						
-							<li><a href="{$service.link}">{$service.name}</a></li>					
-						<!--{/foreach}-->					
-						</ul>				
-					<!--{/if}--><br />			
-					</li>		
-				<!--{/foreach}-->		
-				</ul>	
+			<li>
+				<img src="{$form.icon}" class="fileicon"/>
+				<a href="{$form.url}" target="_blank">{$form.name}&nbsp;</a><br />		
+				<!--{if $form.descr != ""}-->					
+					{$form.descr}				
+				<!--{/if}-->									
+				<!--{if $form.services != ""}-->					
+					{$assigned_services}:<br />					
+					<ul>					
+					<!--{foreach from=$form.services item=service}-->						
+						<li><a href="{$service.link}">{$service.name}</a></li>					
+					<!--{/foreach}-->						
+					</ul>				
+				<!--{/if}--><br />			
+			</li>
+			<!--{assign var="category" value=$form.ca_name}-->
 		<!--{/foreach}-->		
+		<!--{if $category_count == 0}-->
+			</ul>
+		<!--{/if}-->
 	<!--{/if}-->	
-	
-	<!--{if $form_list != ""}-->		
-			<!--{/if}-->	
 	{$pagebar}
 </div><!-- centrecontent end -->

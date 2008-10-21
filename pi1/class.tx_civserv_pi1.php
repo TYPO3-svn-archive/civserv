@@ -827,7 +827,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$query .= 'LIMIT ' . $start . ',' . $count;
 			}
 		}
-		debug($query, 'query serviclist');
+#		debug($query, 'query serviclist');
 		return $query;
 	}
 
@@ -1307,7 +1307,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	boolean		If true, a list with all organisations is generated
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
-	function formList(&$smartyFormList,$organisation_id=0,$abcBar=false,$searchBox=false,$topList=false,$orgaList=false) {
+	function formList(&$smartyFormList, $organisation_id=0, $abcBar=false, $searchBox=false, $topList=false, $orgaList=false) {
 		//Set path to forms of services
 		$folder_forms = $this->conf['folder_services'];
 		$folder_forms .= $this->community['id'] . '/forms/';
@@ -1315,115 +1315,64 @@ class tx_civserv_pi1 extends tslib_pibase {
 		
 		//query to check, if any categories are being used at all at the mandant's:
 		$cat_count=0;
-		$query_cat = $this->makeFormListQuery('all',$organisation_id,1,false,true); // 1: do consider categories for query
-		$res_cat = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query_cat);
+		$query_cat_count = $this->makeFormListQuery('all', $organisation_id, 1, false, true); // 1: do consider categories for query
+		$res_cat_count = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query_cat_count);
 		// only taking first row of resultset means only the mandants own forms are being counted for this.
 		// external forms would be in the second row
-		if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_cat)) {
+		if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_cat_count)) {
 			$cat_count = $row['count(DISTINCT tx_civserv_form.uid)'];
 		}
-
-		$query = $this->makeFormListQuery($this->piVars['char'],$organisation_id,0); // do not consider categories for query!
-		$forms_res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
-
-		$form_row_counter = 0;
-		$actual_category=0;
+		debug($cat_count, 'catcount');
+		
+		
 		$all_forms=array();
 		$category_names=array();
 		$form_names=array();
 		
-		while ($form_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($forms_res) ) {
-			//test b.k.: get the categories indiviually (because we do not want to lose those forms having no category
-			$res_cats = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-						'tx_civserv_category.ca_name',
-						'tx_civserv_form',
-						'tx_civserv_form_fo_category_mm',
-						'tx_civserv_category',
-						$this->cObj->enableFields('tx_civserv_category').
-						$this->cObj->enableFields('tx_civserv_form').
-						' AND tx_civserv_form.uid = ' . $form_row['uid'],
-						'',
-						'',
-						'');
-			//only once of course!!!!			
-			if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_cats))	{
-				$form_row['cat']=$row['ca_name'];
-			}else{
-				if($form_row['typ']== 'e'){ // extra Category for Forms-without-a-category donated by the County, bigger Community, etc....
+		//query with categories - only if we're positive that categories are actually being used!
+		if($cat_count > 0){
+			$useCategories = 1;
+			$query_cat = $this->makeFormListQuery($this->piVars['char'], $organisation_id, 1, true, false); // 1: do consider categories for query
+			$res_cat = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query_cat);
+			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_cat)) {
+				//ggfs überschreiben
+				if($row['typ']== 'e'){ // extra Category for Forms-without-a-category donated by the County, bigger Community, etc....
 					// todo: get locallang......
-					$form_row['cat']='externe Formulare';
+					// fix me!!!
+					#$row['ca_name']='externe Formulare'; //nützt nix, sind schon sortiert!!!
 				}
+				$all_forms[]=$row;
 			}
-			if($form_row['typ']== 'e'){ // highlighting for all Forms donated by the County, bigger Community, etc....
-				// todo: get locallang......
-				// not useful until we can name the donator!
-				// $form_row['name'].=' (externes Formular)';
+		}else{
+			//query without categories - in any case!
+			$query = $this->makeFormListQuery($this->piVars['char'], $organisation_id, 0, true, false); // do not consider categories for query!
+			$forms_res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+			while ($form_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($forms_res) ) {
+				//fix me: localisation
+				//nützt nix, sind schon sortiert!!!
+				#$form_row['ca_name']='nix zugeordnet';
+				#$form_row['ca_uid']=0;
+				$all_forms[]=$form_row;
 			}
-			$all_forms[]=$form_row;
 		}
+		debug($all_forms, 'all_forms');
 		
-		
-		//check on cases!!!!
-		$lowercase_cat_uids=array(); // not needed
-		$lowercase_foname_uids=array(); // not needed
-		//ATTENTION: multisort is case sensitive!!!
 		for($i=0; $i<count($all_forms); $i++){
-			if($cat_count > 0){ // mandant uses categories
-				// todo: get text from locallang properly!!!
-				// i.e. only if we want to have an extra categorie for unclassified forms (forms without a category)
-				#$all_forms[$i]['cat']=!$all_forms[$i]['cat']?'nix Zuordnung':$all_forms[$i]['cat'];
-			}else{ // not one category used at the mandant's
-				$all_forms[$i]['cat']='0';
-			}
-			$cat_name=$all_forms[$i]['cat'];
-			$fo_name=$all_forms[$i]['name'];
-			// service-name starts with lowercase letter
-			if(strcmp(substr($cat_name,0,1), strtoupper(substr($cat_name,0,1)))>0){
-				// make it uppercase
-				$all_forms[$i]['cat']=strtoupper(substr($cat_name,0,1)).substr($cat_name,1,strlen($cat_name));
-				// remember which one it was you manipulated
-				$lowercase_cat_uids[]=$all_forms[$i]['uid'];
-			}
-			if(strcmp(substr($fo_name,0,1), strtoupper(substr($fo_name,0,1)))>0){
-				// make it uppercase
-				$all_forms[$i]['name']=strtoupper(substr($fo_name,0,1)).substr($fo_name,1,strlen($fo_name));
-				// remember which one it was you manipulated
-				$lowercase_foname_uids[]=$all_forms[$i]['uid'];
-			}
-			$category_names[$i] = $all_forms[$i]['cat'];
-			$form_names[$i] = $all_forms[$i]['name'];
-		}
-		
-		//apply multisort() to $all_forms......
-		if(is_array($all_forms) && count($all_forms)>0){
-			array_multisort($category_names, SORT_ASC, $form_names, SORT_ASC, $all_forms);
-		}
-		//reinstate lower_case category_names.....? there shouldn't be any!!!
-		
-		
-		
-		foreach ($all_forms as $single_form) {
-			//test b.k.: get the categories indiviually (because we do not want to lose those forms 
-			// having no category)
-			//cast value of actual_category into string!
-			if($single_form['cat'] != "".$actual_category){
-				$actual_category =$single_form['cat'];
-			}
-			$forms[$actual_category][$form_row_counter]['name'] = $this->pi_getEditIcon(
-								$single_form['name'],
+			$all_forms[$i]['name'] = $this->pi_getEditIcon(
+								$all_forms[$i]['name'],
 								'fo_name',
 								$this->pi_getLL('tx_civserv_pi1_form_list.name','form name'),
-								$single_form,
+								$all_forms[$i],
 								'tx_civserv_form');
-			$forms[$actual_category][$form_row_counter]['descr'] = $this->formatStr(
+			$all_forms[$i]['descr'] = $this->formatStr(
 								$this->local_cObj->stdWrap(
 									$this->pi_getEditIcon(
-										trim($single_form['descr']),
+										trim($all_forms[$i]['descr']),
 										'fo_descr',
 										$this->pi_getLL('tx_civserv_pi1_form_list.description',
 										'form description'
 										),
-									$single_form,
+									$all_forms[$i],
 									'tx_civserv_form'
 								),
 								$this->conf['fo_name_stdWrap.']
@@ -1438,9 +1387,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$this->cObj->enableFields('tx_civserv_service').
 					' AND tx_civserv_service.uid = tx_civserv_service_sv_form_mm.uid_local 
 					AND tx_civserv_form.uid = tx_civserv_service_sv_form_mm.uid_foreign 
-					AND tx_civserv_form.uid = '.$single_form['uid'];
+					AND tx_civserv_form.uid = '.$all_forms[$i]['uid'];
 						 
-			if ($single_form['typ'] == 'e'){
+			if ($all_forms[$i]['typ'] == 'e'){
 				$from .= ',tx_civserv_external_service';
 				$where .= ''.
 						 $this->cObj->enableFields('tx_civserv_external_service').
@@ -1461,8 +1410,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 						
 			$service_row_counter = 0;
 			while ($service_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($services_res)) {
-				$forms[$actual_category][$form_row_counter]['services'][$service_row_counter]['name'] = $service_row['name'];
-				$forms[$actual_category][$form_row_counter]['services'][$service_row_counter]['link'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $service_row['uid']),$this->conf['cache_services'],1));
+				$all_forms[$i]['services'][$service_row_counter]['name'] = $service_row['name'];
+				$all_forms[$i]['services'][$service_row_counter]['link'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $service_row['uid']),$this->conf['cache_services'],1));
 				if (!array_key_exists($service_row['pid'],array_flip(explode(',',$this->community['pidlist'])))) {
 						$mandant = t3lib_div::makeInstanceClassName('tx_civserv_mandant');
 						$mandantInst = new $mandant();
@@ -1475,46 +1424,45 @@ class tx_civserv_pi1 extends tslib_pibase {
 		       }
 			   $service_row_counter++;
 			}
-			if ($single_form['checkbox'] == 1) {
-				$forms[$actual_category][$form_row_counter]['url'] = $this->cObj->typoLink_URL(array(parameter => $single_form['url']));
+			if ($all_forms[$i]['checkbox'] == 1) {
+				$all_forms[$i]['url'] = $this->cObj->typoLink_URL(array(parameter => $all_forms[$i]['url']));
 			} else {
-				$forms[$actual_category][$form_row_counter]['url'] = $folder_forms . $single_form['file'];
+				$all_forms[$i]['url'] = $folder_forms . $all_forms[$i]['file'];
 			}
 			
 			
-			if(preg_match('/http/',$forms[$actual_category][$form_row_counter]['url'])){
+			if(preg_match('/http/', $all_forms[$i]['url'])){
 #				debug('its an Alien!!!!');
 			}else{
 #				debug('its one of us!!!!');
 			}
-			if(preg_match('/.pdf$/',$forms[$actual_category][$form_row_counter]['url']) || preg_match('/pdf.form-solutions.net/',$forms[$actual_category][$form_row_counter]['url'])){
-				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."pdf.gif";
-			}elseif(preg_match('/.doc$/',$forms[$actual_category][$form_row_counter]['url'])){
-				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."doc.gif";
-			}elseif(preg_match('/.odt$/',$forms[$actual_category][$form_row_counter]['url'])){
-				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."sxw.gif";	
-			}elseif(preg_match('/.sxw$/',$forms[$actual_category][$form_row_counter]['url'])){
-				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."sxw.gif";			
-			}elseif(preg_match('/.html$/',$forms[$actual_category][$form_row_counter]['url'])){
-				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."html.gif";			
-			}elseif(preg_match('/.gif$/',$forms[$actual_category][$form_row_counter]['url'])){
-				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."gif.gif";			
-			}elseif(preg_match('/.php$/',$forms[$actual_category][$form_row_counter]['url'])){
-				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."php3.gif";			
-			}elseif(preg_match('/.zip$/',$forms[$actual_category][$form_row_counter]['url'])){
-				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."zip.gif";			
-			}elseif(preg_match('/.txt$/',$forms[$actual_category][$form_row_counter]['url'])){
-				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."txt.gif";			
+			if(preg_match('/.pdf$/',$all_forms[$i]['url']) || preg_match('/pdf.form-solutions.net/',$all_forms[$i]['url'])){
+				$all_forms[$i]['icon'] = $this->iconDir."pdf.gif";
+			}elseif(preg_match('/.doc$/',$all_forms[$i]['url'])){
+				$all_forms[$i]['icon'] = $this->iconDir."doc.gif";
+			}elseif(preg_match('/.odt$/',$all_forms[$i]['url'])){
+				$all_forms[$i]['icon'] = $this->iconDir."sxw.gif";	
+			}elseif(preg_match('/.sxw$/',$all_forms[$i]['url'])){
+				$all_forms[$i]['icon'] = $this->iconDir."sxw.gif";			
+			}elseif(preg_match('/.html$/',$all_forms[$i]['url'])){
+				$all_forms[$i]['icon'] = $this->iconDir."html.gif";			
+			}elseif(preg_match('/.gif$/',$all_forms[$i]['url'])){
+				$all_forms[$i]['icon'] = $this->iconDir."gif.gif";			
+			}elseif(preg_match('/.php$/',$all_forms[$i]['url'])){
+				$all_forms[$i]['icon'] = $this->iconDir."php3.gif";			
+			}elseif(preg_match('/.zip$/',$all_forms[$i]['url'])){
+				$all_forms[$i]['icon'] = $this->iconDir."zip.gif";			
+			}elseif(preg_match('/.txt$/',$all_forms[$i]['url'])){
+				$all_forms[$i]['icon'] = $this->iconDir."txt.gif";			
 			}else{
-				$forms[$actual_category][$form_row_counter]['icon'] = $this->iconDir."default.gif";
+				$all_forms[$i]['icon'] = $this->iconDir."default.gif";
 			}
-
-			$form_row_counter++;
-		}
+		}//end foreach????
+		debug($all_forms, 'all forms nochmal');
 
 		// getting the form count
 		$row_count = 0;
-		$query = $this->makeFormListQuery($this->piVars['char'],$organisation_id,0,false,true); // 0: do not consider categories for query
+		$query = $this->makeFormListQuery($this->piVars['char'], $organisation_id, 0, false, true); // 0: do not consider categories for query
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			//$row_count += $row['count(*)'];
@@ -1526,9 +1474,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$this->internal['res_count'] = $row_count;
 		$this->internal['results_at_a_time'] = $this->conf['forms_per_page'];
 		$this->internal['maxPages'] = $this->conf['max_pages_in_pagebar'];
-		$smartyFormList->assign('form_list',$forms);
+		$smartyFormList->assign('form_list',$all_forms);
 		if ($abcBar) {
-			$query = $this->makeFormListQuery(all,$organisation_id,0,false); // 0: do not consider categories for query
+			$query = $this->makeFormListQuery(all, $organisation_id, 0, false, false); // 0: do not consider categories for query
 			$smartyFormList->assign('abcbar',$this->makeAbcBar($query));
 		}
 
@@ -1550,13 +1498,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$heading .= $this->pi_getLL('tx_civserv_pi1_form_list.overview','Overview');
 		}
 		
-		// test bk: ??? Münster???
-		$GLOBALS['TSFE']->page['title'] = $heading;
-		$smartyFormList->assign('heading',$heading);
-		$smartyFormList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_form_list.available_forms','Here you find the following forms'));
-		$smartyFormList->assign('assigned_services',$this->pi_getLL('tx_civserv_pi1_form_list.assigned_services','The following services are assigned with this form'));
-		$smartyFormList->assign('pagebar',$this->pi_list_browseresults(true,'', ' '.$this->conf['abcSpacer'].' '));
-
 		if ($searchBox) {
 			//$_SERVER['REQUEST_URI'] = $this->pi_linkTP_keepPIvars_url(array(mode => 'search_result'),0,1); //dropped this according to instructions from security review
 			$smartyFormList->assign('searchbox', $this->pi_list_searchBox('',true));
@@ -1594,8 +1535,17 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$organisations[$row_counter]['name'] = $row['name'];
 				$row_counter++;
 			}
-			$smartyFormList->assign('organisations',$organisations);
+			$smartyFormList->assign('organisations', $organisations);
 		}
+		
+		// test bk: ??? Münster???
+		$GLOBALS['TSFE']->page['title'] = $heading;
+		$smartyFormList->assign('heading',$heading);
+		$smartyFormList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_form_list.available_forms','Here you find the following forms'));
+		$smartyFormList->assign('assigned_services',$this->pi_getLL('tx_civserv_pi1_form_list.assigned_services','The following services are assigned with this form'));
+		$smartyFormList->assign('pagebar',$this->pi_list_browseresults(true,'', ' '.$this->conf['abcSpacer'].' '));
+		$smartyFormList->assign('category_count', $cat_count);
+
 		return true;
 	}
 
@@ -1611,7 +1561,21 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	boolean		If true, the services are only counted.
 	 * @return	string		The database query.
 	 */
-	function makeFormListQuery($char=all,$organisation_id=0,$orderByCategory=0,$limit=true,$count=false) {
+	function makeFormListQuery($char='all', $organisation_id=0, $orderByCategory=0, $limit=true, $count=false) {
+		$select_cat = '';
+		$from_cat = '';
+		$where_cat = '';
+		if ($orderByCategory) { // only used for counting categories.......
+			if(!$count){
+				$select_cat =	', tx_civserv_category.uid as ca_uid, tx_civserv_category.ca_name';
+			}
+			$from_cat	=	', tx_civserv_category, tx_civserv_form_fo_category_mm';
+			$where_cat	=	' AND tx_civserv_category.uid =  tx_civserv_form_fo_category_mm.uid_foreign AND 
+						 tx_civserv_form.uid = tx_civserv_form_fo_category_mm.uid_local';
+		}
+
+		
+
 		if ($count) {
 			//$select = 'count(*)';
 			//change proposed by kreis warendorf to eliminate duplicates
@@ -1641,17 +1605,15 @@ class tx_civserv_pi1 extends tslib_pibase {
 					 	 AND tx_civserv_organisation.uid = tx_civserv_service_sv_organisation_mm.uid_foreign
 						 AND tx_civserv_organisation.uid = ' . $organisation_id;
 		}
-		if ($orderByCategory) { // only used for counting categories.......
-			$from	.=	', tx_civserv_category, tx_civserv_form_fo_category_mm';
-			$where	.=	' AND tx_civserv_category.uid =  tx_civserv_form_fo_category_mm.uid_foreign AND 
-						 tx_civserv_form.uid = tx_civserv_form_fo_category_mm.uid_local';
-		}
 
-		if ($char != all) {
+		if ($char != 'all') {
 			$regexp = $this->buildRegexp($char);
 		}
-
-		$orderby = $this->piVars['sort'] ? 'name DESC' : 'name ASC';
+		if($orderByCategory){
+			$orderby = $this->piVars['sort'] ? 'ca_name DESC, name DESC' : 'ca_name ASC, name ASC';
+		}else{
+			$orderby = $this->piVars['sort'] ? 'name DESC' : 'name ASC';
+		}
 		
 
 		// The first time the loop is executed, the part of the query for selecting the services which are located directly at the community is build.
@@ -1667,23 +1629,42 @@ class tx_civserv_pi1 extends tslib_pibase {
 							   tx_civserv_form.fo_url AS url, 
 							   tx_civserv_form.fo_formular_file AS file,
 							   "e" as typ'; // pseudo-column for external services (same select-statement but different 'typ'!
+					if ($orderByCategory){		   
+						$select_cat =	', 0 as ca_uid, \'yyyy externes Formular\'';		
+					}   
 				}
 				$from  .=	', tx_civserv_external_service';
+				
 				$where .=	' ' .
 							' AND tx_civserv_external_service.es_external_service = tx_civserv_service.uid '.
 							 $this->cObj->enableFields('tx_civserv_external_service').
 							' AND tx_civserv_external_service.pid IN (' . $this->community['pidlist'] . ')';
-				$query .= 'UNION ALL ';
+				$query .= ' UNION ALL ';
 			}
 			//change proposed by Kreis Warendorf 24.01.05: we don't want double entries, so we go for DISTINCT
-			$query .=	'SELECT DISTINCT ' . $select . '
-						 FROM ' . $from . '
-						 WHERE ' . $where . ' ' .
+			$query .=	' SELECT DISTINCT ' . $select; 
+			$query .= $select_cat;
+ 
+			$query .=	 ' FROM ' . $from;
+			$query .= $from_cat;
+
+			$query .=	 ' WHERE ' . $where . ' ' .
 							(($i==1)? ' AND tx_civserv_form.pid IN (' . $this->community['pidlist'] . ') ' : ' ') .
 							($regexp? ' AND fo_name REGEXP "' . $regexp . '" ' : ' ');
-		}
+			$query .= $where_cat;
+			//add forms-without-category....(only if we are in category-mode)
+			if($orderByCategory && !$count){
+				$query .=	' UNION ALL ';
+				$query .=	' SELECT '.$select.', 0, \'zzz nicht zugeordnet\'';
+				$query .=	' FROM ' . $from;
+				$query .=	 ' WHERE ' . $where. ' AND tx_civserv_form.fo_category = 0 '.
+								(($i==1)? ' AND tx_civserv_form.pid IN (' . $this->community['pidlist'] . ') ' : ' ') .
+								($regexp? ' AND fo_name REGEXP "' . $regexp . '" ' : ' ');
+			}//if orderbycategory
+		}// end foreach
+		
 		if (!$count) {
-			$query .= 'ORDER BY ' . $orderby . ' ';
+			$query .= ' ORDER BY ' . $orderby . ' ';
 
 			if ($limit) {
 				if ($this->piVars['pointer'] > '') {
@@ -1692,9 +1673,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 					$start = 0;
 				}
 				$count = $this->conf['forms_per_page'];
-				$query .= 'LIMIT ' . $start . ',' . $count;
+				$query .= ' LIMIT ' . $start . ',' . $count;
 			}
 		}
+		debug($query, 'form_query');
 		return $query;
 	}
 
@@ -2057,12 +2039,25 @@ class tx_civserv_pi1 extends tslib_pibase {
 #		$linkconf['ATagParams'] =' title="'.$name.'" alt="'.$name.'" class="all"';
 		$linkconf['ATagParams'] =' class="all"';
 		$linkconf['parameter'] = $url;
+		
+		
+		
+		if($actual){
+			$abcBar .= '<strong>';
+		}
+		$abcBar .= $this->local_cObj->typoLink('A-Z', $linkconf);
+		if($actual){
+			$abcBar .= '</strong>';
+		}
+		$abcBar .= "\n";
+		/*
 		$abcBar .= 	sprintf(	'%s' .	
 								$this->local_cObj->typoLink('A-Z', $linkconf) .
 								'%s' . "\n",
 								$actual?'<strong>':'',
 								$actual?'</strong>':''
 							);
+		*/
 		
 		/*
 		$abcBar .= 	sprintf(	'%s' .
