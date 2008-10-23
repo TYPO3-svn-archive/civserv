@@ -936,14 +936,15 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 
 		// Assign labels
-		$smartyTree->assign('circumstance_tree_label',$this->pi_getLL('tx_civserv_pi1_circumstance.circumstance_tree','Circumstances'));
-		$smartyTree->assign('usergroup_tree_label',$this->pi_getLL('tx_civserv_pi1_usergroup.usergroup_tree','Usergroups'));
-		$smartyTree->assign('organisation_tree_label',$this->pi_getLL('tx_civserv_pi1_organisation.organisation_tree','Organisation'));
+		$smartyTree->assign('circumstance_tree_label', $this->pi_getLL('tx_civserv_pi1_circumstance.circumstance_tree','Circumstances'));
+		$smartyTree->assign('usergroup_tree_label', $this->pi_getLL('tx_civserv_pi1_usergroup.usergroup_tree','Usergroups'));
+		$smartyTree->assign('organisation_tree_label', $this->pi_getLL('tx_civserv_pi1_organisation.organisation_tree','Organisation'));
 		
 		// test b.k. introduce special Headings for city of Münster
-		$smartyTree->assign('circumstance_tree_heading',sprintf($this->pi_getLL('tx_civserv_pi1_circumstance.circumstance_tree.heading','Circumstances'), $this->community['name']));
-		$smartyTree->assign('usergroup_tree_heading',sprintf($this->pi_getLL('tx_civserv_pi1_usergroup.usergroup_tree.heading','Usergroups'), $this->community['name']));
-		$smartyTree->assign('organisation_tree_heading',sprintf($this->pi_getLL('tx_civserv_pi1_organisation.organisation_tree.heading','Organisation Structure'), $this->community['name']));
+		// sprintf will replace '%' in locallang.php: 'tx_civserv_pi1_circumstance.circumstance_tree.heading' => 'Circumstances in %s',	
+		$smartyTree->assign('circumstance_tree_heading', sprintf($this->pi_getLL('tx_civserv_pi1_circumstance.circumstance_tree.heading','Circumstances'), $this->community['name']));
+		$smartyTree->assign('usergroup_tree_heading', sprintf($this->pi_getLL('tx_civserv_pi1_usergroup.usergroup_tree.heading','Usergroups'), $this->community['name']));
+		$smartyTree->assign('organisation_tree_heading', sprintf($this->pi_getLL('tx_civserv_pi1_organisation.organisation_tree.heading','Organisation Structure'), $this->community['name']));
 		
 		#$smartyOrganisationList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_organisation_list.available_organisations','Here you find the following organisations'));
 		
@@ -2018,12 +2019,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 				}else{
 					$abcBar .=  $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . $this->conf['abcSpacer'] . ' ';
 				}
-
-				/*
-				$abcBar .= sprintf('%s' . $this->pi_linkTP_keepPIvars($alphabet[$i],array(char => $alphabet[$i],pointer => 0),1,0) . '%s '.$this->conf['abcSpacer'].' ',
-						$actual?'<strong>':'',
-						$actual?'</strong>':'');
-				*/		
 			}
 			else{
 				$abcBar .= '<span class="nomatch">'.$alphabet[$i].'</span> '.$this->conf['abcSpacer'].' ';
@@ -2050,23 +2045,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$abcBar .= '</strong>';
 		}
 		$abcBar .= "\n";
-		/*
-		$abcBar .= 	sprintf(	'%s' .	
-								$this->local_cObj->typoLink('A-Z', $linkconf) .
-								'%s' . "\n",
-								$actual?'<strong>':'',
-								$actual?'</strong>':''
-							);
-		*/
-		
-		/*
-		$abcBar .= 	sprintf(	'%s' .
-								$this->pi_linkTP_keepPIvars('A-Z',array(char => '', pointer => 0),1,0) .
-								'%s' . "\n",
-								$actual?'<strong>':'',
-								$actual?'</strong>':''
-						);
-		*/				
 		$abcBar .= "</p>\n";
 
 		$this->piVars['mode']=$correctMode;
@@ -4531,9 +4509,18 @@ class tx_civserv_pi1 extends tslib_pibase {
 				if($a*$results_at_a_time+1>$count){
 					$i=$max; //quitt!!!
 				}else{	
+				/*
 					$links[]=sprintf('%s'.$this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page','Page',TRUE).' '.($a+1)),array('pointer'=>($a?$a:'')),1).'%s',
 								($pointer==$a?'<span '.$this->pi_classParam('browsebox-SCell').'><strong>':''),
 								($pointer==$a?'</strong></span>':''));
+				*/
+				$links[] = '';
+				if($pointer == $a){
+					$links[] .= '<span '.$this->pi_classParam('browsebox-SCell').'><strong>';
+				}
+				$links[] .= $this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page', 'Page', TRUE).' '.($a+1)), array('pointer'=>( $a ? $a : '' )), 1);
+				if($pointer == $a){
+					$links[] .= '</strong></span>';
 				}
 				$a++;
 			}
@@ -4545,30 +4532,50 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		// $pR1 and $pR2 have been moved up!
 		
-		$sBox = '
-
-                <!--
+		$sBox = '';
+		
+		
+		$sBox .= '<!-- List browsing box: -->
+					<div'.$this->pi_classParam('browsebox').'>';
+		if($showResultCount){
+			$sBox .= '<p>';
+			if(($this->internal['res_count']){
+				$sBox .= sprintf(
+                                        str_replace('###SPAN_BEGIN###','<span'.$this->pi_classParam('browsebox-strong').'>',$this->pi_getLL('pi_list_browseresults_displays','Displaying results ###SPAN_BEGIN###%s to %s</span> out of ###SPAN_BEGIN###%s</span>')),
+                                        $this->internal['res_count'] > 0 ? $pR1 : 0, //%s
+                                        min(array($this->internal['res_count'], $pR2)), //%s
+                                        $this->internal['res_count'] //%s
+                                )
+			}else{
+				$sBox .= $this->pi_getLL('pi_list_browseresults_noResults','Sorry, no items were found.')).'</p>';
+			}
+		}		
+		$sBox .= '<'.trim('p '.$divParams).'>'.implode($spacer,$links).'</p></div>';		
+				
+/*				
+		$sBox = '<!--
                         List browsing box:
                 -->
                 <div'.$this->pi_classParam('browsebox').'>'.
-                        ($showResultCount ? '
-                        <p>'.
-                                ($this->internal['res_count'] ?
-                        sprintf(
-                                        str_replace('###SPAN_BEGIN###','<span'.$this->pi_classParam('browsebox-strong').'>',$this->pi_getLL('pi_list_browseresults_displays','Displaying results ###SPAN_BEGIN###%s to %s</span> out of ###SPAN_BEGIN###%s</span>')),
-                                        $this->internal['res_count'] > 0 ? $pR1 : 0,
-                                        min(array($this->internal['res_count'],$pR2)),
-                                        $this->internal['res_count']
-                                ) :
-                                $this->pi_getLL('pi_list_browseresults_noResults','Sorry, no items were found.')).'</p>':''
-                        ).
-                '
-
-                        <'.trim('p '.$divParams).'>
-                                        '.implode($spacer,$links).'
+                        ($showResultCount ? 
+                        	'<p>'.
+							($this->internal['res_count'] ?
+                        		sprintf(	str_replace(	'###SPAN_BEGIN###', 
+													'<span'.$this->pi_classParam('browsebox-strong').'>', 
+													$this->pi_getLL('pi_list_browseresults_displays', 'Displaying results ###SPAN_BEGIN###%s to %s</span> out of ###SPAN_BEGIN###%s</span>')
+											),
+											$this->internal['res_count'] > 0 ? $pR1 : 0,
+											min(array($this->internal['res_count'],$pR2)),
+											$this->internal['res_count']
+                        		) :
+                       			$this->pi_getLL('pi_list_browseresults_noResults','Sorry, no items were found.')).'</p>':
+						'').
+                '<'.trim('p '.$divParams).'>
+                '.implode($spacer,$links).'
                         </p>
                 </div>';
-                return $sBox;
+*/				
+			return $sBox;
         }
 
 

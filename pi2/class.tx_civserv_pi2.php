@@ -3012,12 +3012,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 				if($a*$results_at_a_time+1>$count){
 					$i=$max; //quitt!!!
 				}else{	
-				/*
-					$links[]=sprintf('%s'.$this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page','Page',TRUE).' '.($a+1)),array('pointer'=>($a?$a:'')),1).'%s',
-								($pointer==$a?'<span '.$this->pi_classParam('browsebox-SCell').'><strong>':''),
-								($pointer==$a?'</strong></span>':''));
-				*/
-				
 					$strLinks = '';
 					if($pointer == $a){
 						$strLinks .= '<span '.$this->pi_classParam('browsebox-SCell').'><strong>';
