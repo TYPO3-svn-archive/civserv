@@ -3059,8 +3059,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 				$sBox .=	$this->pi_getLL('pi_list_browseresults_noResults','Sorry, no items were found.');
 			}
 			$sBox .= '</p>';
-		}else{
-			//nix
 		}
 		$sBox .=	'<'.trim('p '.$divParams).'>'.implode($spacer,$links).'</p>';
         $sBox .=	'</div>';

@@ -4514,45 +4514,26 @@ class tx_civserv_pi1 extends tslib_pibase {
 								($pointer==$a?'<span '.$this->pi_classParam('browsebox-SCell').'><strong>':''),
 								($pointer==$a?'</strong></span>':''));
 				*/
-				$links[] = '';
-				if($pointer == $a){
-					$links[] .= '<span '.$this->pi_classParam('browsebox-SCell').'><strong>';
-				}
-				$links[] .= $this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page', 'Page', TRUE).' '.($a+1)), array('pointer'=>( $a ? $a : '' )), 1);
-				if($pointer == $a){
-					$links[] .= '</strong></span>';
+					$links[] = '';
+					if($pointer == $a){
+						$links[] .= '<span '.$this->pi_classParam('browsebox-SCell').'><strong>';
+					}
+					$links[] .= $this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page', 'Page', TRUE).' '.($a+1)), array('pointer'=>( $a ? $a : '' )), 1);
+					if($pointer == $a){
+						$links[] .= '</strong></span>';
+					}
 				}
 				$a++;
-			}
-		}
+			}// end foreach
+		}// end if max
+		
 		// neither $pointer nor the number-link ($a) must exceed the result of the calculation below!
 		if ($pointer<ceil($count/$results_at_a_time)-1 && $a<=ceil($count/$results_at_a_time)-1) {
 			$links[]=$this->pi_linkTP_keepPIvars($this->pi_getLL('pi_list_browseresults_next','Next >',TRUE),array('pointer'=>$pointer+1),1);
 		}
 
 		// $pR1 and $pR2 have been moved up!
-		
-		$sBox = '';
-		
-		
-		$sBox .= '<!-- List browsing box: -->
-					<div'.$this->pi_classParam('browsebox').'>';
-		if($showResultCount){
-			$sBox .= '<p>';
-			if(($this->internal['res_count']){
-				$sBox .= sprintf(
-                                        str_replace('###SPAN_BEGIN###','<span'.$this->pi_classParam('browsebox-strong').'>',$this->pi_getLL('pi_list_browseresults_displays','Displaying results ###SPAN_BEGIN###%s to %s</span> out of ###SPAN_BEGIN###%s</span>')),
-                                        $this->internal['res_count'] > 0 ? $pR1 : 0, //%s
-                                        min(array($this->internal['res_count'], $pR2)), //%s
-                                        $this->internal['res_count'] //%s
-                                )
-			}else{
-				$sBox .= $this->pi_getLL('pi_list_browseresults_noResults','Sorry, no items were found.')).'</p>';
-			}
-		}		
-		$sBox .= '<'.trim('p '.$divParams).'>'.implode($spacer,$links).'</p></div>';		
-				
-/*				
+		/*				
 		$sBox = '<!--
                         List browsing box:
                 -->
@@ -4560,23 +4541,49 @@ class tx_civserv_pi1 extends tslib_pibase {
                         ($showResultCount ? 
                         	'<p>'.
 							($this->internal['res_count'] ?
-                        		sprintf(	str_replace(	'###SPAN_BEGIN###', 
+                        			sprintf(	str_replace(	'###SPAN_BEGIN###', 
 													'<span'.$this->pi_classParam('browsebox-strong').'>', 
 													$this->pi_getLL('pi_list_browseresults_displays', 'Displaying results ###SPAN_BEGIN###%s to %s</span> out of ###SPAN_BEGIN###%s</span>')
 											),
 											$this->internal['res_count'] > 0 ? $pR1 : 0,
 											min(array($this->internal['res_count'],$pR2)),
 											$this->internal['res_count']
-                        		) :
-                       			$this->pi_getLL('pi_list_browseresults_noResults','Sorry, no items were found.')).'</p>':
-						'').
+                        			) :
+                       				$this->pi_getLL('pi_list_browseresults_noResults','Sorry, no items were found.')
+							).'</p>':
+						''
+						).
                 '<'.trim('p '.$divParams).'>
                 '.implode($spacer,$links).'
                         </p>
                 </div>';
-*/				
-			return $sBox;
-        }
+		*/
+		$sBox = '';
+		
+		
+		$sBox .= '<!-- List browsing box: -->
+					<div'.$this->pi_classParam('browsebox').'>';
+		if($showResultCount){
+			$sBox .= '<p>';
+			if($this->internal['res_count']){
+				$sBox .= sprintf(
+                                        str_replace(
+											'###SPAN_BEGIN###',
+											'<span'.$this->pi_classParam('browsebox-strong').'>',
+											$this->pi_getLL('pi_list_browseresults_displays','Displaying results ###SPAN_BEGIN###%s to %s</span> out of ###SPAN_BEGIN###%s</span>')
+										),
+                                        $this->internal['res_count'] > 0 ? $pR1 : 0,
+                                        min(array($this->internal['res_count'], $pR2)),
+                                        $this->internal['res_count']
+                                );
+			}else{
+				$sBox .= $this->pi_getLL('pi_list_browseresults_noResults','Sorry, no items were found.');
+			}
+			$sBox .= '</p>';
+		}		
+		$sBox .= '<'.trim('p '.$divParams).'>'.implode($spacer,$links).'</p></div>';		
+		return $sBox;
+	}
 
 
 
