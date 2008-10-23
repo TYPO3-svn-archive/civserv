@@ -992,7 +992,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . $start . ',' . $max;
 				}
 			}
-			debug($query, 'query aus makeEmployeeListQueryOrUid ');
+#			debug($query, 'query aus makeEmployeeListQueryOrUid ');
 			return $query;
 		}
 		
@@ -2975,12 +2975,12 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$max = t3lib_div::intInRange(ceil($count/$results_at_a_time),1,$maxPages);
 		
 		
-		debug($pointer, 'pointer');
-		debug($count, 'count');
-		debug($results_at_a_time, 'results_at_a_time');
-		debug($maxPages, 'maxPages');
-		debug($pR1, 'pR1');
-		debug($pR2, 'pR2');
+#		debug($pointer, 'pointer');
+#		debug($count, 'count');
+#		debug($results_at_a_time, 'results_at_a_time');
+#		debug($maxPages, 'maxPages');
+#		debug($pR1, 'pR1');
+#		debug($pR2, 'pR2');
 		
 		
 		$links=array();
