@@ -1323,7 +1323,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_cat_count)) {
 			$cat_count = $row['count(DISTINCT tx_civserv_form.uid)'];
 		}
-		debug($cat_count, 'catcount');
+#		debug($cat_count, 'catcount');
 		
 		
 		$all_forms=array();
@@ -1356,7 +1356,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$all_forms[]=$form_row;
 			}
 		}
-		debug($all_forms, 'all_forms');
+#		debug($all_forms, 'all_forms');
 		
 		for($i=0; $i<count($all_forms); $i++){
 			$all_forms[$i]['name'] = $this->pi_getEditIcon(
@@ -1459,7 +1459,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$all_forms[$i]['icon'] = $this->iconDir."default.gif";
 			}
 		}//end foreach????
-		debug($all_forms, 'all forms nochmal');
+#		debug($all_forms, 'all forms nochmal');
 
 		// getting the form count
 		$row_count = 0;
@@ -1677,7 +1677,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$query .= ' LIMIT ' . $start . ',' . $count;
 			}
 		}
-		debug($query, 'form_query');
+#		debug($query, 'form_query');
 		return $query;
 	}
 
@@ -2475,7 +2475,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$row_counter = 0;
 		$similar = array();
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_similar))	{
-			debug($row, 'row similar');
+#			debug($row, 'row similar');
 			$similar[$row_counter]['link'] =  htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $row['uid']),$this->conf['cache_services'],1));
 			$similar[$row_counter]['name'] = $row['name'];
 			$similar[$row_counter]['fe_group'] = $row['fe_group'];
@@ -2484,7 +2484,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}
 			$row_counter++;
 		}
-		debug($similar);
+#		debug($similar);
 
 		//Add coloumns with url for email form and employee page to array $service_employees and format position description string
 		for ($i = 0; $i < count($service_employees); $i++) {
@@ -3683,7 +3683,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	string		The link
 	 */
 	function getLoginLink($content, $conf) {
-		debug($conf, 'conf von getLoginLink');
+#		debug($conf, 'conf von getLoginLink');
 		$url = '#';
 		if ($conf['login_pageid'] > '') {
 			$login_pageid = $conf['login_pageid'];
@@ -4835,7 +4835,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function showLogin($content, $conf) {
 		$log = '';
-		debug($con, 'conf in showLogin');
+#		debug($con, 'conf in showLogin');
 		if($conf['login_pageid'] > ''){ // check if login-page is configured at all!
 			if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
 				$log = 'Logout';
@@ -4858,7 +4858,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function showFeuser($content, $conf) {
 		$feuser = '';
-		debug($GLOBALS['TSFE']->fe_user->user, 'feuser');
+#		debug($GLOBALS['TSFE']->fe_user->user, 'feuser');
 		if($conf['login_pageid'] > ''){ // check if login-page is configured at all!
 			if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
 				$feuser = $GLOBALS['TSFE']->fe_user->user['username'];
@@ -5123,7 +5123,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					);
 				$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 				$pid = $row['pid'];
-			debug($pid, 'die gesuchte pid');
+#			debug($pid, 'die gesuchte pid');
 		}else{
 			$check = false;
 		}
