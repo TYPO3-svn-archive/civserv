@@ -979,7 +979,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			}
 
 			if (!$count) {
-				$orderby =	$this->piVars['sort'] ? 'name, em_firstname, or_code DESC' : 'name, em_firstname, or_code ASC';
+				$orderby =	$this->piVars['sort'] ? 'or_name, name, em_firstname,  DESC' : 'or_name, name, em_firstname ASC';
 				$query .= ' ORDER BY ' . $orderby . ' ';
 
 				if ($limit) {
@@ -992,7 +992,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . $start . ',' . $max;
 				}
 			}
-#			debug($query, 'query aus makeEmployeeListQueryOrUid ');
+			debug($query, 'query aus makeEmployeeListQueryOrUid ');
 			return $query;
 		}
 		
@@ -1719,10 +1719,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 //test bk: add continueAbcBarFromOrganisationList
 	function organisationDetail(&$smartyOrganisation,$continueAbcBarFromOrganisationList=false) {
 		// test bk: add mode to parameterlist in function makeAbcBar
-		if($continueAbcBarFromOrganisationList){
-			$query = $this->makeOrganisationListQuery(all,false);
-			$smartyOrganisation->assign('abcbarOrganisationList_continued', $this->makeAbcBar($query, 'organisation_list'));
-		}
+		
 		$uid = intval($this->piVars['id']);	//SQL-Injection!!!
 
 		// Standard query for organisation details
