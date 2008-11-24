@@ -155,7 +155,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// Start or resume session
 		session_name($this->extKey);
 		session_start();
-		// problems with frontend 
 		#session_destroy();
 		
 		if($this->previewMode){
