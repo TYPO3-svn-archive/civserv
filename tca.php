@@ -38,7 +38,7 @@
 * @subpackage tx_civserv
 * @version 1.0
 *
-*
+* test
 */
 /**
  * [TABLE INDEX of SCRIPT]
