@@ -36,7 +36,7 @@
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
  *
- * test
+ * 
  *
  *  106: class tx_civserv_pi1 extends tslib_pibase
  *  117:     function main($content,$conf)
