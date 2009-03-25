@@ -2431,6 +2431,8 @@ $TCA["tx_civserv_officehours"] = Array (
 			"config" => Array (
 				"type" => "select",
 				"items" => Array (
+					Array("--", "--"),
+					Array(" ", 0),
 					Array("07:00", "07:00"),
 					Array("07:30", "07:30"),
 					Array("08:00", "08:00"),
@@ -2455,6 +2457,7 @@ $TCA["tx_civserv_officehours"] = Array (
 			"config" => Array (
 				"type" => "select",
 				"items" => Array (
+					Array("--", "--"),
 					Array(" ", 0),
 					Array("07:00", "07:00"),
 					Array("07:30", "07:30"),
@@ -2483,6 +2486,7 @@ $TCA["tx_civserv_officehours"] = Array (
 			"config" => Array (
 				"type" => "select",
 				"items" => Array (
+					Array("--", "--"),
 					Array(" ", 0),
 					Array("13:00", "13:00"),
 					Array("13:30", "13:30"),
@@ -2512,6 +2516,8 @@ $TCA["tx_civserv_officehours"] = Array (
 			"config" => Array (
 				"type" => "select",
 				"items" => Array (
+					Array("--", "--"),
+					Array(" ", 0),
 					Array("13:00", "13:00"),
 					Array("13:30", "13:30"),
 					Array("14:00", "14:00"),
