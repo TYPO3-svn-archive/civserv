@@ -1,4 +1,7 @@
-<!--TYPO3SEARCH_end-->
+<!--{if $employee_search == "0"}-->
+	<!--TYPO3SEARCH_end-->
+	<div class="MAA"></div>
+<!--{/if}-->	
 <div id="right">
 	{include file=$right_searchbox_template}	
 	{* For the form list could be shown organisations with forms. *}	
@@ -32,17 +35,23 @@
 					{$employee.name}<!--{if $employee.firstname > ''}-->,&nbsp;{$employee.firstname}<!--{/if}-->	
 					</a>
 					<!--{if $employee.orga_name > ''}-->({$employee.orga_name})<!--{/if}-->
-				</li><br />
+				</li>
 		<!--{else}-->
 				<li>
 					{$employee.address_long}
 					<!--{if $employee.title > ''}-->{$employee.title}<!--{/if}-->
 					{$employee.name}<!--{if $employee.firstname > ''}-->,&nbsp;{$employee.firstname}<!--{/if}-->
 					<!--{if $employee.orga_name > ''}-->({$employee.orga_name})<!--{/if}-->
-				</li><br />
+				</li>
 		<!--{/if}-->
 		<!--{/foreach}-->	
 			</ul>
 			</div>
 		{$pagebar}
+		<!--{if $employee_search == "0"}-->
+			<div class="MAE"></div>
+		<!--{/if}-->	
+		<!--{if $employee_search == "1"}-->
+			<!--TYPO3SEARCH_end-->
+		<!--{/if}-->
 </div><!-- centrecontent end -->

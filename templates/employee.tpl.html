@@ -1,6 +1,8 @@
 <!--TYPO3SEARCH_begin-->
-<!--TYPO3SEARCH_end-->
-
+<!--{if $employee_search == "0"}-->
+	<!--TYPO3SEARCH_end-->
+	<div class="MAA"></div>
+<!--{/if}-->
 <div id="right_dummy">
 	{include file=$right_searchbox_template}
 	{include file=$right_top_template}
@@ -178,5 +180,10 @@
 			</table>
 		<!--{/if}-->
 		</div>
-		
+		<!--{if $employee_search == "0"}-->
+			<div class="MAE"></div>
+		<!--{/if}-->	
+		<!--{if $employee_search == "1"}-->
+			<!--TYPO3SEARCH_end-->
+		<!--{/if}-->		
 </div>

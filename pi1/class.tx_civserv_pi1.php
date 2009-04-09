@@ -26,7 +26,7 @@
  *
  * $Id$
  *
- * @author	Stephan Dümmer <sduemmer@uni-muenster.de>
+ * @author	Stephan Dï¿½mmer <sduemmer@uni-muenster.de>
  * @author	Stefan Meesters <meesters@uni-muenster.de>
  * @package TYPO3
  * @subpackage tx_civserv
@@ -940,7 +940,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyTree->assign('usergroup_tree_label', $this->pi_getLL('tx_civserv_pi1_usergroup.usergroup_tree','Usergroups'));
 		$smartyTree->assign('organisation_tree_label', $this->pi_getLL('tx_civserv_pi1_organisation.organisation_tree','Organisation'));
 		
-		// test b.k. introduce special Headings for city of Münster
+		// test b.k. introduce special Headings for city of Mï¿½nster
 		// sprintf will replace '%' in locallang.php: 'tx_civserv_pi1_circumstance.circumstance_tree.heading' => 'Circumstances in %s',	
 		$smartyTree->assign('circumstance_tree_heading', sprintf($this->pi_getLL('tx_civserv_pi1_circumstance.circumstance_tree.heading','Circumstances'), $this->community['name']));
 		$smartyTree->assign('usergroup_tree_heading', sprintf($this->pi_getLL('tx_civserv_pi1_usergroup.usergroup_tree.heading','Usergroups'), $this->community['name']));
@@ -1201,6 +1201,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true,'',' '.$this->conf['abcSpacer'].' '));
 		$smartyEmployeeList->assign('employees',$employees);
 		
+		//search employee
+		$smartyEmployeeList->assign('employee_search', $this->community['employee_search']);
+		
 
 		if ($abcBar) {
 			$query = $this->makeEmployeeListQuery(all,false);
@@ -1336,11 +1339,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$query_cat = $this->makeFormListQuery($this->piVars['char'], $organisation_id, 1, true, false); // 1: do consider categories for query
 			$res_cat = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query_cat);
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_cat)) {
-				//ggfs überschreiben
+				//ggfs ï¿½berschreiben
 				if($row['typ']== 'e'){ // extra Category for Forms-without-a-category donated by the County, bigger Community, etc....
 					// todo: get locallang......
 					// fix me!!!
-					#$row['ca_name']='externe Formulare'; //nützt nix, sind schon sortiert!!!
+					#$row['ca_name']='externe Formulare'; //nï¿½tzt nix, sind schon sortiert!!!
 				}
 				$all_forms[]=$row;
 			}
@@ -1350,7 +1353,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$forms_res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 			while ($form_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($forms_res) ) {
 				//fix me: localisation
-				//nützt nix, sind schon sortiert!!!
+				//nï¿½tzt nix, sind schon sortiert!!!
 				#$form_row['ca_name']='nix zugeordnet';
 				#$form_row['ca_uid']=0;
 				$all_forms[]=$form_row;
@@ -1539,7 +1542,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$smartyFormList->assign('organisations', $organisations);
 		}
 		
-		// test bk: ??? Münster???
+		// test bk: ??? Mï¿½nster???
 		$GLOBALS['TSFE']->page['title'] = $heading;
 		$smartyFormList->assign('heading',$heading);
 		$smartyFormList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_form_list.available_forms','Here you find the following forms'));
@@ -1997,7 +2000,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 			$namefield_arr = ($this->previewMode && ($this->piVars['mode'] == 'service_list' || $this->piVars['mode'] == 'service'))? $row['sv_name'] : $row['name'];	//in previewMode we skip the synonyms of services! because the overlay-function can't handle aliases
-			$initial = str_replace(array('Ä','Ö','Ü'),array('A','O','U'),strtoupper($namefield_arr{0}));
+			$initial = str_replace(array('ï¿½','ï¿½','ï¿½'),array('A','O','U'),strtoupper($namefield_arr{0}));
 			$occuringInitials[] = $initial;
 			$row_counter++;
 		}
@@ -2065,13 +2068,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 			case ''  :
 				break;
 			case 'A' :
-				$regexp = '^A|^Ä';
+				$regexp = '^A|^ï¿½';
 			break;
 			case 'O' :
-				$regexp = '^O|^Ö';
+				$regexp = '^O|^ï¿½';
 				break;
 			case 'U' :
-		 		$regexp = '^U|^Ü';
+		 		$regexp = '^U|^ï¿½';
 				break;
 			default :
 				$regexp = '^' . $char;
@@ -2264,10 +2267,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		
 		$uid = intval($this->piVars['id']);	//SQL-Injection!!!
 		$community_id = $this->community['id'];
-		$employee = $this->community['employee_search'];
 				
 		//search Employee Details
-		$smartyService->assign('employee_search',$employee);
+		$smartyService->assign('employee_search', $this->community['employee_search']);
 
 		//Set path to forms of services
 		$folder_forms = $this->conf['folder_services'];
@@ -3066,6 +3068,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyEmployee->assign('phone',$employee_rows[em_telephone]);
 		$smartyEmployee->assign('fax',$employee_rows[em_fax]);
 		$smartyEmployee->assign('image',$imageCode);
+		
+		//search employee
+		$smartyEmployee->assign('employee_search', $this->community['employee_search']);
+		
 
 		// Assign email data
 		// use typolink, because of the possibility to use encrypted email-adresses for spam-protection
@@ -3451,7 +3457,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// test bk: include or_title 
 		
 		$GLOBALS['TSFE']->page['title']=$organisation_rows['or_name'];
-		// test bk: münster - generate or_title from or_name (is only displayed in münster)
+		// test bk: mï¿½nster - generate or_title from or_name (is only displayed in mï¿½nster)
 		$or_title = $organisation_rows['or_name'];
 		if($organisation_rows[or_addlocation]>'')$or_title.=' ('.$organisation_rows[or_addlocation].')';
 		$smartyOrganisation->assign('or_title',$or_title);
@@ -4718,7 +4724,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 		
 		
-		//test bk: city of Münster: define first menu-item via $conf!
+		//test bk: city of Mï¿½nster: define first menu-item via $conf!
 		if ($conf['menuItems_01'] > '' && $conf[$conf['menuItems_01']]) {
 			$first = $menuArray[$conf['menuItems_01']];
 			unset($menuArray[$conf['menuItems_01']]);
@@ -4925,7 +4931,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$_SESSION['stored_pagelink']=$this->getActualPage($content, $conf);
 			$pageLink= parent::pi_linkTP_keepPIvars_url(array(mode => 'service_list'),1,1,$pageid);
 			$linkText=$this->pi_getLL('tx_civserv_pi1_service_list.service_list','Services A - Z');
-			$_SESSION['info_sites'] = $this->getCompletePageLink($pageLink, $linkText); //Variablen namen ändern?
+			$_SESSION['info_sites'] = $this->getCompletePageLink($pageLink, $linkText); //Variablen namen ï¿½ndern?
 		}elseif($this->piVars['mode'] == "employee"){
 			return $_SESSION['stored_pagelink'];
 		}elseif($this->piVars['mode'] == ""){
@@ -4998,9 +5004,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		if(		$TYPO3_CONF_VARS['BE']['forceCharset'] == 'utf-8' ||
 				$GLOBALS['TSFE']->metaCharset == 'utf-8' ||
 				$GLOBALS['TSFE']->renderCharset == 'utf-8' ){
-			$searchword_pattern = utf8_encode('/^[A-Za-z0-9ÄäÖöÜüß\- ]*$/');
+			$searchword_pattern = utf8_encode('/^[A-Za-z0-9ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\- ]*$/');
 		}else{
-			$searchword_pattern = '/^[A-Za-z0-9ÄäÖöÜüß\- ]*$/';
+			$searchword_pattern = '/^[A-Za-z0-9ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\- ]*$/';
 		}
 		
 
@@ -5025,16 +5031,16 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 *******************************/
 	function replace_umlauts($string){
 		// remove all kinds of umlauts
-		$umlaute = Array("/ä/","/ö/","/ü/","/Ä/","/Ö/","/Ü/","/ß/", "/é/"); //should use hexadecimal-code for é à etc????
+		$umlaute = Array("/ï¿½/","/ï¿½/","/ï¿½/","/ï¿½/","/ï¿½/","/ï¿½/","/ï¿½/", "/ï¿½/"); //should use hexadecimal-code for ï¿½ ï¿½ etc????
 		$replace = Array("ae","oe","ue","Ae","Oe","Ue","ss", "e");
 		$string = preg_replace($umlaute, $replace, $string);
 		
 		//eliminate:
-		$string=str_replace(".", "", $string);			// 'Bücherei Zweigstelle Wolbecker Str.'				--> buecherei_zweigstelle_wolbecker_str.html
+		$string=str_replace(".", "", $string);			// 'Bï¿½cherei Zweigstelle Wolbecker Str.'				--> buecherei_zweigstelle_wolbecker_str.html
 		$string=str_replace(" - ", "-", $string);		// 'La Vie - Begegnungszentrum Gievenbeck'				--> la_vie-begegnungszentrum_gievenbeck.html
-		$string=str_replace("- ", "-", $string);		// 'Veterinär- und Lebensmittel...'						--> veterinaer-und_lebensmittel.html
-		$string=str_replace("-, ", " ", $string);		// 'Amt für Stadt-, Verkehrs- und Parkplatzplanung'		--> amt_fuer_stadt_verkehrs_und_parkplatzplanung.html
-		$string=str_replace(",", "", $string);			// 'Ich, du, Müllers's Kuh'								--> ich_du_muellers_kuh.html
+		$string=str_replace("- ", "-", $string);		// 'Veterinï¿½r- und Lebensmittel...'						--> veterinaer-und_lebensmittel.html
+		$string=str_replace("-, ", " ", $string);		// 'Amt fï¿½r Stadt-, Verkehrs- und Parkplatzplanung'		--> amt_fuer_stadt_verkehrs_und_parkplatzplanung.html
+		$string=str_replace(",", "", $string);			// 'Ich, du, Mï¿½llers's Kuh'								--> ich_du_muellers_kuh.html
 		$string=str_replace(": ", " ", $string);		// 'Gesundheitsamt: Therapie und Hilfe sofort'			--> gesundheitsamt_therapie_und_hilfe_sofort.html
 
 		//make blanks:
@@ -5047,7 +5053,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 
 	function strip_extra($string){
-		// Mobilé (Zentrum für clevere Verkehrsnutzung) => Mobile.html
+		// Mobilï¿½ (Zentrum fï¿½r clevere Verkehrsnutzung) => Mobile.html
 		$string=trim(ereg_replace("\([^\)]*\)", "", $string));
 		return $string;
 	}
