@@ -298,8 +298,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 				case 'form_list':
 					$GLOBALS['TSFE']->page['title'] = $this->pi_getLL('tx_civserv_pi1_form_list.form_list','Forms');
 					$template = $this->conf['tpl_form_list'];
-					$accurate = $this->formList($smartyObject,$this->piVars['id'],$this->piVars['id']?$this->conf['abcBarAtFormList_orga']:$this->conf['abcBarAtFormList_all'],$this->conf['searchAtFormList'],$this->conf['topAtFormList'],$this->conf['orgaList']);
-					#$accurate = $this->formList($smartyObject,$this->piVars['id'],$this->piVars['id']?$this->conf['abcBarAtFormList_orga']:$this->conf['abcBarAtFormList_all'],$this->conf['orderFormsByCategory'],$this->conf['searchAtFormList'],$this->conf['topAtFormList'],$this->conf['orgaList']);
+					$accurate = $this->formList($smartyObject,intval($this->piVars['id']),(intval($this->piVars['id']) > 0)?$this->conf['abcBarAtFormList_orga']:$this->conf['abcBarAtFormList_all'],$this->conf['searchAtFormList'],$this->conf['topAtFormList'],$this->conf['orgaList']);
+				   #$accurate = $this->formList($smartyObject,intval($this->piVars['id']),(intval($this->piVars['id']) > 0)?$this->conf['abcBarAtFormList_orga']:$this->conf['abcBarAtFormList_all'],$this->conf['orderFormsByCategory'],$this->conf['searchAtFormList'],$this->conf['topAtFormList'],$this->conf['orgaList']);
 					break;
 
 				case 'top15':
@@ -631,12 +631,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$query = $this->makeServiceListQuery(all,false);
 			$smartyServiceList->assign('abcbar',$this->makeAbcBar($query));
 		}
-		$smartyServiceList->assign('heading',$this->getServiceListHeading($this->piVars['mode'],$this->piVars['id']));
+		$smartyServiceList->assign('heading',$this->getServiceListHeading($this->piVars['mode'],intval($this->piVars['id'])));
 		
 		
 		// if the title is set here it will overwrite the value we want in the organisationDetail-View
 		// but we do need it for circumstance and user_groups!
-		$GLOBALS['TSFE']->page['title'] = $this->getServiceListHeading($this->piVars['mode'],$this->piVars['id']);
+		$GLOBALS['TSFE']->page['title'] = $this->getServiceListHeading($this->piVars['mode'],intval($this->piVars['id']));
 		
 		if($this->piVars['char']>''){
 			 $GLOBALS['TSFE']->page['title'] .= ': '.$this->pi_getLL('tx_civserv_pi1_service_list.abc_letter','Letter').' '.$this->piVars['char'];
@@ -4065,7 +4065,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function setDebitForm(&$smartyDebitForm) {
 		//Check if debit form was called from a specific service (id = service id)
-		if ($this->piVars['id'] > '') {
+		if (intval($this->piVars['id']) > 0) {
 			//Query for standard service details
 			$result = $this->queryService(intval($this->piVars['id']));
 
@@ -5122,7 +5122,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'pid',			 							// SELECT ...
 					$table,									// FROM ...
-					'uid = '.$piVars['id'],// AND title LIKE "%blabla%"', // WHERE...
+					'uid = '.intval($piVars['id']),// AND title LIKE "%blabla%"', // WHERE...
 					'', 										// GROUP BY...
 					'',   										// ORDER BY...
 					'' 											// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
