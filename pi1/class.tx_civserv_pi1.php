@@ -124,7 +124,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	$content		Content that is to be displayed within the plugin
 	 */
 	function main($content,$conf)	{
-#		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging - only on test-sites!
+		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging - only on test-sites!
 		if (TYPO3_DLOG)  t3lib_div::devLog('function main of FE class entered', 'civserv');
 
 		
@@ -1120,89 +1120,172 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	[type]		...
 	 */
 	function employee_list(&$smartyEmployeeList,$abcBar=false,$searchBox=false,$topList=false){
-		$query = $this->makeEmployeeListQuery($this->piVars['char']);
-		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
-		$row_counter = 0;
-		$em_org_kombis=array(); //store all combinations of an employee and his/her employing organisation unit here
-		$kills=array(); //will be used to eleminate dublicates from the above list
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
-				$employees[$row_counter]['em_uid']=$row['emp_uid'];
-				if($row['em_address']==2){
-					$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi1_organisation.address_female', 'Ms.');
-				}elseif($row['em_address']==1){
-					$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi1_organisation.address_male', 'Mr.');
-				}
-				$employees[$row_counter]['title'] = $row['em_title'];
-				$employees[$row_counter]['name'] = $row['name']; //alias in makeEmployeeListQuery, need for generic makeAbcBar
-				$employees[$row_counter]['firstname'] = $row['em_firstname'];
-				$employees[$row_counter]['em_datasec'] = $row['em_datasec'];
-
-				//select the organisation assigned to the employee
-				$orga_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'tx_civserv_position.uid as pos_uid, 
+		//sort out the employees who have two positions at the same organisation - and have turned on their datasec for both!!
+		$em_org_kombis = array(); //store all combinations of an employee and his/her employing organisation unit here
+		$kills = array(); //will be used to eleminate dublicates from the above list
+		//total body_count:
+		$total_bodycount=0;
+		
+		$placeholders = array('###em_uid###', '###po_uid###');
+		//have to do the orga-select here, because there might be employees with positions, that belong to no organisation and we want to keep those....
+		$orga_select_fields = 'tx_civserv_position.uid as pos_uid, 
 					 tx_civserv_organisation.uid as or_uid, 
 					 tx_civserv_employee.uid as emp_uid, 
-					 or_name as organisation',
-					'tx_civserv_employee, 
+					 or_name as organisation';
+		$orga_select_tables = 'tx_civserv_employee, 
 					 tx_civserv_position, 
 					 tx_civserv_organisation, 
 					 tx_civserv_employee_em_position_mm, 
-					 tx_civserv_position_po_organisation_mm',
-					'tx_civserv_employee.uid = ' . $row['emp_uid'] . 
-					 ' AND tx_civserv_position.uid = '.$row['pos_uid'] .
-					 $this->cObj->enableFields('tx_civserv_organisation') .
+					 tx_civserv_position_po_organisation_mm';
+		$orga_select_cond_placeholder_part = '';
+		$orga_select_cond_placeholder_dummy = 'tx_civserv_employee.uid = ###em_uid###
+					  AND tx_civserv_position.uid = ###po_uid### ';
+		$orga_select_cond_static_part = $this->cObj->enableFields('tx_civserv_organisation') .
 					 $this->cObj->enableFields('tx_civserv_employee') .
 					 $this->cObj->enableFields('tx_civserv_position') . 
 					' AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
 					 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
-					 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign',
-					 '',
-					 '',
-					 '');
-					while ($orga_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($orga_res) ) {
-						$test_string=$employees[$row_counter]['em_uid'].'_'.$orga_row['organisation'];
-						//only elminate dublicates if there is no data_sec (an employee with several positions within the same 
-						//organisational unit might still have different opening hours for each of them
-						if($employees[$row_counter]['data_sec']==0 && in_array($test_string, $em_org_kombis)){
-							$kills[]=$row_counter;
-						}else{
-							$employees[$row_counter]['orga_name'] = $orga_row['organisation'];
-							$em_org_kombis[]=$employees[$row_counter]['em_uid'].'_'.$employees[$row_counter]['orga_name'];
-						}
-					}
-					$employees[$row_counter]['em_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $row['emp_uid'],pos_id => $row['pos_uid']),1,1));
-					$row_counter++;
+					 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign';
+		
+		$query_all_emps = $this->makeEmployeeListQuery(all, false, false);
+		$res_all_emps = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query_all_emps);
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_all_emps) ) {
+			#debug($row, 'all employees row');
+			//ersetzen der placeholder klappt nicht richtig.....
+			$values = array($row['emp_uid'], $row['pos_uid']);
+			$orga_select_cond_placeholder_part = str_replace($placeholders, $values, $orga_select_cond_placeholder_dummy);
+			
+			//select the organisation assigned to the employee
+			$orga_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				$orga_select_fields,
+				$orga_select_tables,
+				$orga_select_cond_placeholder_part.$orga_select_cond_static_part,
+				'',
+				 '',
+				 '');
+			while ($orga_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($orga_res) ) {
+				#debug($orga_row, '$orga_row');
+				$test_string = $row['emp_uid'].'_'.$orga_row['or_uid'];
+				#debug($test_string, 'single em_org kombi');
+				$test_string2 = $row['em_firstname'].', '.$row['em_name'].'_'.$orga_row['organisation'];
+				//only elminate dublicates if there is no data_sec (an employee with several positions within the same 
+				//organisational unit might still have different opening hours for each of them
+				#debug($row['em_datasec'], 'em_datasec');
+				if($row['em_datasec'] == 0 && in_array($test_string, $em_org_kombis)){
+					$total_bodycount++;
+					#debug($test_string, 'this employee_org-combination must die:');
+					#debug($test_string2, 'this employee_org-combination must die:');
+					$kills[$total_bodycount]= $row['emp_uid'].'_'.$orga_row['or_uid'];
+				}else{
+					#debug('else');
+					//organisation for employee is set here!
+					$em_org_kombis[] = $row['emp_uid'].'_'.$orga_row['or_uid'];
+				}
+			}// end orga_res
+		}// end res_all_emps
+		#debug($em_org_kombis, 'em_orgkombis');
+		#debug($kills, 'total employee kills');
+		#debug($total_bodycount, 'total employee $bodycount');
+		
+		
+		
+		//now the real query:
+		$query = $this->makeEmployeeListQuery($this->piVars['char']);
+		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+		$row_counter = 0;
+		$local_bodycount = 0;
+
+		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
+			$employees[$row_counter]['em_or_combi_ok'] = 1;
+			$employees[$row_counter]['em_uid']=$row['emp_uid'];
+			if($row['em_address']==2){
+				$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi1_organisation.address_female', 'Ms.');
+			}elseif($row['em_address']==1){
+				$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi1_organisation.address_male', 'Mr.');
+			}
+			$employees[$row_counter]['title'] = $row['em_title'];
+			$employees[$row_counter]['name'] = $row['name']; //alias in makeEmployeeListQuery, need for generic makeAbcBar
+			$employees[$row_counter]['firstname'] = $row['em_firstname'];
+			$employees[$row_counter]['em_datasec'] = $row['em_datasec'];
+
+			
+			//select the organisation assigned to the employee
+			$values = array($row['emp_uid'], $row['pos_uid']);
+			$orga_select_cond_placeholder_part = str_replace($placeholders, $values, $orga_select_cond_placeholder_dummy);
+			
+			//select the organisation assigned to the employee
+			$orga_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				$orga_select_fields,
+				$orga_select_tables,
+				$orga_select_cond_placeholder_part.$orga_select_cond_static_part,
+				 '',
+				 '',
+				 '');
+			while ($orga_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($orga_res) ) {	
+				$employees[$row_counter]['orga_name'] = $orga_row['organisation'];
+				$employees[$row_counter]['orga_id'] = $orga_row['or_uid'];
+				$employees[$row_counter]['em_org_combi'] = $employees[$row_counter]['em_uid'].'_'.$orga_row['or_uid'];
+			}
+			$employees[$row_counter]['em_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $row['emp_uid'],pos_id => $row['pos_uid']),1,1));
+			$row_counter++;
 		}
-		$bodycount=0;
-		foreach($kills as $kill){
-			$bodycount++;
-			unset($employees[$kill]);
+		
+		#debug($employees, 'employess...');
+		$taken = array();
+		$filtered_employees = array();
+		//sort out doubles from the real employee-array
+		for($i=0; $i<count($employees); $i++){
+			#debug($employees[$i]['em_org_combi'], 'em_org_combi');
+			//do not use unset() inside of loop!! reduces number of loops, so some employees never get checked.....
+			if(in_array($employees[$i]['em_org_combi'], $kills)){
+				#debug($employees[$i], 'ist in kills enthalten!!!');
+				if(!in_array($employees[$i]['em_org_combi'], $taken)){
+					#debug($employees[$i], 'darf bleiben!!!');
+					$taken[]=$employees[$i]['em_org_combi'];
+					$filtered_employees[] = $employees[$i];
+				}else{
+					#debug($employees[$i], 'fliegt raus!!!');
+					$local_bodycount++;
+					$employees[$i]['em_or_combi_ok'] = 0;
+				}
+			}else{
+				$filtered_employees[] = $employees[$i];
+			}
 		}
 
+		#debug($local_bodycount, '$local_bodycount');
+		
 
 		// Retrieve the employee count
 		$row_count = 0;
-		$query = $this->makeEmployeeListQuery($this->piVars['char'],false,true);
-		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+		$query = $this->makeEmployeeListQuery($this->piVars['char'], false, true);
+		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db, $query);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+			//row_count is constant!
 			$row_count += $row['count(*)'];
 		}
+		#debug($row_count, 'row_count');
 		
 		//so long as we are not showing the same person (with 2 positions) twice, we have to correct the row_count by the bodycount:
-		$row_count -= $bodycount;
+		if($this->piVars['all'] == all){
+			$row_count -= $total_bodycount;
+		}else{
+			$row_count -= $local_bodycount;
+		}
+		
 
 		$this->internal['res_count'] = $row_count;
+		#debug($this->internal['res_count'], internal_res_count);
 		$this->internal['results_at_a_time']= $this->conf['employee_per_page'];
 		$this->internal['maxPages'] = $this->conf['max_pages_in_pagebar'];
 
 		$smartyEmployeeList->assign('heading',$this->pi_getLL('tx_civserv_pi1_employee_list.employee_list.heading','Employees'));
 		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_employee_list.available_employees','Here you find the following employees'));
-		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true,'',' '.$this->conf['abcSpacer'].' '));
-		$smartyEmployeeList->assign('employees',$employees);
-		
-		//search employee
-		$smartyEmployeeList->assign('employee_search', $this->community['employee_search']);
+		//2009-04-23: hand bodycount to the pagebar-function
+		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true,'',' '.$this->conf['abcSpacer'].' ', $total_bodycount));
+		//without doubles
+		$smartyEmployeeList->assign('employees',$filtered_employees);
 		
 
 		if ($abcBar) {
@@ -1220,10 +1303,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 				return false;
 			}
 		}
-		
 		return true;
 	}
-	
+			
 	
 	
 	/**
@@ -1239,6 +1321,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// fix me: query zusammenfassen!
 		if ($char != all) {
 			$regexp = $this->buildRegexp($char);
+			#debug($regexp, '$regexp');
 		}
 		if ($count){
 			$query = 'Select count(*) 
@@ -1295,6 +1378,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$query .= 'LIMIT ' . intval($start) . ',' . intval($max);
 			}
 		}
+		#debug($query, 'employeelist-query');
 		return $query;
 	}
 
@@ -4475,27 +4559,27 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	string		If given, the passed string is used to seperate the links
 	 * @return	string		Output HTML, wrapped in <div>-tags with a class attribute
 	 */
-	function pi_list_browseresults($showResultCount=1,$divParams='',$spacer=false)      {
+	function pi_list_browseresults($showResultCount=1, $divParams='', $spacer=false, $total_bodycount=0)      {
 			// Initializing variables:
-		$pointer=intval($this->piVars['pointer']);
-		$count=$this->internal['res_count'];
+		$pointer = intval($this->piVars['pointer']);
+		$count = $this->internal['res_count'];
 		$results_at_a_time = t3lib_div::intInRange($this->internal['results_at_a_time'],1,1000);
 		$maxPages = t3lib_div::intInRange($this->internal['maxPages'],1,100);
 		
-		$pR1 = $pointer*$results_at_a_time+1;
-		$pR2 = $pointer*$results_at_a_time+$results_at_a_time;
+		$pR1 = $pointer * $results_at_a_time + 1;
+		$pR2 = $pointer * $results_at_a_time + $results_at_a_time;
 		
-		$max = t3lib_div::intInRange(ceil($count/$results_at_a_time),1,$maxPages);
+		$max = t3lib_div::intInRange(ceil($count/$results_at_a_time), 1, $maxPages);
 		
 		
 		$links=array();
 
 			// Make browse-table/links:
 		if ($this->pi_alwaysPrev>=0)    {
-			if ($pointer>0) {
-				$links[]=$this->pi_linkTP_keepPIvars($this->pi_getLL('pi_list_browseresults_prev','< Previous',TRUE),array('pointer'=>($pointer-1?$pointer-1:'')),1);
+			if ($pointer > 0) {
+				$links[] = $this->pi_linkTP_keepPIvars($this->pi_getLL('pi_list_browseresults_prev','< Previous',TRUE),array('pointer'=>($pointer-1 ? $pointer-1 : '')), 1);
 			} elseif ($this->pi_alwaysPrev) {
-				$links[]=$this->pi_getLL('pi_list_browseresults_prev','< Previous',TRUE);
+				$links[] = $this->pi_getLL('pi_list_browseresults_prev','< Previous',TRUE);
 			}
 		}
 
@@ -4509,61 +4593,34 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$a = 0;
 			}
 			// in order to have a correct value for $max we must include the value of the actual $pointer in the calculation
-			for($i=0;$i<$max;$i++)  {
+			for($i=0; $i<$max; $i++)  {
+				$temp_links = array();
 				// check that the starting point (equivalent of $pR1) doesn't exceed the total $count
-				if($a*$results_at_a_time+1>$count){
-					$i=$max; //quitt!!!
+				if($a * $results_at_a_time + 1 > $count){
+					$i = $max; //quitt!!!
 				}else{	
-				/*
-					$links[]=sprintf('%s'.$this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page','Page',TRUE).' '.($a+1)),array('pointer'=>($a?$a:'')),1).'%s',
-								($pointer==$a?'<span '.$this->pi_classParam('browsebox-SCell').'><strong>':''),
-								($pointer==$a?'</strong></span>':''));
-				*/
-					$links[] = '';
+					$temp_links[] = '';
+					//beginning:
 					if($pointer == $a){
-						$links[] .= '<span '.$this->pi_classParam('browsebox-SCell').'><strong>';
+						$temp_links[] .= '<span '.$this->pi_classParam('browsebox-SCell').'><strong>';
 					}
-					$links[] .= $this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page', 'Page', TRUE).' '.($a+1)), array('pointer'=>( $a ? $a : '' )), 1);
+					$temp_links[] .= $this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page', 'Page', TRUE).' '.($a + 1)), array('pointer' => ( $a ? $a : '' )), 1);
+					//ending:
 					if($pointer == $a){
-						$links[] .= '</strong></span>';
+						$temp_links[] .= '</strong></span>';
 					}
 				}
 				$a++;
+				$links[] = implode('', $temp_links);
 			}// end foreach
 		}// end if max
 		
 		// neither $pointer nor the number-link ($a) must exceed the result of the calculation below!
-		if ($pointer<ceil($count/$results_at_a_time)-1 && $a<=ceil($count/$results_at_a_time)-1) {
-			$links[]=$this->pi_linkTP_keepPIvars($this->pi_getLL('pi_list_browseresults_next','Next >',TRUE),array('pointer'=>$pointer+1),1);
+		if ($pointer < ceil($count/$results_at_a_time)-1) {
+			$links[] = $this->pi_linkTP_keepPIvars($this->pi_getLL('pi_list_browseresults_next','Next >',TRUE), array('pointer' => $pointer+1),1);
 		}
-
-		// $pR1 and $pR2 have been moved up!
-		/*				
-		$sBox = '<!--
-                        List browsing box:
-                -->
-                <div'.$this->pi_classParam('browsebox').'>'.
-                        ($showResultCount ? 
-                        	'<p>'.
-							($this->internal['res_count'] ?
-                        			sprintf(	str_replace(	'###SPAN_BEGIN###', 
-													'<span'.$this->pi_classParam('browsebox-strong').'>', 
-													$this->pi_getLL('pi_list_browseresults_displays', 'Displaying results ###SPAN_BEGIN###%s to %s</span> out of ###SPAN_BEGIN###%s</span>')
-											),
-											$this->internal['res_count'] > 0 ? $pR1 : 0,
-											min(array($this->internal['res_count'],$pR2)),
-											$this->internal['res_count']
-                        			) :
-                       				$this->pi_getLL('pi_list_browseresults_noResults','Sorry, no items were found.')
-							).'</p>':
-						''
-						).
-                '<'.trim('p '.$divParams).'>
-                '.implode($spacer,$links).'
-                        </p>
-                </div>';
-		*/
-		$sBox = '';
+	$sBox = '';
+		#debug($links, 'pagebar-links');
 		
 		
 		$sBox .= '<!-- List browsing box: -->
@@ -4571,22 +4628,38 @@ class tx_civserv_pi1 extends tslib_pibase {
 		if($showResultCount){
 			$sBox .= '<p>';
 			if($this->internal['res_count']){
+				$from_number = $this->internal['res_count'] > 0 ? $pR1 : 0;
+				$to_number = min(array($this->internal['res_count'], $pR2));
+				
+				
+				// don't know why I need this, found out by trial and error
+				#debug($total_bodycount, '$total_bodycount');
+				debug($this->piVars['char'], 'wo isset?');
+				if($total_bodycount > 0 && !$this->piVars['char']){
+					$to_number -= $total_bodycount;
+				}
+			
 				$sBox .= sprintf(
                                         str_replace(
 											'###SPAN_BEGIN###',
 											'<span'.$this->pi_classParam('browsebox-strong').'>',
-											$this->pi_getLL('pi_list_browseresults_displays','Displaying results ###SPAN_BEGIN###%s to %s</span> out of ###SPAN_BEGIN###%s</span>')
+											$this->pi_getLL('pi_list_browseresults_displays', 'Displaying results ###SPAN_BEGIN###%s to %s</span> out of ###SPAN_BEGIN###%s</span>')
 										),
-                                        $this->internal['res_count'] > 0 ? $pR1 : 0,
-                                        min(array($this->internal['res_count'], $pR2)),
+                                        $from_number,
+										//to (must substract local_bodycount here!!!)
+                                        $to_number,
+                                        //of a total of
                                         $this->internal['res_count']
                                 );
+			
+			
+			
 			}else{
 				$sBox .= $this->pi_getLL('pi_list_browseresults_noResults','Sorry, no items were found.');
 			}
 			$sBox .= '</p>';
 		}		
-		$sBox .= '<'.trim('p '.$divParams).'>'.implode($spacer,$links).'</p></div>';		
+		$sBox .= '<'.trim('p '.$divParams).'>'.implode($spacer, $links).'</p></div>';		
 		return $sBox;
 	}
 
