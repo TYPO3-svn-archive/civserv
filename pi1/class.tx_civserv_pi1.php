@@ -192,7 +192,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',
 				'tx_civserv_conf_mandant',
-				'cm_community_id = ' . $community_id,
+				'cm_community_id = ' . intva($community_id),
 				'',
 				'',
 				'');
@@ -670,7 +670,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	boolean		If true, the services are only counted.
 	 * @return	string		The database query
 	 */
-	function makeServiceListQuery($char=all,$limit=true,$count=false) {
+	function makeServiceListQuery($char = 'all', $limit = true, $count = false) {
 		//for versioning we need the hidden records, will be dismissed from live-display in fct. service_list....
 		$from  =	'tx_civserv_service';
 		$where =	' 1 '.
@@ -716,7 +716,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				break;	
 		}
 
-		if ($char != all) {
+		if ($char != 'all') {
 			$regexp = $this->buildRegexp($char);
 		}
 
@@ -757,7 +757,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			
 			//  highlight_external services -> select pid as well
 
-
 			// services by realnames
 			if($this->previewMode){ // no aliases! (see above, versionOL can't handle aliases)
 				$query .=	'SELECT ' . ($count ? 'count(*) ' : 'tx_civserv_service.uid, tx_civserv_service.pid, tx_civserv_service.hidden, tx_civserv_service.sv_name, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state, tx_civserv_service.fe_group');
@@ -777,14 +776,13 @@ class tx_civserv_pi1 extends tslib_pibase {
 								 SELECT ' . ($count ? 'count(*) ' : 'tx_civserv_service.uid, tx_civserv_service.pid, tx_civserv_service.hidden, sv_synonym' . $synonymNr . ' AS name, sv_name AS realname, tx_civserv_service.t3ver_oid, tx_civserv_service.t3ver_wsid, tx_civserv_service.t3ver_state, tx_civserv_service.fe_group') . '
 								 FROM ' . str_replace('###NAVIGATION_MM_TABLE###', $navigation_mm_table, $from) . '
 								 WHERE ' . str_replace('###SERVICE_TABLE###', $service_table, str_replace('###NAVIGATION_MM_TABLE###', $navigation_mm_table, $where)) . ' ' .
-
 									(($i==1) ? ' AND tx_civserv_service.pid IN (' . $this->community['pidlist'] . ') ' : '') .
 									($regexp ? ' AND sv_synonym' . $synonymNr . ' REGEXP "' . $regexp . '"' : '') .
 									' AND sv_synonym' . $synonymNr . ' != "" ' . ' ';
 				}
 			}
 			//versioning:
-			if($char != all && $this->previewMode && $regexp){
+			if($char != 'all' && $this->previewMode && $regexp){
 				// collect the orig-Ids from all the versions whoes name starts with the letter in question
 				$oid_list=array();
 				//todo: make this query better according to workspace documentation
@@ -796,10 +794,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 							'',
 							'');
 				while ($row_temp = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_temp) ) {
-					if(in_array($row_temp[t3ver_oid], $oid_list)){
+					if(in_array($row_temp['t3ver_oid'], $oid_list)){
 						//we don't want double entries.
 					}else{
-						$oid_list[]=$row_temp[t3ver_oid];
+						$oid_list[]=$row_temp['t3ver_oid'];
 					}
 				}
 				// collect all NEW service records (name = [PLACEHOLDER], t3ver_state = 1)
@@ -895,7 +893,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						$field,
 						$table,
-						'uid = ' . $uid);
+						'uid = ' . intval($uid));
 			$category = $this->sql_fetch_array_r($res);
 			if (count($category) == 1) {
 				$heading .= ': ' . $category[0][$field];
@@ -1025,9 +1023,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	[type]		$count: ...
 	 * @return	[type]		...
 	 */
-
-	function makeOrganisationListQuery($char=all,$limit=true,$count=false) {
-			if ($char != all) {
+	function makeOrganisationListQuery($char = 'all', $limit = true, $count = false) {
+			if ($char != 'all') {
 				$regexp = $this->buildRegexp($char);
 			}
 			if ($count){
@@ -1096,15 +1093,14 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$query .= ' ORDER BY ' . $orderby . ' ';
 
 				if ($limit) {
-					if ($this->piVars['pointer'] > '') {
-						$start = $this->conf['organisation_per_page'] * $this->piVars['pointer'];
+					if (intval($this->piVars['pointer']) > 0) {
+						$start = $this->conf['organisation_per_page'] * intval($this->piVars['pointer']);
 					} else {
 						$start = 0;
 					}
 					$max = $this->conf['organisation_per_page'];
 					$query .= 'LIMIT ' . intval($start) . ',' . intval($max);
-					}
-	
+				}
 			}
 			return $query;
 		}
@@ -1209,8 +1205,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$employees[$row_counter]['firstname'] = $row['em_firstname'];
 			$employees[$row_counter]['em_datasec'] = $row['em_datasec'];
 
-			
-			//select the organisation assigned to the employee
 			$values = array($row['emp_uid'], $row['pos_uid']);
 			$orga_select_cond_placeholder_part = str_replace($placeholders, $values, $orga_select_cond_placeholder_dummy);
 			
@@ -1268,7 +1262,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		#debug($row_count, 'row_count');
 		
 		//so long as we are not showing the same person (with 2 positions) twice, we have to correct the row_count by the bodycount:
-		if($this->piVars['all'] == all){
+		if($this->piVars['all'] == 'all'){
 			$row_count -= $total_bodycount;
 		}else{
 			$row_count -= $local_bodycount;
@@ -1317,9 +1311,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	[type]		$count: ...
 	 * @return	[type]		...
 	 */
-	function makeEmployeeListQuery($char=all, $limit=true, $count=false) {
+	function makeEmployeeListQuery($char= 'all', $limit = true, $count = false) {
 		// fix me: query zusammenfassen!
-		if ($char != all) {
+		if ($char != 'all') {
 			$regexp = $this->buildRegexp($char);
 			#debug($regexp, '$regexp');
 		}
@@ -1369,8 +1363,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 
 			if ($limit) {
-				if ($this->piVars['pointer'] > '') {
-					$start = $this->conf['employee_per_page'] * $this->piVars['pointer'];
+				if (intval($this->piVars['pointer']) > 0) {
+					$start = $this->conf['employee_per_page'] * intval($this->piVars['pointer']);
 				} else {
 					$start = 0;
 				}
@@ -1798,43 +1792,43 @@ class tx_civserv_pi1 extends tslib_pibase {
 			// because UNION is standard in almost all DBMS.
 			for ($i = 0; $i < count($sword); $i++) {
 				if ($i == 0) {
-						$querypart_where .= ' AND (sv_name LIKE "%' . $sword[$i] . '%"
-											  OR sv_synonym1 LIKE "%' . $sword[$i] . '%"
-											  OR sv_synonym2 LIKE "%' . $sword[$i] . '%"
-											  OR sv_synonym3 LIKE "%' . $sword[$i] . '%"';
+						$querypart_where .= ' AND (sv_name LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+											  OR sv_synonym1 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+											  OR sv_synonym2 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+											  OR sv_synonym3 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"';
 											  
-						$querypart_where2 .= ' AND (tx_civserv_search_word.sw_search_word LIKE "%' . $sword[$i] . '%"';
+						$querypart_where2 .= ' AND (tx_civserv_search_word.sw_search_word LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"';
 						
-						$querypart_where3 .= ' AND (ms_name LIKE "%' . $sword[$i] . '%"
-											  OR ms_synonym1 LIKE "%' . $sword[$i] . '%"
-											  OR ms_synonym2 LIKE "%' . $sword[$i] . '%"
-											  OR ms_synonym3 LIKE "%' . $sword[$i] . '%"';
+						$querypart_where3 .= ' AND (ms_name LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+											  OR ms_synonym1 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+											  OR ms_synonym2 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+											  OR ms_synonym3 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"';
 											  
-						$querypart_where4 .= ' AND (sw_search_word LIKE "%' . $sword[$i] . '%" ';
+						$querypart_where4 .= ' AND (sw_search_word LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"';
 						
-						$querypart_where5 = ' AND (sv_name LIKE "%' . $sword[$i] . '%"
-											  OR sv_synonym1 LIKE "%' . $sword[$i] . '%"
-											  OR sv_synonym2 LIKE "%' . $sword[$i] . '%"
-											  OR sv_synonym3 LIKE "%' . $sword[$i] . '%"';	
+						$querypart_where5 = ' AND (sv_name LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+											  OR sv_synonym1 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+											  OR sv_synonym2 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+											  OR sv_synonym3 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"';	
 				} else { //the following are going to supplement the condition starting with 'AND....'
-					$querypart_where .= ' OR sv_name LIKE "%' . $sword[$i] . '%"
-										  OR sv_synonym1 LIKE "%' . $sword[$i] . '%"
-										  OR sv_synonym2 LIKE "%' . $sword[$i] . '%"
-										  OR sv_synonym3 LIKE "%' . $sword[$i] . '%"';
+					$querypart_where .= ' OR sv_name LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+										  OR sv_synonym1 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+										  OR sv_synonym2 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+										  OR sv_synonym3 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"';
 										  
-					$querypart_where2 .= ' OR tx_civserv_search_word.sw_search_word LIKE "%' . $sword[$i] . '%" ';
+					$querypart_where2 .= ' OR tx_civserv_search_word.sw_search_word LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%" ';
 					
-					$querypart_where3 .= ' OR ms_name LIKE "%' . $sword[$i] . '%"
-										  OR ms_synonym1 LIKE "%' . $sword[$i] . '%"
-										  OR ms_synonym2 LIKE "%' . $sword[$i] . '%"
-										  OR ms_synonym3 LIKE "%' . $sword[$i] . '%"';
+					$querypart_where3 .= ' OR ms_name LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+										  OR ms_synonym1 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+										  OR ms_synonym2 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+										  OR ms_synonym3 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"';
 										  
-					$querypart_where4 .= ' OR sw_search_word LIKE "%' . $sword[$i] . '%" ';
+					$querypart_where4 .= ' OR sw_search_word LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%" ';
 					
-					$querypart_where5 .= ' OR sv_name LIKE "%' . $sword[$i] . '%"
-										  OR sv_synonym1 LIKE "%' . $sword[$i] . '%"
-										  OR sv_synonym2 LIKE "%' . $sword[$i] . '%"
-										  OR sv_synonym3 LIKE "%' . $sword[$i] . '%"';
+					$querypart_where5 .= ' OR sv_name LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+										  OR sv_synonym1 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+										  OR sv_synonym2 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"
+										  OR sv_synonym3 LIKE "%' . $GLOBALS['TYPO3_DB']->quoteStr($sword[$i], 'tx_civserv_search_word') . '%"';
 				}
 			}// end for...
 			//all the prepared query-parts need to be finished by an ')'.
@@ -2284,7 +2278,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 								'tx_civserv_service',
 								'tx_civserv_service_sv_organisation_mm',
 								'tx_civserv_organisation',
-								'AND tx_civserv_service_sv_organisation_mm.uid_foreign = '.$uid,
+								'AND tx_civserv_service_sv_organisation_mm.uid_foreign = '.intval($uid),
 								'');
 */								
 						break;
@@ -2980,7 +2974,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 					 AND tx_civserv_position.uid = tx_civserv_employee_em_position_mm.uid_foreign
 					 AND tx_civserv_employee_em_position_mm.uid = tx_civserv_officehours_oep_employee_em_position_mm_mm.uid_local
 					 AND tx_civserv_officehours.uid = tx_civserv_officehours_oep_employee_em_position_mm_mm.uid_foreign
-					 AND tx_civserv_employee.uid = ' . intval($uid) . ' AND tx_civserv_position.uid = '.$pos_id,
+					 AND tx_civserv_employee.uid = ' . intval($uid) . ' 
+					 AND tx_civserv_position.uid = '. intval($pos_id),
 					'',
 					'oh_weekday',
 					'');
@@ -3386,9 +3381,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 						 or_name',
 						'tx_civserv_organisation, 
 						 tx_civserv_organisation_or_structure_mm',
-						'tx_civserv_organisation_or_structure_mm.uid_local = '.$organisation_rows['uid'].'
+						'tx_civserv_organisation_or_structure_mm.uid_local = '. intval($organisation_rows['uid']) .'
 						 AND tx_civserv_organisation_or_structure_mm.uid_foreign = tx_civserv_organisation.uid
-						 AND tx_civserv_organisation.uid!='.$this->community['organisation_uid'].
+						 AND tx_civserv_organisation.uid!='. intval($this->community['organisation_uid']) .
 						 $this->cObj->enableFields('tx_civserv_organisation'),
 						'',
 						'tx_civserv_organisation.sorting', //Order by
@@ -3542,7 +3537,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$GLOBALS['TSFE']->page['title']=$organisation_rows['or_name'];
 		// test bk: m�nster - generate or_title from or_name (is only displayed in m�nster)
 		$or_title = $organisation_rows['or_name'];
-		if($organisation_rows['or_addlocation']>'')$or_title.=' ('.$organisation_rows['or_addlocation'].')';
+		if($organisation_rows['or_addlocation']>'') $or_title.=' ('.$organisation_rows['or_addlocation'].')';
 		$smartyOrganisation->assign('or_title',$or_title);
 		$smartyOrganisation->assign('or_addlocation',$organisation_rows['or_addlocation']);
 		$smartyOrganisation->assign('or_name',$organisation_rows['or_name']);
@@ -4016,7 +4011,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					'tx_civserv_organisation',
 					'1 '.
 					$this->cObj->enableFields('tx_civserv_organisation').
-					' AND uid = ' . $org_id,
+					' AND uid = ' . intval($org_id),
 					'',
 					'');
 
@@ -4084,9 +4079,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 							   tx_civserv_position, 
 							   tx_civserv_employee_em_position_mm';
 							   
-			$querypart_where = ' AND tx_civserv_service.uid = ' . $sv_id . ' 
-								AND tx_civserv_employee.uid = ' . $emp_id . ' 
-								AND tx_civserv_position.uid = ' . $pos_id . 
+			$querypart_where = ' AND tx_civserv_service.uid = ' . intval($sv_id) . ' 
+								AND tx_civserv_employee.uid = ' . intval($emp_id) . ' 
+								AND tx_civserv_position.uid = ' . intval($pos_id) . 
 								$this->cObj->enableFields('tx_civserv_service').
 								$this->cObj->enableFields('tx_civserv_position').
 								$this->cObj->enableFields('tx_civserv_employee_em_position_mm'). //aua?
@@ -4097,7 +4092,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}
 
 		if (!empty($emp_id) && empty($pos_id) && empty($sv_id)) {  //Email form is called from organisation detail page (supervisor email)
-			$querypart_where = ' AND tx_civserv_employee.uid = ' . $emp_id;
+			$querypart_where = ' AND tx_civserv_employee.uid = ' . intval($emp_id);
 		}
 
 		if ((!empty($pos_id) && !empty($emp_id)) && empty($sv_id)) {  //Email form is called from organisation detail page (supervisor email)
@@ -4172,7 +4167,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'ct_transaction_uid as uid',
 						'tx_civserv_conf_transaction',
 						'tx_civserv_conf_transaction.ct_community_id  = ' . intval($community_id) . '
-						 AND tx_civserv_conf_transaction.ct_transaction_key  = "' . $transaction_key . '" ');
+						 AND tx_civserv_conf_transaction.ct_transaction_key  = "' . $GLOBALS['TYPO3_DB']->quoteStr($transaction_key, 'tx_civserv_conf_transaction') . '" ');
 
 			//Check if query returned a result
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
@@ -4302,17 +4297,18 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$ip = long2ip(ip2long($_SERVER['REMOTE_ADDR']));
 			$time = time();
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_civserv_transaction_debit_authorisation',
-												   array(	"tstamp" => $time,
-												   			"service_uid" => $serviceUID,
-												   			"cash_number" => $cashNumber,
-												   			"bank_name" => $bankName,
-												   			"bank_code" => $bankCode,
-												   			"account_number" => $accountNumber,
-												   			"firstname" => $firstname,
-												   			"surname" => $surname,
-												   			"phone" => $phone,
-												   			"email" => $email,
-												   			"remote_addr" => $ip));
+												   array(	"tstamp" => intval($time),
+												   			"service_uid" => intval($serviceUID),
+												   			"cash_number" => intval($cashNumber),
+												   			"bank_name" => intval($bankName),
+												   			"bank_code" => intval($bankCode),
+												   			"account_number" => intval($accountNumber),
+												   			"firstname" => $GLOBALS['TYPO3_DB']->quoteStr($firstname, 'tx_civserv_transaction_debit_authorisation'),
+												   			"surname" => $GLOBALS['TYPO3_DB']->quoteStr($surname, 'tx_civserv_transaction_debit_authorisation'),
+												   			"phone" => $GLOBALS['TYPO3_DB']->quoteStr($phone, 'tx_civserv_transaction_debit_authorisation'),
+												   			"email" => $GLOBALS['TYPO3_DB']->quoteStr($email, 'tx_civserv_transaction_debit_authorisation'),
+												   			"remote_addr" => $GLOBALS['TYPO3_DB']->quoteStr($ip, 'tx_civserv_transaction_debit_authorisation'))
+												   );
 
 			$smartyDebitForm->assign('complete',$this->pi_getLL('tx_civserv_pi1_debit_form.complete','Thank you! Your data has been successfully stored in our system.'));
 			return true;
@@ -4559,7 +4555,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	string		If given, the passed string is used to seperate the links
 	 * @return	string		Output HTML, wrapped in <div>-tags with a class attribute
 	 */
-	function pi_list_browseresults($showResultCount=1, $divParams='', $spacer=false, $total_bodycount=0)      {
+	function pi_list_browseresults($showResultCount = 1, $divParams = '', $spacer = false, $total_bodycount = 0)      {
 			// Initializing variables:
 		$pointer = intval($this->piVars['pointer']);
 		$count = $this->internal['res_count'];
