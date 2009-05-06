@@ -768,17 +768,17 @@ class tx_civserv_pi3 extends tslib_pibase {
 						tx_civserv_employee.em_pseudo = 0 ';
 			}
 
-			$orderby =	$this->piVars[sort]?'name, em_firstname DESC':'name, em_firstname ASC';
+			$orderby =	$this->piVars['sort']?'name, em_firstname DESC':'name, em_firstname ASC';
 
 
 			if (!$count) {
-				$orderby =	$this->piVars[sort]?'name, em_firstname DESC':'name, em_firstname ASC';
+				$orderby =	$this->piVars['sort']?'name, em_firstname DESC':'name, em_firstname ASC';
 				$query .= ' ORDER BY ' . $orderby . ' ';
 
 
 				if ($limit) {
-					if ($this->piVars[pointer] > '') {
-						$start = $this->conf['employee_per_page'] * $this->piVars[pointer];
+					if ($this->piVars['pointer'] > '') {
+						$start = $this->conf['employee_per_page'] * $this->piVars['pointer'];
 					} else {
 						$start = 0;
 					}
@@ -890,21 +890,21 @@ class tx_civserv_pi3 extends tslib_pibase {
 			} else {
 				$query = 'SELECT '.$fields.' FROM '.$tables.' WHERE '.$conditions;
 			}
-#			$orderby =	$this->piVars[sort]?'or_code, name, em_firstname DESC':'or_code, name, em_firstname ASC';
+#			$orderby =	$this->piVars['sort']?'or_code, name, em_firstname DESC':'or_code, name, em_firstname ASC';
 
 			if (!$count) {
 				if(orcode == 'hod'){
-					$orderby =	$this->piVars[sort] ? 'name, em_firstname, or_code DESC' : 'name, em_firstname, or_code ASC';
+					$orderby =	$this->piVars['sort'] ? 'name, em_firstname, or_code DESC' : 'name, em_firstname, or_code ASC';
 					$query .= ' ORDER BY ' . $orderby . ' ';
 				}else{
-					$orderby =	$this->piVars[sort] ? 'or_code, name, em_firstname DESC' : 'or_code, name, em_firstname ASC';
+					$orderby =	$this->piVars['sort'] ? 'or_code, name, em_firstname DESC' : 'or_code, name, em_firstname ASC';
 					$query .= ' ORDER BY ' . $orderby . ' ';
 				}
 
 
 				if ($limit) {
-					if ($this->piVars[pointer] > '') {
-						$start = $this->conf['employee_per_page'] * $this->piVars[pointer];
+					if ($this->piVars['pointer'] > '') {
+						$start = $this->conf['employee_per_page'] * $this->piVars['pointer'];
 					} else {
 						$start = 0;
 					}
@@ -1196,8 +1196,8 @@ class tx_civserv_pi3 extends tslib_pibase {
 	 * @return	boolean		True, if the function was executed without any error, otherwise false
 	 */
 	function employeeDetail(&$smartyEmployee,$searchBox) {
-		$uid = intval($this->piVars[id]);	//SQL-Injection!!!
-		$pos_id = intval($this->piVars[pos_id]);
+		$uid = intval($this->piVars['id']);	//SQL-Injection!!!
+		$pos_id = intval($this->piVars['pos_id']);
 
 		//Standard query for employee details
 		$res_common = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -1465,7 +1465,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 			$query = $this->makeOrganisationListQuery(all,false);
 			$smartyOrganisation->assign('abcbarOrganisationList_continued', $this->makeAbcBar($query, 'organisation_list'));
 		}
-		$uid = intval($this->piVars[id]);	//SQL-Injection!!!
+		$uid = intval($this->piVars['id']);	//SQL-Injection!!!
 
 		// Standard query for organisation details
 		// test bk: include or_show_supervisor
@@ -2445,8 +2445,8 @@ class tx_civserv_pi3 extends tslib_pibase {
 	
 
 		// Search box design:
-		if ($this->piVars[sword] <= '') {
-			 $this->piVars[sword] = $this->pi_getLL('pi_list_searchBox_defaultValue','search item');
+		if ($this->piVars['sword'] <= '') {
+			 $this->piVars['sword'] = $this->pi_getLL('pi_list_searchBox_defaultValue','search item');
 		}
 		// changed action tag according to instructions from security review:
 		// dropped:		<form method="post" action="'.htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')).'" style="margin: 0 0 0 0;" >

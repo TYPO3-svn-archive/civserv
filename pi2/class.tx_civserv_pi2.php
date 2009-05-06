@@ -2904,8 +2904,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 	
 
 		// Search box design:
-		if ($this->piVars[sword] <= '') {
-			 $this->piVars[sword] = $this->pi_getLL('pi_list_searchBox_defaultValue','search item');
+		if ($this->piVars['sword'] <= '') {
+			 $this->piVars['sword'] = $this->pi_getLL('pi_list_searchBox_defaultValue','search item');
 		}
 		// changed action tag according to instructions from security review:
 		// dropped:		<form method="post" action="'.htmlspecialchars(t3lib_div::getIndpEnv('REQUEST_URI')).'" style="margin: 0 0 0 0;" >

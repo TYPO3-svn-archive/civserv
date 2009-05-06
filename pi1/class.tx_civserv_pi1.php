@@ -2898,7 +2898,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// a) employee is linked to position-record, could be > 1 !!!
 		// b) employee is linked to organisation-record (leader of the pack)
 		/*
-		$pos_id = intval($this->piVars[pos_id]);
+		$pos_id = intval($this->piVars['pos_id']);
 		$res_emppos = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 					'uid',
 					'tx_civserv_employee,
@@ -3100,7 +3100,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			//Assign employee-position working hours
 			$row_counter = 0;
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_pos_hours) ){	
-				$emp_pos_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
+				$emp_pos_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row['oh_weekday']);
 				$emp_pos_hours[$row_counter]['start_morning'] = $row['oh_start_morning'];
 				$emp_pos_hours[$row_counter]['end_morning'] = $row['oh_end_morning'];
 				$emp_pos_hours[$row_counter]['start_afternoon'] = $row['oh_start_afternoon'];
@@ -3117,7 +3117,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			//Assign employee-organisation working hours
 			$row_counter = 0;
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_org_hours) ){	
-				$emp_org_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
+				$emp_org_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row['oh_weekday']);
 				$emp_org_hours[$row_counter]['start_morning'] = $row['oh_start_morning'];
 				$emp_org_hours[$row_counter]['end_morning'] = $row['oh_end_morning'];
 				$emp_org_hours[$row_counter]['start_afternoon'] = $row['oh_start_afternoon'];
@@ -3137,20 +3137,20 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		// get Image code
 		$imagepath = $this->conf['folder_organisations'] . $this->community['id'] . '/images/';
-		$description = $employee_rows[em_firstname] . ' ' . $employee_rows[em_name];
-		$imageCode = $this->getImageCode($employee_rows[em_image],$imagepath,$this->conf['employee-image.'],$description);
+		$description = $employee_rows['em_firstname'] . ' ' . $employee_rows['em_name'];
+		$imageCode = $this->getImageCode($employee_rows['em_image'],$imagepath,$this->conf['employee-image.'],$description);
 
 		//Assign employee data
-		$smartyEmployee->assign('title',$employee_rows[em_title]);
-		if (intval($employee_rows[em_address]) == 2) {
+		$smartyEmployee->assign('title',$employee_rows['em_title']);
+		if (intval($employee_rows['em_address']) == 2) {
 			$smartyEmployee->assign('address',$this->pi_getLL('tx_civserv_pi1_organisation.address_female','Mrs.'));
-		} else if (intval($employee_rows[em_address]) == 1) {
+		} else if (intval($employee_rows['em_address']) == 1) {
 			$smartyEmployee->assign('address',$this->pi_getLL('tx_civserv_pi1_organisation.address_male','Mr.'));
 		}
-		$smartyEmployee->assign('firstname',$employee_rows[em_firstname]);
-		$smartyEmployee->assign('name',$employee_rows[em_name]);
-		$smartyEmployee->assign('phone',$employee_rows[em_telephone]);
-		$smartyEmployee->assign('fax',$employee_rows[em_fax]);
+		$smartyEmployee->assign('firstname',$employee_rows['em_firstname']);
+		$smartyEmployee->assign('name',$employee_rows['em_name']);
+		$smartyEmployee->assign('phone',$employee_rows['em_telephone']);
+		$smartyEmployee->assign('fax',$employee_rows['em_fax']);
 		$smartyEmployee->assign('image',$imageCode);
 		
 		//search employee
@@ -3171,7 +3171,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//Assign employee working hours
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_hours) ){
-			$emp_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
+			$emp_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row['oh_weekday']);
 			$emp_hours[$row_counter]['start_morning'] = $row['oh_start_morning'];
 			$emp_hours[$row_counter]['end_morning'] = $row['oh_end_morning'];
 			$emp_hours[$row_counter]['start_afternoon'] = $row['oh_start_afternoon'];
@@ -3187,7 +3187,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyEmployee->assign('emp_hours',$emp_hours);
 
 		//Assign template labels
-		if (intval($employee_rows[em_address]) == 2) {
+		if (intval($employee_rows['em_address']) == 2) {
 			$smartyEmployee->assign('employee_label',$this->pi_getLL('tx_civserv_pi1_employee.employee_female','Employee'));
 		} else{ //1 for male or nothing
 			$smartyEmployee->assign('employee_label',$this->pi_getLL('tx_civserv_pi1_employee.employee_male','Employee'));
@@ -3197,7 +3197,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyEmployee->assign('email_label',$this->pi_getLL('tx_civserv_pi1_organisation.email','E-Mail'));
 		$smartyEmployee->assign('web_email_label',$this->pi_getLL('tx_civserv_pi1_organisation.web_email','E-Mail-Form'));
 		$smartyEmployee->assign('working_hours_label',$this->pi_getLL('tx_civserv_pi1_employee.hours','Working hours'));
-		$smartyEmployee->assign('office_hours_summary',str_replace('###EMPLOYEE###',$employee_rows[em_firstname] . ' ' . $employee_rows[em_name],$this->pi_getLL('tx_civserv_pi1_employee.officehours','In the table are the office hours of ###EMPLOYEE### shown.')));
+		$smartyEmployee->assign('office_hours_summary',str_replace('###EMPLOYEE###',$employee_rows['em_firstname'] . ' ' . $employee_rows['em_name'],$this->pi_getLL('tx_civserv_pi1_employee.officehours','In the table are the office hours of ###EMPLOYEE### shown.')));
 		if($this->conf['showOhLabels']){
 			//default
 		}else{
@@ -3210,9 +3210,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyEmployee->assign('organisation_label',$this->pi_getLL('tx_civserv_pi1_employee.organisation','Organisation'));
 		$smartyEmployee->assign('room_label',$this->pi_getLL('tx_civserv_pi1_employee.room','Room'));
 		//the image_employee_label is not being used yet
-		if (intval($employee_rows[em_address]) == 2) {
+		if (intval($employee_rows['em_address']) == 2) {
 			$smartyEmployee->assign('image_employee_label',$this->pi_getLL('tx_civserv_pi1_employee_female.image','Image of employee'));
-		} else if (intval($employee_rows[em_address]) == 1) {
+		} else if (intval($employee_rows['em_address']) == 1) {
 			$smartyEmployee->assign('image_employee_label',$this->pi_getLL('tx_civserv_pi1_employee_male.image','Image of employee'));
 		}
 
@@ -3428,7 +3428,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		if ($GLOBALS['TYPO3_DB']->sql_num_rows($res_pos_supervisor) != 0) {
 			$organisation_supervisor = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_pos_supervisor);
-			$pos_id = $organisation_supervisor[pos_uid];
+			$pos_id = $organisation_supervisor['pos_uid'];
 		} else {
 			$organisation_supervisor = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_supervisor);
 			$pos_id = '';
@@ -3502,8 +3502,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 					//and therefore not valid in case of more than one building.....
 					/*
 					foreach($organisation_buildings as $building){
-						$building[bl_pubtrans_stop]="";
-						$buidling[bl_pubtrans_url]="";
+						$building['bl_pubtrans_stop']="";
+						$buidling['bl_pubtrans_url']="";
 					}
 					*/
 				}
@@ -3516,7 +3516,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//Assign organisation office hours
 		$row_counter = 0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_hour) ){	
-			$organisation_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row[oh_weekday]);
+			$organisation_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row['oh_weekday']);
 			$organisation_hours[$row_counter]['start_morning'] = $row['oh_start_morning'];
 			$organisation_hours[$row_counter]['end_morning'] = $row['oh_end_morning'];
 			$organisation_hours[$row_counter]['start_afternoon'] = $row['oh_start_afternoon'];
@@ -3542,7 +3542,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$GLOBALS['TSFE']->page['title']=$organisation_rows['or_name'];
 		// test bk: m�nster - generate or_title from or_name (is only displayed in m�nster)
 		$or_title = $organisation_rows['or_name'];
-		if($organisation_rows[or_addlocation]>'')$or_title.=' ('.$organisation_rows[or_addlocation].')';
+		if($organisation_rows['or_addlocation']>'')$or_title.=' ('.$organisation_rows['or_addlocation'].')';
 		$smartyOrganisation->assign('or_title',$or_title);
 		$smartyOrganisation->assign('or_addlocation',$organisation_rows['or_addlocation']);
 		$smartyOrganisation->assign('or_name',$organisation_rows['or_name']);
@@ -3596,9 +3596,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyOrganisation->assign('morning',$this->pi_getLL('tx_civserv_pi1_organisation.morning','in the morning'));
 		$smartyOrganisation->assign('afternoon',$this->pi_getLL('tx_civserv_pi1_organisation.afternoon','in the afternoon'));
 
-		if (intval($organisation_supervisor[em_address]) == 2) {
+		if (intval($organisation_supervisor['em_address']) == 2) {
 			$smartyOrganisation->assign('su_address_label',$this->pi_getLL('tx_civserv_pi1_organisation.address_female','Mrs.'));
-		} else if (intval($organisation_supervisor[em_address]) == 1) {
+		} else if (intval($organisation_supervisor['em_address']) == 1) {
 			$smartyOrganisation->assign('su_address_label',$this->pi_getLL('tx_civserv_pi1_organisation.address_male','Mr.'));
 		}
 		$smartyOrganisation->assign('postbox_label',$this->pi_getLL('tx_civserv_pi1_organisation.postbox','Postbox'));
