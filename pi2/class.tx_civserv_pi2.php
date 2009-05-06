@@ -689,12 +689,11 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @return	[type]		...
 	 */
 	function employee_list_or_uid(&$smartyEmployeeList, $abcBar=false, $searchBox=false, $topList=false){
-		//don't act on wrong assumptions.....
-		#if($this->piVars['or_uid'] == '' || intval($this->piVars['or_uid']) <= 0) return true; // no error but no list either
+
 
 		// Die Funktion makeEmployeeListQueryAZ liefert alle Mitarbeiter, die.....
 		// die Query enthaelt Daten ueber den Mitarbeiter, die Stelle und die Mitarbeiter_Stellen_zuordnung (raum etc)
-		$query = $this->makeEmployeeListQueryOrUid($this->piVars['or_uid']);//or_uid is transmitted by the select-box
+		$query = $this->makeEmployeeListQueryOrUid(intval($this->piVars['or_uid']));//or_uid is transmitted by the select-box
 		$_SESSION['stored_filter_key'] = 'or_uid';
 		$_SESSION['stored_filter_val'] = intval($this->piVars['or_uid']);
 		$mode_text = $this->pi_getLL('tx_civserv_pi2_employee_list.by_organisation',' by department');
@@ -1995,33 +1994,68 @@ class tx_civserv_pi2 extends tslib_pibase {
 		// test bk: include or_addinfo
 		// test bk: include or_title 
 		
-		$GLOBALS['TSFE']->page['title']=$organisation_rows[or_name];
+		$GLOBALS['TSFE']->page['title']=$organisation_rows['or_name'];
 		// test bk: muenster - generate or_title from or_name (is only displayed in m�nster)
 		$or_title=$organisation_rows[or_name];
 		if($organisation_rows[or_addlocation]>'')$or_title.=' ('.$organisation_rows[or_addlocation].')';
 		$smartyOrganisation->assign('or_title',$or_title);
-		$smartyOrganisation->assign('or_name',$organisation_rows[or_name]);
-		$smartyOrganisation->assign('or_addinfo',$organisation_rows[or_addinfo]);
-		$smartyOrganisation->assign('or_phone',$organisation_rows[or_telephone]);
-		$smartyOrganisation->assign('or_fax',$organisation_rows[or_fax]);
-		$smartyOrganisation->assign('or_email_code',$this->cObj->typoLink($organisation_rows[or_email],array(parameter => $organisation_rows[or_email],ATagParams => 'class="email"'))); 	// use typolink, because of the possibility to use encrypted email-adresses for spam-protection
+		$smartyOrganisation->assign('or_name',$organisation_rows['or_name']);
+		$smartyOrganisation->assign('or_addinfo',$organisation_rows['or_addinfo']);
+		$smartyOrganisation->assign('or_phone',$organisation_rows['or_telephone']);
+		$smartyOrganisation->assign('or_fax',$organisation_rows['or_fax']);
+		
+		// use typolink, because of the possibility to use encrypted email-adresses for spam-protection
+		$smartyOrganisation->assign('or_email_code', $this->cObj->typoLink(
+															$organisation_rows['or_email'],
+															array(
+																parameter => $organisation_rows['or_email'],
+																ATagParams => 'class="email"')
+															)
+														); 	
+		
 		$smartyOrganisation->assign('or_email_form_url',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array('mode' => 'set_email_form',org_id => $organisation_rows[uid]),1,1)));
 		$smartyOrganisation->assign('or_image',$imageCode);
 
 		//Assign employee data
 		// test bk: do not show the organisationSupervisor at all - depending on a flag in the organisation-table
-		if ($organisation_rows[or_show_supervisor]) {
-			$smartyOrganisation->assign('su_title',$organisation_supervisor[em_title]);
-			$smartyOrganisation->assign('su_firstname',$organisation_supervisor[em_firstname]);
-			$smartyOrganisation->assign('su_name',$organisation_supervisor[em_name]);
-			if (intval($organisation_supervisor[em_datasec]) == 1) {
-				if ($pos_id != '') {
-					$smartyOrganisation->assign('su_link',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array('mode' => 'employee',id => $organisation_supervisor[uid],pos_id => $pos_id),1,1)));
+		if ($organisation_rows['or_show_supervisor']) {
+			$smartyOrganisation->assign('su_title',$organisation_supervisor['em_title']);
+			$smartyOrganisation->assign('su_firstname',$organisation_supervisor['em_firstname']);
+			$smartyOrganisation->assign('su_name',$organisation_supervisor['em_name']);
+			if (intval($organisation_supervisor['em_datasec']) == 1) {
+				if (intval($pos_id) > 0) {
+					$smartyOrganisation->assign(
+											'su_link',
+											htmlspecialchars(
+													$this->pi_linkTP_keepPIvars_url(
+															array(
+																'mode' => 'employee',
+																id => intval($organisation_supervisor['uid']),
+																pos_id => intval($pos_id)
+															),
+															1,
+															1
+													)
+											)
+										);
 				} else {
-					$smartyOrganisation->assign('su_link',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array('mode' => 'employee',id => $organisation_supervisor[uid]),1,1)));
+					$smartyOrganisation->assign(
+											'su_link',
+											htmlspecialchars(
+													$this->pi_linkTP_keepPIvars_url(
+															array(
+																'mode' => 'employee',
+																id => intval($organisation_supervisor['uid'])
+															),
+															1,
+															1
+													)
+											)
+										);
 				}
 			}
 		}
+		
 
 		//Assign addresses
 		// test bk: include bl_name
@@ -2709,7 +2743,10 @@ class tx_civserv_pi2 extends tslib_pibase {
 		if (!empty($emp_id) && !empty($pos_id) && !empty($sv_id)) {	//Email form is called from service detail page
 			$querypart_select = ', ep_email';
 			$querypart_from = ', tx_civserv_service, tx_civserv_service_sv_position_mm, tx_civserv_position, tx_civserv_employee_em_position_mm';
-			$querypart_where = ' AND tx_civserv_service.uid = ' . intval($sv_id) . ' AND tx_civserv_employee.uid = ' . intval($emp_id) . ' AND tx_civserv_position.uid = ' . $pos_id . '
+			//fix me: put proper enablefields!!!
+			$querypart_where = 	' AND tx_civserv_service.uid = ' . intval($sv_id) . 
+								' AND tx_civserv_employee.uid = ' . intval($emp_id) . 
+								' AND tx_civserv_position.uid = ' . intval($pos_id) . '
 								AND tx_civserv_service.deleted = 0 AND tx_civserv_service.hidden = 0
 								AND tx_civserv_position.deleted = 0 AND tx_civserv_position.hidden = 0
 								AND tx_civserv_employee_em_position_mm.deleted = 0 AND tx_civserv_employee_em_position_mm.hidden = 0
