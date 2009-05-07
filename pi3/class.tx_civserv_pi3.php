@@ -358,6 +358,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 		
 		$em_org_kombis=array(); // store all combinations of an employee and his/her employing organisation unit here
 		
+		// irrelevant in pi3 !!!
 		$kills=array(); // will be used to eleminate dublicates from the above list
 		
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
@@ -507,8 +508,8 @@ class tx_civserv_pi3 extends tslib_pibase {
 
 			// Gebaeude
 			if($employees[$row_counter]['ep_room'] > 0){ 
-				// dem Mitarbeiter wurde ein Raum zugewiesen, hol mir das passende Geb�ude
-				// der Raum wei� �ber rbf_building_bl_floor zu welchem Geb�ude er geh�rt und
+				// dem Mitarbeiter wurde ein Raum zugewiesen, hol mir das passende Gebaeude
+				// der Raum weiss ueber rbf_building_bl_floor zu welchem Gebaeude er gehoert und
 				// zu welcher Etage....
 				$res_building = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'tx_civserv_building.bl_mail_street, 
@@ -570,7 +571,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 					'',
 					'',
 					'');
-				// hier k�nnen eine ganze Reihe (oder keine) Geb�ude bei rauskommen!	
+				// hier koennen eine ganze Reihe (oder keine) Gebaeude bei rauskommen!	
 				while($row_building = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_building)){
 					//store whole building in array
 					$organisation_buildings[$orga_bl_count]=$row_building;
@@ -728,7 +729,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 						tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
 						tx_civserv_employee.deleted=0 AND
 						tx_civserv_employee.hidden=0 '.
-						($regexp?'AND em_name REGEXP "' . $regexp . '"':'') . ' ';
+						($regexp? ' AND em_name REGEXP "' . $regexp . '"' : '') . ' ';
 			} else {
 				$query = 'Select 
 						tx_civserv_employee.em_address, 
@@ -760,7 +761,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 						tx_civserv_employee_em_position_mm 
 					where 
 						tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') '
-					    . ($regexp?'AND em_name REGEXP "' . $regexp . '"':'') . 'AND 
+					    . ($regexp? ' AND em_name REGEXP "' . $regexp . '"' : '') . 'AND 
 						tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
 						tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
 						tx_civserv_employee.deleted = 0 AND
@@ -830,13 +831,13 @@ class tx_civserv_pi3 extends tslib_pibase {
 				$tables =  'tx_civserv_employee, 
 							tx_civserv_organisation';
 						
-				$conditions =  'tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') AND 
-								tx_civserv_employee.uid = tx_civserv_organisation.or_supervisor AND
-								tx_civserv_organisation.deleted = 0 AND
-								tx_civserv_organisation.hidden = 0 AND						
-								tx_civserv_employee.deleted = 0 AND
-								tx_civserv_employee.hidden = 0 AND	
-								tx_civserv_employee.em_pseudo = 0 ';
+				$conditions =  'tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') 
+								AND tx_civserv_employee.uid = tx_civserv_organisation.or_supervisor 
+								AND	tx_civserv_organisation.deleted = 0 
+								AND	tx_civserv_organisation.hidden = 0 
+								AND	tx_civserv_employee.deleted = 0 
+								AND	tx_civserv_employee.hidden = 0 
+								AND	tx_civserv_employee.em_pseudo = 0 ';
 			}else{
 				$fields =  'tx_civserv_organisation.uid as or_uid, 
 							tx_civserv_organisation.or_code,
@@ -871,22 +872,23 @@ class tx_civserv_pi3 extends tslib_pibase {
 							tx_civserv_organisation,
 							tx_civserv_position_po_organisation_mm';
 							
-				$conditions =   'tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') AND 
-								tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local AND 
-								tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
-								tx_civserv_position_po_organisation_mm.uid_local = tx_civserv_position.uid AND
-								tx_civserv_position_po_organisation_mm.uid_foreign = tx_civserv_organisation.uid AND '.
+				$conditions =   'tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') 
+								AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local 
+								AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid 
+								AND	tx_civserv_position_po_organisation_mm.uid_local = tx_civserv_position.uid 
+								AND	tx_civserv_position_po_organisation_mm.uid_foreign = tx_civserv_organisation.uid 
+								AND '.
 								($orcode > '' && $orcode != 'all' ? 
 +									'tx_civserv_organisation.or_code in (\''. 
 +										$GLOBALS['TYPO3_DB']->quoteStr($orcode, 'tx_civserv_organisation') .'\', \''. 
 +										$GLOBALS['TYPO3_DB']->quoteStr(str_replace('_', ' ', $orcode), ' tx_civserv_organisation'). '\''.
 +									 ') AND ' : '').
-							   'tx_civserv_organisation.deleted = 0 AND
-								tx_civserv_organisation.hidden = 0 AND						
-								tx_civserv_position.deleted = 0 AND
-								tx_civserv_position.hidden = 0 AND
-								tx_civserv_employee.deleted = 0 AND
-								tx_civserv_employee.hidden = 0';		
+							   'tx_civserv_organisation.deleted = 0 
+							    AND tx_civserv_organisation.hidden = 0 
+								AND	tx_civserv_position.deleted = 0 
+								AND	tx_civserv_position.hidden = 0 
+								AND	tx_civserv_employee.deleted = 0 
+								AND tx_civserv_employee.hidden = 0';		
 				}								
 			if ($count){
 				$query = 'Select count(*) from '.$tables.' where '.$conditions;
@@ -1215,7 +1217,9 @@ class tx_civserv_pi3 extends tslib_pibase {
 						 em_image, 
 						 em_datasec',
 						'tx_civserv_employee',
-						'deleted=0 AND hidden=0 AND uid='. intval($uid) .' AND em_datasec=1',
+						'deleted=0 AND hidden=0 
+						 AND uid='. intval($uid) .' 
+						 AND em_datasec=1',
 						'',
 						'',
 						'');
@@ -1568,10 +1572,10 @@ class tx_civserv_pi3 extends tslib_pibase {
 		$res_sub_org = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'uid, or_name',
 						'tx_civserv_organisation, tx_civserv_organisation_or_structure_mm',
-						'tx_civserv_organisation_or_structure_mm.uid_local = tx_civserv_organisation.uid and
-						 tx_civserv_organisation_or_structure_mm.uid_foreign = '. intval($organisation_rows['uid']).' and
-						 tx_civserv_organisation.deleted=0 and
-						 tx_civserv_organisation.hidden=0',
+						'tx_civserv_organisation_or_structure_mm.uid_local = tx_civserv_organisation.uid 
+						 AND tx_civserv_organisation_or_structure_mm.uid_foreign = '. intval($organisation_rows['uid']).' 
+						 AND tx_civserv_organisation.deleted=0 
+						 AND tx_civserv_organisation.hidden=0',
 						'',
 						'tx_civserv_organisation.sorting', //Order by
 						'');				
@@ -1590,11 +1594,11 @@ class tx_civserv_pi3 extends tslib_pibase {
 		$res_super_org = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'uid, or_name',
 						'tx_civserv_organisation, tx_civserv_organisation_or_structure_mm',
-						'tx_civserv_organisation_or_structure_mm.uid_local = '.$organisation_rows['uid'].' and
-						 tx_civserv_organisation_or_structure_mm.uid_foreign = tx_civserv_organisation.uid and
-						 tx_civserv_organisation.uid!='. intval($this->community['organisation_uid']).' AND
-						 tx_civserv_organisation.deleted=0 and
-						 tx_civserv_organisation.hidden=0',
+						'tx_civserv_organisation_or_structure_mm.uid_local = '.$organisation_rows['uid'].' 
+						 AND tx_civserv_organisation_or_structure_mm.uid_foreign = tx_civserv_organisation.uid 
+						 AND tx_civserv_organisation.uid!='. intval($this->community['organisation_uid']).' 
+						 AND tx_civserv_organisation.deleted=0 
+						 AND tx_civserv_organisation.hidden=0',
 						'',
 						'tx_civserv_organisation.sorting', //Order by
 						'');				
@@ -2511,8 +2515,8 @@ class tx_civserv_pi3 extends tslib_pibase {
 		$results_at_a_time = t3lib_div::intInRange($this->internal['results_at_a_time'],1,1000);
 		$maxPages = t3lib_div::intInRange($this->internal['maxPages'],1,100);
 		
-		$pR1 = $pointer*$results_at_a_time+1;
-		$pR2 = $pointer*$results_at_a_time+$results_at_a_time;
+		$pR1 = $pointer * $results_at_a_time + 1;
+		$pR2 = $pointer * $results_at_a_time + $results_at_a_time;
 		
 		$max = t3lib_div::intInRange(ceil($count/$results_at_a_time),1,$maxPages);
 		
@@ -2538,18 +2542,28 @@ class tx_civserv_pi3 extends tslib_pibase {
 				$a = 0;
 			}
 			// in order to have a correct value for $max we must include the value of the actual $pointer in the calculation
-			for($i=0;$i<$max;$i++)  {
+			for($i=0; $i<$max; $i++)  {
+				$temp_links = array();
 				// check that the starting point (equivalent of $pR1) doesn't exceed the total $count
-				if($a*$results_at_a_time+1>$count){
-					$i=$max; //quitt!!!
+				if($a * $results_at_a_time + 1 > $count){
+					$i = $max; //quitt!!!
 				}else{	
-					$links[]=sprintf('%s'.$this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page','Page',TRUE).' '.($a+1)),array('pointer'=>($a?$a:'')),1).'%s',
-								($pointer==$a?'<span '.$this->pi_classParam('browsebox-SCell').'><strong>':''),
-								($pointer==$a?'</strong></span>':''));
+					$temp_links[] = '';
+					//beginning:
+					if($pointer == $a){
+						$temp_links[] .= '<span '.$this->pi_classParam('browsebox-SCell').'><strong>';
+					}
+					$temp_links[] .= $this->pi_linkTP_keepPIvars(trim($this->pi_getLL('pi_list_browseresults_page', 'Page', TRUE).' '.($a + 1)), array('pointer' => ( $a ? $a : '' )), 1);
+					//ending:
+					if($pointer == $a){
+						$temp_links[] .= '</strong></span>';
+					}
 				}
 				$a++;
-			}
-		}
+				$links[] = implode('', $temp_links);
+			}// end foreach
+		}// end if max
+		
 		// neither $pointer nor the number-link ($a) must exceed the result of the calculation below!
 		if ($pointer<ceil($count/$results_at_a_time)-1 && $a<=ceil($count/$results_at_a_time)-1) {
 			$links[]=$this->pi_linkTP_keepPIvars($this->pi_getLL('pi_list_browseresults_next','Next >',TRUE),array('pointer'=>$pointer+1),1);
@@ -2568,23 +2582,37 @@ class tx_civserv_pi3 extends tslib_pibase {
 		if($showResultCount){
 			$sBox .= '<p>';
 			if($this->internal['res_count']){
-				$sBox .=	sprintf(str_replace(	'###SPAN_BEGIN###',
-													'<span'.$this->pi_classParam('browsebox-strong').'>',
-													$this->pi_getLL(	'pi_list_browseresults_displays',
-																		'Displaying results ###SPAN_BEGIN###%s to %s</span> out of ###SPAN_BEGIN###%s</span>'
-																	)
-												),
-												$this->internal['res_count'] > 0 ? $pR1 : 0,
-												min(array($this->internal['res_count'], $pR2)),
-												$this->internal['res_count']
-                        			);
+				$from_number = $this->internal['res_count'] > 0 ? $pR1 : 0;
+				$to_number = min(array($this->internal['res_count'], $pR2));
+				
+				
+				// don't know why I need this, found out by trial and error
+				#debug($total_bodycount, '$total_bodycount');
+				debug($this->piVars['char'], 'wo isset?');
+				if($total_bodycount > 0 && !$this->piVars['char']){
+					$to_number -= $total_bodycount;
+				}
+			
+				$sBox .= sprintf(
+                                        str_replace(
+											'###SPAN_BEGIN###',
+											'<span'.$this->pi_classParam('browsebox-strong').'>',
+											$this->pi_getLL('pi_list_browseresults_displays', 'Displaying results ###SPAN_BEGIN###%s to %s</span> out of ###SPAN_BEGIN###%s</span>')
+										),
+                                        $from_number,
+										//to (must substract local_bodycount here!!!)
+                                        $to_number,
+                                        //of a total of
+                                        $this->internal['res_count']
+                                );
+			
+			
+			
 			}else{
-				$sBox .=	$this->pi_getLL('pi_list_browseresults_noResults','Sorry, no items were found.');
+				$sBox .= $this->pi_getLL('pi_list_browseresults_noResults','Sorry, no items were found.');
 			}
-			$sBox .= '</p>';
-		}else{
-			//nix
-		}
+			#$sBox .= '</p>';
+		}		
 		$sBox .=	'<'.trim('p '.$divParams).'>'.implode($spacer,$links).'</p>';
         $sBox .=	'</div>';
         return $sBox;
