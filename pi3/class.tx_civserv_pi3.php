@@ -777,7 +777,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 
 
 				if ($limit) {
-					if ($this->piVars['pointer'] > '') {
+					if (intval($this->piVars['pointer']) > 0) {
 						$start = $this->conf['employee_per_page'] * $this->piVars['pointer'];
 					} else {
 						$start = 0;
@@ -876,7 +876,11 @@ class tx_civserv_pi3 extends tslib_pibase {
 								tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid AND
 								tx_civserv_position_po_organisation_mm.uid_local = tx_civserv_position.uid AND
 								tx_civserv_position_po_organisation_mm.uid_foreign = tx_civserv_organisation.uid AND '.
-								($orcode > '' && $orcode != 'all' ? 'tx_civserv_organisation.or_code in (\''. $orcode .'\', \''.str_replace('_', ' ', $orcode).'\') AND ' : '').
+								($orcode > '' && $orcode != 'all' ? 
++									'tx_civserv_organisation.or_code in (\''. 
++										$GLOBALS['TYPO3_DB']->quoteStr($orcode, 'tx_civserv_organisation') .'\', \''. 
++										$GLOBALS['TYPO3_DB']->quoteStr(str_replace('_', ' ', $orcode), ' tx_civserv_organisation'). '\''.
++									 ') AND ' : '').
 							   'tx_civserv_organisation.deleted = 0 AND
 								tx_civserv_organisation.hidden = 0 AND						
 								tx_civserv_position.deleted = 0 AND
@@ -885,7 +889,6 @@ class tx_civserv_pi3 extends tslib_pibase {
 								tx_civserv_employee.hidden = 0';		
 				}								
 			if ($count){
-				$or_code = $GLOBALS['TYPO3_DB']->quoteStr($or_code, 'tx_civserv_organisation');
 				$query = 'Select count(*) from '.$tables.' where '.$conditions;
 			} else {
 				$query = 'SELECT '.$fields.' FROM '.$tables.' WHERE '.$conditions;
@@ -893,7 +896,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 #			$orderby =	$this->piVars['sort']?'or_code, name, em_firstname DESC':'or_code, name, em_firstname ASC';
 
 			if (!$count) {
-				if(orcode == 'hod'){
+				if($orcode == 'hod'){
 					$orderby =	$this->piVars['sort'] ? 'name, em_firstname, or_code DESC' : 'name, em_firstname, or_code ASC';
 					$query .= ' ORDER BY ' . $orderby . ' ';
 				}else{
@@ -1255,7 +1258,8 @@ class tx_civserv_pi3 extends tslib_pibase {
 					 AND tx_civserv_position.uid = tx_civserv_employee_em_position_mm.uid_foreign
 					 AND tx_civserv_employee_em_position_mm.uid = tx_civserv_officehours_oep_employee_em_position_mm_mm.uid_local
 					 AND tx_civserv_officehours.uid = tx_civserv_officehours_oep_employee_em_position_mm_mm.uid_foreign
-					 AND tx_civserv_employee.uid = ' . intval($uid) . ' AND tx_civserv_position.uid = '.$pos_id,
+					 AND tx_civserv_employee.uid = ' . intval($uid) . ' 
+					 AND tx_civserv_position.uid = '. intval($pos_id),
 					'',
 					'oh_weekday',
 					'');
@@ -1274,7 +1278,9 @@ class tx_civserv_pi3 extends tslib_pibase {
 					 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign
 					 AND tx_civserv_organisation.uid = tx_civserv_organisation_or_hours_mm.uid_local
 					 AND tx_civserv_officehours.uid = tx_civserv_organisation_or_hours_mm.uid_foreign
-					 AND tx_civserv_employee.uid = ' . intval($uid) . ' AND em_datasec = 1 AND tx_civserv_position.uid = ' . $pos_id,
+					 AND tx_civserv_employee.uid = ' . intval($uid) . ' 
+					 AND em_datasec = 1 
+					 AND tx_civserv_position.uid = ' . intval($pos_id),
 					'',
 					'oh_weekday',
 					'');
@@ -1299,7 +1305,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 					 ep_email as email, 
 					 or_name as organisation',
 					'tx_civserv_employee, tx_civserv_position, tx_civserv_room, tx_civserv_floor, tx_civserv_organisation, tx_civserv_building, tx_civserv_employee_em_position_mm, tx_civserv_building_bl_floor_mm, tx_civserv_position_po_organisation_mm',
-					'tx_civserv_employee.uid='.$uid.' 
+					'tx_civserv_employee.uid='. intval($uid) .' 
 					 AND em_datasec=1 
 					 AND tx_civserv_position.uid = '. intval($pos_id) .'
 					 AND tx_civserv_organisation.deleted=0 AND tx_civserv_organisation.hidden=0
@@ -1644,19 +1650,19 @@ class tx_civserv_pi3 extends tslib_pibase {
 						tx_civserv_employee_em_position_mm,
 						tx_civserv_room,
 						tx_civserv_building_bl_floor_mm',
-					'tx_civserv_organisation_or_building_mm.uid_local = tx_civserv_organisation.uid AND
-						tx_civserv_organisation_or_building_mm.uid_foreign = tx_civserv_building.uid AND
-						tx_civserv_organisation.deleted=0 AND 
-						tx_civserv_organisation.hidden=0 AND 
-						tx_civserv_building.deleted=0 AND 
-						tx_civserv_building.hidden=0 AND 
-						tx_civserv_employee_em_position_mm.deleted=0 AND 
-						tx_civserv_employee_em_position_mm.hidden=0 AND 
-						tx_civserv_organisation.or_supervisor = '. intval($organisation_supervisor['uid']).' AND
-						tx_civserv_employee_em_position_mm.uid_foreign = '. intval($pos_id) .' AND
-						tx_civserv_employee_em_position_mm.ep_room = tx_civserv_room.uid AND
-						tx_civserv_room.rbf_building_bl_floor =  tx_civserv_building_bl_floor_mm.uid AND
-						tx_civserv_building.uid = tx_civserv_building_bl_floor_mm.uid_local',
+					'tx_civserv_organisation_or_building_mm.uid_local = tx_civserv_organisation.uid 
+						AND	tx_civserv_organisation_or_building_mm.uid_foreign = tx_civserv_building.uid 
+						AND	tx_civserv_organisation.deleted=0 
+						AND tx_civserv_organisation.hidden=0 
+						AND tx_civserv_building.deleted=0 
+						AND tx_civserv_building.hidden=0 
+						AND tx_civserv_employee_em_position_mm.deleted=0 
+						AND tx_civserv_employee_em_position_mm.hidden=0 
+						AND tx_civserv_organisation.or_supervisor = '. intval($organisation_supervisor['uid']).' 
+						AND tx_civserv_employee_em_position_mm.uid_foreign = '. intval($pos_id) .' 
+						AND tx_civserv_employee_em_position_mm.ep_room = tx_civserv_room.uid 
+						AND tx_civserv_room.rbf_building_bl_floor =  tx_civserv_building_bl_floor_mm.uid 
+						AND tx_civserv_building.uid = tx_civserv_building_bl_floor_mm.uid_local',
 					'',
 					'',
 					'');
@@ -2251,9 +2257,12 @@ class tx_civserv_pi3 extends tslib_pibase {
 
 		if (!empty($emp_id) && !empty($pos_id) && !empty($sv_id)) {	//Email form is called from service detail page
 			$querypart_select = ', ep_email';
+			// fix me: introduce proper enablefields
 			$querypart_from = ', tx_civserv_service, tx_civserv_service_sv_position_mm, tx_civserv_position, tx_civserv_employee_em_position_mm';
-			$querypart_where = ' AND tx_civserv_service.uid = ' . intval($sv_id) . ' AND tx_civserv_employee.uid = ' . intval($emp_id) . ' AND tx_civserv_position.uid = ' . intval($pos_id) . '
-								AND tx_civserv_service.deleted=0 AND tx_civserv_service.hidden=0
+			$querypart_where = 	' AND tx_civserv_service.uid = ' . intval($sv_id) . 
+								' AND tx_civserv_employee.uid = ' . intval($emp_id) . 
+								' AND tx_civserv_position.uid = ' . intval($pos_id) . 
+								' AND tx_civserv_service.deleted=0 AND tx_civserv_service.hidden=0
 								AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
 								AND tx_civserv_employee_em_position_mm.deleted=0 AND tx_civserv_employee_em_position_mm.hidden=0
 								AND ((UNIX_TIMESTAMP(LOCALTIMESTAMP) BETWEEN tx_civserv_service.starttime AND tx_civserv_service.endtime)
@@ -2272,8 +2281,9 @@ class tx_civserv_pi3 extends tslib_pibase {
 		if ((!empty($pos_id) && !empty($emp_id)) && empty($sv_id)) {  //Email form is called from organisation detail page (supervisor email)
 			$querypart_select = ', ep_email';
 			$querypart_from = ', tx_civserv_position, tx_civserv_employee_em_position_mm';
-			$querypart_where = ' AND tx_civserv_employee.uid = ' . intval($emp_id) . ' AND tx_civserv_position.uid = ' . intval($pos_id) . '
-								AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
+			$querypart_where =	' AND tx_civserv_employee.uid = ' . intval($emp_id) . 
+								' AND tx_civserv_position.uid = ' . intval($pos_id) . 
+								' AND tx_civserv_position.deleted=0 AND tx_civserv_position.hidden=0
 								AND tx_civserv_employee_em_position_mm.deleted=0 AND tx_civserv_employee_em_position_mm.hidden=0
 								AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
 						 		AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid';
@@ -2282,7 +2292,8 @@ class tx_civserv_pi3 extends tslib_pibase {
 		$res_employee = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'em_email, em_datasec as datasec' . $querypart_select,
 						'tx_civserv_employee' . $querypart_from,
-						'tx_civserv_employee.deleted=0 AND tx_civserv_employee.hidden=0 '.$querypart_where,
+						'tx_civserv_employee.deleted=0 
+						 AND tx_civserv_employee.hidden=0 '.$querypart_where,
 						'',
 						'',
 						'');
