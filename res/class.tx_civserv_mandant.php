@@ -412,7 +412,7 @@ class tx_civserv_mandant{
 			if (isset($source_array['field']) && $source_array['field']==$critical['field']){	//either or_structure or nav_structure	
 				//get rid of the 'children' --> recursive!!!!
 				$forbidden_uids=array();
-				if(substr($source_array['row']['uid'],0,3)!='NEW'){//or else the following select will crash!
+				if($source_array['row']['uid'] > 0 && substr($source_array['row']['uid'],0,3)!='NEW'){//or else the following select will crash!
 					$forbidden_uids[]=$source_array['row']['uid'];
 					//the following two lines are equivalent to each other:
 				  //$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid_local', $GLOBALS['TYPO3_DB']->quoteStr($critical['mm'],$critical['mm']), 'uid_foreign = '.$source_array['row']['uid'],'','','',''); 
