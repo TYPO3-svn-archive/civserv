@@ -34,10 +34,10 @@ class ux_sc_db_new extends SC_db_new{
 		}
 		if (strstr($allowedTableList,'*') || t3lib_div::inList($allowedTableList,$checkTable))	{		// If all tables or the table is listed as a allowed type, return true
 			//citeq beginn
-			debug($allowedTableList, '$allowedTableList');
-			debug($checkTable, '$checkTable');
+			#debug($allowedTableList, '$allowedTableList');
+			#debug($checkTable, '$checkTable');
 			if($checkTable == 'tx_civserv_model_service'){
-				debug($pid_row, '$pid_row');
+				#debug($pid_row, '$pid_row');
 				if($pid_row['doktype'] == 242 && ($pid_row['tx_civserv_ms_mandant'] <= '' || $pid_row['tx_civserv_ms_approver_one'] <= '' || $pid_row['tx_civserv_ms_approver_two'] <= '')){
 					$ms_container_name = $pid_row['title'];
 					$ms_container_uid  = $pid_row['uid'];
