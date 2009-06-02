@@ -4296,19 +4296,20 @@ class tx_civserv_pi1 extends tslib_pibase {
 			//Store entry in database
 			$ip = long2ip(ip2long($_SERVER['REMOTE_ADDR']));
 			$time = time();
+			// do not use quoteStr here! Unless overruling this behaviour in the function call, exec_INSERTquery already quotes the values to be inserted.
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_civserv_transaction_debit_authorisation',
-												   array(	"tstamp" => intval($time),
-												   			"service_uid" => intval($serviceUID),
-												   			"cash_number" => intval($cashNumber),
-												   			"bank_name" => intval($bankName),
-												   			"bank_code" => intval($bankCode),
-												   			"account_number" => intval($accountNumber),
-												   			"firstname" => $GLOBALS['TYPO3_DB']->quoteStr($firstname, 'tx_civserv_transaction_debit_authorisation'),
-												   			"surname" => $GLOBALS['TYPO3_DB']->quoteStr($surname, 'tx_civserv_transaction_debit_authorisation'),
-												   			"phone" => $GLOBALS['TYPO3_DB']->quoteStr($phone, 'tx_civserv_transaction_debit_authorisation'),
-												   			"email" => $GLOBALS['TYPO3_DB']->quoteStr($email, 'tx_civserv_transaction_debit_authorisation'),
-												   			"remote_addr" => $GLOBALS['TYPO3_DB']->quoteStr($ip, 'tx_civserv_transaction_debit_authorisation'))
-												   );
+												   array(	"tstamp" => $time,
+												   			"service_uid" => $serviceUID,
+												   			"cash_number" => $cashNumber,
+												   			"bank_name" => $bankName,
+												   			"bank_code" => $bankCode,
+												   			"account_number" => $accountNumber,
+												   			"firstname" => $firstname,
+												   			"surname" => $surname,
+												   			"phone" => $phone,
+												   			"email" => $email,
+												   			"remote_addr" => $ip)
+														);
 
 			$smartyDebitForm->assign('complete',$this->pi_getLL('tx_civserv_pi1_debit_form.complete','Thank you! Your data has been successfully stored in our system.'));
 			return true;
