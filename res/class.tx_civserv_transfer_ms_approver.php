@@ -40,16 +40,15 @@
 * @subpackage tx_civserv
 * @version 1.0
 *
-* Changes: Datum, Initialen - vorgenommene Änderungen
+* Changes: Datum, Initialen - vorgenommene ï¿½nderungen
 */
 
 // ATTENTION: 
 // Diese Klasse wird von der Typo3 core (t3lib_div->callUserFunction) nicht gezogen, obwohl sie in ext_tables.php und in ext_localconf.php eingebunden ist!!!!
-// Die Funktionalität befindet sich deshalb in class.tx_civserv_user_be_msg.php
+// Die Funktionalitï¿½t befindet sich deshalb in class.tx_civserv_user_be_msg.php
 
 class tx_civserv_transfer_ms_approver {
 	function transfer_approver_pages2modelservice(&$PA, &$fobj) {
-#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 //		[...] see: class.tx_civserv_user_be_msg.php
 	}
 

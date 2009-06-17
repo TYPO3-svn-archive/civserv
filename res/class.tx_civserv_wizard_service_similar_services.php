@@ -32,7 +32,7 @@
 *
 * $Id$
 *
-* @@author Tobias Müller (mullerto@@uni-muenster.de),
+* @@author Tobias Mï¿½ller (mullerto@@uni-muenster.de),
 * @@author Maurits Hinzen (mhinzen@@uni-muenster.de),
 * @@package TYPO3
 * @@subpackage tx_civserv
@@ -414,7 +414,6 @@ function init() {
 	 */
 	function getServiceCategories()	{
 		global $LANG;
-		//$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$mandant_obj = t3lib_div::makeInstance('tx_civserv_mandant');
 		$temp_arr_community_data = $mandant_obj->get_mandant_conf_all($this->service_pid);
 
@@ -462,7 +461,6 @@ function init() {
 	 */
 	function getServices()	{
 		global $LANG;
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$mode = (string)t3lib_div::_GP('mode');
 		$this->searchitem = $this->make_clean($this->searchitem);
@@ -494,9 +492,6 @@ function init() {
 			}else{
 					$where='pid in('.$liste.') AND deleted=0 AND hidden=0 AND pid >0';
 			}
-			
-			
-			#debug($where, 'tx_civserv_wizard_service_similar_services.php->getServices: where-clause');
 	
 			$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',			 							// SELECT ...
@@ -601,7 +596,7 @@ function init() {
 	  */
 	 	
 	function make_clean($value) {
-		$legal_chars = "%[^0-9a-zA-ZäöüÄÖÜß ]%"; //allow letters, numbers & space
+		$legal_chars = "%[^0-9a-zA-Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ]%"; //allow letters, numbers & space
 		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
 		return $new_value;
 	}	

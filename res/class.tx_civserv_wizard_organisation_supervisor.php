@@ -32,7 +32,7 @@
 *
 * $Id$
 *
-* @@author Tobias Müller (mullerto@@uni-muenster.de),
+* @@author Tobias Mï¿½ller (mullerto@@uni-muenster.de),
 * @@author Maurits Hinzen (mhinzen@@uni-muenster.de),
 * @@package TYPO3
 * @@subpackage tx_civserv
@@ -136,8 +136,7 @@ class tx_civserv_wizard_organisation_supervisor extends t3lib_SCbase {
 		$this->arrAlphabet = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
 		
 
-		    //get charset
-#  			t3lib_div::debug($LANG->getLL('tx_civserv_wizard_organisation_supervisor.warning_msg_1'));
+		//get charset
         $charset = $GLOBALS['LANG']->charSet ? $GLOBALS['LANG']->charSet : 'iso-8859-1';
         
 			// Draw the header.
@@ -391,7 +390,6 @@ class tx_civserv_wizard_organisation_supervisor extends t3lib_SCbase {
 	 */
 	function getSupervisors($letter)	{
 		global $LANG;
-#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$this->searchitem = $this->make_clean($this->searchitem);
 
@@ -494,7 +492,7 @@ class tx_civserv_wizard_organisation_supervisor extends t3lib_SCbase {
 	  */
 	 	
 	function make_clean($value) {
-		$legal_chars = "%[^0-9a-zA-ZäöüÄÖÜß ]%"; //allow letters, numbers & space
+		$legal_chars = "%[^0-9a-zA-Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ]%"; //allow letters, numbers & space
 		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
 		return $new_value;
 	}	

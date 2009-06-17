@@ -158,7 +158,6 @@ class tx_civserv_oepupdate {
 		
 		// test test test
 		if (is_array($params) && ($params['table'] == 'tx_civserv_navigation')) {	
-#		debug($params, 'class tx_civserv_oepupdate');
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'tx_civserv_navigation.pid, 
 				 tx_civserv_navigation.nv_name,
@@ -194,9 +193,6 @@ class tx_civserv_oepupdate {
 	* @return	void
 	*/
 	function ep_room(&$params, &$pObj) {
-		
-#		$GLOBALS['TYPO3_DB']->debugOutput=true;
-	
 		//The Pid ist now extracted from the cachedTSconfig. This seems to be the best way!
 		$pid = intval($pObj->cachedTSconfig[$params['table'].':'.$params['row']['uid']]['_CURRENT_PID']);
 

@@ -124,7 +124,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	$content		Content that is to be displayed within the plugin
 	 */
 	function main($content,$conf)	{
-		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging - only on test-sites!
 		if (TYPO3_DLOG)  t3lib_div::devLog('function main of FE class entered', 'civserv');
 
 		
@@ -484,7 +483,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// to the very end of the list through the order by clause in function makeServiceListQuery....
 		$eleminated_rows=0;
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
-#			debug($row, 'service_list row');
 			// WS-VERSIONING: get the Preview from the Core!!!!
 			// copied from tt_news
 			// the function versionOL() in /t3lib/class.t3lib_page.php does 
@@ -841,7 +839,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$query .= 'LIMIT ' . $start . ',' . $count;
 			}
 		}
-#		debug($query, 'query serviclist');
 		return $query;
 	}
 
@@ -1163,7 +1160,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$query_all_emps = $this->makeEmployeeListQuery(all, false, false);
 		$res_all_emps = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query_all_emps);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_all_emps) ) {
-			#debug($row, 'all employees row');
 			//ersetzen der placeholder klappt nicht richtig.....
 			$values = array($row['emp_uid'], $row['pos_uid']);
 			$orga_select_cond_placeholder_part = str_replace($placeholders, $values, $orga_select_cond_placeholder_dummy);
@@ -1177,30 +1173,20 @@ class tx_civserv_pi1 extends tslib_pibase {
 				 '',
 				 '');
 			while ($orga_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($orga_res) ) {
-				#debug($orga_row, '$orga_row');
 				$test_string = $row['emp_uid'].'_'.$orga_row['or_uid'];
-				#debug($test_string, 'single em_org kombi');
 				$test_string2 = $row['em_firstname'].', '.$row['em_name'].'_'.$orga_row['organisation'];
 				//only elminate dublicates if there is no data_sec (an employee with several positions within the same 
 				//organisational unit might still have different opening hours for each of them
-				#debug($row['em_datasec'], 'em_datasec');
 				if($row['em_datasec'] == 0 && in_array($test_string, $em_org_kombis)){
 					$total_bodycount++;
-					#debug($test_string, 'this employee_org-combination must die:');
-					#debug($test_string2, 'this employee_org-combination must die:');
 					$kills[$total_bodycount]= $row['emp_uid'].'_'.$orga_row['or_uid'];
 				}else{
-					#debug('else');
 					//organisation for employee is set here!
 					$em_org_kombis[] = $row['emp_uid'].'_'.$orga_row['or_uid'];
 				}
 			}// end orga_res
 		}// end res_all_emps
-		#debug($em_org_kombis, 'em_orgkombis');
-		#debug($kills, 'total employee kills');
-		#debug($total_bodycount, 'total employee $bodycount');
-		
-		
+
 		
 		//now the real query:
 		$query = $this->makeEmployeeListQuery($this->piVars['char']);
@@ -1241,21 +1227,16 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$row_counter++;
 		}
 		
-		#debug($employees, 'employess...');
 		$taken = array();
 		$filtered_employees = array();
 		//sort out doubles from the real employee-array
 		for($i=0; $i<count($employees); $i++){
-			#debug($employees[$i]['em_org_combi'], 'em_org_combi');
 			//do not use unset() inside of loop!! reduces number of loops, so some employees never get checked.....
 			if(in_array($employees[$i]['em_org_combi'], $kills)){
-				#debug($employees[$i], 'ist in kills enthalten!!!');
 				if(!in_array($employees[$i]['em_org_combi'], $taken)){
-					#debug($employees[$i], 'darf bleiben!!!');
 					$taken[]=$employees[$i]['em_org_combi'];
 					$filtered_employees[] = $employees[$i];
 				}else{
-					#debug($employees[$i], 'fliegt raus!!!');
 					$local_bodycount++;
 					$employees[$i]['em_or_combi_ok'] = 0;
 				}
@@ -1264,8 +1245,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}
 		}
 
-		#debug($local_bodycount, '$local_bodycount');
-		
 
 		// Retrieve the employee count
 		$row_count = 0;
@@ -1275,7 +1254,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			//row_count is constant!
 			$row_count += $row['count(*)'];
 		}
-		#debug($row_count, 'row_count');
 		
 		//so long as we are not showing the same person (with 2 positions) twice, we have to correct the row_count by the bodycount:
 		if($this->piVars['all'] == 'all'){
@@ -1286,7 +1264,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		
 
 		$this->internal['res_count'] = $row_count;
-		#debug($this->internal['res_count'], internal_res_count);
 		$this->internal['results_at_a_time']= $this->conf['employee_per_page'];
 		$this->internal['maxPages'] = $this->conf['max_pages_in_pagebar'];
 
@@ -1331,7 +1308,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		// fix me: query zusammenfassen!
 		if ($char != 'all') {
 			$regexp = $this->buildRegexp($char);
-			#debug($regexp, '$regexp');
 		}
 		if ($count){
 			$query = 'Select count(*) 
@@ -1388,7 +1364,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$query .= 'LIMIT ' . intval($start) . ',' . intval($max);
 			}
 		}
-		#debug($query, 'employeelist-query');
 		return $query;
 	}
 
@@ -1420,8 +1395,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		if ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_cat_count)) {
 			$cat_count = $row['count(DISTINCT tx_civserv_form.uid)'];
 		}
-#		debug($cat_count, 'catcount');
-		
 		
 		$all_forms=array();
 		$category_names=array();
@@ -1453,7 +1426,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$all_forms[]=$form_row;
 			}
 		}
-#		debug($all_forms, 'all_forms');
 		
 		for($i=0; $i<count($all_forms); $i++){
 			$all_forms[$i]['name'] = $this->pi_getEditIcon(
@@ -1556,7 +1528,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$all_forms[$i]['icon'] = $this->iconDir."default.gif";
 			}
 		}//end foreach????
-#		debug($all_forms, 'all forms nochmal');
 
 		// getting the form count
 		$row_count = 0;
@@ -1774,7 +1745,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$query .= ' LIMIT ' . intval($start) . ',' . intval($count);
 			}
 		}
-#		debug($query, 'form_query');
 		return $query;
 	}
 
@@ -2571,7 +2541,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$row_counter = 0;
 		$similar = array();
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_similar))	{
-#			debug($row, 'row similar');
 			$similar[$row_counter]['link'] =  htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'service',id => $row['uid']),$this->conf['cache_services'],1));
 			$similar[$row_counter]['name'] = $row['name'];
 			$similar[$row_counter]['fe_group'] = $row['fe_group'];
@@ -2580,7 +2549,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}
 			$row_counter++;
 		}
-#		debug($similar);
 
 		//Add coloumns with url for email form and employee page to array $service_employees and format position description string
 		for ($i = 0; $i < count($service_employees); $i++) {
@@ -3783,7 +3751,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	string		The link
 	 */
 	function getLoginLink($content, $conf) {
-#		debug($conf, 'conf von getLoginLink');
 		$url = '#';
 		if ($conf['login_pageid'] > '') {
 			$login_pageid = $conf['login_pageid'];
@@ -4633,8 +4600,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$links[] = $this->pi_linkTP_keepPIvars($this->pi_getLL('pi_list_browseresults_next','Next >',TRUE), array('pointer' => $pointer+1),1);
 		}
 	$sBox = '';
-		#debug($links, 'pagebar-links');
-		
 		
 		$sBox .= '<!-- List browsing box: -->
 					<div'.$this->pi_classParam('browsebox').'>';
@@ -4646,8 +4611,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 				
 				
 				// don't know why I need this, found out by trial and error
-				#debug($total_bodycount, '$total_bodycount');
-				debug($this->piVars['char'], 'wo isset?');
 				if($total_bodycount > 0 && !$this->piVars['char']){
 					$to_number -= $total_bodycount;
 				}
@@ -4715,8 +4678,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 		} else {
 			$pageid = $GLOBALS['TSFE']->id;
 		}
-
-#		debug($conf, 'bloody conf');
 
 
 		// Start or resume session
@@ -4927,7 +4888,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function showLogin($content, $conf) {
 		$log = '';
-#		debug($con, 'conf in showLogin');
 		if($conf['login_pageid'] > ''){ // check if login-page is configured at all!
 			if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
 				$log = 'Logout';
@@ -4950,7 +4910,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 */
 	function showFeuser($content, $conf) {
 		$feuser = '';
-#		debug($GLOBALS['TSFE']->fe_user->user, 'feuser');
 		if($conf['login_pageid'] > ''){ // check if login-page is configured at all!
 			if($GLOBALS['TSFE']->fe_user->user['uid'] > 0){
 				$feuser = $GLOBALS['TSFE']->fe_user->user['username'];
@@ -5186,10 +5145,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * Function for excluding corrupted pages 
 	 *
 	 **********************************************************************************/
-	//get all the parents!!!! (inversion of pid_list which'll contain all the children)
+	//todo: check this function.....
 	function check_piVars($piVars){
-#		debug($piVars, 'pivars delivered to method checkpiVars');
-#		debug($this->community['pidlist'], 'community pidlist');
 		$check = false;
 		$table = '';
 		$pid=0;
@@ -5215,21 +5172,11 @@ class tx_civserv_pi1 extends tslib_pibase {
 					);
 				$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 				$pid = $row['pid'];
-#			debug($pid, 'die gesuchte pid');
 		}else{
 			$check = false;
 		}
 		if($check){
 			$tempPidArr = explode(',', $this->community['pidlist']);
-#			debug($tempPidArr, '$tempPidArr');
-			if(in_array($pid, $tempPidArr)){
-#				debug('checked! alls well');
-			}else{
-#				debug('you bastard');
-#				return false; //noooo!
-			}						
-		}else{
-#			debug('no check!');
 		}
 		return true;
 	}

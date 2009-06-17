@@ -32,7 +32,7 @@
 *
 *
 * @author Georg Niemeyer (niemeyer@uni-muenster.de),
-* @author Tobias Müller (mullerto@uni-muenster.de),
+* @author Tobias Mï¿½ller (mullerto@uni-muenster.de),
 * @author Maurits Hinzen (mhinzen@uni-muenster.de),
 * @author Christoph Rosenkranz (rosenkra@uni-muenster.de),
 * @package TYPO3
@@ -89,7 +89,7 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_transfer_ms_approver.php']) {
 	include_once ($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/civserv/res/class.tx_civserv_transfer_ms_approver.php']);
-	//nützt nix, die aufrufe aus dem TCA kommen nicht gescheit in der Typo3-Core an!
+	//nï¿½tzt nix, die aufrufe aus dem TCA kommen nicht gescheit in der Typo3-Core an!
 }
 
 if (TYPO3_MODE=='BE')	{
@@ -790,6 +790,5 @@ t3lib_extMgm::addLLrefForTCAdescr('tx_civserv_service','EXT:civserv/CSH/locallan
 */
 
 
-#debug($GLOBALS);
 
 ?>

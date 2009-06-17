@@ -121,7 +121,6 @@ class tx_civserv_pi3 extends tslib_pibase {
 	 * @return	$content		Content that is to be displayed within the plugin
 	 */
 	function main($content,$conf)	{
-#		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging - only on test-sites!
 		if (TYPO3_DLOG)  t3lib_div::devLog('function main of FE class pi3 entered', 'civserv extended ma list');
 
 		
@@ -342,13 +341,11 @@ class tx_civserv_pi3 extends tslib_pibase {
 			$_SESSION['stored_filter_key'] = 'char';
 			$_SESSION['stored_filter_val'] = $this->piVars['char'];
 			$mode_text = $this->pi_getLL('tx_civserv_pi3_employee_list.by_name',' by names');
-			debug($query, 'makeEmployeeListQueryAZ');
 		}elseif($this->piVars['mode'] == 'employee_list_orcode'){
 			$query = $this->makeEmployeeListQueryOrCode($this->piVars['orcode']);
 			$_SESSION['stored_filter_key'] = 'orcode';
 			$_SESSION['stored_filter_val'] = $this->piVars['orcode'];
 			$mode_text = $this->pi_getLL('tx_civserv_pi3_employee_list.by_organisation',' by department');
-			debug($query, 'makeEmployeeListQueryOrCode');
 		}
 
 
@@ -414,7 +411,6 @@ class tx_civserv_pi3 extends tslib_pibase {
 
 
 			if($this->piVars['orcode'] == 'hod' && $this->piVars['mode'] == 'employee_list_orcode'){ //display all the head-of-departments
-				debug($row, 'row!');
 				$employees[$row_counter]['or_code'] = $row['or_code']; //delivered by makeemployeelistQuery....
 				$employees[$row_counter]['or_uid'] = $row['or_uid'];
 				$employees[$row_counter]['or_name'] = $row['organisation'];
@@ -2587,8 +2583,6 @@ class tx_civserv_pi3 extends tslib_pibase {
 				
 				
 				// don't know why I need this, found out by trial and error
-				#debug($total_bodycount, '$total_bodycount');
-				debug($this->piVars['char'], 'wo isset?');
 				if($total_bodycount > 0 && !$this->piVars['char']){
 					$to_number -= $total_bodycount;
 				}

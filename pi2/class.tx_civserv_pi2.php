@@ -128,7 +128,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @return	$content		Content that is to be displayed within the plugin
 	 */
 	function main($content,$conf)	{
-#		$GLOBALS['TYPO3_DB']->debugOutput=true;	 // Debugging - only on test-sites!
 		if (TYPO3_DLOG)  t3lib_div::devLog('function main of FE class pi2 entered', 'civserv extended ma list');
 
 		
@@ -799,9 +798,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$smartyEmployeeList->assign('subheading', $this->pi_getLL('tx_civserv_pi2_employee_list.available_employees','Here you find the following employees'));
 		$smartyEmployeeList->assign('pagebar', $this->pi_list_browseresults(true, '', ' '.$this->conf['abcSpacer'].' '));
 
-#		debug($organisations, 'the lot');
-
-		
 		// pass the organisation-data to the template
 		$smartyEmployeeList->assign('organisations', $organisations);
 
@@ -991,7 +987,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . $start . ',' . $max;
 				}
 			}
-#			debug($query, 'query aus makeEmployeeListQueryOrUid ');
 			return $query;
 		}
 		
@@ -2229,7 +2224,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$employees['em_imagecode'] = $imageCode;
 		}
 		// use this to see which variables are available in the smarty-template
-#		debug($employees);
 	}
 	
 
@@ -2253,7 +2247,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$organisations['or_fax'] = $row['or_fax'];
 		$organisations['or_telephone'] = $row['or_telephone'];
 		// use this to see which variables are available in the smarty-template
-#		debug($organisations);
 	}
  
  
@@ -2278,7 +2271,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$positions['po_descr'] = $row['po_descr'];
 		}
 		// use this to see which variables are available in the smarty-template
-#		debug($positions);
 	}
  
  
@@ -2297,7 +2289,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 			$positions['po_label'] = $row['ep_label'];	
 		}
 		// use this to see which variables are available in the smarty-template
-#		debug($positions);
 	}
  
  
@@ -3010,15 +3001,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$pR2 = $pointer*$results_at_a_time+$results_at_a_time;
 		
 		$max = t3lib_div::intInRange(ceil($count/$results_at_a_time),1,$maxPages);
-		
-		
-#		debug($pointer, 'pointer');
-#		debug($count, 'count');
-#		debug($results_at_a_time, 'results_at_a_time');
-#		debug($maxPages, 'maxPages');
-#		debug($pR1, 'pR1');
-#		debug($pR2, 'pR2');
-		
 		
 		$links=array();
 

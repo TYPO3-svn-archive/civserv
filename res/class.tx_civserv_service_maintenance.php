@@ -56,7 +56,6 @@ class tx_civserv_service_maintenance{
 	*/
 	function transfer_services($params){
 		global $LANG;
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$LANG->includeLLFile("EXT:civserv/res/locallang_region_workflow.php");
 		$actual_site = str_replace(t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST'), '', t3lib_div::getIndpEnv('TYPO3_SITE_URL'));
 		$actual_site = str_replace('/', '\'', $actual_site);
@@ -141,7 +140,6 @@ class tx_civserv_service_maintenance{
 			
 			$new_ones = array();
 			$new_ones = array_diff($new_services, $old_services);
-#			debug(count($new_ones), 'new_ones');
 			
 			foreach($new_ones as $value){
 				$new_one = array();

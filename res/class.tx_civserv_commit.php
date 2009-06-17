@@ -510,7 +510,6 @@ class tx_civserv_commit {
 		if ($GLOBALS['BE_USER']->workspace==0){ //only do this in the live workspace!!!
 			// get all MM tables, which could be concerned by the typo3 MM-entrie problem
 			$mmTables = explode(',',$this->tables[$table]);
-#			$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
 			// for all concerned MM-tables save the concerned entries at the end of the MM-tables and backup the origin uid in the field uid_temp
 			foreach($mmTables as $mmTable){
 				//only get the entries, which are selected in the actual backendmask for the contenttype "service". So deleted ones are not listed here

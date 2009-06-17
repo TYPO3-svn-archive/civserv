@@ -31,7 +31,7 @@
 *
 *
 * @author Georg Niemeyer (niemeyer@uni-muenster.de),
-* @author Tobias Müller (mullerto@uni-muenster.de),
+* @author Tobias Mï¿½ller (mullerto@uni-muenster.de),
 * @author Maurits Hinzen (mhinzen@uni-muenster.de),
 * @author Christoph Rosenkranz (rosenkra@uni-muenster.de),
 * @package TYPO3
@@ -107,7 +107,6 @@ if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
 		$current_id=t3lib_div::_GET('id');
 		if ($current_id == null){
 			$url=parse_url(t3lib_div::_GET('returnUrl'));
-#			debug($url, "TCA returnUrl");
 			parse_str($url['query'], $url_query);
 		    $current_id = $url_query['id'];
 		}
@@ -121,7 +120,6 @@ if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
 		if ($current_id > 0){
 			$mandant_obj=t3lib_div::makeInstance('tx_civserv_mandant');
 			$mandant_conf = $mandant_obj->get_mandant_conf_all($current_id);
-#			debug($mandant_conf, 'mandanten_konfiguration');
 			#$mandantID = $mandant_obj->get_mandant($current_id);
 			$mandantID = $mandant_conf['cm_community_id'];
 			if ($mandantID) {
@@ -139,29 +137,9 @@ if (!defined ("TYPO3_MODE")) 	die ("Access denied.");
 				$cm_organisation = $mandant_conf['cm_organisation_uid'];
 			}
 		} else $upload_folder = "fileadmin/civserv";
-		
-/*		
-		if($mandantID > ''){
-			$res2 = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				'*',			 							// SELECT ...
-				'tx_civserv_conf_mandant',						// FROM ...
-				'cm_community_id ='.$GLOBALS['TYPO3_DB']->quoteStr($mandantID,'tx_civserv_conf_mandant'), // WHERE
-				'', 											// GROUP BY...
-				'',   											// ORDER BY...
-				'' 												// LIMIT to 10 rows, starting with number 5 (MySQL compat.)
-				);
-			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res2)){
-				$cm_circumstance = $row['cm_circumstance_uid'];
-				$cm_usergroup = $row['cm_usergroup_uid'];
-				$cm_organisation = $row['cm_organisation_uid'];
-			}
-		}
-*/		
 	}
 
-#	debug($cm_circumstance, 'cm_circumstance');
-#	debug($cm_usergroup, 'cm_usergroup');
-#	debug($cm_organisation, 'cm_organisation');
+
 
 /**
  * The definition of the backend-mask and logic for the table tx_civserv_service (contenttype service)
@@ -807,8 +785,6 @@ $TCA["tx_civserv_service"] = Array (
 
 #	debug($TCA['tx_civserv_service']['columns'], 'tx_civserv_service columns');
 #	debug($TCA["tx_civserv_service"], 'tx_civserv_service');
-
-
 #	debug($GLOBALS['BE_USER']->user['workspace_id'], 'TCA be_user workspace_id');
 
 /*
@@ -1059,7 +1035,7 @@ $TCA["tx_civserv_model_service"] = Array (
 				"type" => "user",
 #				"userfunc" => "tx_civserv_transfer_ms_approver->user_transfer_approver_pages2modelservice"	//functionsname kommt gar nicht erst bei t3lib_div->callUserFunction an!
 #				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test"									//die Klasse und Methode gabs vorher schon, Aufruf funktioniert
-#				"userFunc" => "tx_civserv_user_be_msg->user_transfer_approver_pages2modelservice"			//funktionsname kommt an, aber kann die dazugehörige funktion nicht finden!
+#				"userFunc" => "tx_civserv_user_be_msg->user_transfer_approver_pages2modelservice"			//funktionsname kommt an, aber kann die dazugehï¿½rige funktion nicht finden!
 				"userFunc" => "tx_civserv_user_be_msg->user_TCAform_test2",
 				"eval" => "required"
 			)

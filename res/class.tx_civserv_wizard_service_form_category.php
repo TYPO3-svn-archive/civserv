@@ -32,7 +32,7 @@
 *
 * $Id: class.tx_civserv_wizard_service_form_category.php,v 1.5 2006/02/27 15:14:06 bkohorst Exp $
 *
-* @@author Tobias Müller (mullerto@@uni-muenster.de),
+* @@author Tobias Mï¿½ller (mullerto@@uni-muenster.de),
 * @@author Maurits Hinzen (mhinzen@@uni-muenster.de),
 * @@package TYPO3
 * @@subpackage tx_civserv
@@ -102,7 +102,6 @@ function init() {
 
 			// Gets parameters out of the p-array.
 		$this->P = t3lib_div::_GP('P');
-#		debug($this->P, 'tx_civserv_wizard_service_form_category->init: P');
 
 			// Find "mode"
 		$this->mode='db';
@@ -158,7 +157,6 @@ function init() {
 		}
 
 		$formFieldName = 'data['.$this->pArr[0].']['.$this->pArr[1].']['.$this->pArr[2].']';
-#		debug($formFieldName, 'wizard_form_cat->init: $formFieldName');
 
 		    //get charset
         $charset = $GLOBALS['LANG']->charSet ? $GLOBALS['LANG']->charSet : 'iso-8859-1';
@@ -412,7 +410,6 @@ function init() {
 	 */
 	function getFormCategories()	{
 		global $LANG;
-#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 
 			// Gets all categories which aren't hidden or deleted out of the database.
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
@@ -426,7 +423,6 @@ function init() {
 			
 		$menuItems=array();
 		$menuItems[0] = '<option label="[ '.$LANG->getLL('tx_civserv_wizard_service_form_category.form_category_dummy').' ]" value="0">[ '.$LANG->getLL('tx_civserv_wizard_service_form_category.form_category_dummy').' ]</option>';
-		#$menuItems[0] = '<option label="[höm höm höm ]" value="0">[har har har]</option>';
 			// Removes all organisations from other mandants so that only
 			// the organisations of the actual mandant are displayed in the
 			// selectorbox.
@@ -446,12 +442,9 @@ function init() {
 		}
 
 		$PItemName = "&PItemName=".$this->pArr[0];
-#		debug($PItemName, '->getFormCategory: $PItemName');
-
 			// Displays the first selectorbox with the categories.
 			
 		if(count($menuItems)>1){	// 1 for the dummy
-#			debug($menuItems, 'tx_civserv_wizard_service_form_category.php->getFormCategories: return wert $menuItems');
 			return '<select name="selectedCategories" onchange="changeCategory()">'.implode('',$menuItems).'</select>';
 		}else{
 			// Baustelle!
@@ -468,15 +461,12 @@ function init() {
 	 */
 	function getForms()	{
 		global $LANG;
-#		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$mode = (string)t3lib_div::_GP('mode');
 		$this->searchitem = $this->make_clean($this->searchitem);
 
 			// Gets all forms with the selected category_uid out of the database.
 			// Checks also if forms and categories aren't hidden or deleted.
-#		debug($this->category_uid, 'tx_civserv_wizard_service_form_category.php->getForms: $this->category_uid');
-
 		$this->res = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 				'tx_civserv_form.uid,
 				 tx_civserv_form.pid,
@@ -574,7 +564,7 @@ function init() {
 	  */
 	 	
 	function make_clean($value) {
-		$legal_chars = "%[^0-9a-zA-ZäöüÄÖÜß ]%"; //allow letters, numbers & space
+		$legal_chars = "%[^0-9a-zA-Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ]%"; //allow letters, numbers & space
 		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
 		return $new_value;
 	}	
