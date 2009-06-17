@@ -55,8 +55,6 @@ class tx_civserv_weekday_maintenance {
 		global $LANG;
 		$LANG->includeLLFile(t3lib_extMgm::extPath('civserv')."locallang_db.php");
 		
-		//debug($LANG);
-		
 		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		if ($params['table']=='tx_civserv_officehours'  && substr($params['uid'],0,3)!='NEW')	{
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('oh_weekday','tx_civserv_officehours','uid = '.$params['uid'],'','','');

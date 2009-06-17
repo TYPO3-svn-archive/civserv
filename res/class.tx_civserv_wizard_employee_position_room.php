@@ -32,7 +32,7 @@
 *
 * $Id$
 *
-* @@author Tobias Müller (mullerto@@uni-muenster.de),
+* @@author Tobias Mï¿½ller (mullerto@@uni-muenster.de),
 * @@author Maurits Hinzen (mhinzen@@uni-muenster.de),
 * @@package TYPO3
 * @@subpackage tx_civserv
@@ -129,7 +129,7 @@ function init() {
 		$this->building_uid = (string)t3lib_div::_GP('building_uid');
 		$this->letter = (string)t3lib_div::_GP('letter');
 		
-		//wird ein paar zeilen später initialisiert
+		//wird ein paar zeilen spï¿½ter initialisiert
 		#$this->building_pid = (string)t3lib_div::_GP('building_pid');
 
 			// In case the parent id of service is still not set, try to
@@ -534,7 +534,6 @@ function init() {
 	 */
 	function getBuilding(){
 		global $LANG;
-		#$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$this->searchitem = $this->make_clean($this->searchitem);
 		
@@ -609,7 +608,6 @@ function init() {
 	 */
 	function getFloors()	{
 		global $LANG;
-		#$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$mode = (string)t3lib_div::_GP('mode');
 		$this->searchitem = $this->make_clean($this->searchitem);
@@ -695,7 +693,6 @@ function init() {
 	 */
 	function getRoom()	{
 		global $LANG;
-		#$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$mode = (string)t3lib_div::_GP('mode');
 		$this->searchitem = $this->make_clean($this->searchitem);
@@ -837,7 +834,7 @@ function init() {
 	  */
 	 	
 	function make_clean($value) {
-		$legal_chars = "%[^0-9a-zA-ZäöüÄÖÜß ]%"; //allow letters, numbers & space
+		$legal_chars = "%[^0-9a-zA-Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ]%"; //allow letters, numbers & space
 		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
 		return $new_value;
 	}	

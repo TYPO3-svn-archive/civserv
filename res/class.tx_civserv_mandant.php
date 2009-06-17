@@ -69,7 +69,6 @@ class tx_civserv_mandant{
 	*/
 	function get_path($node,$valid_uids) { 
 		// look up the parent of this node 
-		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
 		
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'pid, uid',

@@ -32,7 +32,7 @@
 *
 * $Id$
 *
-* @@author Tobias Müller (mullerto@@uni-muenster.de),
+* @@author Tobias Mï¿½ller (mullerto@@uni-muenster.de),
 * @@author Maurits Hinzen (mhinzen@@uni-muenster.de),
 * @@package TYPO3
 * @@subpackage tx_civserv
@@ -393,7 +393,6 @@ function init() {
 	 * @@return	void
 	 */
 	function get_folders($startnode) {
-		$GLOBALS['TYPO3_DB']->debugOutput=TRUE;
 		$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'pid,
 			uid',
@@ -417,7 +416,7 @@ function init() {
 	  */
 	 	
 	function make_clean($value) {
-		$legal_chars = "%[^0-9a-zA-ZäöüÄÖÜß ]%"; //allow letters, numbers & space
+		$legal_chars = "%[^0-9a-zA-Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ]%"; //allow letters, numbers & space
 		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
 		return $new_value;
 	}	

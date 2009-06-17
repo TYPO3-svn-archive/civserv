@@ -56,9 +56,7 @@ class tx_civserv_service_maintenance{
 	*/
 	function transfer_services($params){
 		global $LANG;
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$LANG->includeLLFile("EXT:civserv/res/locallang_region_workflow.php");
-		#debug($params, 'service-maintenance->transfer services, $params');
 		if ($params['table']=='tx_civserv_service' && substr($params['uid'],0,3)!='NEW')	{
 			// the query below collects the uids of the external-Service-Folders of all the communities 
 			// that have been selected in the region-field of the service
@@ -113,8 +111,6 @@ class tx_civserv_service_maintenance{
 			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				$old_services[]=$row['es_external_service'].$separator.$row['pid'];
 			}
-			#debug($new_services, '$new_services');
-			#debug($old_services, '$old_services');
 			// now I have two arrays which I can compare!
 			// new_ones are the ones which are in new_services but not in old_services
 			// old_ones are the ones which are in old_services but not in new_services
@@ -127,13 +123,11 @@ class tx_civserv_service_maintenance{
 			
 			$new_ones = array();
 			$new_ones = array_diff($new_services, $old_services);
-			#debug($new_ones, 'new_ones aus array_diff');
 			
 			foreach($new_ones as $value){
 				$new_one = array();
 				$insert_row =array();
 				$new = explode($separator,$value);
-				#debug($new, 'new aus explode');
 				
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'mandant.cm_community_name,
@@ -166,7 +160,6 @@ class tx_civserv_service_maintenance{
 				}
 				
 				$service_community_gkz = $mandantInst->get_mandant($new_one['es_original_pid']); //pid of the services where it originally resides
-				#debug($service_community_gkz, '$service_community_gkz');
 				$res_service_community = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'*',
 					'tx_civserv_conf_mandant',
@@ -214,7 +207,6 @@ class tx_civserv_service_maintenance{
 				$subject = str_replace("###service_name###", $new_one['es_name'], $LANG->getLL("xyz.emailmessage.subject"));
 				$subject .= " (".$new_one['receiving_mandant_name'].")";		
 				if (t3lib_div::validEmail($to=$new_one['receiving_mandant_email'])){
-					#debug($text);
 					t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
 				}
 			}
@@ -223,12 +215,10 @@ class tx_civserv_service_maintenance{
 			// old_services which are not in new_services
 			$old_ones = array();
 			$old_ones = array_diff($old_services, $new_services);
-			#debug($old_ones, 'old_ones aus array_diff');
 
 			foreach($old_ones as $value){
 				$old_one=array();
 				$old = explode($separator,$value);
-				#debug($old, 'old aus explode');
 				
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'service.es_name,
@@ -272,7 +262,6 @@ class tx_civserv_service_maintenance{
 				$subject = str_replace("###service_name###", $old_one['es_name'], $LANG->getLL("xyz.emailmessage.subject"));
 				$subject .= " (".$old_one['receiving_mandant_name'].")";		
 				if (t3lib_div::validEmail($to=$old_one['receiving_mandant_email'])){
-					#debug($text);
 					t3lib_div::plainMailEncoded($to,$subject,$text,$from);	
 				}
 			}

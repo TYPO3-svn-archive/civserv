@@ -37,7 +37,7 @@
 * @subpackage tx_civserv
 * @version 1.0
 *
-* Changes: Datum, Initialen - vorgenommene Änderungen
+* Changes: Datum, Initialen - vorgenommene ï¿½nderungen
 */
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
@@ -55,7 +55,6 @@
 class tx_civserv_accesslog {
 
 	function update_log($service_uid, $log_interval, $ip){
-		//$GLOBALS['TYPO3_DB']->debugOutput=TRUE; // Debugging - only on test-sites!
 		//$today = getdate();
 		$lock_interval = 10;
 		$lock_interval = $lock_interval * 60;

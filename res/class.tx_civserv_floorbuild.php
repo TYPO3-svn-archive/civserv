@@ -38,7 +38,7 @@
 * @version 1.0
 *
 * Changes:	06.08.04, CR - Anpassung an Konventionen
-* 			13.08.04, GN - PID wird jetzt ganz sauber und _verständlich_ extrahiert ;-)
+* 			13.08.04, GN - PID wird jetzt ganz sauber und _verstï¿½ndlich_ extrahiert ;-)
 */
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
@@ -94,7 +94,6 @@ class tx_civserv_floorbuild {
 
 		//write the building-floor-combinations back in the params-Array (which is shown in the selectorbox)
 		while ($data = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			//debug($data);
 			$params['items'][++ $i] = Array ($data['bl_name'].', '.$data['fl_descr'], $data['uid']);
 		}
 	}

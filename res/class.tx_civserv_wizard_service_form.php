@@ -32,7 +32,7 @@
 *
 * $Id$
 *
-* @@author Tobias Müller (mullerto@@uni-muenster.de),
+* @@author Tobias Mï¿½ller (mullerto@@uni-muenster.de),
 * @@author Maurits Hinzen (mhinzen@@uni-muenster.de),
 * @@package TYPO3
 * @@subpackage tx_civserv
@@ -399,7 +399,6 @@ function init() {
 	 */
 	function getFormulars($letter)	{
 		global $LANG;
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$this->searchitem = (string)t3lib_div::_GP('searchitem');
 		$this->searchitem = $this->make_clean($this->searchitem);
 	
@@ -494,7 +493,7 @@ function init() {
 	  */
 	 	
 	function make_clean($value) {
-		$legal_chars = "%[^0-9a-zA-ZäöüÄÖÜß ]%"; //allow letters, numbers & space
+		$legal_chars = "%[^0-9a-zA-Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ]%"; //allow letters, numbers & space
 		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
 		return $new_value;
 	}	

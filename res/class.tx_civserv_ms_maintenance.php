@@ -34,12 +34,12 @@
 *
 * @author Georg Niemeyer (niemeyer@uni-muenster.de)
 * @author Maurits Hinzen (mhinzen@uni-muenster.de)
-* @author Tobias Müller (mullerto@uni-muenster.de)
+* @author Tobias Mï¿½ller (mullerto@uni-muenster.de)
 * @package TYPO3
 * @subpackage tx_civserv
 * @version 1.0
 *
-* Changes: Datum, Initialen - vorgenommene Änderungen
+* Changes: Datum, Initialen - vorgenommene ï¿½nderungen
 */
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
@@ -68,7 +68,6 @@ class tx_civserv_ms_maintenance {
 	 * @return	void
 	 */
 	function check_changes($params) {
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		if ($params['table']=='tx_civserv_model_service_temp')	{
 
 				// Gets all data from the currently saved record...
@@ -102,7 +101,6 @@ class tx_civserv_ms_maintenance {
 	 */
 	function check_ms_name_changed($params) {
 		
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		if ($params['table']=='tx_civserv_model_service'  && substr($params['uid'],0,3)!='NEW')	{ //the calling function updateDB also takes care that the uid is not a string!
 
 			// Gets all data from the currently saved record...
@@ -130,7 +128,6 @@ class tx_civserv_ms_maintenance {
 
 			//...has the internal name of the model service been changed?
 			if ($model_service_names['ms_name']!=$model_service_names['ms_stored_name'])	{
-				#debug($model_service_names, 'name geändert?');
 				//update the name-fields in tx_model_service and tx_model_service_temp
 
 				//update tx_civserv_model_services
@@ -154,8 +151,6 @@ class tx_civserv_ms_maintenance {
 		}	// ...and stores it in $model_service_names.
 		$model_service_temp_names = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->res_temp);
 		if ($model_service_temp_names['ms_name']!=$model_service_names['ms_name'])	{
-			#debug($model_service_temp_names, 'temp_name');
-			#debug($model_service_names, 'orig_name');
 			$new_name=array('ms_name'=>$model_service_names['ms_name']);
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_civserv_model_service_temp', 'uid = '.$model_service_names['uid'], $new_name);
 		}
@@ -206,7 +201,6 @@ class tx_civserv_ms_maintenance {
 	 * @return	void
 	 */
 	function write_checksum_and_flags($model_service_temp, $new_hash)	{
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		global $LANG;
 		$LANG->includeLLFile(t3lib_extMgm::extPath('civserv')."modmsworkflow/locallang.php");
 		// put these under if-control to suppress mysql-error-messages in backend when temp-model-services are deleted
@@ -257,7 +251,6 @@ class tx_civserv_ms_maintenance {
 	 * @return	void
 	 */
 	function transfer_ms($params){
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		global $LANG;
 		$LANG->includeLLFile(t3lib_extMgm::extPath('civserv')."modmsworkflow/locallang.php");
 		//get all data from the original table, including datasets which carry the deleted flag, because we want to eleminate them from the copies also!
@@ -277,7 +270,7 @@ class tx_civserv_ms_maintenance {
     			$meta = mysql_fetch_field($res, $i);
     			if($meta->name=="old_uid"){
 					$old_uid_flag=true;
-					break;//one instance reicht, dann gibt es das feld in alle datensätzen
+					break;//one instance reicht, dann gibt es das feld in alle datensï¿½tzen
 				}
 				$i++;
     		}
@@ -364,7 +357,6 @@ class tx_civserv_ms_maintenance {
 	 * @return	void
 	 */
 	function show_mandants(&$params, &$pObj) {
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'cm_community_id, cm_community_name',				// Field list for SELECT
 			'tx_civserv_conf_mandant ',							// Tablename, local table

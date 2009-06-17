@@ -2,7 +2,6 @@
 class tx_civserv_user_be_msg {
 	function user_TCAform_test($PA=array(), $fobj=array()) { //add array() bits to signature to enable calls to this function with no parameters (happens through "displayCond" => "REC:NEW:true")
 		global $LANG;
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 		$LANG->includeLLFile("EXT:civserv/res/locallang_user_be_msg.php");
 		
 		$table=$PA['table'];
@@ -70,7 +69,7 @@ class tx_civserv_user_be_msg {
 			$msg.='<p>'.$LANG->getLL("tx_civserv_user_be_msg.".$table.".".$field).'</p>';
 			$msg=str_replace('###sv_name###', $sv_name, $msg);
 			$msg=str_replace('###icon###', $backurl_closeicon, $msg);
-			$returnURL=$PA['table']=='tx_civserv_service_sv_position_mm' ? '<a href="'.$backurl.'">hier geht\'s zurück</a>' : '';
+			$returnURL=$PA['table']=='tx_civserv_service_sv_position_mm' ? '<a href="'.$backurl.'">hier geht\'s zurï¿½ck</a>' : '';
 			$div_close='</div>';
 			return $div_open.$msg.$returnURL.$div_close;
 	}
@@ -83,23 +82,23 @@ class tx_civserv_user_be_msg {
 /*
 
    1: class user_class {
-   2:     function user_TCAform_test($PA, $fobj)    {
-   3:         return '
-   4:             <div style="
-   5:                     border: 2px dashed #666666;
-   6:                     width : 90%;
-   7:                     margin: 5px 5px 5px 5px;
-   8:                     padding: 5px 5px 5px 5px;"
-   9:                     >
-  10:                 <h2>My Own Form Field:</h2>
-  11:                 <input
-  12:                     name="'.$PA['itemFormElName'].'"
-  13:                     value="'.htmlspecialchars($PA['itemFormElValue']).'"
-  14:                     onchange="'.htmlspecialchars(implode('',$PA['fieldChangeFunc'])).'"
-  15:                     '.$PA['onFocus'].'
-  16:                     />
-  17:             </div>';
-  18:     }
+   2: ï¿½ï¿½ï¿½ï¿½function user_TCAform_test($PA, $fobj)ï¿½ï¿½ï¿½ï¿½{
+   3: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½return '
+   4: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<div style="
+   5: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½border: 2px dashed #666666;
+   6: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½width : 90%;
+   7: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½margin: 5px 5px 5px 5px;
+   8: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½padding: 5px 5px 5px 5px;"
+   9: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½>
+  10: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<h2>My Own Form Field:</h2>
+  11: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<input
+  12: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½name="'.$PA['itemFormElName'].'"
+  13: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½value="'.htmlspecialchars($PA['itemFormElValue']).'"
+  14: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½onchange="'.htmlspecialchars(implode('',$PA['fieldChangeFunc'])).'"
+  15: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½'.$PA['onFocus'].'
+  16: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/>
+  17: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</div>';
+  18: ï¿½ï¿½ï¿½ï¿½}
   19: }
 
 */
