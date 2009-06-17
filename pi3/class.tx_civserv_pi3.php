@@ -779,7 +779,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 
 				if ($limit) {
 					if (intval($this->piVars['pointer']) > 0) {
-						$start = $this->conf['employee_per_page'] * $this->piVars['pointer'];
+						$start = $this->conf['employee_per_page'] * intval($this->piVars['pointer']);
 					} else {
 						$start = 0;
 					}
@@ -871,7 +871,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 							tx_civserv_employee_em_position_mm,
 							tx_civserv_organisation,
 							tx_civserv_position_po_organisation_mm';
-							
+				//todo: check the query around or_code			
 				$conditions =   'tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') 
 								AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local 
 								AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid 
@@ -879,10 +879,10 @@ class tx_civserv_pi3 extends tslib_pibase {
 								AND	tx_civserv_position_po_organisation_mm.uid_foreign = tx_civserv_organisation.uid 
 								AND '.
 								($orcode > '' && $orcode != 'all' ? 
-+									'tx_civserv_organisation.or_code in (\''. 
-+										$GLOBALS['TYPO3_DB']->quoteStr($orcode, 'tx_civserv_organisation') .'\', \''. 
-+										$GLOBALS['TYPO3_DB']->quoteStr(str_replace('_', ' ', $orcode), ' tx_civserv_organisation'). '\''.
-+									 ') AND ' : '').
+									'tx_civserv_organisation.or_code in (\''. 
+										$GLOBALS['TYPO3_DB']->quoteStr($orcode, 'tx_civserv_organisation') .'\', \''. 
+										$GLOBALS['TYPO3_DB']->quoteStr(str_replace('_', ' ', $orcode), ' tx_civserv_organisation'). '\''.
+									 ') AND ' : '').
 							   'tx_civserv_organisation.deleted = 0 
 							    AND tx_civserv_organisation.hidden = 0 
 								AND	tx_civserv_position.deleted = 0 
@@ -908,8 +908,8 @@ class tx_civserv_pi3 extends tslib_pibase {
 
 
 				if ($limit) {
-					if ($this->piVars['pointer'] > '') {
-						$start = $this->conf['employee_per_page'] * $this->piVars['pointer'];
+					if (intval($this->piVars['pointer'] > 0)) {
+						$start = $this->conf['employee_per_page'] * intval($this->piVars['pointer']);
 					} else {
 						$start = 0;
 					}
@@ -1594,7 +1594,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 		$res_super_org = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 						'uid, or_name',
 						'tx_civserv_organisation, tx_civserv_organisation_or_structure_mm',
-						'tx_civserv_organisation_or_structure_mm.uid_local = '.$organisation_rows['uid'].' 
+						'tx_civserv_organisation_or_structure_mm.uid_local = '. intval($organisation_rows['uid']) .' 
 						 AND tx_civserv_organisation_or_structure_mm.uid_foreign = tx_civserv_organisation.uid 
 						 AND tx_civserv_organisation.uid!='. intval($this->community['organisation_uid']).' 
 						 AND tx_civserv_organisation.deleted=0 

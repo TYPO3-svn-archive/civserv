@@ -3375,7 +3375,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 						'tx_civserv_organisation, 
 						 tx_civserv_organisation_or_structure_mm',
 						'tx_civserv_organisation_or_structure_mm.uid_local = tx_civserv_organisation.uid
-						 AND tx_civserv_organisation_or_structure_mm.uid_foreign = '.$organisation_rows['uid'].
+						 AND tx_civserv_organisation_or_structure_mm.uid_foreign = '. intval($organisation_rows['uid']).
 						 $this->cObj->enableFields('tx_civserv_organisation'),
 						'',
 						'tx_civserv_organisation.sorting', //Order by

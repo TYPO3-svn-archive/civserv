@@ -48,7 +48,7 @@
  *
  */
 
-
+// out-commented the following three lines as they seem to cause trouble with typo3_src >= 4.2.6
 #define('PATH_thisScript',str_replace('//','/', str_replace('\\','/', php_sapi_name()=='cgi'||php_sapi_name()=='isapi' ? $HTTP_SERVER_VARS['PATH_TRANSLATED']:$HTTP_SERVER_VARS['SCRIPT_FILENAME'])));
 #define("PATH_typo3", dirname(dirname(dirname(dirname(dirname(PATH_thisScript)))))."/typo3/");
 #define("PATH_site", dirname(PATH_typo3)."/");
