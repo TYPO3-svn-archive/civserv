@@ -163,12 +163,28 @@ class tx_civserv_pi1 extends tslib_pibase {
 			#$this->conf['_DEFAULT_PI_VARS.']['mode']='service_list';
 		}
 		
-		// create and instanciate smarty object
+		/*
+		// create and instanciate smarty object -> smarty version <= 1.0.2
 		$tx_smarty = t3lib_div::makeInstanceClassName('tx_smarty');
 		$smartyObject = new $tx_smarty($this->extKey);
-		$smartyObject->template_dir = PATH_site;
-		$smartyObject->compile_dir =t3lib_extMgm::siteRelPath($this->extKey).'templates_c/'; 
+		*/
 		
+		// Create a new instance of Smarty -> smarty version >= 1.7.0
+		$smartyObject = tx_smarty::smarty();
+		
+		// Set Smarty-variables
+		$smartyObject->template_dir = PATH_site;
+		$smartyObject->compile_dir = t3lib_extMgm::siteRelPath($this->extKey).'templates_c/'; 
+
+		// Pass a variable to Smarty
+		$text = 'Smarty is a template language and a very useful tool for designers and programmers.';
+		$smartyObject->assign('info', $text);
+		
+		// Pass an array to Smarty
+		$myArray = array('Apple','Banana','Mango','Strawberry');
+		$smartyObject->assign('fruit', $myArray);
+
+
 		//set path variables for includes within templates
 		$smartyObject->assign('right_searchbox_template', $this->conf['tpl_right_searchbox']);
 		$smartyObject->assign('right_top_template', $this->conf['tpl_right_top']);
@@ -192,7 +208,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'*',
 				'tx_civserv_conf_mandant',
-				'cm_community_id = ' . intva($community_id),
+				'cm_community_id = ' . intval($community_id),
 				'',
 				'',
 				'');
