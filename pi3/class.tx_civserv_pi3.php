@@ -151,9 +151,16 @@ class tx_civserv_pi3 extends tslib_pibase {
 		session_start();
 		#session_destroy();
 		
-		// create and instanciate smarty object
+		/*
+		// create and instanciate smarty object -> smarty version <= 1.0.2
 		$tx_smarty = t3lib_div::makeInstanceClassName('tx_smarty');
 		$smartyObject = new $tx_smarty($this->extKey);
+		*/
+		
+		// Create a new instance of Smarty -> smarty version >= 1.7.0
+		$smartyObject = tx_smarty::smarty();
+		
+		// Set Smarty-variables
 		$smartyObject->template_dir = PATH_site;
 		$smartyObject->compile_dir =t3lib_extMgm::siteRelPath($this->extKey).'templates_c/'; 
 		
