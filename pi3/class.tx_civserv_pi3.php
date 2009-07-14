@@ -958,7 +958,17 @@ class tx_civserv_pi3 extends tslib_pibase {
 			} else {
 				$namefield_arr = $row['name'];
 			}
-			$initial = str_replace(array('Ä','Ö','Ü'),array('A','O','U'),strtoupper($namefield_arr{0}));
+			
+			//php seems to have probs with the utf-8 - strings delivered by db
+			#$initial = str_replace(array('Ä','Ö','Ü'),array('A','O','U'),strtoupper($namefield_arr{0}));
+			
+			
+			//workaround for the utf-8-probs of strtoupper and substr....: 
+			//replace umlaut before applying any other string_functions
+			$initial = str_ireplace(array('Ä','Ö','Ü'), array('A','O','U'), $namefield_str);
+			#debug($initial, 'initial');
+			$initial = strtoupper($initial{0});
+			
 			$occuringInitials[] = $initial;
 			$row_counter++;
 		}
@@ -1040,12 +1050,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
 			if($row['or_code'] > ''){
 				$namefield_arr = $row['or_code'];
-				
-	#			$orcode = str_replace(array('Ä','Ö','Ü'), array('A','O','U'), strtoupper($namefield_arr{0}));
-	#			$occuringCodes[] = $orcode;
-	
-	
-	#			$occuringCodes[] = ucfirst($namefield_arr);
+				// there should be no umlauts in Organisation short names (or_code)
 				$occuringCodes[] = (string)str_replace(' ', '_', strtoupper($namefield_arr));
 	
 				$row_counter++;
@@ -1164,7 +1169,6 @@ class tx_civserv_pi3 extends tslib_pibase {
 			default :
 				$regexp = '^' . $char;
 		}
-		
 		return $regexp;
 	}
 

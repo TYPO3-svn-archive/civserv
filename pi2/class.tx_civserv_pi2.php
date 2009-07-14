@@ -1157,11 +1157,19 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 			if($this->previewMode && ($this->piVars['mode'] == 'service_list' || $this->piVars['mode'] == 'service')) {
-				$namefield_arr = $row['sv_name'] ; //in previewMode we skip the synonyms of services! because the overlay-function can't handle aliases
+				$namefield_str = $row['sv_name'] ; //in previewMode we skip the synonyms of services! because the overlay-function can't handle aliases
 			} else {
-				$namefield_arr = $row['name'];
+				$namefield_str = $row['name'];
 			}
-			$initial = str_replace(array('Ä','Ö','Ü'),array('A','O','U'),strtoupper($namefield_arr{0}));
+			//php seems to have probs with the utf-8 - strings delivered by db
+			#$initial = str_replace(array('Ä','Ö','Ü'),array('A','O','U'),strtoupper($namefield_str{0}));
+			
+			//workaround for the utf-8-probs of strtoupper and substr....: 
+			//replace umlaut before applying any other string_functions
+			$initial = str_ireplace(array('Ä','Ö','Ü'), array('A','O','U'), $namefield_str);
+			#debug($initial, 'initial');
+			$initial = strtoupper($initial{0});
+
 			$occuringInitials[] = $initial;
 			$row_counter++;
 		}
@@ -3450,6 +3458,9 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 ********************************************/
 	function check_searchword($string){
 		//white list
+		$searchword_pattern = '/^[A-Za-z0-9äöüÄÖÜß\- ]*$/';
+// the following was only needed as long as the internal encoding by the IDE wasn't utf-8 yet!!!
+/*
 		if(		$TYPO3_CONF_VARS['BE']['forceCharset'] == 'utf-8' ||
 				$GLOBALS['TSFE']->metaCharset == 'utf-8' ||
 				$GLOBALS['TSFE']->renderCharset == 'utf-8' ){
@@ -3457,6 +3468,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		}else{
 			$searchword_pattern = '/^[A-Za-z0-9äöüÄÖÜß\- ]*$/';
 		}
+*/
 		if(!preg_match($searchword_pattern, $string)){
 			//collect all occurring illegal characters
 			#$arr_bad_chars=array();
@@ -3478,7 +3490,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 *******************************/
 	function replace_umlauts($string){
 		// remove all kinds of umlauts
-		$umlaute = Array("/ä/","/ö/","/ü/","/Ä/","/Ö/","/Ü/","/ß/", "/é/"); //should use hexadecimal-code for � � etc????
+		$umlaute = Array("/ä/","/ö/","/ü/","/Ä/","/Ö/","/Ü/","/ß/", "/é/"); //should use hexadecimal-code????
 		$replace = Array("ae","oe","ue","Ae","Oe","Ue","ss", "e");
 		$string = preg_replace($umlaute, $replace, $string);
 		
