@@ -24,7 +24,7 @@
 /**
  * Plugin 'Civil Services' for the 'civserv' extension.
  *
- * $Id: class.tx_civserv_pi1.php 21525 2009-06-17 09:43:44Z msbritta $
+ * $Id: class.tx_civserv_pi1.php 22283 2009-07-14 06:50:05Z msbritta $
  *
  * @author	Stephan Duemmer <sduemmer@uni-muenster.de>
  * @author	Stefan Meesters <meesters@uni-muenster.de>
@@ -1129,57 +1129,64 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	[type]		...
 	 */
 	function employee_list(&$smartyEmployeeList,$abcBar=false,$searchBox=false,$topList=false){
-		//sort out the employees who have two positions at the same organisation - and have turned on their datasec for both!!
+		
+		//sort out the employees who have two positions at the same organisation - 
+		//and have turned on their datasec!!
 		$em_org_kombis = array(); //store all combinations of an employee and his/her employing organisation unit here
 		$kills = array(); //will be used to eleminate dublicates from the above list
+		$special_cases = array(); //for all those who have several positions within the same organisation unit - and no nice names for the positions...
+		
 		//total body_count:
 		$total_bodycount=0;
 		
-		$placeholders = array('###em_uid###', '###po_uid###');
-		//have to do the orga-select here, because there might be employees with positions, that belong to no organisation and we want to keep those....
-		$orga_select_fields = 'tx_civserv_position.uid as pos_uid, 
-					 tx_civserv_organisation.uid as or_uid, 
-					 tx_civserv_employee.uid as emp_uid, 
-					 or_name as organisation';
-		$orga_select_tables = 'tx_civserv_employee, 
-					 tx_civserv_position, 
-					 tx_civserv_organisation, 
-					 tx_civserv_employee_em_position_mm, 
-					 tx_civserv_position_po_organisation_mm';
-		$orga_select_cond_placeholder_part = '';
-		$orga_select_cond_placeholder_dummy = 'tx_civserv_employee.uid = ###em_uid###
-					  AND tx_civserv_position.uid = ###po_uid### ';
-		$orga_select_cond_static_part = $this->cObj->enableFields('tx_civserv_organisation') .
-					 $this->cObj->enableFields('tx_civserv_employee') .
-					 $this->cObj->enableFields('tx_civserv_position') . 
-					' AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
-					 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
-					 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
-					 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign';
+		#$placeholders = array('###em_uid###', '###po_uid###');
 		
+		//have to do the orga-select here, because there might be employees with positions, 
+		//that belong to no organisation and we want to keep those....
+		
+		
+		//stolen here
+					 
+		//and now to something completely different		
+		//params: char, limit, count	 
 		$query_all_emps = $this->makeEmployeeListQuery(all, false, false);
 		$res_all_emps = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query_all_emps);
+		
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_all_emps) ) {
-			//ersetzen der placeholder klappt nicht richtig.....
-			$values = array($row['emp_uid'], $row['pos_uid']);
-			$orga_select_cond_placeholder_part = str_replace($placeholders, $values, $orga_select_cond_placeholder_dummy);
+			#debug($row['emp_uid'], 'es geht um den mitarbeiter mit der uid:');
 			
-			//select the organisation assigned to the employee
-			$orga_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				$orga_select_fields,
-				$orga_select_tables,
-				$orga_select_cond_placeholder_part.$orga_select_cond_static_part,
-				'',
-				 '',
-				 '');
+			
+			$orga_res = $this->makeOrgaQuery(intval($row['emp_uid']), intval($row['pos_uid']));
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($orga_res) > 0) {
+				//
+			}else{
+				//
+			}
 			while ($orga_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($orga_res) ) {
 				$test_string = $row['emp_uid'].'_'.$orga_row['or_uid'];
+				
+				//for debugging purposes:
 				$test_string2 = $row['em_firstname'].', '.$row['em_name'].'_'.$orga_row['organisation'];
-				//only elminate dublicates if there is no data_sec (an employee with several positions within the same 
-				//organisational unit might still have different opening hours for each of them
+				
+				//only elminate dublicates if there is no data_sec (an employee with several 
+				//positions within the same organisational unit might still have different opening 
+				//hours for each of them - but let's assume in that case a 'nice name' has been given to 
+				//the individual positions
 				if($row['em_datasec'] == 0 && in_array($test_string, $em_org_kombis)){
 					$total_bodycount++;
 					$kills[$total_bodycount]= $row['emp_uid'].'_'.$orga_row['or_uid'];
+				#}elseif(($orga_row['pos_nice_name'] <= '' || $orga_row['ep_datasec'] == 0) && in_array($test_string, $em_org_kombis)){
+				}elseif($orga_row['pos_nice_name'] <= ''  && in_array($test_string, $em_org_kombis)){	
+					//special case!!!
+					//we assume that the mandant does not want the different positions to appear, each and all
+					//we will only show one single entry for all his or her positons
+					//that means the opening hours in the employee-position-records must be ignored
+					//and that means it is hard to retrieve the room. several rooms should be added up????
+					$special_cases[$row['emp_uid']]['kill_pos'] = $orga_row['pos_uid'];
+				#}elseif($orga_row['pos_nice_name'] > '' && $orga_row['ep_datasec'] == 1 && in_array($test_string, $em_org_kombis)){
+				}elseif($orga_row['pos_nice_name'] > '' && in_array($test_string, $em_org_kombis)){
+					//wie kommt Jack Bauer hier rein?-> hat 2 stellen beim amt fuer kinder und jugend
+					$special_cases[$row['emp_uid']]['keep_pos'] = $orga_row['pos_uid'];
 				}else{
 					//organisation for employee is set here!
 					$em_org_kombis[] = $row['emp_uid'].'_'.$orga_row['or_uid'];
@@ -1196,7 +1203,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
 			$employees[$row_counter]['em_or_combi_ok'] = 1;
-			$employees[$row_counter]['em_uid']=$row['emp_uid'];
+			$employees[$row_counter]['emp_uid'] = $row['emp_uid'];
+			$employees[$row_counter]['pos_uid'] = $row['pos_uid'];
 			if($row['em_address']==2){
 				$employees[$row_counter]['address_long'] = $this->pi_getLL('tx_civserv_pi1_organisation.address_female', 'Ms.');
 			}elseif($row['em_address']==1){
@@ -1207,23 +1215,44 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$employees[$row_counter]['firstname'] = $row['em_firstname'];
 			$employees[$row_counter]['em_datasec'] = $row['em_datasec'];
 
-			$values = array($row['emp_uid'], $row['pos_uid']);
-			$orga_select_cond_placeholder_part = str_replace($placeholders, $values, $orga_select_cond_placeholder_dummy);
-			
-			//select the organisation assigned to the employee
-			$orga_res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-				$orga_select_fields,
-				$orga_select_tables,
-				$orga_select_cond_placeholder_part.$orga_select_cond_static_part,
-				 '',
-				 '',
-				 '');
+
+			$orga_res = $this->makeOrgaQuery(intval($row['emp_uid']), intval($row['pos_uid']));
+			if ($GLOBALS['TYPO3_DB']->sql_num_rows($orga_res) > 0) {
+				// 
+			}else{
+				//
+			}
+
 			while ($orga_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($orga_res) ) {	
 				$employees[$row_counter]['orga_name'] = $orga_row['organisation'];
 				$employees[$row_counter]['orga_id'] = $orga_row['or_uid'];
-				$employees[$row_counter]['em_org_combi'] = $employees[$row_counter]['em_uid'].'_'.$orga_row['or_uid'];
+				$employees[$row_counter]['em_org_combi'] = $employees[$row_counter]['emp_uid'].'_'.$orga_row['or_uid'];
+				if($orga_row['pos_nice_name'] > ''){
+					$employees[$row_counter]['pos_nice_name']= $orga_row['pos_nice_name'];
+				}
 			}
-			$employees[$row_counter]['em_url'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $row['emp_uid'],pos_id => $row['pos_uid']),1,1));
+			$special_case = 0;
+			//treatment for special cases:
+			/*
+			if(in_array($employees[$row_counter]['emp_uid'], $special_cases)){
+				$special_case = 1;
+				$pos_id = $row['pos_uid'];
+			}else{
+				$special_case = 0;
+				$pos_id = $row['pos_uid'];
+			}
+			*/
+			$employees[$row_counter]['em_url'] = htmlspecialchars(	
+														$this->pi_linkTP_keepPIvars_url(
+															array(
+																mode => 'employee',
+																id => $row['emp_uid'],
+																#pos_id => $pos_id,
+																pos_id => $row['pos_uid'],
+																spc => intval($special_case)
+															),1,1
+														)
+													);
 			$row_counter++;
 		}
 		
@@ -1231,7 +1260,10 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$filtered_employees = array();
 		//sort out doubles from the real employee-array
 		for($i=0; $i<count($employees); $i++){
-			//do not use unset() inside of loop!! reduces number of loops, so some employees never get checked.....
+			//do not use unset() inside of loop!! 
+			
+			
+			//reduces number of loops, so some employees never get checked.....
 			if(in_array($employees[$i]['em_org_combi'], $kills)){
 				if(!in_array($employees[$i]['em_org_combi'], $taken)){
 					$taken[]=$employees[$i]['em_org_combi'];
@@ -1239,6 +1271,21 @@ class tx_civserv_pi1 extends tslib_pibase {
 				}else{
 					$local_bodycount++;
 					$employees[$i]['em_or_combi_ok'] = 0;
+				}
+			}elseif(array_key_exists($employees[$i]['emp_uid'], $special_cases)){
+				#debug($employees[$i], '$employees[$i] is a special case');
+				if($special_cases[$employees[$i]['emp_uid']]['kill_pos'] == $employees[$i]['pos_uid']){
+					$local_bodycount++;
+					$total_bodycount++;
+					$employees[$i]['em_or_combi_ok'] = 0;
+					debug($employees[$i], '$employees[$i] is going to be killed');
+				}elseif($special_cases[$employees[$i]['emp_uid']]['keep_pos'] == $employees[$i]['pos_uid']){
+					//add it up
+					$filtered_employees[] = $employees[$i];
+					debug($employees[$i], '$employees[$i] will be kept');
+				}else{
+					$filtered_employees[] = $employees[$i];
+					debug($employees[$i], 'I dont know what to do with');
 				}
 			}else{
 				$filtered_employees[] = $employees[$i];
@@ -1343,7 +1390,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 					AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid '.
 					$this->cObj->enableFields('tx_civserv_employee'). 
 					$this->cObj->enableFields('tx_civserv_position'). 
-					' AND	tx_civserv_employee.em_pseudo = 0';
+					'AND tx_civserv_employee.em_pseudo = 0'. //pseudo-emps don't coun't
+					'AND tx_civserv_employee_em_position_mm.ep_datasec = 1'; //only positions which have been explicitely marked for publication 
 		}
 
 		$orderby =	$this->piVars['sort'] ? 'name, em_firstname DESC' : 'name, em_firstname ASC';
@@ -1364,6 +1412,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$query .= 'LIMIT ' . intval($start) . ',' . intval($max);
 			}
 		}
+		#debug($query, 'employeelist_query');
 		return $query;
 	}
 
@@ -1748,6 +1797,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 		return $query;
 	}
 
+	
+	
+	
 
 	/**
 	 * Executes a search in the database for given keywords.
@@ -2063,31 +2115,48 @@ class tx_civserv_pi1 extends tslib_pibase {
 		
 
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
-			debug($row['name'], 'row name');
 			//in previewMode we skip the synonyms of services! because the overlay-function can't handle aliases
 			$namefield_str = ($this->previewMode && ($this->piVars['mode'] == 'service_list' || $this->piVars['mode'] == 'service'))? $row['sv_name'] : $row['name'];	
-			debug($namefield_str, 'namefield array');
-			if(1==2){
-				//do nothing
 			
-			}
-			//hier gibt es ein problem. strtoupper kann kein utf8?
-			//oder es hängt von der locale ab???
-			#$initial = strtoupper($namefield_arr{0});
-			#$initial = str_replace(array('Ä','Ö','Ü'), array('A','O','U'), strtoupper($namefield_arr{0}));
+			//Umlauts are ok here...
+			//assumption: db delivers correct utf8
 			
-			#$initial = str_ireplace(array('Ä','Ö','Ü'), array('A','O','U'), $namefield_arr{0});
+			//setlocale bringt auch gar nix!!!
+			//setlocale(LC_ALL, 'de_DE.utf8');
 			
-			//oder liegt hier das problem???
+			//we have a problem with umlauts here!!:
+			#$initial = str_replace(array('Ä','Ö','Ü'), array('A','O','U'), strtoupper($namefield_str{0}));
+			
+			//strtoupper not capable of utf8?
+			//or is it a problem with the locale? see above?
+			#$initial = strtoupper($namefield_str{0});
+	
+			//umlauts get mashed up here as well
 			#$initial = $namefield_str{0};
 			
-			debug('ÄÜÖß');
+			//umlauts get mashed up here again
+			#$initial = substr($namefield_str, 0,1);
+
 			
-			$initial = substr($namefield_str, 0,1);
+			//multibyte string_functions available?
+			if(function_exists('mb_substr')){
+				#debug('happy');
+			}else{
+				#debug('unhappy');
+			}
+			//mbsubtr doesn't help either
+			#$initial = mb_substr($namefield_str, 0,1);
 			
-			debug($initial, 'initial');
+			//$decoding =  mb_detect_encoding($namefield_str);
+			//debug($decoding, 'decoding'); ergibt ASCII ???
+			
+			
+			//workaround: replace umlaut before applying any other string_functions
+			$initial = str_ireplace(array('Ä','Ö','Ü'), array('A','O','U'), $namefield_str);
+			$initial = strtoupper($initial{0});
+			
+			
 			$occuringInitials[] = $initial;
-			#debug($occuringInitials);
 			$row_counter++;
 		}
 		if ($occuringInitials ) $occuringInitials = array_unique($occuringInitials);
@@ -2142,8 +2211,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 
 	/**
-	 * Build a regular expression to select all items which begin with the given string (normally one character).
-	 * In oder to use this function with the abc-bar, umlauts are treated like the corrospendent vocals.
+	 * Build a regular expression to select all items which begin with the given 
+	 * string (normally one character). In oder to use this function with the abc-bar, 
+	 * umlauts are treated like the corrospendent vocals.
 	 * Used by the functions 'serviceList' and 'formList'.
 	 *
 	 * @param	string		The charavter or string the alement should begin with
@@ -2165,12 +2235,16 @@ class tx_civserv_pi1 extends tslib_pibase {
 			default :
 				$regexp = '^' . $char;
 		}
+/*
+// the following was only needed as long as the internal encoding by the IDE wasn't utf-8 yet!!! 		
 #		$regexp = $GLOBALS['LANG']->charSet == 'utf-8'? utf8_encode($regexp) : $regexp;
+
 		if(		$TYPO3_CONF_VARS['BE']['forceCharset'] == 'utf-8' ||
 				$GLOBALS['TSFE']->metaCharset == 'utf-8' ||
 				$GLOBALS['TSFE']->renderCharset == 'utf-8' ){
 			$regexp = utf8_encode($regexp);
 		}
+*/
 		return $regexp;
 	}
 
@@ -2893,7 +2967,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	function employeeDetail(&$smartyEmployee,$searchBox) {
 		$uid = intval($this->piVars['id']);	//SQL-Injection!!!
 		$pos_id = intval($this->piVars['pos_id']); //must come from piVars -> need to know which one of several possible positions is to be displayed....
-
+		
 		// test bk: get position from Database
 		// a) employee is linked to position-record, could be > 1 !!!
 		// b) employee is linked to organisation-record (leader of the pack)
@@ -2906,6 +2980,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 					 tx_civserv_position'
 		);
 		*/
+		
+		
 		
 
 
@@ -2956,10 +3032,19 @@ class tx_civserv_pi1 extends tslib_pibase {
 					'');
 
 		// Create additional queries if position uid is set in piVars
-		if ($pos_id != '') {
-
+		if ($pos_id != '' && intval($pos_id) > 0) {
+			// hier muss der eingriff stattfinden 
+			// find out if it is a special case
+			
+			
+			
+			
+			
 			// Query for employee-position office hours
-			$res_emp_pos_hours = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			// only, if it isn't a special case!
+			// special cases have been intercepted before though, in fct employee_list 
+			if(intval($this->piVars['spc']) == 0 ){!
+				$res_emp_pos_hours = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'tx_civserv_officehours.oh_start_morning, 
 					 tx_civserv_officehours.oh_end_morning, 
 					 tx_civserv_officehours.oh_start_afternoon, 
@@ -2985,6 +3070,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 					'',
 					'oh_weekday',
 					'');
+			}
 
 			// Query for employee-organisation office hours
 			// 1. will only return result if position occupied by employee has relation to organisation
@@ -3028,7 +3114,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 
 			// not all employee-position-records have a relation to a room (building, floor)
-
 			$res_position = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'tx_civserv_position.uid as pos_uid, 
 				 tx_civserv_organisation.uid as or_uid, 
@@ -3057,6 +3142,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				'',
 				'');
 
+			//special cases have been intercepted before, in fct employee_list
 			$res_room = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'tx_civserv_building.bl_name as building, 
 					 tx_civserv_building.bl_name_to_show as building_to_show,
@@ -3098,22 +3184,28 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}
 			$smartyEmployee->assign('position',$employee_position);
 	
-			//Assign employee-position working hours
-			$row_counter = 0;
-			while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_pos_hours) ){	
-				$emp_pos_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row['oh_weekday']);
-				$emp_pos_hours[$row_counter]['start_morning'] = $row['oh_start_morning'];
-				$emp_pos_hours[$row_counter]['end_morning'] = $row['oh_end_morning'];
-				$emp_pos_hours[$row_counter]['start_afternoon'] = $row['oh_start_afternoon'];
-				$emp_pos_hours[$row_counter]['end_afternoon'] = $row['oh_end_afternoon'];
-				if($row['oh_manual_checkbox'] == 1){
-					$emp_pos_hours[$row_counter]['freestyle'] = $row['oh_freestyle'];
-				}else{
-					$emp_pos_hours[$row_counter]['freestyle'] = '';
+			
+			// employee_position_hours:
+			// only, if it isn't a special case!
+			// special cases have been intercepted before though, in fct employee_list 
+			if(intval($this->piVars['spc']) == 0 ){
+				//Assign employee-position working hours
+				$row_counter = 0;
+				while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_pos_hours) ){	
+					$emp_pos_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row['oh_weekday']);
+					$emp_pos_hours[$row_counter]['start_morning'] = $row['oh_start_morning'];
+					$emp_pos_hours[$row_counter]['end_morning'] = $row['oh_end_morning'];
+					$emp_pos_hours[$row_counter]['start_afternoon'] = $row['oh_start_afternoon'];
+					$emp_pos_hours[$row_counter]['end_afternoon'] = $row['oh_end_afternoon'];
+					if($row['oh_manual_checkbox'] == 1){
+						$emp_pos_hours[$row_counter]['freestyle'] = $row['oh_freestyle'];
+					}else{
+						$emp_pos_hours[$row_counter]['freestyle'] = '';
+					}
+					$row_counter++;
 				}
-				$row_counter++;
+				$smartyEmployee->assign('emp_pos_hours',$emp_pos_hours);
 			}
-			$smartyEmployee->assign('emp_pos_hours',$emp_pos_hours);
 	
 			//Assign employee-organisation working hours
 			$row_counter = 0;
@@ -3171,6 +3263,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 		//Assign employee working hours
 		$row_counter = 0;
+
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_emp_hours) ){
 			$emp_hours[$row_counter]['weekday'] = $this->pi_getLL('tx_civserv_pi1_weekday_'.$row['oh_weekday']);
 			$emp_hours[$row_counter]['start_morning'] = $row['oh_start_morning'];
@@ -3186,6 +3279,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$row_counter++;
 		}
 		$smartyEmployee->assign('emp_hours',$emp_hours);
+		
+	
 
 		//Assign template labels
 		if (intval($employee_rows['em_address']) == 2) {
@@ -3432,7 +3527,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$pos_id = $organisation_supervisor['pos_uid'];
 		} else {
 			$organisation_supervisor = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_supervisor);
-			$pos_id = '';
+			$pos_id = 0;
 		}
 		
 		//test bk:
@@ -3441,7 +3536,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		
 		//knallt es hier???
 		
-		if($pos_id > '' && $orga_bl_count > 1 ){
+		if($pos_id > '' && intval($pos_id > 0) && $orga_bl_count > 1 ){
 			$res_bl_supervisor = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					$select_building,
 					   'tx_civserv_organisation, 
@@ -3561,10 +3656,29 @@ class tx_civserv_pi1 extends tslib_pibase {
 			$smartyOrganisation->assign('su_firstname',$organisation_supervisor['em_firstname']);
 			$smartyOrganisation->assign('su_name',$organisation_supervisor['em_name']);
 			if (intval($organisation_supervisor['em_datasec']) == 1) {
-				if ($pos_id != '') {
-					$smartyOrganisation->assign('su_link',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $organisation_supervisor['uid'],pos_id => $pos_id),1,1)));
+				if ($pos_id != '' && intval($pos_id > 0)) {
+					$smartyOrganisation->assign('su_link', htmlspecialchars(
+															$this->pi_linkTP_keepPIvars_url(
+																array(
+																	mode => 'employee',
+																	id => intval($organisation_supervisor['uid']),
+																	pos_id => intval($pos_id)
+																),
+																1,1
+															)
+														)
+													);
 				} else {
-					$smartyOrganisation->assign('su_link',htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'employee',id => $organisation_supervisor['uid']),1,1)));
+					$smartyOrganisation->assign('su_link', htmlspecialchars(
+																$this->pi_linkTP_keepPIvars_url(
+																	array(
+																		mode => 'employee',
+																		id => intval($organisation_supervisor['uid'])
+																	),
+																	1,1
+																)
+															)
+														);
 				}
 			}
 		}
@@ -4031,7 +4145,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}
 
 		} elseif (!empty($emp_id) && !empty($pos_id) && !empty($sv_id)) {	//Email form is called from service detail page
-			$result = $this->makeEmailQuery($emp_id,$pos_id,$sv_id);
+			$result = $this->makeEmailQuery($emp_id, $pos_id, $sv_id);
 			//Check if query returned a result
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
 				$employee = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
@@ -4043,7 +4157,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				return false;
 			}
 		} elseif (!empty($emp_id) || (!empty($pos_id) && !empty($emp_id)) ) {  //Email form is called from organisation detail page (supervisor email)
-			$result = $this->makeEmailQuery($emp_id,$pos_id,$sv_id);
+			$result = $this->makeEmailQuery($emp_id, $pos_id, $sv_id);
 			//Check if query returned a result
 			if ($GLOBALS['TYPO3_DB']->sql_num_rows($result) == 1) {
 				$employee = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result);
@@ -4071,7 +4185,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @param	integer		Service uid
 	 * @return	result_set		Result of database query
 	 */
-	function makeEmailQuery($emp_id,$pos_id,$sv_id) {
+	function makeEmailQuery($emp_id, $pos_id,$sv_id) {
 		$querypart_select = '';
 		$querypart_from = '';
 		$querypart_where = '';
@@ -4128,8 +4242,52 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 
 
-
-
+	/**
+	 * Generates a query to retrieve the organisation or organisations where an employee is employed.
+	 *
+	 * @param	integer		Employee uid
+	 * @param	integer		Position uid
+	 * @param	integer		Service uid
+	 * @return	result_set		Result of database query
+	 */
+	function makeOrgaQuery($em_uid, $pos_uid){
+		
+		 $select_fields = 	'tx_civserv_position.uid as pos_uid,
+				tx_civserv_position.po_name as pos_name,
+				tx_civserv_position.po_nice_name as pos_nice_name,
+				tx_civserv_organisation.uid as or_uid, 
+				tx_civserv_organisation.or_name as organisation,
+				tx_civserv_employee.uid as emp_uid, 
+				tx_civserv_employee.em_name as em_name,
+				tx_civserv_employee_em_position_mm.ep_datasec';
+		$from_tables =	'tx_civserv_employee, 
+				tx_civserv_position, 
+				tx_civserv_organisation, 
+				tx_civserv_employee_em_position_mm, 
+				tx_civserv_position_po_organisation_mm';
+		$conditions =	'1
+				AND tx_civserv_employee.uid = '.intval($em_uid).'
+				AND tx_civserv_position.uid = ' . intval($pos_uid) .
+				$this->cObj->enableFields('tx_civserv_organisation') .
+			 	$this->cObj->enableFields('tx_civserv_employee') .
+			 	$this->cObj->enableFields('tx_civserv_position') . '
+				AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
+			 	AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
+			 	AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
+			 	AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign';
+			 	
+		$query = 'SELECT ' . $select_fields . ' FROM ' . $from_tables . ' WHERE ' . $conditions;
+		#debug($query);	 	
+			 	
+		$res_orga = $GLOBALS['TYPO3_DB']->exec_SELECTquery(		 	
+			 	$select_fields,
+			 	$from_tables,
+			 	$conditions,
+				'',
+				'',
+				'');
+		return $res_orga;			 
+	}
 
 
 
@@ -5068,6 +5226,9 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 ********************************************/
 	function check_searchword($string){
 		//white list
+		$searchword_pattern = '/^[A-Za-z0-9äöüÄÖÜß\- ]*$/';
+// the following was only needed as long as the internal encoding by the IDE wasn't utf-8 yet!!!
+/* 		
 		if(		$TYPO3_CONF_VARS['BE']['forceCharset'] == 'utf-8' ||
 				$GLOBALS['TSFE']->metaCharset == 'utf-8' ||
 				$GLOBALS['TSFE']->renderCharset == 'utf-8' ){
@@ -5075,7 +5236,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		}else{
 			$searchword_pattern = '/^[A-Za-z0-9äöüÄÖÜß\- ]*$/';
 		}
-		
+*/		
 
 		if(!preg_match($searchword_pattern, $string)){
 			//collect all occurring illegal characters
