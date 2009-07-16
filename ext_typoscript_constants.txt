@@ -135,6 +135,7 @@ useCustomLinks_Organisations=0
 
 # for mode 'orcode' in extended employeelist
 orcodeBarAtEmployeeList = 1
+positionNameAtEmployeeList = 1
 
 
 # Defines at which sites the abcBar will be shown

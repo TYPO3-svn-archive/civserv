@@ -1165,6 +1165,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				//positions within the same organisational unit might still have different opening 
 				//hours for each of them - but let's assume in that case a 'nice name' has been given to 
 				//the individual positions
+				
 				if($row['em_datasec'] == 0 && in_array($test_string, $em_org_kombis)){
 					$total_bodycount++;
 					$kills[$total_bodycount]= $row['emp_uid'].'_'.$orga_row['or_uid'];
@@ -1172,9 +1173,18 @@ class tx_civserv_pi1 extends tslib_pibase {
 					//organisation for employee is set here!
 					$em_org_kombis[] = $row['emp_uid'].'_'.$orga_row['or_uid'];
 				}
+				/*
+				if($row['em_datasec'] == 0 && in_array($test_string, $em_org_kombis)){
+					$total_bodycount++;
+					$kills[$total_bodycount]= $row['emp_uid'].'_'.$orga_row['or_uid'];
+				}
+				//organisation for employee is set here!
+				$em_org_kombis[] = $row['emp_uid'].'_'.$orga_row['or_uid'];
+				*/
+				
 			}// end orga_res
 		}// end res_all_emps
-
+		
 		
 		//now the real query:
 		$query = $this->makeEmployeeListQuery($this->piVars['char']);
@@ -1208,11 +1218,17 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$employees[$row_counter]['orga_name'] = $orga_row['organisation'];
 				$employees[$row_counter]['orga_id'] = $orga_row['or_uid'];
 				$employees[$row_counter]['em_org_combi'] = $employees[$row_counter]['emp_uid'].'_'.$orga_row['or_uid'];
-				if($orga_row['pos_nice_name'] > ''){
-					$employees[$row_counter]['pos_name']= $orga_row['pos_nice_name'];
-				}else{
-					$employees[$row_counter]['pos_name']= $orga_row['pos_name'];
+				//sort out special cases:
+				$arr_doubles = array_keys($em_org_kombis, $employees[$row_counter]['em_org_combi']);
+				if(count($arr_doubles)>1){
+					if($orga_row['pos_nice_name'] > ''){
+						$employees[$row_counter]['pos_name']= $orga_row['pos_nice_name'];
+					}else{
+						$employees[$row_counter]['pos_name']= $orga_row['pos_name'];
+					}
 				}
+					
+				
 			}
 			$employees[$row_counter]['em_url'] = htmlspecialchars(	
 														$this->pi_linkTP_keepPIvars_url(
@@ -1271,7 +1287,25 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$smartyEmployeeList->assign('subheading',$this->pi_getLL('tx_civserv_pi1_employee_list.available_employees','Here you find the following employees'));
 		//2009-04-23: hand bodycount to the pagebar-function
 		$smartyEmployeeList->assign('pagebar',$this->pi_list_browseresults(true,'',' '.$this->conf['abcSpacer'].' ', $total_bodycount));
-		//without doubles
+		
+		//we need to sort filtered_employees by organisation and position (already sorted by employee)..
+		$emp = array();
+		$orga = array();
+		// fetch a list of collumns
+		foreach ($filtered_employees as $key => $row) {
+			#debug($key);
+			#debug($row);
+		    $emp[$key]  = $row['name'];
+		    $orga[$key] = $row['orga_name'];
+		    $pos[$key] = $row['pos_name'];
+		}
+		
+		// sort collumns and data_array (filtered_employees) by their common key....
+		if(array_multisort($emp, SORT_ASC, $orga, SORT_ASC, $pos, SORT_ASC, $filtered_employees)){
+			#debug('yesss!');
+		}else{
+			#debug('no no!');
+		}
 		$smartyEmployeeList->assign('employees',$filtered_employees);
 		
 
@@ -1365,7 +1399,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$query .= 'LIMIT ' . intval($start) . ',' . intval($max);
 			}
 		}
-		debug($query, 'employeelist_query');
+		#debug($query, 'employeelist_query');
 		return $query;
 	}
 

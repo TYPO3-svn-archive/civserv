@@ -540,19 +540,21 @@ class tx_civserv_pi2 extends tslib_pibase {
 		if($this->piVars['mode'] ==  'employee_list_az'){
 			// 1st Parameter for letter in question
 			// 2nd Parameter false for: no_limit
-			// 3rd Parameter true for: select count(*)
-			$query = $this->makeEmployeeListQueryAZ($this->piVars['char'],false,true);
+			// 3rd Parameter true for: select count(DISTINCT tx_civserv_employee.uid)
+			$query = $this->makeEmployeeListQueryAZ($this->piVars['char'], false, true);
+			
+			
 		}elseif($this->piVars['mode'] ==  'employee_list_search'){
 			// 1st Parameter false for: no_limit
-			// 2nd Parameter true for: select count(*)
+			// 2nd Parameter true for: select count(DISTINCT tx_civserv_employee.uid)
 			$query = $this->makeEmployeeListQuerySearch(false, true);
 		}
 
 
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
-		// if there's a union in the SQL-query we have to add the count(*)-results
+		// if there's a union in the SQL-query we have to add the count(DISTINCT tx_civserv_employee.uid)-results
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$row_count += $row['count(*)'];
+			$row_count += $row['count(DISTINCT tx_civserv_employee.uid)'];
 		}
 
 		$this->internal['res_count'] = $row_count;
@@ -605,7 +607,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @return	[type]		...
 	 */
 	function employee_list_hod(&$smartyEmployeeList, $abcBar=false, $searchBox=false, $topList=false){
-		// Die Funktion makeEmployeeListQueryAZ liefert alle Mitarbeiter, die eine Stelle besetzen
+		// Die Funktion makeEmployeeListQueryHOD liefert alle Mitarbeiter, die eine Stelle besetzen
 		// die Query enthaelt Daten ueber den Mitarbeiter, die Stelle und die Mitarbeiter_Stellen_zuordnung (raum etc)
 		$query = $this->makeEmployeeListQueryHOD();
 		$_SESSION['stored_filter_key'] = 'hod';
@@ -639,9 +641,9 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
-		// if there's a union in the SQL-query we have to add the count(*)-results
+		// if there's a union in the SQL-query we have to add the count(DISTINCT tx_civserv_employee.uid)-results
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$row_count += $row['count(*)'];
+			$row_count += $row['count(DISTINCT tx_civserv_employee.uid)'];
 		}
 
 		$this->internal['res_count'] = $row_count;
@@ -662,6 +664,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 
 //ABC-BAR
+		//makeEmployeeListQueryHOD or makeEmployeeListQueryAZ???
 		$query_abc = $this->makeEmployeeListQueryAZ('all', false);
 		$smartyEmployeeList->assign('abcbar', $this->makeAbcBar($query_abc));
 
@@ -695,9 +698,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @return	[type]		...
 	 */
 	function employee_list_or_uid(&$smartyEmployeeList, $abcBar=false, $searchBox=false, $topList=false){
-
-
-		// Die Funktion makeEmployeeListQueryAZ liefert alle Mitarbeiter, die.....
+		// Die Funktion makeEmployeeListQueryOrUid liefert alle Mitarbeiter, die.....
 		// die Query enthaelt Daten ueber den Mitarbeiter, die Stelle und die Mitarbeiter_Stellen_zuordnung (raum etc)
 		$query = $this->makeEmployeeListQueryOrUid(intval($this->piVars['or_uid']));//or_uid is transmitted by the select-box
 		$_SESSION['stored_filter_key'] = 'or_uid';
@@ -773,20 +774,17 @@ class tx_civserv_pi2 extends tslib_pibase {
 			if($row['em_uid'] !== $row['or_supervisor']) $this->getBuildingRoomFloor($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'], $row['em_uid'], $row['po_uid']);
 		} // ende schleife ueber alle organisationen / mitarbeiter
 
-
+		
+		$row_count = 0;
 		// Retrieve the employee count, take care of pi_list_browseresult, 
 		// 2nd Parameter false for: no_limit
-		// 3rd Parameter true for: select count(*)
-		$row_count = 0;
-		
-		
-		//we need this! function makeEmployeeListQueryOrUid with second paramater false for limit generates pageBar!!!
+		// 3rd Parameter true for: select count(DISTINCT tx_civserv_employee.uid)
 		$query = $this->makeEmployeeListQueryOrUid($this->piVars['or_uid'], false, true);
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			$row_count += $row['count(*)'];
+			$row_count += $row['count(DISTINCT tx_civserv_employee.uid)'];
 		}
-		
+
 
 		$this->internal['res_count'] = $row_count;
 		$this->internal['results_at_a_time']= $this->conf['employee_per_page'];
@@ -811,6 +809,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 
 //ABC-BAR:
+		//makeEmployeeListQueryOrUid or makeEmployeeListQueryAZ???
 		$query_abc = $this->makeEmployeeListQueryAZ('all', false);
 		$smartyEmployeeList->assign('abcbar', $this->makeAbcBar($query_abc));
 		
@@ -841,29 +840,28 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	[type]		$count: ...
 	 * @return	[type]		...
 	 */
-	function makeEmployeeListQueryAZ($char=all,$limit=true,$count=false) {
+	function makeEmployeeListQueryAZ($char=all, $limit=true, $count=false) {
+			//first build regular expression!
 			if ($char != all) {
 				$regexp = $this->buildRegexp($char);
 			}
-			if ($count){
-				$query = 'Select count(*) 
-					from 
-						tx_civserv_employee
-					where 
+			//where clause is same for count and selection of fields....
+			$where = 'where 
 						tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ')  
 						AND tx_civserv_employee.deleted = 0 
 						AND tx_civserv_employee.hidden = 0 '.
 						($regexp ? 'AND em_name REGEXP "' . $regexp . '"' : '') . ' 
 						AND tx_civserv_employee.em_pseudo = 0';
+			
+			if ($count){
+				//counting employees! not positions! -> DISTINCT
+				$query = 'Select count(DISTINCT tx_civserv_employee.uid) 
+					from tx_civserv_employee ' . $where;
+					
 			} else {
-				$query = 'Select '.implode(', ', $this->basic_tx_civserv_employee).' from 
-						tx_civserv_employee 
-					where 
-						tx_civserv_employee.pid IN (' . $this->community['pidlist'] . ') '
-					    . ($regexp ? 'AND em_name REGEXP "' . $regexp . '"' : '') . '
-					    AND tx_civserv_employee.deleted = 0 
-						AND tx_civserv_employee.hidden = 0
-						AND tx_civserv_employee.em_pseudo = 0 ';
+				$query = 'Select '.implode(', ', $this->basic_tx_civserv_employee).' 
+					from tx_civserv_employee ' . $where;
+				
 			}
 
 			$orderby =	$this->piVars['sort']?'name, em_firstname DESC':'name, em_firstname ASC';
@@ -884,6 +882,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . $start . ',' . $max;
 					}
 			}
+			#debug ($query, 'makeEmployeeListQueryAZ');
 			return $query;
 		}
 
@@ -943,8 +942,10 @@ class tx_civserv_pi2 extends tslib_pibase {
 							
 			if ($count){
 				$or_code = $GLOBALS['TYPO3_DB']->quoteStr($or_code, 'tx_civserv_organisation');
-				$query = 'Select count(*) from '.$tables.' where '.$conditions;
-				$query .= ' UNION Select count(*)
+				
+				// counting employees, not positons! -> DISTINCT
+				$query = 'Select count(DISTINCT tx_civserv_employee.uid) from '.$tables.' where '.$conditions;
+				$query .= ' UNION Select count(DISTINCT tx_civserv_employee.uid)
 						FROM 
 						tx_civserv_employee,
 						tx_civserv_organisation
@@ -1021,7 +1022,8 @@ class tx_civserv_pi2 extends tslib_pibase {
 							AND tx_civserv_employee.em_pseudo = 0 ';
 	
 			if ($count){
-				$query = 'Select count(*) 
+				// counting employees, not positons! -> DISTINCT
+				$query = 'Select count(DISTINCT tx_civserv_employee.uid) 
 					from '.$tables.' where '.$conditions;
 					
 			} else {
@@ -1063,9 +1065,12 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	[type]		$count: ...
 	 * @return	[type]		...
 	 */
-	function makeEmployeeListQuerySearch($limit=true,$count=false) {
+	function makeEmployeeListQuerySearch($limit=true, $count=false) {
 			$searchString=$this->check_searchword(strip_tags($this->piVars['empossearch'])); //strip and check to avoid xss-exploits
-			$fields = implode(', ', $this->basic_tx_civserv_employee);
+			$fields1 = implode(', ', $this->basic_tx_civserv_employee). ', '.
+							'\'Po_Name\',' .
+							'\'Po_Nice_Name\'';
+			
 
 			$tables1 =  	   'tx_civserv_employee';
 			
@@ -1075,7 +1080,11 @@ class tx_civserv_pi2 extends tslib_pibase {
 							AND	tx_civserv_employee.em_pseudo = 0 
 							AND tx_civserv_employee.em_name like \'%'.$searchString.'%\'';
 	
-	
+			$fields2 = implode(', ', $this->basic_tx_civserv_employee). ', '.
+							'tx_civserv_position.po_name, ' .
+							'tx_civserv_position.po_nice_name ';
+			
+			
 			$tables2 =  	   'tx_civserv_employee,
 								tx_civserv_position,
 								tx_civserv_employee_em_position_mm';
@@ -1094,14 +1103,15 @@ class tx_civserv_pi2 extends tslib_pibase {
 							';
 	
 			if ($count){
-				$query = 'Select count(*) from '.$tables1.' where '.$conditions1.'
+				// counting employees! not positions! -> DISTINCT
+				$query = 'Select count(DISTINCT tx_civserv_employee.uid) from '.$tables1.' where '.$conditions1.'
 							union
-							Select count(*) from '.$tables2.' where '.$conditions2;
+							Select count(DISTINCT tx_civserv_employee.uid) from '.$tables2.' where '.$conditions2;
 					
 			} else {
-				$query =   'Select '.$fields.' from '.$tables1.' where '.$conditions1.'
+				$query =   'Select '.$fields1.' from '.$tables1.' where '.$conditions1.'
 							union
-							Select '.$fields.' from '.$tables2.' where '.$conditions2;
+							Select '.$fields2.' from '.$tables2.' where '.$conditions2;
 			}
 
 			$orderby =	$this->piVars['sort'] ? 'name, em_firstname DESC':'name, em_firstname ASC';
@@ -1122,6 +1132,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . intval($start) . ',' . intval($max);
 				}
 			}
+			debug($query, 'makeEmployeeListQuerySearch');
 			return $query;
 		}
 		
@@ -1167,7 +1178,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 			//workaround for the utf-8-probs of strtoupper and substr....: 
 			//replace umlaut before applying any other string_functions
 			$initial = str_ireplace(array('Ä','Ö','Ü'), array('A','O','U'), $namefield_str);
-			#debug($initial, 'initial');
 			$initial = strtoupper($initial{0});
 
 			$occuringInitials[] = $initial;
@@ -1303,12 +1313,14 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$abcBar .= '<label for="emloyee_searchfield" class="invisible">'.$this->pi_getLL('tx_civserv_pi2_employee_list.searchform_search_label','search employee').'</label>';
 		$abcBar .= "\n";
 		if($this->piVars['mode'] ==  'employee_list_search'){
-			$abcBar .= '<input 	type="text" 
-								name = "'.$this->prefixId.'[empossearch]" 
-								id="emloyee_searchfield" 
-								size="10" 
-								title="'.$this->pi_getLL('tx_civserv_pi2_employee_list.searchform_title','enter searchword here').'" 
-								value="'.htmlentities($this->piVars['empossearch']).'" />';		//??
+			$abcBar .= '<input 	type="text" ';
+			$abcBar .= ' name = "'.$this->prefixId.'[empossearch]" ';
+			$abcBar .= ' id="emloyee_searchfield" ';
+			$abcBar .= ' size="10" '; 
+			$abcBar .= ' title="'.$this->pi_getLL('tx_civserv_pi2_employee_list.searchform_title','enter searchword here').'"'; 
+			$abcBar .= ' value="'.$this->piVars['empossearch'].'"'; //safety????
+			#$abcBar .= ' value="'.htmlentities($this->piVars['empossearch']).'"';		//htmlentities has probs with utf8!!! />';		//htmlentities has probs with utf8!!!
+			$abcBar .= '  />';
 		}else{
 			$abcBar .= '<input	type="text" 
 								name = "'.$this->prefixId.'[empossearch]"
@@ -1350,13 +1362,13 @@ class tx_civserv_pi2 extends tslib_pibase {
 			case ''  :
 				break;
 			case 'A' :
-				$regexp = '^A|^�';
+				$regexp = '^A|^Ä';
 			break;
 			case 'O' :
-				$regexp = '^O|^�';
+				$regexp = '^O|^Ö';
 				break;
 			case 'U' :
-		 		$regexp = '^U|^�';
+		 		$regexp = '^U|^Ü';
 				break;
 			default :
 				$regexp = '^' . $char;
@@ -1406,7 +1418,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 				$em_query = $this->makeEmployeeListQueryOrUid($uid, false, true);
 				$em_res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db, $em_query);
 				while ($em_row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($em_res)) {
-					$em_row_count += $em_row['count(*)'];
+					$em_row_count += $em_row['count(DISTINCT tx_civserv_employee.uid)'];
 				}
 				if($em_row_count > 0){
 					$or_choice .=  '<option class="level_'.$level.'" value="'.$row['uid'].'">';
@@ -3427,7 +3439,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		if($this->piVars['mode'] == 'service'){
 			$textArr=explode(":", $linkText);
-			if(count($textArr)>1)unset($textArr[0]);
+			if(count($textArr) > 1) unset($textArr[0]);
 			$linkText= implode(":", $textArr);//default
 			#$linkText.=':'.strlen($linkText);
 		}

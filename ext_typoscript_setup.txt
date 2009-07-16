@@ -79,7 +79,7 @@ plugin.tx_civserv_pi1 {
 	useCustomLinks_Organisations={$useCustomLinks_Organisations}
 	
 	orcodeBarAtEmployeeList = {$orcodeBarAtEmployeeList}
-	
+	positionNameAtEmployeeList = {$positionNameAtEmployeeList}
 
 	abcBarAtServiceList = {$abcBarAtServiceList}
 	abcBarAtCircumstance = {$abcBarAtCircumstance}
