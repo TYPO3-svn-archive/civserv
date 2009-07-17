@@ -4759,7 +4759,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$sBox .= '<!-- List browsing box: -->
 					<div'.$this->pi_classParam('browsebox').'>';
 		if($showResultCount){
-			$sBox .= '<p>';
+			$sBox .= '<p>'; //paragraph for 'elements 1 to 20'
 			if($this->internal['res_count']){
 				$from_number = $this->internal['res_count'] > 0 ? $pR1 : 0;
 				$to_number = min(array($this->internal['res_count'], $pR2));
@@ -4788,7 +4788,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			}else{
 				$sBox .= $this->pi_getLL('pi_list_browseresults_noResults','Sorry, no items were found.');
 			}
-			#$sBox .= '</p>';
+			$sBox .= '</p>';
 		}		
 		$sBox .= '<'.trim('p '.$divParams).'>'.implode($spacer, $links).'</p>';
 		$sBox .= '</div>';

@@ -2616,7 +2616,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 			}else{
 				$sBox .= $this->pi_getLL('pi_list_browseresults_noResults','Sorry, no items were found.');
 			}
-			#$sBox .= '</p>';
+			$sBox .= '</p>';
 		}		
 		$sBox .=	'<'.trim('p '.$divParams).'>'.implode($spacer,$links).'</p>';
         $sBox .=	'</div>';
