@@ -781,11 +781,21 @@ class tx_civserv_pi2 extends tslib_pibase {
 		// 3rd Parameter true for: select count(DISTINCT tx_civserv_employee.uid)
 		$query = $this->makeEmployeeListQueryOrUid($this->piVars['or_uid'], false, true);
 		$res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db,$query);
+		
+		
+		//there's a problem with the row count since the resultset delivers a record for each employee...
+		//count(DISTINCT employee) did not help.
+		//so, changed the way the rowcount ist retieved:
+		/*
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 			$row_count += $row['count(DISTINCT tx_civserv_employee.uid)'];
 		}
-
-
+		*/
+		foreach($organisations as $orga_unit){
+			$row_count += count($orga_unit['or_employees']);
+			$row_count += count($orga_unit['or_chief']);
+		}
+		
 		$this->internal['res_count'] = $row_count;
 		$this->internal['results_at_a_time']= $this->conf['employee_per_page'];
 		$this->internal['maxPages'] = $this->conf['max_pages_in_pagebar'];
@@ -804,6 +814,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$smartyEmployeeList->assign('pagebar', $this->pi_list_browseresults(true, '', ' '.$this->conf['abcSpacer'].' '));
 
 		// pass the organisation-data to the template
+		debug($organisations, 'organs');
 		$smartyEmployeeList->assign('organisations', $organisations);
 
 
@@ -995,6 +1006,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . $start . ',' . $max;
 				}
 			}
+			#debug($query, 'pi2 makeEmployeeListQueryOrUid');
 			return $query;
 		}
 		
@@ -1009,7 +1021,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	 * @param	[type]		$count: ...
 	 * @return	[type]		...
 	 */
-	function makeEmployeeListQueryHOD($limit=true,$count=false) {
+	function makeEmployeeListQueryHOD($limit=true, $count=false) {
 			$tables =  	   'tx_civserv_employee, 
 							tx_civserv_organisation';
 			
@@ -1051,6 +1063,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . intval($start) . ',' . intval($max);
 					}
 			}
+			#debug($query, 'pi2: makeEmployeeListQueryHOD');
 			return $query;
 		}
 		
@@ -1132,7 +1145,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . intval($start) . ',' . intval($max);
 				}
 			}
-			debug($query, 'makeEmployeeListQuerySearch');
+			#debug($query, 'makeEmployeeListQuerySearch');
 			return $query;
 		}
 		
@@ -2970,7 +2983,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		
 		//  $this->pi_classParam('searchbox-sword') contains the markup for css: 'class="tx-civserv-pi2-searchbox-sword"'
 		$search_word=$this->check_searchword(strip_tags($this->piVars['sword']));  //strip and check to avoid xss-exploits
-
+//change here???
 		if(		$TYPO3_CONF_VARS['BE']['forceCharset'] == 'utf-8' ||
 				$GLOBALS['TSFE']->metaCharset == 'utf-8' ||
 				$GLOBALS['TSFE']->renderCharset == 'utf-8' ){
@@ -3471,6 +3484,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 	function check_searchword($string){
 		//white list
 		$searchword_pattern = '/^[A-Za-z0-9äöüÄÖÜß\- ]*$/';
+		#debug($searchword_pattern);
 // the following was only needed as long as the internal encoding by the IDE wasn't utf-8 yet!!!
 /*
 		if(		$TYPO3_CONF_VARS['BE']['forceCharset'] == 'utf-8' ||
