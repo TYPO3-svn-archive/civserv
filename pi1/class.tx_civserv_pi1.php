@@ -2207,31 +2207,36 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 * @return	string		The regular expression.
 	 */
 	 function buildRegexp($char) {
+	 	// some installations of civserv still work on a database with charset latin_something.....
 		switch (strtoupper($char)) {
 			case ''  :
 				break;
 			case 'A' :
-				$regexp = '^A|^Ä';
+				if($TYPO3_CONF_VARS['BE']['forceCharset'] !== 'utf-8'){
+					debug('no utf-8');
+					$regexp = utf8_decode('^A|^Ä');
+				}else{
+					$regexp = '^A|^Ä';
+				}
 			break;
 			case 'O' :
-				$regexp = '^O|^Ö';
+				if($TYPO3_CONF_VARS['BE']['forceCharset'] !== 'utf-8'){
+					debug('no utf-8');
+					$regexp = utf8_decode('^O|^Ö');
+				}else{	
+					$regexp = '^O|^Ö';
+				}
 				break;
 			case 'U' :
-		 		$regexp = '^U|^Ü';
+				if($TYPO3_CONF_VARS['BE']['forceCharset'] !== 'utf-8'){
+					$regexp = utf8_decode('^U|^Ü');
+				}else{
+					$regexp = '^U|^Ü';
+				}
 				break;
 			default :
 				$regexp = '^' . $char;
 		}
-/*
-// the following was only needed as long as the internal encoding by the IDE wasn't utf-8 yet!!! 		
-#		$regexp = $GLOBALS['LANG']->charSet == 'utf-8'? utf8_encode($regexp) : $regexp;
-
-		if(		$TYPO3_CONF_VARS['BE']['forceCharset'] == 'utf-8' ||
-				$GLOBALS['TSFE']->metaCharset == 'utf-8' ||
-				$GLOBALS['TSFE']->renderCharset == 'utf-8' ){
-			$regexp = utf8_encode($regexp);
-		}
-*/
 		return $regexp;
 	}
 
@@ -5201,18 +5206,12 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 ********************************************/
 	function check_searchword($string){
 		//white list
-		$searchword_pattern = '/^[A-Za-z0-9äöüÄÖÜß\- ]*$/';
-// the following was only needed as long as the internal encoding by the IDE wasn't utf-8 yet!!!
-/* 		
-		if(		$TYPO3_CONF_VARS['BE']['forceCharset'] == 'utf-8' ||
-				$GLOBALS['TSFE']->metaCharset == 'utf-8' ||
-				$GLOBALS['TSFE']->renderCharset == 'utf-8' ){
-			$searchword_pattern = utf8_encode('/^[A-Za-z0-9äöüÄÖÜß\- ]*$/');
+		if(	$TYPO3_CONF_VARS['BE']['forceCharset'] !== 'utf-8'){
+			$searchword_pattern = utf8_decode('/^[A-Za-z0-9äöüÄÖÜß\- ]*$/');
 		}else{
 			$searchword_pattern = '/^[A-Za-z0-9äöüÄÖÜß\- ]*$/';
 		}
-*/		
-
+		
 		if(!preg_match($searchword_pattern, $string)){
 			//collect all occurring illegal characters
 			#$arr_bad_chars=array();
