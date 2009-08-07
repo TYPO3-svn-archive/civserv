@@ -2212,7 +2212,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 			case ''  :
 				break;
 			case 'A' :
-				if($TYPO3_CONF_VARS['BE']['forceCharset'] !== 'utf-8'){
+				if($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] !== 'utf-8'){
 					debug('no utf-8');
 					$regexp = utf8_decode('^A|^Ä');
 				}else{
@@ -2220,7 +2220,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				}
 			break;
 			case 'O' :
-				if($TYPO3_CONF_VARS['BE']['forceCharset'] !== 'utf-8'){
+				if($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] !== 'utf-8'){
 					debug('no utf-8');
 					$regexp = utf8_decode('^O|^Ö');
 				}else{	
@@ -2228,7 +2228,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 				}
 				break;
 			case 'U' :
-				if($TYPO3_CONF_VARS['BE']['forceCharset'] !== 'utf-8'){
+				if($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] !== 'utf-8'){
 					$regexp = utf8_decode('^U|^Ü');
 				}else{
 					$regexp = '^U|^Ü';
@@ -4654,7 +4654,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//  $this->pi_classParam('searchbox-sword') contains the markup for css: 'class="tx-civserv-pi1-searchbox-sword"'
 		$search_word=$this->check_searchword(strip_tags($this->piVars['sword']));  //strip and check to avoid xss-exploits
 
-		if(		$TYPO3_CONF_VARS['BE']['forceCharset'] == 'utf-8' ||
+		if(		$GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] == 'utf-8' ||
 				$GLOBALS['TSFE']->metaCharset == 'utf-8' ||
 				$GLOBALS['TSFE']->renderCharset == 'utf-8' ){
 			$search_word = htmlentities($search_word, ENT_COMPAT, 'UTF-8');
@@ -5206,7 +5206,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 	 ********************************************/
 	function check_searchword($string){
 		//white list
-		if(	$TYPO3_CONF_VARS['BE']['forceCharset'] !== 'utf-8'){
+		if(	$GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] !== 'utf-8'){
 			$searchword_pattern = utf8_decode('/^[A-Za-z0-9äöüÄÖÜß\- ]*$/');
 		}else{
 			$searchword_pattern = '/^[A-Za-z0-9äöüÄÖÜß\- ]*$/';
