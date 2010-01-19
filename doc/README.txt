@@ -34,28 +34,28 @@ http://jweiland.net/typo3cms/howto/statische-seiten-simulieren/
 
 LIES MICH (DEUTSCH)
 Die komplette Dokumentation, bestehend aus der technischen Dokumentation und einem Benutzerhandbuch, kann unter http://www4.citeq.de/osiris/doc heruntergeladen werden.
-Unter www.regio-komm.de sind auch die zugrunde liegende umfassende Anforderungsanalyse an Virtuelle Rathäuser und das Fachkonzept als Arbeitsberichte des Instituts für Wirtschaftsinformatik zu finden. 
+Unter www.regio-komm.de sind auch die zugrunde liegende umfassende Anforderungsanalyse an Virtuelle Rathï¿½user und das Fachkonzept als Arbeitsberichte des Instituts fï¿½r Wirtschaftsinformatik zu finden. 
 
 MANUELLES SETUP:
-Nach der Installation der Extension über den Extension Manager folgen Sie bitte der Setup-Anleitung im Manual um das Grundgerüst für ein virtuelles Rathaus mit Seitenbaum und Frontend-Ausgabe aufzubauen.
+Nach der Installation der Extension ï¿½ber den Extension Manager folgen Sie bitte der Setup-Anleitung im Manual um das Grundgerï¿½st fï¿½r ein virtuelles Rathaus mit Seitenbaum und Frontend-Ausgabe aufzubauen.
 
 DEMO:
-Sie können eine Demo-Site mit Testdaten installieren, die MySQL-Dumps können Sie bei der citeq downloaden:
+Sie kï¿½nnen eine Demo-Site mit Testdaten installieren, die MySQL-Dumps kï¿½nnen Sie bei der citeq downloaden:
 http://www4.citeq.de/osiris/doc/demo_site/ext_tables_static+adt_38x.sql.ATTENTION.tar.gz
 http://www4.citeq.de/osiris/doc/demo_site/ext_tables_static+adt_40x.sql.ATTENTION.tar.gz
-Dieser Datenbank Dump überschreibt eine ggfs existierende Site: er ersetzt alle tx_civserv* Tabellen, sowie die Tabellen pages, be_groups und be_users aus Ihrer Datenbank!!!
-Die Ressourcen für die Demo_Site befinden sich in 
+Dieser Datenbank Dump ï¿½berschreibt eine ggfs existierende Site: er ersetzt alle tx_civserv* Tabellen, sowie die Tabellen pages, be_groups und be_users aus Ihrer Datenbank!!!
+Die Ressourcen fï¿½r die Demo_Site befinden sich in 
 http://www4.citeq.de/osiris/doc/demo_site/1110000.tar.gz. 
 Entpacken Sie diese Archiv in Ihrer Site im Pfad fileadmin/civserv/
-Nachdem Sie den Datenbank-Dump eingspielt haben, stehen Ihnen folgende BE_user zur Verfügung:
+Nachdem Sie den Datenbank-Dump eingspielt haben, stehen Ihnen folgende BE_user zur Verfuegung:
 admin ('password')
 c00.chefeditor ('chef')
 c00.editor ('editor')
  
 
 IN JEDEM FALL:
-Nachdem Sie die 'civserv' Extension über den Extension Manager installiert haben, müssen Sie
-eine .htaccess Datei im Basis-Verzeichnis ihrer Site ablegen. Die wird gebraucht, weil civserv standardmäßig mit simulate_static_documents konfiguriert ist (Siehe typo3conf/ext/civserv/pi1/static/setup.txt)
-Wenn Sie mehrer Sites in Ihrem Webroot-Verzeichnis haben, müssen Sie in der .htaccess auch eine Rewrite-Base angeben.
+Nachdem Sie die 'civserv' Extension ï¿½ber den Extension Manager installiert haben, muessen Sie
+eine .htaccess Datei im Basis-Verzeichnis ihrer Site ablegen. Die wird gebraucht, weil civserv standardmï¿½ï¿½ig mit simulate_static_documents konfiguriert ist (Siehe typo3conf/ext/civserv/pi1/static/setup.txt)
+Wenn Sie mehrer Sites in Ihrem Webroot-Verzeichnis haben, muessen Sie in der .htaccess auch eine Rewrite-Base angeben.
 Weitere Informationen dazu finden Sie auf der Homepage von Jochen Weiland: 
 http://jweiland.net/typo3cms/howto/statische-seiten-simulieren/
