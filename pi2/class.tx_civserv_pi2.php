@@ -708,26 +708,22 @@ class tx_civserv_pi2 extends tslib_pibase {
 
 		//hier ist die musik!
 		$res_employees = $GLOBALS['TYPO3_DB']->sql(TYPO3_db, $query);
-		#$res_employes = mysql_query($query);
 		$organisations = array();
 		
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
+			debug($row, 'orlist_row');
 			//das funktioniert natuerlich nur, wenn das resultset nach organisationen sortiert ist!!!
 			if(array_key_exists($row['or_uid'], $organisations)){
 				//duuno
 			}else{
 				$organisations[$row['or_uid']]['or_employees'] = array();
-				$organisations[$row['or_uid']]['or_chief'] = array();
+				#$organisations[$row['or_uid']]['or_chief'] = array();
 				
 				//Organisationsdaten aus dem Resultset holen
 				$this->assembleOrganisationData($organisations[$row['or_uid']], $row);
 			}
-			
-			
 			if(array_key_exists($row['em_uid'], $organisations[$row['or_uid']]['or_employees'])){
 				// do not overwrite it
-			}elseif($row['or_supervisor'] == $row['em_uid']){
-				// do nothing
 			}else{
 				$organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'] = array();
 		
@@ -735,11 +731,14 @@ class tx_civserv_pi2 extends tslib_pibase {
 				$this->assembleEmployeeData($organisations[$row['or_uid']]['or_employees'][$row['em_uid']], $row);
 			}
 			
+			
+			/*
 			if($row['em_uid'] == $row['or_supervisor']){
 				if(array_key_exists($row['em_uid'], $organisations[$row['or_uid']]['or_chief'])){
 					// do not overwrite it
 				}else{
-					//it is possible that the supervisor of an organisation also occupies another postion at this organisation
+					//it is possible that the supervisor of an 
+					//organisation also occupies another postion at this organisation
 					$organisations[$row['or_uid']]['or_chief'][$row['em_uid']]['em_positions'] = array();
 					$this->assembleEmployeeData($organisations[$row['or_uid']]['or_chief'][$row['em_uid']], $row);
 					$organisations[$row['or_uid']]['or_chief'][$row['em_uid']]['full_name'] .= '&nbsp;(<span class="supervisor">'.$this->pi_getLL('tx_civserv_pi2_employee_list.hod','head of department').'</span>)';
@@ -754,10 +753,12 @@ class tx_civserv_pi2 extends tslib_pibase {
 				}
 				$this->getBuildingRoomFloor($organisations[$row['or_uid']]['or_chief'][$row['em_uid']]['em_positions'], $row['em_uid'], $row['po_uid']);
 			}
+			*/
 			
 			
 			//which positions does he occupie in that department?
 			// todo
+			/*
 			if(($row['em_uid'] !== $row['or_supervisor']) && (array_key_exists($row['po_uid'], $organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions']))){
 				//yet no idea
 			}elseif($row['em_uid'] == $row['or_supervisor']){
@@ -769,9 +770,20 @@ class tx_civserv_pi2 extends tslib_pibase {
 				// hol die mitarbeiter-stellen-daten aus dem resultset
 				$this->assembleEmployeePositionData($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']], $row);
 			}
+			*/
 			
-			//call for building (by reference)
-			if($row['em_uid'] !== $row['or_supervisor']) $this->getBuildingRoomFloor($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'], $row['em_uid'], $row['po_uid']);
+			
+			if(intval($row['po_uid']) > 0){
+				// hol die stellen-daten aus dem resultset
+				$this->assemblePositionData($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']], $row);
+				
+				// hol die mitarbeiter-stellen-daten aus dem resultset
+				$this->assembleEmployeePositionData($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'][$row['po_uid']], $row);
+				
+				//call for building (by reference)
+				#if($row['em_uid'] !== $row['or_supervisor']) $this->getBuildingRoomFloor($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'], $row['em_uid'], $row['po_uid']);
+				$this->getBuildingRoomFloor($organisations[$row['or_uid']]['or_employees'][$row['em_uid']]['em_positions'], $row['em_uid'], $row['po_uid']);
+			}
 		} // ende schleife ueber alle organisationen / mitarbeiter
 
 		
@@ -793,7 +805,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		*/
 		foreach($organisations as $orga_unit){
 			$row_count += count($orga_unit['or_employees']);
-			$row_count += count($orga_unit['or_chief']);
+			#$row_count += count($orga_unit['or_chief']);
 		}
 		
 		$this->internal['res_count'] = $row_count;
@@ -814,7 +826,6 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$smartyEmployeeList->assign('pagebar', $this->pi_list_browseresults(true, '', ' '.$this->conf['abcSpacer'].' '));
 
 		// pass the organisation-data to the template
-		debug($organisations, 'organs');
 		$smartyEmployeeList->assign('organisations', $organisations);
 
 
@@ -893,7 +904,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . $start . ',' . $max;
 					}
 			}
-			#debug ($query, 'makeEmployeeListQueryAZ');
+			#debug ($query, 'pi2 makeEmployeeListQueryAZ');
 			return $query;
 		}
 
@@ -1006,7 +1017,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . $start . ',' . $max;
 				}
 			}
-			#debug($query, 'pi2 makeEmployeeListQueryOrUid');
+			debug($query, 'pi2 makeEmployeeListQueryOrUid');
 			return $query;
 		}
 		
@@ -1145,7 +1156,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . intval($start) . ',' . intval($max);
 				}
 			}
-			#debug($query, 'makeEmployeeListQuerySearch');
+			#debug($query, 'pi2 makeEmployeeListQuerySearch');
 			return $query;
 		}
 		
@@ -2044,7 +2055,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		// test bk: include or_title 
 		
 		$GLOBALS['TSFE']->page['title']=$organisation_rows['or_name'];
-		// test bk: muenster - generate or_title from or_name (is only displayed in m�nster)
+		// test bk: muenster - generate or_title from or_name (is only displayed in muenster)
 		$or_title=$organisation_rows[or_name];
 		if($organisation_rows[or_addlocation]>'')$or_title.=' ('.$organisation_rows[or_addlocation].')';
 		$smartyOrganisation->assign('or_title',$or_title);
@@ -2252,6 +2263,9 @@ class tx_civserv_pi2 extends tslib_pibase {
 		}else{
 			$employees['full_name'] = $row['name'].", ".$row['em_firstname'];
 		}
+		if($row['or_supervisor'] == $row['em_uid']){
+			$employees['full_name'] .= '&nbsp;(<span class="supervisor">'.$this->pi_getLL('tx_civserv_pi2_employee_list.hod','head of department').'</span>)';
+		}
 		$employees['em_telephone'] = $row['em_telephone'];
 		$employees['em_fax'] = $row['em_fax'];
 		$employees['em_mobile'] = $row['em_mobile'];
@@ -2305,7 +2319,8 @@ class tx_civserv_pi2 extends tslib_pibase {
  
  
  	function assemblePositionData(&$positions, $row){
-		if($row['po_uid'] > 0){
+ 		debug($row, 'assemblePositionData');
+		if(intval($row['po_uid']) > 0){
 			$positions['po_uid'] = $row['po_uid'];
 			$searchString = $this->piVars['empossearch'];
 			$searchString = $this->check_searchword(strip_tags($searchString)); //strip and check to avoid xss-exploits
