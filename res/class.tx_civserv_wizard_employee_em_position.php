@@ -32,7 +32,7 @@
 *
 * $Id$
 *
-* @@author Tobias Müller (mullerto@@uni-muenster.de),
+* @@author Tobias Mï¿½ller (mullerto@@uni-muenster.de),
 * @@author Maurits Hinzen (mhinzen@@uni-muenster.de),
 * @@package TYPO3
 * @@subpackage tx_civserv
@@ -313,7 +313,7 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 		$script=basename(PATH_thisScript);
 		
 			//render A-Z list
-			$arrAlphabet = array('A','B','C','D','E','F','G','H','I','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
+			$arrAlphabet = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');	
 			
 			foreach($arrAlphabet as $char){
 				if($this->getPositionByLetter($char)){
@@ -469,7 +469,7 @@ class tx_civserv_wizard_employee_em_position extends t3lib_SCbase {
 	}//end position_selected
 
 	function make_clean($value) {
-		$legal_chars = "%[^0-9a-zA-ZäöüÄÖÜß ]%"; //allow letters, numbers & space
+		$legal_chars = "%[^0-9a-zA-Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ]%"; //allow letters, numbers & space
 		$new_value = preg_replace($legal_chars,"",$value); //replace with ""
 		return $new_value;
 	}
