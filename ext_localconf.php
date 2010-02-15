@@ -33,7 +33,7 @@
 * 
 *
 * @author Georg Niemeyer (niemeyer@uni-muenster.de),
-* @author Tobias Müller (mullerto@uni-muenster.de),
+* @author Tobias Mueller (mullerto@uni-muenster.de),
 * @author Maurits Hinzen (mhinzen@uni-muenster.de),
 * @author Christoph Rosenkranz (rosenkra@uni-muenster.de),
 * @package TYPO3
@@ -161,9 +161,42 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostP
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:civserv/res/class.tx_civserv_commit.php:&tx_civserv_commit';
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'EXT:civserv/res/class.tx_civserv_commit.php:&tx_civserv_commit';
 
-// these HOOKs will only work if they are introduced to sources Typo3 4.0.x manually!
-$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['checkModifyAccessList'][] = 'EXT:civserv/res/class.tx_civserv_commit.php:&tx_civserv_commit';
+
+
+
+
+/*************************************/
+// we want to eleminate/disable the delete-icon in the shortcuticons for table tx_civserv_model_service_temp!!!
+// first try: tce_main hook on user perms....
+// this hook has been integrated into typo3-src >= 4.3.x
+// it serves to manipulate user-rights
+// but does not help us! hook does not catch the event of using one of the shortcut icons....
+#require_once(t3lib_extMgm::extPath($_EXTKEY).'/res/class.tx_civserv_checkModifyAccessList.php');
+#$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['checkModifyAccessList'][] = 'EXT:civserv/res/class.tx_civserv_checkModifyAccessList.php:&user_checkModifyAccessList';
+
+// second try: TCA enabled controls or tce_forms_inline hook
+// try this hoo if version ist typo3-src < 4.3.0
+// if typo3-src > 4.3.0 you can use 'enabledcontrols' section in TCA
+// will work ONLY with IRRE - records :-((
+#require_once(t3lib_extMgm::extPath($_EXTKEY).'/res/class.tx_civserv_tceformsInlineHook.php');
+#$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms_inline.php']['tceformsInlineHook'][] = 'EXT:civserv/res/class.tx_civserv_tceformsInlineHook.php:&user_tceformsInlineHook';
+
+// third try: db_list_extra hook on shortcut icons in the control panel directly!!1
+// combine this with USER-TSconfig 'disabledelete' for the context menu!!!
+require_once(t3lib_extMgm::extPath($_EXTKEY).'/res/class.tx_civserv_localRecordList_actionsHook.php');
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['actions'][] = 'EXT:civserv/res/class.tx_civserv_localRecordList_actionsHook.php:&user_localRecordList_actionsHook';
+
+
+/*************************************/
+
+
+
+
+// this HOOKs will only work if they are introduced to sources Typo3 4.0.x manually???
+// manipulate query-Array
 $TYPO3_CONF_VARS['SC_OPTIONS']['typo3/class.db_list.inc']['makeQueryArray'][] = 'EXT:civserv/res/class.tx_civserv_commit.php:&tx_civserv_commit';
+
+
 
 
 
