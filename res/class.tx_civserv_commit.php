@@ -133,29 +133,6 @@ class tx_civserv_commit {
 	}
 	
 	
-	/**
-	 * This function allows to customize the userrights.
-	 * It is called through a hook within the class t3lib/class.t3lib_tcemain.php
-	 * and is set in the class ext_localconf.php per ['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['checkModifyAccessList'][]
-	 *
-	 * @table	string		$table is the tablename, where the modification will be performed
-	 * @cmdmap	string		$cmdmap is an array in which the modification-command is listet
-	 * @pObj	string		$pObj is the calling class
-	 * @res		string		$res is the result of the modification-right calculated so far
-	 * @return	void
-	 * @see t3lib/class.t3lib_tcemain.php
-	 */
-	function recheckModifyAccessList($table, $cmdmap, $pObj, &$res){
-		if (isset($cmdmap) && isset($cmdmap['tx_civserv_model_service_temp'])){
-			foreach($cmdmap['tx_civserv_model_service_temp'] as $id => $incomingCmdArray)	{
-				if (is_array($incomingCmdArray))	{
-					reset($incomingCmdArray);
-					$command = key($incomingCmdArray);
-					if (!$pObj->admin && $command == 'delete') $res = 0;
-				}
-			}
-		}
-	}
 	
 	
 	
