@@ -163,7 +163,6 @@ class tx_civserv_ms_maintenance {
 	 * @return	string	md5-checksum, which is computed over all given fields excepted the once listed with unset
 	 */
 	function compute_checksum($model_service_temp)	{
-		$GLOBALS['TYPO3_DB']->debugOutput = TRUE;
 			// Gets all field names except uid,pid,tstamp,crdate,cruser_id,deleted,hidden,fe_group,ms_mandant,
 			// ms_approver_one and ms_approver_two out of the model service table.
 		$field_names = $GLOBALS['TYPO3_DB']->admin_get_fields('tx_civserv_model_service');
