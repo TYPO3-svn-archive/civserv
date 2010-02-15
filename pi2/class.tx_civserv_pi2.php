@@ -711,7 +711,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 		$organisations = array();
 		
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_employees) ) {
-			debug($row, 'orlist_row');
+			//debug($row, 'orlist_row');
 			//das funktioniert natuerlich nur, wenn das resultset nach organisationen sortiert ist!!!
 			if(array_key_exists($row['or_uid'], $organisations)){
 				//duuno
@@ -1017,7 +1017,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 					$query .= 'LIMIT ' . $start . ',' . $max;
 				}
 			}
-			debug($query, 'pi2 makeEmployeeListQueryOrUid');
+			#debug($query, 'pi2 makeEmployeeListQueryOrUid');
 			return $query;
 		}
 		
@@ -1388,7 +1388,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 				break;
 			case 'A' :
 				if($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] !== 'utf-8'){
-					debug('no utf-8');
+					#debug('no utf-8');
 					$regexp = utf8_decode('^A|^Ä');
 				}else{
 					$regexp = '^A|^Ä';
@@ -1396,7 +1396,7 @@ class tx_civserv_pi2 extends tslib_pibase {
 			break;
 			case 'O' :
 				if($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] !== 'utf-8'){
-					debug('no utf-8');
+					#debug('no utf-8');
 					$regexp = utf8_decode('^O|^Ö');
 				}else{	
 					$regexp = '^O|^Ö';
@@ -2319,7 +2319,7 @@ class tx_civserv_pi2 extends tslib_pibase {
  
  
  	function assemblePositionData(&$positions, $row){
- 		debug($row, 'assemblePositionData');
+ 		#debug($row, 'assemblePositionData');
 		if(intval($row['po_uid']) > 0){
 			$positions['po_uid'] = $row['po_uid'];
 			$searchString = $this->piVars['empossearch'];

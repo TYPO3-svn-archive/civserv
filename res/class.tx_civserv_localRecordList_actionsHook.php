@@ -39,9 +39,9 @@ class user_localRecordList_actionsHook implements localrecordlist_actionsHook {
 	 */
 	public function makeControl($table, $row, $cells, &$parentObject){
 		//this is where the music plays!
-		debug($table, '$table');
-		debug($row, '$row');
-		debug($cells, '$cells');
+		#debug($table, '$table');
+		#debug($row, '$row');
+		#debug($cells, '$cells');
 		#debug($parentObject, '$parentObject'); //rather biggish!!!
 		
 		//for testing only:

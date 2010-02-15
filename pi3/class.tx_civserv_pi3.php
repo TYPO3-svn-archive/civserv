@@ -1160,7 +1160,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 				break;
 			case 'A' :
 				if($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] !== 'utf-8'){
-					debug('no utf-8');
+					#debug('no utf-8');
 					$regexp = utf8_decode('^A|^Ä');
 				}else{
 					$regexp = '^A|^Ä';
@@ -1168,7 +1168,7 @@ class tx_civserv_pi3 extends tslib_pibase {
 			break;
 			case 'O' :
 				if($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] !== 'utf-8'){
-					debug('no utf-8');
+					#debug('no utf-8');
 					$regexp = utf8_decode('^O|^Ö');
 				}else{	
 					$regexp = '^O|^Ö';

@@ -26,23 +26,19 @@ class user_checkModifyAccessList implements t3lib_TCEmain_checkModifyAccessListH
 		echo('<script text="javascript"> alert("miststück"); </script>');
 		
 		$gpvars = t3lib_div::_GET();
-		debug($gpvars, '$gpvars');
+		#debug($gpvars, '$gpvars');
 		
-		debug($accessAllowed, '$accessAllowed');//res
-		debug($table, '$table');
-		debug($parent, '$parent');
-		
-		
-		t3lib_div::debug('hab mich lieb!');
+		#debug($accessAllowed, '$accessAllowed');//res
+		#debug($table, '$table');
+		#debug($parent, '$parent');
 
 		if($table == 'tx_civserv_model_service_temp'){
-			debug('hooray');
 			//da kommt leider nix mehr bei cmdmap :-(
 			//wie kann ich also das command abfangen???
 			//der schlüssel liegt bei tcemain->process_cmdmap(), die enthält auch einen hook
 			//aber wann greift der???
 			if(isset($parent->cmdmap) && is_array($parent->cmdmap) && count($parent->cmdmap)>0){
-				debug('lets go!!!');
+				#debug('lets go!!!');
 				foreach($parent->cmdmap['tx_civserv_model_service_temp'] as $id => $incomingCmdArray)	{
 					if (is_array($incomingCmdArray))	{
 						reset($incomingCmdArray);

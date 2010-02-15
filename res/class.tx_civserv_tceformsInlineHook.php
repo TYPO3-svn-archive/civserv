@@ -17,7 +17,7 @@ class user_tceformsInlineHook implements t3lib_tceformsInlineHook{
 	 * @return	void
 	 */
 	public function init(&$parentObject){
-		//dunno? 
+		//???
 	}
 
 	/**
@@ -32,13 +32,12 @@ class user_tceformsInlineHook implements t3lib_tceformsInlineHook{
 	 * @return	void
 	 */
 	public function renderForeignRecordHeaderControl_preProcess($parentUid, $foreignTable, $childRecord, $childConfig, $isVirtual, &$enabledControls){
-		//dunno?
-		debug($parentUid, '$parentUid');
-		debug($foreign_table, '$foreign_table');
-		debug($rec, '$rec');
-		debug($config, '$config');
-		debug($isVirtual, '$isVirtual');
-		debug($enabledControls, '$enabledControls');
+		#debug($parentUid, '$parentUid');
+		#debug($foreign_table, '$foreign_table');
+		#debug($rec, '$rec');
+		#debug($config, '$config');
+		#debug($isVirtual, '$isVirtual');
+		#debug($enabledControls, '$enabledControls');
 	}
 
 	/**
@@ -53,7 +52,7 @@ class user_tceformsInlineHook implements t3lib_tceformsInlineHook{
 	 * @return	void
 	 */
 	public function renderForeignRecordHeaderControl_postProcess($parentUid, $foreignTable, $childRecord, $childConfig, $isVirtual, &$controlItems){
-		//dunno?
+		//???
 	}
 	
 	
