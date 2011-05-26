@@ -49,6 +49,7 @@ plugin.tx_civserv_pi1 {
 	show_counts = {$show_counts}
 	service_count = {$service_count}
 	employee_per_page = {$employee_per_page}
+	show_hidden_employees = {$show_hidden_employees}
 	organisation_per_page = {$organisation_per_page}
 	
 	contact_email = {$contact_email}

@@ -159,7 +159,6 @@ CREATE TABLE tx_civserv_service_sv_position_mm (
     uid_local int(11) unsigned DEFAULT '0' NOT NULL,
     uid_foreign int(11) unsigned DEFAULT '0' NOT NULL,
     tablenames varchar(30) DEFAULT '' NOT NULL,
-    sorting int(11) unsigned DEFAULT '0' NOT NULL,
 	sp_descr text NOT NULL,
 	sp_descr_PLACEHOLDER tinytext NOT NULL,
 	sp_label tinytext NOT NULL,

@@ -151,14 +151,14 @@ class tx_civserv_commit {
 	 * @return	void
 	 * @see t3lib/class.t3lib_tcemain.php
 	 */
-	function makeQueryArray_post(&$queryParts, $cObj, $table, $id, $addWhere, $fieldList, $_params){
+	function makeQueryArray_post_old(&$queryParts, $cObj, $table, $id, $addWhere, $fieldList, $_params){
 		// this function ist called for every (?) single table in the whole DB whenever a folder in the pagetree is selected!
 		//all workspace: LIVE and CUSTOM
 		if($table == 'tx_civserv_service_sv_position_mm'){
 			$queryParts['ORDERBY']=' tx_civserv_service_sv_position_mm.sp_label'; 
 			$queryParts['WHERE'].=' AND deleted=0'; //have to add this explicitely for mm-tables!!! 
 			//standard typo3: mm_tables have no 'deleted'-field and are never displayed at all
-		}	
+		}
 		// in CUSTOM workspaces we want to see the records relating to the newest service-version as well as the
 		// records relating to the actual online services.
 		if($table == 'tx_civserv_service_sv_position_mm' && $GLOBALS['BE_USER']->workspace > 0){ //Custom workspace!!!
@@ -195,6 +195,9 @@ class tx_civserv_commit {
 				$queryParts['WHERE'].=' AND uid_local in ('.implode(',',$sv_uids).')';
 			}
 		}// CUSTOM WORKSPACE
+		debug($table, "table");
+		debug($queryParts, "Query Parts");
+		debug($_params, "Params");
 	}
 	
 	

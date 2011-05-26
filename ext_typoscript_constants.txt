@@ -109,6 +109,7 @@ searchAtOrganisation = 1
 searchAtForms = 0
 searchAtTop15 = 1
 searchAtEmployee = 0
+show_hidden_employees = 0
 searchAtEmployeeList = 0
 searchAtOrganisationList = 0
 

@@ -1,7 +1,8 @@
 {* If defined, here are shown the top N services. *}
 <!--{if $top15 != ""}-->
+	<!--UdmComment-->
 	<h3 class="invisible">{$serviceinformation_label}:</h3>
-	<div id="serviceinformation">
+	<div id="serviceinformation"><!-- serviceinformation begin -->
 		{* preview doesn't really exist in top15? *}
 		<strong>{$frequently_visited_label}:</strong><br /><br />
 		<ul>
@@ -27,4 +28,5 @@
 
 		</ul><!-- level1 end -->
 	</div><!-- serviceinformation end -->
+	<!--/UdmComment-->
 <!--{/if}-->
