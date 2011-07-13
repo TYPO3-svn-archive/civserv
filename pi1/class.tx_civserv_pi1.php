@@ -1408,7 +1408,6 @@ class tx_civserv_pi1 extends tslib_pibase {
 				$query .= 'LIMIT ' . intval($start) . ',' . intval($max);
 			}
 		}
-		#debug($query, 'employeelist_query');
 		return $query;
 	}
 
@@ -3152,6 +3151,33 @@ class tx_civserv_pi1 extends tslib_pibase {
 				'',
 				'',
 				'');
+				
+			$query_position = $GLOBALS['TYPO3_DB']->SELECTquery(
+				'tx_civserv_position.uid as pos_uid,
+				 tx_civserv_organisation.uid as or_uid,
+				 tx_civserv_employee.uid as emp_uid,
+				 tx_civserv_position.po_name as position,
+				 tx_civserv_employee_em_position_mm.ep_telephone as phone,
+				 tx_civserv_employee_em_position_mm.ep_fax as fax,
+				 tx_civserv_employee_em_position_mm.ep_email as email,
+				 tx_civserv_organisation.or_name as organisation',
+				'tx_civserv_employee,
+				 tx_civserv_position,
+				 tx_civserv_organisation,
+				 tx_civserv_employee_em_position_mm,
+				 tx_civserv_position_po_organisation_mm',
+				'tx_civserv_employee.uid='. intval($uid).'
+				 AND em_datasec=1
+				 AND tx_civserv_position.uid = '. intval($pos_id).
+				$this->cObj->enableFields('tx_civserv_organisation').
+				$strEnableField.
+				 ' AND tx_civserv_employee.uid = tx_civserv_employee_em_position_mm.uid_local
+				 AND tx_civserv_employee_em_position_mm.uid_foreign = tx_civserv_position.uid
+				 AND tx_civserv_position.uid = tx_civserv_position_po_organisation_mm.uid_local
+				 AND tx_civserv_organisation.uid = tx_civserv_position_po_organisation_mm.uid_foreign',
+				'',
+				'',
+				'');
 
 			//special cases have been intercepted before, in fct employee_list
 			if (!$this->conf['show_hidden_employees']){
@@ -3188,6 +3214,7 @@ class tx_civserv_pi1 extends tslib_pibase {
 
 			//Assign employee position data
 			$employee_position = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res_position);
+			debug($employee_position);
 			$employee_position['or_link'] = htmlspecialchars($this->pi_linkTP_keepPIvars_url(array(mode => 'organisation', id => $employee_position['or_uid']),1,1));
 			if($employee_position['building_to_show'] > ''){
 				$employee_position['building'] = $employee_position['building_to_show'];
