@@ -1291,17 +1291,18 @@ class tx_civserv_pi1 extends tslib_pibase {
 		//we need to sort filtered_employees by organisation and position (already sorted by employee)..
 		$emp = array();
 		$orga = array();
+		$sort = array();
 		// fetch a list of collumns
 		foreach ($filtered_employees as $key => $row) {
 			#debug($key);
 			#debug($row);
+			$sort[$key] = $key;
 		    $emp[$key]  = $row['name'];
 		    $orga[$key] = $row['orga_name'];
 		    $pos[$key] = $row['pos_name'];
 		}
-
 		// sort collumns and data_array (filtered_employees) by their common key....
-		if(array_multisort($emp, SORT_ASC, $orga, SORT_ASC, $pos, SORT_ASC, $filtered_employees)){
+		if(array_multisort($sort, SORT_ASC, $orga, SORT_ASC, $pos, SORT_ASC, $filtered_employees)){
 			#debug('yesss!');
 		}else{
 			#debug('no no!');
