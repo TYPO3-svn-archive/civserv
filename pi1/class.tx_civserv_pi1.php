@@ -1302,6 +1302,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 		    $pos[$key] = $row['pos_name'];
 		}
 		// sort collumns and data_array (filtered_employees) by their common key....
+		// array_multisort can not handle german umlauts
+		//if(array_multisort($emp, SORT_ASC, $orga, SORT_ASC, $pos, SORT_ASC, $filtered_employees)){
 		if(array_multisort($sort, SORT_ASC, $orga, SORT_ASC, $pos, SORT_ASC, $filtered_employees)){
 			#debug('yesss!');
 		}else{
