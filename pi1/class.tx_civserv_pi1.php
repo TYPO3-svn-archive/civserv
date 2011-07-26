@@ -1292,10 +1292,8 @@ class tx_civserv_pi1 extends tslib_pibase {
 		$emp = array();
 		$orga = array();
 		// fetch a list of collumns
+		// array_multisort can not handle german umlauts, so we have to convert them first
 		foreach ($filtered_employees as $key => $row) {
-			#debug($key);
-			//debug($row);
-			// array_multisort can not handle german umlauts, so we have to convert them first
 			$emp[$key] = iconv("UTF-8", "ASCII//TRANSLIT", $row['name']);
 		    $orga[$key] = $row['orga_name'];
 		    $pos[$key] = $row['pos_name'];
